@@ -1,0 +1,1793 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Steel Defect ML — Full Paper & Slide Explanation</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Sora:wght@300;400;600;800&display=swap");
+
+      :root {
+        --bg: #0b0f1a;
+        --surface: #111827;
+        --card: #1a2235;
+        --border: #2a3650;
+        --accent: #38bdf8;
+        --accent2: #f97316;
+        --accent3: #a78bfa;
+        --green: #34d399;
+        --red: #f87171;
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --code-bg: #0d1117;
+        --head-grad: linear-gradient(135deg, #38bdf8, #a78bfa);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Sora", sans-serif;
+        font-size: 15px;
+        line-height: 1.75;
+      }
+
+      /* ── HERO ── */
+      .hero {
+        background: linear-gradient(
+          135deg,
+          #0f172a 0%,
+          #1e1b4b 50%,
+          #0f172a 100%
+        );
+        border-bottom: 1px solid var(--border);
+        padding: 60px 40px 50px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 80% 60% at 50% 0%,
+          rgba(56, 189, 248, 0.18),
+          transparent
+        );
+      }
+      .hero h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        background: var(--head-grad);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        position: relative;
+        line-height: 1.25;
+        margin-bottom: 14px;
+      }
+      .hero p {
+        color: var(--muted);
+        font-size: 0.95rem;
+        max-width: 700px;
+        margin: 0 auto;
+        position: relative;
+      }
+      .badge {
+        display: inline-block;
+        background: rgba(56, 189, 248, 0.12);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        color: var(--accent);
+        border-radius: 6px;
+        padding: 3px 12px;
+        font-size: 0.78rem;
+        font-family: "JetBrains Mono", monospace;
+        margin-bottom: 18px;
+      }
+
+      /* ── LAYOUT ── */
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 40px 24px 80px;
+      }
+
+      /* ── SECTION HEADERS ── */
+      .sec-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.35rem;
+        font-weight: 800;
+        margin: 48px 0 22px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--border);
+      }
+      .sec-title .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .dot-blue {
+        background: var(--accent);
+        box-shadow: 0 0 8px var(--accent);
+      }
+      .dot-orange {
+        background: var(--accent2);
+        box-shadow: 0 0 8px var(--accent2);
+      }
+      .dot-purple {
+        background: var(--accent3);
+        box-shadow: 0 0 8px var(--accent3);
+      }
+      .dot-green {
+        background: var(--green);
+        box-shadow: 0 0 8px var(--green);
+      }
+      .dot-red {
+        background: var(--red);
+        box-shadow: 0 0 8px var(--red);
+      }
+
+      /* ── CODE BLOCK (main output wrapper) ── */
+      pre.block {
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 28px 32px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.82rem;
+        line-height: 1.85;
+        white-space: pre-wrap;
+        word-break: break-word;
+        overflow-x: auto;
+        color: #c9d1d9;
+        margin-bottom: 24px;
+      }
+
+      /* syntax colors inside pre */
+      .kw {
+        color: #ff79c6;
+      } /* keyword */
+      .str {
+        color: #f1fa8c;
+      } /* string / value */
+      .cmt {
+        color: #6272a4;
+        font-style: italic;
+      } /* comment */
+      .num {
+        color: #bd93f9;
+      } /* numbers */
+      .fn {
+        color: #50fa7b;
+      } /* function / heading */
+      .tag {
+        color: #8be9fd;
+      } /* tag / label */
+      .acc {
+        color: #ffb86c;
+      } /* accent */
+      .red {
+        color: #ff5555;
+      }
+      .grn {
+        color: #50fa7b;
+      }
+
+      /* ── SLIDE CARD ── */
+      .slide-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        margin-bottom: 28px;
+        overflow: hidden;
+      }
+      .slide-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 24px;
+        background: rgba(56, 189, 248, 0.06);
+        border-bottom: 1px solid var(--border);
+      }
+      .slide-num {
+        background: var(--accent);
+        color: #000;
+        font-weight: 800;
+        font-size: 0.78rem;
+        font-family: "JetBrains Mono", monospace;
+        padding: 4px 10px;
+        border-radius: 6px;
+        flex-shrink: 0;
+      }
+      .slide-title-text {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text);
+      }
+      .slide-body {
+        padding: 22px 24px;
+      }
+
+      .q-card {
+        background: var(--card);
+        border-left: 3px solid var(--accent2);
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin-bottom: 12px;
+        font-size: 0.9rem;
+        color: var(--text);
+      }
+      .q-num {
+        font-family: "JetBrains Mono", monospace;
+        color: var(--accent2);
+        font-weight: 700;
+        margin-right: 8px;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 14px;
+        margin-top: 16px;
+        margin-bottom: 6px;
+      }
+      @media (max-width: 700px) {
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .info-box {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+      }
+      .info-box .ib-label {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 6px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .info-box .ib-val {
+        font-weight: 700;
+        font-size: 1.05rem;
+      }
+      .ib-blue {
+        color: var(--accent);
+      }
+      .ib-orange {
+        color: var(--accent2);
+      }
+      .ib-purple {
+        color: var(--accent3);
+      }
+      .ib-green {
+        color: var(--green);
+      }
+
+      table.acc-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 14px 0;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.82rem;
+      }
+      table.acc-table th {
+        background: rgba(56, 189, 248, 0.12);
+        color: var(--accent);
+        padding: 9px 14px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+      table.acc-table td {
+        padding: 8px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        color: var(--text);
+      }
+      table.acc-table tr.best td {
+        color: var(--green);
+        font-weight: 700;
+      }
+
+      .tag-chip {
+        display: inline-block;
+        background: rgba(167, 139, 250, 0.15);
+        border: 1px solid rgba(167, 139, 250, 0.3);
+        color: var(--accent3);
+        border-radius: 20px;
+        padding: 2px 10px;
+        font-size: 0.78rem;
+        margin: 2px 3px;
+      }
+
+      hr.divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 30px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HERO -->
+    <div class="hero">
+      <div class="badge">ETE4216 · Machine Learning · RUET</div>
+      <h1>
+        Detection of Defects in Rolled Stainless Steel Plates<br />by Machine
+        Learning Models
+      </h1>
+      <p>
+        Complete paper explanation + every slide decoded (What · Why · How ·
+        Result) + 20–30 exam questions
+      </p>
+    </div>
+
+    <div class="container">
+      <!-- ═══════════════════════════════════════════════════════
+     PART 1 — FULL PAPER EXPLANATION
+════════════════════════════════════════════════════════ -->
+      <div class="sec-title">
+        <span class="dot dot-blue"></span>PART 1 — FULL PAPER: DEEP EXPLANATION
+      </div>
+
+      <pre class="block">
+<span class="fn">╔══════════════════════════════════════════════════════════════════════╗
+║          PAPER: Detection of Defects in Rolled Stainless Steel       ║
+║                  Plates by Machine Learning Models                   ║
+║   Authors : Ahmet Feyzioglu · Yavuz Selim Taspinar (2023, Turkey)   ║
+╚══════════════════════════════════════════════════════════════════════╝</span>
+
+<span class="tag">── 1. THE REAL-WORLD PROBLEM ─────────────────────────────────────────</span>
+
+Iron is the most widely used metal on Earth.
+It is converted into STEEL and used in:
+  → Automotive   → Aviation   → Construction   → Railways   → Pipes
+
+ROLLING PROCESS:
+  Steel slabs are passed between two rotating rollers.
+  Compression force squeezes the steel into thin sheets
+  of desired thickness.
+
+  ┌─────────────┐
+  │   ROLLER    │ ← rotating
+  │═════════════│
+  │  Steel slab │ → becomes thin plate
+  │═════════════│
+  │   ROLLER    │ ← rotating
+  └─────────────┘
+
+PROBLEM:
+  During rolling, if temperature, speed, or roller gap is
+  not perfectly controlled → DEFECTS appear on the surface.
+
+Common defects after rolling:
+  ● Cracks          ● Scratches (Z-Scratch, K-Scratch)
+  ● Bumps           ● Stains
+  ● Corrosion       ● Pastry (rough surface)
+  ● Dirtiness       ● Uneven elongation
+
+WHY IS DETECTION IMPORTANT?
+  → Defective steel used in automotive/aviation = safety risk
+  → Defects reduce market value of products
+  → Catching defects early saves cost
+  → Manual visual inspection is slow and error-prone
+
+<span class="tag">── 2. WHY MACHINE LEARNING? ──────────────────────────────────────────</span>
+
+Traditional methods:
+  ● Human eye inspection → slow, misses micro-defects
+  ● FMEA (Failure Mode and Effects Analysis) → not real-time
+  ● Edge detection filters (Canny, Sobel) → only image-based
+
+Machine Learning advantages:
+  ✔ Fast classification (milliseconds)
+  ✔ High accuracy
+  ✔ Can learn complex patterns from data
+  ✔ Works 24/7 without fatigue
+  ✔ Can be integrated into production lines
+
+<span class="tag">── 3. THE DATASET ─────────────────────────────────────────────────────</span>
+
+Source : Semeion Research Center of Sciences of Communication
+         (also available on Kaggle → "Faulty Steel Plates")
+
+Structure:
+  Total samples  : <span class="num">1941</span> rows
+  Features       : <span class="num">27</span>  (numerical measurements)
+  Classes        : <span class="num">7</span>   defect types
+
+The 27 features describe the GEOMETRIC SHAPE and OUTLINE of each
+defect patch. Examples:
+  X_Minimum, X_Maximum, Y_Minimum, Y_Maximum  → bounding box
+  Pixels_Areas                                 → size of defect
+  Length_of_Conveyer                           → production speed
+  SteelPlate_Thickness                         → plate thickness
+  Luminosity_Index, Log_X_Index, Edges_X_Index → shape descriptors
+
+7 Defect Classes:
+  Class            Samples (approx)
+  ────────────────────────────────
+  Other_Faults     ~673 (largest)
+  Bumps            ~402
+  K_Scatch         ~391
+  Z_Scratch        ~198
+  Pastry           ~158
+  Stains           ~72
+  Dirtiness        ~55 (smallest)
+
+⚠ NOTE: Dataset is IMBALANCED → some classes have far fewer samples
+         This makes classification harder for minority classes.
+
+Train / Test split → 95% Training : 5% Testing
+  Training = 1844 samples
+  Testing  =   97 samples
+
+<span class="tag">── 4. THE FOUR ML ALGORITHMS USED ────────────────────────────────────</span>
+
+<span class="fn">A. LOGISTIC REGRESSION (LR)</span>
+─────────────────────────────
+Concept:
+  Uses a SIGMOID function to estimate probability.
+  Sigmoid formula: σ(z) = 1 / (1 + e^(-z))
+  Output is always between 0 and 1.
+  Compare to threshold (0.5) → decide class.
+
+For multi-class (7 classes here):
+  Uses "One-vs-Rest" or "Softmax" extension.
+
+Strength  : Simple, fast, interpretable
+Weakness  : Cannot learn non-linear boundaries well
+Result    : Accuracy = <span class="red">74.44%</span>
+
+<span class="fn">B. DECISION TREE (DT)</span>
+─────────────────────────
+Concept:
+  Builds a tree structure by splitting data at each node.
+  Splitting criterion: Gini Impurity or Information Gain.
+
+  Example:
+  [Root] Is Pixels_Area > 500?
+         YES → [Node] Is Luminosity_Index > 0.3?
+                       YES → Defect = Bumps
+                       NO  → Defect = K_Scratch
+         NO  → Defect = Pastry
+
+Strength  : Interpretable, handles nonlinear data
+Weakness  : Overfits easily (memorizes training data)
+Result    : Accuracy = <span class="acc">77.77%</span>
+
+<span class="fn">C. SUPPORT VECTOR MACHINE (SVM)</span>
+─────────────────────────────────
+Concept:
+  Finds the OPTIMAL HYPERPLANE that maximizes margin
+  between classes.
+
+  Margin = distance between hyperplane and nearest points
+           (called Support Vectors).
+
+  Kernel trick: Projects data to higher dimensions so
+  linearly inseparable data becomes separable.
+  Common kernels: Linear, RBF (Radial Basis Function), Polynomial.
+
+Strength  : Works well in high-dimensional spaces, good generalization
+Weakness  : Slow on large data, sensitive to parameters (C, gamma)
+Result    : Accuracy = <span class="red">74.44%</span>
+
+<span class="fn">D. RANDOM FOREST (RF)</span>
+─────────────────────────
+Concept:
+  An ENSEMBLE method — combines many Decision Trees.
+
+  How it works (Bagging):
+  Step 1: Create N random subsets of training data (Bootstrap Sampling)
+  Step 2: Train one Decision Tree on each subset
+  Step 3: Each tree uses a random subset of features at each split
+  Step 4: Final prediction = MAJORITY VOTE of all trees
+
+  Example (5 trees):
+  Tree1 → K_Scratch
+  Tree2 → K_Scratch
+  Tree3 → Bumps
+  Tree4 → K_Scratch
+  Tree5 → K_Scratch
+  VOTE  → K_Scratch ✔
+
+  Why better than single DT?
+  → Reduces VARIANCE (overfitting)
+  → Different trees see different data → diverse opinions
+  → Errors of individual trees cancel out
+
+Strength  : Most accurate, robust, handles imbalanced/noisy data
+Weakness  : Less interpretable, slower to train than single DT
+Result    : Accuracy = <span class="grn">79.44%</span>  ← BEST MODEL
+
+<span class="tag">── 5. PERFORMANCE METRICS ─────────────────────────────────────────────</span>
+
+Given confusion matrix terms:
+  TP = True Positive  (predicted correctly as positive)
+  TN = True Negative  (predicted correctly as negative)
+  FP = False Positive (predicted positive, actually negative)
+  FN = False Negative (predicted negative, actually positive)
+
+Metrics:
+  Accuracy  = (TP + TN) / (TP + TN + FP + FN) × 100
+            → Overall % of correct predictions
+
+  Precision = TP / (TP + FP)
+            → Of all predicted positives, how many are real?
+            → Reduces false alarms
+
+  Recall    = TP / (TP + FN)
+            → Of all actual positives, how many did we catch?
+            → Reduces missed detections
+
+  F1 Score  = 2 × (Precision × Recall) / (Precision + Recall)
+            → Harmonic mean → balanced measure
+
+For MULTI-CLASS problems, two averaging methods:
+  Macro avg    → Equal weight to all classes (good for imbalance analysis)
+  Weighted avg → Weight by class sample count (reflects real distribution)
+
+<span class="tag">── 6. RESULTS SUMMARY ─────────────────────────────────────────────────</span>
+
+Model   Accuracy   Precision(macro)  Recall(macro)  F1(macro)
+──────  ─────────  ────────────────  ─────────────  ─────────
+LR      74.44%     0.81              0.74           0.77
+DT      77.77%     0.75              0.76           0.75
+SVM     74.44%     0.81              0.75           0.77
+RF      79.44% ★   0.87 ★            0.79 ★         0.82 ★
+
+→ Random Forest WINS in all metrics.
+→ LR and SVM tie at 74.44% — both struggle with nonlinear boundaries.
+→ DT beats LR/SVM because it handles nonlinearity, but overfits.
+→ RF fixes DT's overfitting through ensemble learning.
+
+<span class="tag">── 7. CORRELATION ANALYSIS ────────────────────────────────────────────</span>
+
+A heatmap of 27 × 27 feature correlations was plotted.
+
+Purpose:
+  → Find features that are highly correlated with each other
+  → Highly correlated features are REDUNDANT
+  → Removing low-importance features = faster model + same accuracy
+
+If two features have correlation close to +1 or -1 → redundant.
+Features with near-zero correlation to target → less useful.
+
+This helps build LIGHTER models for industrial deployment.
+
+<span class="tag">── 8. CONCLUSIONS & FUTURE WORK ───────────────────────────────────────</span>
+
+Conclusions:
+  ✔ RF achieved highest accuracy (79.44%)
+  ✔ All 4 models are usable for decision-support systems
+  ✔ Correlation analysis identified important features
+
+Limitations identified by the study:
+  ✖ 79.44% may not be enough for safety-critical steel plants
+  ✖ 5% test split is very small → generalization is uncertain
+  ✖ No cross-validation used
+  ✖ Class imbalance not addressed
+
+Future directions:
+  → Use more training data
+  → Try deep learning (CNN) for image-based detection
+  → Apply SMOTE or other techniques to fix class imbalance
+  → Add real-time production line integration
+  → Try ensemble variants (XGBoost, LightGBM, Gradient Boosting)
+</pre>
+
+      <!-- ═══════════════════════════════════════════════════════
+     PART 2 — SLIDE-BY-SLIDE EXPLANATION
+════════════════════════════════════════════════════════ -->
+      <div class="sec-title">
+        <span class="dot dot-orange"></span>PART 2 — SLIDE-BY-SLIDE EXPLANATION
+        (What · Why · How · Result)
+      </div>
+
+      <!-- SLIDE 1 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 01</span>
+          <span class="slide-title-text"
+            >Title Slide — Detection of Defects in Rolled Stainless Steel
+            Plates</span
+          >
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  → Title of the research paper
+  → Authors: Ahmet Feyzioglu, Yavuz Selim Taspinar
+  → Course: ETE4216 — Machine Learning (RUET)
+  → Presenter group roll numbers (2004034, 2004035 ... 2004060)
+  → Presented to: Rifa Tabassum Mim (Lecturer, ETE, RUET)
+
+<span class="fn">WHAT IS THIS SLIDE FOR?</span>
+  → Introduces WHO did the work and WHY you are presenting it.
+  → The tag line explains the study's goal:
+    "Compare four classical ML models for steel defect classification
+     and its relevance to industrial automation and quality control."
+
+<span class="fn">WHY THIS TOPIC?</span>
+  Steel surface defects cause:
+  ● Safety hazards in automotive/aviation sectors
+  ● Increased production cost
+  ● Product value loss
+  Traditional inspection = slow and error-prone
+  → ML can automate it FASTER and MORE ACCURATELY
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 1:</span>
+  This is a CLASSIFICATION problem:
+  Given 27 measured features of a steel surface area,
+  predict which of 7 defect types it belongs to.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 2 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 02</span>
+          <span class="slide-title-text">Background & Motivation</span>
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  3 bullet points:
+  ● Steel rolling introduces surface defects → impacts quality, safety, cost
+  ● Manual inspection is slow and error-prone
+  ● ML enables automated, scalable defect detection
+
+  Also shows industrial images of steel coils and damaged steel parts.
+
+<span class="fn">WHAT = What is the problem?</span>
+  During rolling, heat + pressure create defects.
+  These are often invisible to the naked eye (micro-cracks, small stains).
+  Manual quality control teams can miss defects due to:
+  → Fatigue, poor lighting, human error, speed of production line
+
+<span class="fn">WHY = Why must we solve it?</span>
+  Industries that USE this steel:
+  ● Automotive → a crack in a car chassis = fatal accident
+  ● Aviation   → structural failure from defective steel = catastrophe
+  ● Construction → bridges, buildings collapsing
+
+  Financial impact:
+  → Defective products = rejects → wasted material = higher cost
+  → Late detection = more scrap produced before caught
+
+<span class="fn">HOW = Why is ML the solution?</span>
+  ML can:
+  → Learn patterns from 1941 labeled samples
+  → Classify new unseen samples in milliseconds
+  → Work 24/7 on production lines
+  → Detect subtle patterns humans cannot see
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 2:</span>
+  The motivation is STRONG — real industrial need, safety stakes,
+  and cost reduction. ML is proposed as the intelligent solution.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 3 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 03</span>
+          <span class="slide-title-text">Literature Review — Gaps (Table)</span>
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  A table summarizing 5 related research papers (2019–2023):
+
+  Year  | Authors          | Method                    | Gap
+  ───────────────────────────────────────────────────────────
+  2019  | Wang et al.      | Machine vision + Deep     | Traditional methods
+        |                  | learning + Hough Transform| outdated, need more accuracy
+  ─────────────────────────────────────────────────────────
+  2020  | Zhang et al.     | Infrared camera + ML      | Only early detection,
+        |                  |                           | focuses on cost, not comparison
+  ─────────────────────────────────────────────────────────
+  2021  | Özakin, B.       | FMEA method               | No automated real-time
+        |                  |                           | classification
+  ─────────────────────────────────────────────────────────
+  2022  | Elanangai &      | Edge detection (Canny,    | Only image enhancement,
+        | Vasanth          | Sobel) + k-Winsorized     | no ML model comparison
+  ─────────────────────────────────────────────────────────
+  2023  | Liu et al.       | Image processing +        | Not focused on high-speed
+        |                  | Texture analysis           | rolling classification
+
+<span class="fn">WHY include literature review?</span>
+  → Shows the research gap that THIS paper fills
+  → Demonstrates awareness of existing work
+  → Justifies why a new study is needed
+
+<span class="fn">WHAT IS THE GAP these papers leave?</span>
+  None of the papers SYSTEMATICALLY COMPARED classical ML algorithms
+  (LR vs DT vs SVM vs RF) on the specific faulty steel plates dataset.
+  None focused on lightweight models suitable for industrial deployment.
+
+<span class="fn">HOW does this paper address the gap?</span>
+  → Directly compares 4 classical ML models head-to-head
+  → Uses the same dataset, same split, same metrics for fair comparison
+  → Adds correlation analysis to find most important features
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 3:</span>
+  Previous work used image processing or single methods.
+  This paper is unique because it compares FOUR algorithms systematically.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 4 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 04</span>
+          <span class="slide-title-text"
+            >Literature Review — Gaps (3-Box Summary)</span
+          >
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  Three boxes summarizing the research gap landscape:
+
+  Box 1 — Existing Methods:
+    Image processing, edge detection, computer vision,
+    CNNs, traditional inspection systems.
+
+  Box 2 — Common Limitations:
+    Low accuracy, high computational cost, slow processing,
+    limited automation, poor real-time usability.
+
+  Box 3 — Research Gap:
+    Need lightweight, effective ML models suitable for
+    industrial deployment.
+
+  Bottom line: "Authors position their work as a simpler,
+  systematic comparison of classical ML algorithms."
+
+<span class="fn">WHY is this slide separate from Slide 3?</span>
+  Slide 3 showed the DETAIL (individual papers).
+  Slide 4 shows the BIG PICTURE CONCLUSION:
+  → Existing methods are complex, expensive, or not compared fairly.
+  → There is a clear need for lightweight, classical ML comparison.
+
+<span class="fn">HOW does this motivate the paper's approach?</span>
+  The 4 algorithms chosen (LR, DT, SVM, RF) are:
+  ✔ Lightweight (no GPU needed for training)
+  ✔ Well-understood theoretically
+  ✔ Deployable in industrial decision-support systems
+  ✔ Easily interpretable for engineers
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 4:</span>
+  The authors are NOT claiming to beat deep learning.
+  They are providing a PRACTICAL, DEPLOYABLE baseline comparison
+  for industrial quality control systems.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 5 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 05</span>
+          <span class="slide-title-text">Objectives & Contributions</span>
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  Research Objective box:
+    "Detect defects in rolled stainless steel plates using ML."
+
+  Main Contributions (4 checkmarks):
+    ✓ Compare 4 classifiers: LR, DT, SVM, RF
+    ✓ Correlation analysis of features
+    ✓ Performance comparison using multiple metrics
+    ✓ Industrial decision-support potential
+
+  Pipeline arrows (right side):
+    Dataset → ML Models → Evaluation → Decision-Support
+
+  Bottom note:
+    "Multi-class classification with 7 defect classes;
+     emphasis on practical evaluation for deployment."
+
+<span class="fn">WHAT = What exactly is being done?</span>
+  Multi-class classification:
+    Input  → 27 numerical features of a steel surface
+    Output → One of 7 defect class labels
+    Method → Train + test 4 ML models, compare them
+
+<span class="fn">WHY = Why these 4 contributions?</span>
+  1. Model comparison → find best algorithm for this problem
+  2. Correlation analysis → understand which features matter
+  3. Multiple metrics → accuracy alone is misleading on imbalanced data
+  4. Decision-support → practical application, not just academic
+
+<span class="fn">HOW = How is the pipeline structured?</span>
+  Step 1: Load the Faulty Steel Plates dataset
+  Step 2: Do correlation analysis, split 95/5
+  Step 3: Train LR, DT, SVM, RF on 95% data
+  Step 4: Test on 5% data
+  Step 5: Compute Accuracy, Precision, Recall, F1, Confusion Matrix
+  Step 6: Compare results, determine best model for deployment
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 5:</span>
+  This slide defines WHAT SUCCESS LOOKS LIKE:
+  Best model = highest accuracy + best F1 + suitable for deployment.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 6 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 06</span>
+          <span class="slide-title-text">Dataset — Faulty Steel Plates</span>
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  Three info boxes + a bar chart:
+
+  Box 1 — Overview:
+    Source: Semeion Research Center
+    1,941 samples | 27 features | 7 classes
+
+  Box 2 — Defect Classes:
+    Pastry · Z-Scratch · K-Scratch · Stains
+    Dirtiness · Bumps · Other Faults
+
+  Box 3 — Notes:
+    Features describe geometric characteristics.
+    Dataset is IMBALANCED.
+
+  Bar chart (Figure 1):
+    X-axis: Class names
+    Y-axis: Number of samples per class
+    → Other_Faults has ~673 (tallest bar)
+    → Dirtiness has ~55 (shortest bar)
+
+<span class="fn">WHAT = What is in the dataset?</span>
+  Each row = one steel surface patch that was examined.
+  27 features per patch:
+  ● Bounding box coordinates (X_Min, X_Max, Y_Min, Y_Max)
+  ● Area of defect in pixels
+  ● Length of conveyer belt (production speed indicator)
+  ● Steel plate thickness
+  ● Statistical descriptors (luminosity, log indices, edge indices)
+  These were measured using scanning equipment on stainless steel plates
+  of thickness ≥ 1.5 mm.
+
+<span class="fn">WHY = Why does imbalance matter?</span>
+  Imbalanced dataset means some classes have very few examples.
+  Example: Dirtiness = 55 samples vs Other_Faults = 673 samples.
+  Risk: Model may BIAS toward majority class.
+  → A model that always predicts "Other_Faults" gets ~35% accuracy
+     without learning anything useful.
+  → This is why Macro F1 score (equal weight to all classes) is more
+     important than just accuracy for evaluating performance here.
+
+<span class="fn">HOW was the dataset created?</span>
+  Semeion Research Center:
+  → Took stainless steel plates of ≥1.5mm thickness
+  → Applied heat treatment (sometimes non-uniform)
+  → Defects appeared due to uneven heat distribution
+  → Measured 27 features per defective region
+  → Labeled each region with its defect type
+  → Final result: 1941 labeled samples
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 6:</span>
+  IMBALANCE is the key challenge here.
+  The 95/5 train-test split on only 1941 samples = 97 test samples.
+  This is quite small for a 7-class problem — generalization is limited.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 7 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 07</span>
+          <span class="slide-title-text">Experimental Methodology</span>
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  Pipeline description (left) + Flow diagram (right)
+
+  Pipeline Steps:
+    1. Dataset preparation
+    2. Train-test split: 95% / 5%
+    3. Model training (LR, DT, SVM, RF)
+    4. Prediction on test set
+    5. Evaluation: Accuracy, Precision, Recall, F1, Confusion Matrix
+
+  Experimental Setup:
+    ● Intel Core i7-12700K 3.61 GHz
+    ● NVIDIA GeForce RTX 3080Ti
+    ● 64 GB RAM
+    ● Python + ML libraries (scikit-learn)
+
+  Flow diagram:
+    Data Acquisition → Pre-processing (Correlation + 95/5 Split)
+    → ML Modeling (LR, DT, SVM, RF)
+    → Prediction → Performance Evaluation
+
+<span class="fn">WHAT = What is the full experimental procedure?</span>
+  1. Load dataset (1941 rows × 27 features + 1 label)
+  2. Compute correlation heatmap (27×27)
+  3. Split: 1844 training samples, 97 test samples
+  4. For each algorithm:
+     a. Feed training data to train the model
+     b. Apply trained model on test data
+     c. Collect predictions
+  5. Compute: Accuracy, Precision, Recall, F1 Score, Confusion Matrix
+
+<span class="fn">WHY 95/5 split?</span>
+  The paper says: "To determine performance of classification models
+  exactly and measure usability in real life."
+  But this is actually a WEAKNESS:
+  → 5% = only 97 test samples for a 7-class problem
+  → Results may not generalize well
+  → Cross-validation (k-fold) would be more reliable
+
+<span class="fn">HOW were the models implemented?</span>
+  Python + scikit-learn library:
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.tree import DecisionTreeClassifier
+    from sklearn.svm import SVC
+    from sklearn.ensemble import RandomForestClassifier
+
+  No deep learning, no GPU acceleration needed for these models.
+  The high-end hardware (RTX 3080Ti, 64GB RAM) is actually
+  overkill for classical ML — shows the authors had resources available.
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 7:</span>
+  The methodology is STRAIGHTFORWARD and REPRODUCIBLE.
+  However, the 5% test size is a methodological concern.
+  K-fold cross-validation would have given more reliable estimates.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 8 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 08</span>
+          <span class="slide-title-text"
+            >Model 1 — Logistic Regression (LR)</span
+          >
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  3 info sections:
+
+  01 Core Idea:
+     Probabilistic linear classifier using a sigmoid function.
+
+  02 Characteristics:
+     Simple, interpretable, fast training,
+     suited for linear boundaries.
+
+  03 Weaknesses & Result:
+     Limited for complex nonlinear data.
+     Accuracy: 74.44%
+
+  Figure: Sigmoid curve (S-shaped function from 0 to 1)
+
+<span class="fn">WHAT = What is Logistic Regression?</span>
+  Despite the name "regression," it is a CLASSIFICATION algorithm.
+
+  Formula:
+    z = w₁x₁ + w₂x₂ + ... + w₂₇x₂₇ + b  (linear combination)
+    σ(z) = 1 / (1 + e^(-z))               (sigmoid function)
+    Output = probability of belonging to a class
+
+  For our problem (7 classes):
+    Uses One-vs-Rest strategy:
+    → Trains 7 binary classifiers (each: "is this class X vs not X?")
+    → Predicts class with highest probability
+
+<span class="fn">WHY was LR included?</span>
+  → It is the SIMPLEST baseline model
+  → Fast to train, easy to explain to engineers
+  → If it performs well → no need for complex models
+  → Good for benchmarking
+
+<span class="fn">HOW does the sigmoid work on this data?</span>
+  Each of 27 features gets a weight (w).
+  Training = finding the best weights via gradient descent
+  to minimize cross-entropy loss.
+
+  The sigmoid maps any real number → (0,1) probability.
+  Values above 0.5 → predicted as positive class.
+
+<span class="fn">WHY did LR get only 74.44%?</span>
+  Steel defect patterns in 27D feature space are NON-LINEAR.
+  LR can only draw a straight hyperplane boundary.
+  → Complex curved boundaries between Bumps vs K_Scratch
+    cannot be captured by a linear model.
+  → LR fails to distinguish similar-looking defects.
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 8:</span>
+  LR = baseline model. 74.44% means the problem is NOT linearly separable.
+  More powerful models (nonlinear) are needed.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 9 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 09</span>
+          <span class="slide-title-text"
+            >Model 2 — Support Vector Machine (SVM)</span
+          >
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  3 sections:
+
+  Core Idea:
+    Finds optimal separating hyperplane with maximum margin.
+
+  Characteristics:
+    → Maximizes margin between classes
+    → Effective in high-dimensional space
+    → Uses kernel trick for nonlinear boundaries
+
+  Advantages & Weaknesses:
+    ✔ Strong theoretical foundation
+    ✔ Good generalization
+    ✖ Computationally expensive
+    ✖ Sensitive to parameter selection (C, gamma)
+
+  Figure: Kernel trick illustration (data lifted to 3D space)
+
+<span class="fn">WHAT = What is SVM?</span>
+  SVM finds the MAXIMUM MARGIN HYPERPLANE:
+  The plane that separates classes with the largest "gap."
+
+  Support Vectors = data points closest to the hyperplane.
+  These are the most important/difficult samples.
+
+  Margin = 2 / ||w||
+  SVM maximizes margin = minimizes ||w||
+
+  Kernel Trick:
+  If data is not linearly separable in original space,
+  kernel function K(xᵢ, xⱼ) maps data to higher-dimensional space
+  where it BECOMES linearly separable.
+  Common kernels:
+    Linear   : K(x,z) = x·z
+    RBF      : K(x,z) = exp(-γ||x-z||²)  ← most common
+    Polynomial: K(x,z) = (x·z + 1)^d
+
+<span class="fn">WHY was SVM expected to perform well?</span>
+  27 features = relatively high-dimensional space
+  SVM is theoretically strong in high-dimensional spaces.
+  With RBF kernel, can model complex nonlinear boundaries.
+
+<span class="fn">WHY did SVM also get only 74.44%?</span>
+  Possible reasons:
+  → Default hyperparameters were used (C=1, gamma='scale')
+  → No hyperparameter tuning (Grid Search / Random Search)
+  → Imbalanced classes affect decision boundary
+  → Multi-class SVM (One-vs-One) = 21 binary classifiers for 7 classes
+    → complex, and errors compound
+
+<span class="fn">HOW is SVM different from LR?</span>
+  LR   → minimizes log loss (probabilistic)
+  SVM  → maximizes margin (geometric, distance-based)
+  LR   → gives probability scores
+  SVM  → gives hard class boundaries
+  Both achieved same 74.44% → both struggling with this nonlinear data
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 9:</span>
+  SVM is theoretically powerful but needs proper tuning.
+  Default settings gave same result as LR → suggests hyperparameter
+  optimization would improve SVM significantly.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 10 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 10</span>
+          <span class="slide-title-text">Model 3 — Decision Tree (DT)</span>
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  3 sections:
+
+  Core Idea:
+    Hierarchical, feature-based splitting into branches and leaves.
+
+  Strengths:
+    Interpretable, captures nonlinear relationships, easy to visualize.
+
+  Limitations & Result:
+    Prone to overfitting and noise sensitivity.
+    Accuracy: 77.77%
+
+  Figure: Decision tree illustration with job offer example
+
+<span class="fn">WHAT = What is Decision Tree?</span>
+  A tree-like model where:
+  ● ROOT NODE = first split (most important feature)
+  ● INTERNAL NODES = decision points (feature threshold tests)
+  ● LEAF NODES = final class predictions
+
+  How splitting works:
+  At each node, find the feature and threshold that best separates
+  the classes using:
+    Gini Impurity = 1 - Σ(pᵢ²)
+    → Measures how "mixed" the classes are
+    → Lower Gini = purer = better split
+
+  Example for our steel data:
+  [Root] Pixels_Area > 300?
+    YES → [Node] Luminosity_Index < 0.5?
+           YES → K_Scratch (leaf)
+           NO  → Bumps (leaf)
+    NO  → [Node] Log_X_Index > 1.2?
+           YES → Z_Scratch (leaf)
+           NO  → Other_Faults (leaf)
+
+<span class="fn">WHY did DT outperform LR and SVM (74.44% → 77.77%)?</span>
+  → DT naturally handles NONLINEAR boundaries
+  → Can split in complex ways across 27 features
+  → Does not assume any distribution of data
+
+<span class="fn">WHY is DT still not the best?</span>
+  OVERFITTING:
+  → A deep DT memorizes training data perfectly
+  → But performs poorly on unseen test data
+  → Single DT has HIGH VARIANCE
+
+  Noise sensitivity:
+  → Small changes in training data → completely different tree structure
+  → Not stable/robust enough
+
+<span class="fn">HOW does RF fix DT's problems?</span>
+  RF trains MANY DTs on different random subsets.
+  → Each DT overfits differently
+  → AVERAGING their votes cancels out individual overfitting
+  → Result: lower variance, better generalization
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 10:</span>
+  DT at 77.77% beats LR/SVM because it handles nonlinearity.
+  But overfitting limits it. Random Forest (an ensemble of DTs) solves this.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 11 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 11</span>
+          <span class="slide-title-text">Model 4 — Random Forest (RF)</span>
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  3 sections:
+
+  Core Idea:
+    Ensemble of multiple Decision Trees.
+
+  Characteristics:
+    → Uses bagging and random feature selection
+    → Combines predictions from many trees
+
+  Advantages:
+    → Reduced overfitting
+    → Better generalization
+    → Robust performance
+
+  Figure: Random Forest diagram showing multiple trees → Bagging → Output
+
+<span class="fn">WHAT = What is Random Forest exactly?</span>
+  RF = BAGGING + RANDOM FEATURE SELECTION + VOTING
+
+  BAGGING (Bootstrap Aggregating):
+  Step 1: From 1844 training samples, create N bootstrap samples
+          (randomly pick 1844 samples WITH REPLACEMENT → some repeated)
+  Step 2: Train one DT on each bootstrap sample
+  Step 3: At each split in each DT, only consider √27 ≈ 5 random features
+          (not all 27) → this ensures trees are DIVERSE
+  Step 4: Collect all N trees
+
+  PREDICTION:
+  For a new test sample:
+  → Feed it to all N trees
+  → Each tree gives one vote
+  → Final class = class with most votes (majority voting)
+
+<span class="fn">WHY does RF outperform DT?</span>
+  BIAS-VARIANCE TRADEOFF:
+  Single DT: low bias, HIGH variance (overfits)
+  RF: low bias, LOW variance (because trees are averaged)
+
+  Mathematical insight:
+  If N trees each have error rate ε and are independent:
+  Combined error ≈ ε/√N → reduces with more trees
+
+  Random feature selection ensures trees are NOT correlated.
+  → Different trees make different mistakes
+  → Voting cancels errors
+
+<span class="fn">HOW is RF better for this imbalanced dataset?</span>
+  Each bootstrap sample is random → minority classes (Dirtiness: 55 samples)
+  will appear in some bootstrap samples but not others.
+  This gives some trees specific training on rare classes.
+  → Overall: better handling of imbalanced classes than single DT or LR.
+
+<span class="fn">RESULT:</span>
+  RF Accuracy : 79.44%
+  RF Precision: 0.87 (macro)
+  RF Recall   : 0.79 (macro)
+  RF F1 Score : 0.82 (macro)
+  → BEST across all 4 models on all metrics
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 11:</span>
+  RF wins because ensemble learning overcomes the weakness of single DT.
+  "Wisdom of the crowd" — many imperfect trees together = strong classifier.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 12 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 12</span>
+          <span class="slide-title-text"
+            >Experimental Results and Performance Comparison</span
+          >
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  Two sections:
+
+  Left side — Analysis:
+    ● Comprehensive Metrics: RF wins in Precision, Recall, F1 too
+    ● Ensemble Superiority: RF consistently outperforms standalone models
+
+  Right side — Tables:
+    Table 1 (Precision, Recall, F1 per model — macro avg):
+      LR  : P=0.81, R=0.74, F1=0.77
+      DT  : P=0.75, R=0.76, F1=0.75
+      SVM : P=0.81, R=0.75, F1=0.77
+      RF  : P=0.87★, R=0.79★, F1=0.82★
+
+    Table 2 (Accuracy):
+      LR=74.44%, DT=77.77%, SVM=74.44%, RF=79.44%★
+
+<span class="fn">WHAT = What do these numbers mean?</span>
+
+  ACCURACY (79.44% for RF):
+  → Of 97 test samples, RF correctly predicted ≈77 of them
+  → 20 were misclassified
+
+  PRECISION (0.87 macro for RF):
+  → When RF predicts class X, it is correct 87% of the time
+  → High precision = fewer false alarms
+  → Very important in steel industry (don't want to reject good steel)
+
+  RECALL (0.79 macro for RF):
+  → Of all actual class X samples, RF correctly finds 79% of them
+  → High recall = fewer missed defects
+  → Very important for safety (don't want to miss a real defect)
+
+  F1 SCORE (0.82 macro for RF):
+  → Balances both precision and recall
+  → 0.82 = good balance → RF catches defects without too many false alarms
+
+<span class="fn">WHY is Macro average used here?</span>
+  Macro avg = compute metric for each class, then take simple average.
+  → Gives EQUAL WEIGHT to each class, including minority classes.
+  → If weighted avg used, small classes like Dirtiness (55 samples)
+    would barely affect the score.
+  → Macro avg reveals whether the model also handles rare defects well.
+
+<span class="fn">HOW to interpret LR vs SVM same accuracy?</span>
+  LR: Precision=0.81 but Recall=0.74 → biased toward precision
+  SVM: same numbers → almost identical decision boundary behavior
+  Both are limited by their linear/kernel approach without proper tuning.
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 12:</span>
+  RF is the CLEAR WINNER.
+  But 79.44% overall accuracy = still 20% error rate.
+  For safety-critical steel (aerospace), this is NOT enough.
+  Deep learning or better data would be needed.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 13 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 13</span>
+          <span class="slide-title-text">Confusion Matrix Analysis</span>
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  Four confusion matrices (heatmaps):
+  (a) Logistic Regression
+  (b) Decision Tree
+  (a) Support Vector Machine
+  (b) Random Forest
+
+  Text explanation:
+    "RF consistently produced more correct classifications across all categories."
+    "Confusion matrices provide class-wise insights beyond aggregate accuracy."
+
+<span class="fn">WHAT = What is a confusion matrix?</span>
+  A 7×7 grid where:
+  → ROWS = Actual class labels
+  → COLUMNS = Predicted class labels
+  → Diagonal values = correct predictions (TP for each class)
+  → Off-diagonal values = misclassifications
+
+  For our 7-class problem:
+        Predicted:  Bumps  Dirt  K_Sc  Other  Past  Stain  Z_Sc
+  Actual Bumps:      31     0     0     12     1     0      0
+  Actual Dirtiness:   0     3     0      0     0     0      0
+  Actual K_Scratch:   0     0    40      0     0     0      0
+  Actual Other_Flt:   9     0     0     38     0     0      1
+  ...
+
+  The diagonal (31, 3, 40, 38...) = correct predictions
+  Off-diagonal values = confusion between classes
+
+<span class="fn">WHY analyze confusion matrix?</span>
+  Accuracy alone hides class-specific failures.
+  Example: If K_Scratch always predicted correctly (40/40)
+  but Dirtiness often missed (only 3/7 correct)
+  → Accuracy looks fine but Dirtiness detection is poor.
+
+  For industrial use:
+  → Need to know WHICH defects are being missed
+  → Some misclassifications are worse than others
+    (e.g., missing a crack = catastrophic)
+    (e.g., misclassifying a stain as dirtiness = acceptable)
+
+<span class="fn">HOW to read RF confusion matrix?</span>
+  RF confusion matrix shows:
+  ● K_Scratch: almost perfectly detected (40/40 correct)
+  ● Z_Scratch: 14/17 correct
+  ● Bumps: 31/44 correct — some confused with Other_Faults (12 errors)
+  ● Other_Faults: 38/47 — some confused with Bumps (9 errors)
+  
+  Bumps ↔ Other_Faults confusion is the most common error.
+  Reason: These two classes may have overlapping geometric features
+          (similar pixel area, similar edge indices).
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 13:</span>
+  The confusion matrix tells us WHERE the model struggles.
+  RF is strongest overall, but Bumps vs Other_Faults confusion
+  suggests these classes need more distinctive features or more data.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 14 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 14</span>
+          <span class="slide-title-text"
+            >Strengths, Limitations, and Critical Review</span
+          >
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  Two columns:
+
+  STRENGTHS:
+    ● Direct practical industrial application for quality control
+    ● Systematic comparison of multiple classical ML models
+    ● Uses a real-world industrial dataset of faulty steel plates
+    ● Clear evaluation using standard metrics
+
+  LIMITATIONS:
+    ● 79.44% may be insufficient for high-stakes industrial reliability
+    ● Small 5% test split raises generalization concerns
+    ● No cross-validation discussion
+    ● No deep learning comparison
+    ● Limited feature engineering exploration
+
+  Critical Observation:
+    "79.44% might not meet stringent reliability requirements
+     for safety-critical steel industry. Address data imbalance
+     and advanced validation for better confidence."
+
+<span class="fn">WHAT = What is being critiqued here?</span>
+  This slide is the HONEST SELF-ASSESSMENT of the paper.
+  Good research acknowledges its own limitations.
+
+<span class="fn">WHY is 79.44% potentially insufficient?</span>
+  Safety-critical applications (aerospace, automotive) require
+  accuracy of 95%+ or near-zero missed-defect rates.
+  20% error rate = 1 in 5 defective plates might be missed.
+  In mass production: if 10,000 plates produced/day
+  → ~2000 defective plates pass inspection undetected → catastrophic.
+
+<span class="fn">WHY is 5% test split a problem?</span>
+  97 test samples for 7 classes = ~14 samples per class on average.
+  Statistical significance is questionable.
+  Example: Dirtiness might have only 3-4 test samples.
+  One wrong prediction = 25% error in that class.
+  Solution: k-fold cross-validation (k=5 or 10) would be better.
+
+<span class="fn">WHY no deep learning comparison?</span>
+  The paper intentionally focuses on CLASSICAL ML.
+  But a CNN on the raw images (rather than extracted features)
+  would likely achieve 90%+ accuracy.
+  Papers like Zhang et al. (2020) used infrared + ML and got better results.
+
+<span class="fn">WHY is class imbalance not addressed?</span>
+  Techniques like:
+  ● SMOTE (Synthetic Minority Over-sampling Technique)
+  ● Class weights in model training
+  ● Undersampling majority classes
+  Would help the model better learn minority classes.
+  Paper does not explore these — a significant gap.
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 14:</span>
+  This paper is a GOOD STARTING POINT, not a final solution.
+  RF at 79.44% is the best classical ML baseline.
+  Future work should: cross-validate, address imbalance, try deep learning.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 15 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 15</span>
+          <span class="slide-title-text">Conclusions & Takeaways</span>
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  Three boxes:
+
+  Practical Insight:
+    "Classical ML models can successfully detect steel surface defects;
+     ensembles perform best here."
+
+  Recommendation:
+    "Random Forest recommended for industrial decision-support
+     due to robustness and higher accuracy (79.44%)."
+
+  Next Steps:
+    "Address class imbalance, explore lightweight ensembles,
+     and evaluate real-time deployment feasibility."
+
+  Bottom bar:
+    "Emphasize industrial relevance, multi-metric evaluation,
+     and why RF is preferred for deployment."
+
+<span class="fn">WHAT = What is concluded?</span>
+  1. Classical ML WORKS for steel defect detection
+     → Not a perfect solution but a viable starting point
+  2. Ensemble methods (RF) outperform individual classifiers
+     → Validates the bias-variance tradeoff theory
+  3. RF has industrial deployment potential
+     → Lightweight, fast at prediction time, interpretable enough
+
+<span class="fn">WHY is RF preferred for deployment over DT/LR/SVM?</span>
+  ✔ Highest accuracy (79.44%)
+  ✔ Highest Precision (0.87) → fewer false rejections of good steel
+  ✔ Highest Recall (0.79) → fewer missed defects
+  ✔ Most balanced F1 (0.82)
+  ✔ Less sensitive to noise than DT
+  ✔ Doesn't need hyperparameter tuning like SVM (C, gamma)
+  ✔ Fast at prediction time (even with many trees)
+
+<span class="fn">HOW should the next steps be implemented?</span>
+  1. Address imbalance:
+     → Apply SMOTE to generate synthetic minority class samples
+     → Or use class_weight='balanced' in scikit-learn
+
+  2. Explore lightweight ensembles:
+     → XGBoost, LightGBM (gradient boosting — faster, often more accurate)
+     → Pruned Random Forests (fewer trees)
+
+  3. Real-time deployment:
+     → Model inference takes milliseconds once trained
+     → Embed in PLC (Programmable Logic Controller) on production line
+     → Sensor measures 27 features → model predicts → alerts operator
+
+  4. Compare with deep learning:
+     → CNN on surface images could extract features automatically
+     → Might reach 90%+ accuracy
+
+<span class="fn">KEY TAKEAWAY FROM SLIDE 15:</span>
+  Final verdict: RF = best classical ML model for this problem.
+  But the work is an OPEN DOOR, not a closed solution.
+  More data + DL + imbalance fixing = path to production-ready system.
+</pre>
+        </div>
+      </div>
+
+      <!-- SLIDE 16 -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num">SLIDE 16</span>
+          <span class="slide-title-text">References</span>
+        </div>
+        <div class="slide-body">
+          <pre class="block">
+<span class="fn">WHAT IS ON THIS SLIDE?</span>
+  8 references cited in the presentation:
+
+  [1] Wang et al. (2019) — Machine vision + deep learning + Hough Transform
+      → Journal of Manufacturing Systems
+  [2] Zhang et al. (2020) — Infrared camera + ML for 316L steel defects
+      → JOM journal
+  [3] Özakin, B. (2021) — FMEA method for sheet material defects
+      → Avrupa Bilim ve Teknoloji Dergisi
+  [4] Elanangai & Vasanth (2022) — Edge detection for SS plate defects
+      → ICACCS Conference, IEEE
+  [5] Liu et al. (2023) — Rolling mill vibrations, texture analysis
+      → Journal of Iron and Steel Research International
+  [6] Faulty Steel Plates dataset — Kaggle (UCI ML Repository)
+  [7] Feyzioğlu & Taspinar (2023) — The paper itself
+      → IJAMEC Vol 11, No 1, pp 37-43
+  [8] GeeksforGeeks — ML algorithm figures source
+      → geeksforgeeks.org/machine-learning
+
+<span class="fn">WHY is the reference slide important?</span>
+  → Shows academic integrity (not claiming others' work)
+  → Allows readers to verify sources and explore further
+  → Connects this work to the broader research community
+
+<span class="fn">KEY OBSERVATION:</span>
+  Reference [7] = the paper being presented.
+  References [1]–[5] = literature review papers.
+  Reference [6] = dataset source.
+  Reference [8] = algorithm explanations/figures.
+  Most figures of algorithms (DT, SVM, RF diagrams) came from
+  GeeksforGeeks — not the original paper authors.
+  This is ACCEPTABLE for educational presentations (cited properly).
+</pre>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+     PART 3 — EXAM QUESTIONS
+════════════════════════════════════════════════════════ -->
+      <div class="sec-title">
+        <span class="dot dot-red"></span>PART 3 — 25 EXAM QUESTIONS A MACHINE
+        LEARNING TEACHER COULD ASK
+      </div>
+
+      <pre class="block">
+<span class="fn">These questions cover: theory, dataset, methodology, results, critical thinking.</span>
+<span class="fn">Be ready to explain EVERY answer in your own words.</span>
+</pre>
+
+      <div class="q-card">
+        <span class="q-num">Q01.</span>What is the rolling process in steel
+        manufacturing, and why does it cause surface defects?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q02.</span>The dataset has 1941 samples across 7
+        classes. How many training and test samples are there with a 95/5 split?
+        Is this split appropriate for a 7-class problem? What would you
+        recommend instead?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q03.</span>The dataset is imbalanced — "Dirtiness"
+        has ~55 samples while "Other_Faults" has ~673. How does this imbalance
+        affect model training? What techniques can be used to address it?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q04.</span>Logistic Regression uses a sigmoid
+        function. Write the sigmoid formula and explain what happens when the
+        input z → +∞ and z → −∞. Why does this make it suitable for
+        classification?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q05.</span>LR and SVM both achieved 74.44% accuracy.
+        Does this mean they are making identical predictions? Explain by
+        comparing how each model makes its decision boundary.
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q06.</span>What is the "kernel trick" in SVM? Why
+        was it needed here? Name three common kernels and explain one
+        mathematically.
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q07.</span>What does "maximizing the margin" mean in
+        SVM? What are support vectors? Why does larger margin improve
+        generalization?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q08.</span>Decision Tree achieved 77.77% — better
+        than LR and SVM. Why does DT outperform these linear models for this
+        specific problem?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q09.</span>What is Gini Impurity? Calculate it for a
+        node with 3 classes: 5 samples of class A, 3 of class B, 2 of class C.
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q10.</span>Why is a single Decision Tree prone to
+        overfitting? How does Random Forest solve this problem using bagging?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q11.</span>In Random Forest, why are only √27 ≈ 5
+        features considered at each split (not all 27)? What would happen if all
+        features were used at every split?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q12.</span>Explain the Bias-Variance tradeoff. Where
+        does LR, DT, and RF each sit on this tradeoff curve?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q13.</span>The paper uses Macro-average for
+        Precision, Recall, and F1. What is the difference between Macro-average
+        and Weighted-average? Which is more appropriate for imbalanced datasets
+        and why?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q14.</span>Define Precision and Recall. In the steel
+        industry context, which metric is MORE critical — high Precision or high
+        Recall? Justify your answer.
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q15.</span>RF achieved Precision=0.87 but
+        Recall=0.79. What does this mean practically? What type of errors is the
+        model making more of — false positives or false negatives?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q16.</span>From the confusion matrix, Bumps and
+        Other_Faults are frequently confused. What does this tell you about the
+        27 features in the dataset? How would you fix this?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q17.</span>The correlation heatmap was analyzed. If
+        two features (e.g., X_Maximum and Pixels_Area) have a correlation of
+        0.95, what should you do and why?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q18.</span>Why was cross-validation NOT used in this
+        study? What is k-fold cross-validation and how would it improve
+        reliability of results?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q19.</span>The paper used an Intel i7-12700K + RTX
+        3080Ti + 64GB RAM. Was the GPU actually useful for training LR, DT, SVM,
+        RF? If not, what algorithms would benefit from GPU?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q20.</span>If you were to improve this system for
+        real industrial deployment, what deep learning architecture would you
+        propose instead of these classical ML models? Explain why it would be
+        better.
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q21.</span>The paper reports 79.44% accuracy as the
+        highest. Is this sufficient for safety-critical applications like
+        aviation-grade steel production? Justify quantitatively (e.g., how many
+        plates per day might be incorrectly classified).
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q22.</span>The F1 Score is called the "harmonic
+        mean" of Precision and Recall. Why is harmonic mean used instead of
+        arithmetic mean? Show mathematically what happens to F1 when Recall
+        drops to 0.
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q23.</span>What is SMOTE (Synthetic Minority
+        Over-sampling Technique)? How would applying SMOTE to the minority
+        classes (Dirtiness: 55 samples, Stains: 72 samples) change model
+        performance?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q24.</span>Compare Random Forest with XGBoost
+        (Gradient Boosting). Both are ensemble tree methods — what is the
+        fundamental algorithmic difference between bagging (RF) and boosting
+        (XGBoost)?
+      </div>
+      <div class="q-card">
+        <span class="q-num">Q25.</span>Suppose you are deploying this model on a
+        real production line where 10,000 steel plates are inspected per hour.
+        What are the computational requirements for the model? Which model (LR,
+        DT, SVM, RF) has the fastest PREDICTION time (not training time) and
+        why?
+      </div>
+
+      <!-- ═══════════ SUMMARY TABLE ═════════════ -->
+      <div class="sec-title">
+        <span class="dot dot-green"></span>QUICK REFERENCE — All Model
+        Accuracies at a Glance
+      </div>
+
+      <table class="acc-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Accuracy</th>
+            <th>Precision (macro)</th>
+            <th>Recall (macro)</th>
+            <th>F1 (macro)</th>
+            <th>Key Weakness</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Logistic Regression</td>
+            <td>74.44%</td>
+            <td>0.81</td>
+            <td>0.74</td>
+            <td>0.77</td>
+            <td>Linear boundary only</td>
+          </tr>
+          <tr>
+            <td>Decision Tree</td>
+            <td>77.77%</td>
+            <td>0.75</td>
+            <td>0.76</td>
+            <td>0.75</td>
+            <td>Overfitting</td>
+          </tr>
+          <tr>
+            <td>SVM</td>
+            <td>74.44%</td>
+            <td>0.81</td>
+            <td>0.75</td>
+            <td>0.77</td>
+            <td>Needs hyperparameter tuning</td>
+          </tr>
+          <tr class="best">
+            <td>Random Forest ★</td>
+            <td>79.44% ★</td>
+            <td>0.87 ★</td>
+            <td>0.79 ★</td>
+            <td>0.82 ★</td>
+            <td>Less interpretable, 79% still low</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <pre class="block" style="margin-top: 20px">
+<span class="fn">═══ END OF COMPLETE EXPLANATION ═══</span>
+
+<span class="tag">Paper   :</span> <span class="str">Detection of Defects in Rolled Stainless Steel Plates by ML Models</span>
+<span class="tag">Authors :</span> <span class="str">Ahmet Feyzioglu, Yavuz Selim Taspinar — Published 2023</span>
+<span class="tag">Journal :</span> <span class="str">IJAMEC Vol 11, Issue 1, pp 037–043</span>
+<span class="tag">Dataset :</span> <span class="str">1941 samples, 27 features, 7 defect classes (Semeion Research Center)</span>
+<span class="tag">Best ML :</span> <span class="grn">Random Forest → 79.44% accuracy, F1=0.82</span>
+<span class="tag">Gap     :</span> <span class="red">No cross-validation, imbalance ignored, no DL comparison, small test set</span>
+<span class="tag">Future  :</span> <span class="acc">SMOTE + XGBoost + CNN + k-fold CV + real-time deployment</span>
+
+<span class="cmt">// Prepared for ETE4216 Machine Learning — RUET</span>
+</pre>
+    </div>
+    <!-- /container -->
+  </body>
+</html>

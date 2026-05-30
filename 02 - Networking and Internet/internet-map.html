@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>End-to-End Global Internet Map</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+      :root {
+        --bg: #0d1117;
+        --panel: #161b22;
+        --text: #c9d1d9;
+        --edge: #7ee787;
+        --access: #39d353;
+        --isp: #ff7b72;
+        --sub: #58a6ff;
+        --dc: #d2a8ff;
+        --server: #f2cc60;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+      #viz-container {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        background: #000;
+      }
+      #sidebar {
+        width: 380px;
+        background: var(--panel);
+        border-left: 1px solid #30363d;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        z-index: 10;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+      }
+      h2 {
+        margin-top: 0;
+        font-size: 1.2rem;
+        border-bottom: 1px solid #30363d;
+        padding-bottom: 10px;
+      }
+      button {
+        background: #238636;
+        color: white;
+        border: none;
+        padding: 12px;
+        margin: 5px 0;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        width: 100%;
+      }
+      button:hover {
+        background: #2ea043;
+      }
+      .details {
+        background: var(--bg);
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #30363d;
+        min-height: 220px;
+        margin-top: 15px;
+      }
+      .tag {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: bold;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        color: #000;
+      }
+      .console {
+        margin-top: 15px;
+        background: #0a0a0a;
+        color: #0f0;
+        font-family: monospace;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        min-height: 200px;
+        max-height: 250px;
+        overflow-y: auto;
+        border: 1px solid #333;
+      }
+      .node-circle {
+        cursor: pointer;
+        stroke-width: 3px;
+      }
+      .link {
+        stroke: #484f58;
+        stroke-width: 2px;
+        stroke-dasharray: 4;
+      }
+      .packet {
+        font-weight: bold;
+        font-size: 12px;
+        text-anchor: middle;
+        dominant-baseline: central;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="viz-container"></div>
+
+    <div id="sidebar">
+      <h2>End-to-End Request Cycle</h2>
+      <button onclick="runFullCycle()">
+        Trace Full Cycle (Req &rarr; Res)
+      </button>
+      <button onclick="runDNSOnly()">Trace DNS Resolution Only</button>
+
+      <div class="details" id="details-panel">
+        <div style="color: #8b949e; text-align: center; margin-top: 80px">
+          Hover over any block on the map to see its specific IP Type, Medium,
+          and function.
+        </div>
+      </div>
+
+      <div class="console" id="log-console">
+        > System Initialized. Waiting for user query...
+      </div>
+    </div>
+
+    <script>
+      // --- DATA ARCHITECTURE ---
+      const nodesData = [
+        {
+          id: "user",
+          x: 100,
+          y: 300,
+          color: "var(--edge)",
+          icon: "📱",
+          label: "User Device (Ramganj)",
+          ip: "Private IPv4 (192.168.x.x)",
+          medium: "Wi-Fi / 4G LTE Airwaves",
+          desc: "The origin point. Uses a private IP address assigned by the local router or cellular tower.",
+        },
+        {
+          id: "access",
+          x: 250,
+          y: 300,
+          color: "var(--access)",
+          icon: "🗼",
+          label: "Cell Tower / ONT",
+          ip: "Carrier Grade NAT (100.64.x.x)",
+          medium: "Radio to Fiber Optic",
+          desc: "Converts wireless signals from your phone into pulses of light for the terrestrial fiber network.",
+        },
+        {
+          id: "isp",
+          x: 450,
+          y: 300,
+          color: "var(--isp)",
+          icon: "🏢",
+          label: "Local ISP Gateway",
+          ip: "Public IPv4 (e.g., 103.x.x.x)",
+          medium: "Terrestrial Fiber Backbone",
+          desc: "The border of your local internet. Applies NAT, swapping your private IP for a globally routable Public IP.",
+        },
+        {
+          id: "dns",
+          x: 450,
+          y: 150,
+          color: "var(--isp)",
+          icon: "📖",
+          label: "ISP DNS Resolver",
+          ip: "Public IPv4",
+          medium: "Internal ISP Network",
+          desc: "Translates human-readable domain names (example.com) into destination IP addresses.",
+        },
+        {
+          id: "sub_bd",
+          x: 650,
+          y: 300,
+          color: "var(--sub)",
+          icon: "🌊",
+          label: "Cable Landing (Cox's Bazar)",
+          ip: "Layer 2/3 Core Routing",
+          medium: "Submarine Fiber (SEA-ME-WE)",
+          desc: "The continental exit point. Electrical signals are converted into dense wavelength light lasers to cross the ocean.",
+        },
+        {
+          id: "sub_dest",
+          x: 900,
+          y: 300,
+          color: "var(--sub)",
+          icon: "🌍",
+          label: "Continental Landing (Europe/US)",
+          ip: "Layer 2/3 Core Routing",
+          medium: "Submarine to Terrestrial Fiber",
+          desc: "Light surfaces on another continent, is amplified, and routed to the destination country's tier-1 backbone.",
+        },
+        {
+          id: "dc",
+          x: 1100,
+          y: 300,
+          color: "var(--dc)",
+          icon: "☁️",
+          label: "Cloud Data Center",
+          ip: "Public Anycast IPv4/IPv6",
+          medium: "High-Speed Data Center Fabric",
+          desc: "The border of the server farm. Load balancers terminate the TLS encryption and inspect the traffic.",
+        },
+        {
+          id: "server",
+          x: 1250,
+          y: 300,
+          color: "var(--server)",
+          icon: "🖥️",
+          label: "Application Server",
+          ip: "Private Datacenter IP (10.x.x.x)",
+          medium: "Copper DAC / Ethernet",
+          desc: "The final destination. Processes the database query, generates the HTML/JSON, and sends the payload back.",
+        },
+      ];
+
+      const linksData = [
+        { source: "user", target: "access" },
+        { source: "access", target: "isp" },
+        { source: "isp", target: "dns" },
+        { source: "isp", target: "sub_bd" },
+        { source: "sub_bd", target: "sub_dest" },
+        { source: "sub_dest", target: "dc" },
+        { source: "dc", target: "server" },
+      ];
+
+      // --- SETUP D3 ---
+      const width = 1400;
+      const height = 600;
+      const svg = d3
+        .select("#viz-container")
+        .append("svg")
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .style("width", "100%")
+        .style("height", "100%");
+
+      const zoom = d3
+        .zoom()
+        .scaleExtent([0.5, 3])
+        .on("zoom", (e) => container.attr("transform", e.transform));
+      svg.call(zoom);
+      const container = svg.append("g");
+
+      // Center map
+      svg.call(zoom.transform, d3.zoomIdentity.translate(20, 100).scale(0.85));
+
+      // Draw Links
+      container
+        .selectAll(".link")
+        .data(linksData)
+        .enter()
+        .append("line")
+        .attr("class", "link")
+        .attr("x1", (d) => nodesData.find((n) => n.id === d.source).x)
+        .attr("y1", (d) => nodesData.find((n) => n.id === d.source).y)
+        .attr("x2", (d) => nodesData.find((n) => n.id === d.target).x)
+        .attr("y2", (d) => nodesData.find((n) => n.id === d.target).y);
+
+      // Draw Nodes
+      const nodes = container
+        .selectAll(".node")
+        .data(nodesData)
+        .enter()
+        .append("g")
+        .attr("transform", (d) => `translate(${d.x},${d.y})`)
+        .on("mouseover", showDetails)
+        .on("mouseout", hideDetails);
+
+      nodes
+        .append("circle")
+        .attr("class", "node-circle")
+        .attr("r", 35)
+        .attr("fill", "#161b22")
+        .attr("stroke", (d) => d.color);
+
+      nodes
+        .append("text")
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .style("font-size", "24px")
+        .style("pointer-events", "none")
+        .text((d) => d.icon);
+
+      nodes
+        .append("text")
+        .attr("y", 55)
+        .attr("text-anchor", "middle")
+        .style("fill", "#c9d1d9")
+        .style("font-size", "12px")
+        .style("font-weight", "bold")
+        .text((d) => d.label);
+
+      // --- UI LOGIC ---
+      const panel = document.getElementById("details-panel");
+      const logger = document.getElementById("log-console");
+
+      function showDetails(event, d) {
+        d3.select(this).select("circle").attr("fill", "#21262d");
+        panel.innerHTML = `
+                <h3 style="margin:0 0 10px 0; color:${d.color}">${d.icon} ${d.label}</h3>
+                <span class="tag" style="background:#e3b341;">IP: ${d.ip}</span><br>
+                <span class="tag" style="background:#58a6ff; margin-top:5px;">Medium: ${d.medium}</span>
+                <p style="font-size: 14px; line-height: 1.5; margin-top:15px;">${d.desc}</p>
+            `;
+      }
+
+      function hideDetails(event, d) {
+        d3.select(this).select("circle").attr("fill", "#161b22");
+      }
+
+      function log(msg, color = "#0f0") {
+        logger.innerHTML += `<br><span style="color:${color}">> ${msg}</span>`;
+        logger.scrollTop = logger.scrollHeight;
+      }
+
+      // --- ANIMATION ENGINE ---
+      async function animatePath(path, labelText, color, duration = 800) {
+        const group = container.append("g");
+        const packet = group
+          .append("circle")
+          .attr("r", 12)
+          .attr("fill", color)
+          .style("filter", `drop-shadow(0 0 6px ${color})`);
+        const label = group
+          .append("text")
+          .attr("class", "packet")
+          .attr("fill", "#000")
+          .text(labelText);
+
+        for (let i = 0; i < path.length - 1; i++) {
+          const start = nodesData.find((n) => n.id === path[i]);
+          const end = nodesData.find((n) => n.id === path[i + 1]);
+
+          if (i === 0)
+            group.attr("transform", `translate(${start.x},${start.y})`);
+
+          await group
+            .transition()
+            .duration(duration)
+            .ease(d3.easeLinear)
+            .attr("transform", `translate(${end.x},${end.y})`)
+            .end();
+        }
+        group.remove();
+      }
+
+      // --- SIMULATIONS ---
+      async function runDNSOnly() {
+        logger.innerHTML = "";
+        log("INITIATING DNS QUERY...", "#f2cc60");
+        log("1. Device asks: Where is the server?", "#fff");
+        await animatePath(
+          ["user", "access", "isp", "dns"],
+          "DNS",
+          "#f2cc60",
+          600,
+        );
+        log("2. DNS Resolver finds global IP: 203.0.113.50", "#fff");
+        await animatePath(
+          ["dns", "isp", "access", "user"],
+          "IP",
+          "#7ee787",
+          600,
+        );
+        log("DNS RESOLUTION COMPLETE. Ready to connect.", "#7ee787");
+      }
+
+      async function runFullCycle() {
+        logger.innerHTML = "";
+        log("=== STARTING FULL CYCLE ===", "#58a6ff");
+
+        // DNS Phase
+        log("[PHASE 1] Resolving Domain Name...");
+        await animatePath(
+          ["user", "access", "isp", "dns"],
+          "?",
+          "#f2cc60",
+          400,
+        );
+        await animatePath(
+          ["dns", "isp", "access", "user"],
+          "IP",
+          "#f2cc60",
+          400,
+        );
+
+        // Request Phase
+        log("[PHASE 2] HTTP GET Request Dispatched", "#ff7b72");
+        log("Device IP: 192.168.1.5 (Private)", "#8b949e");
+        await animatePath(["user", "access", "isp"], "REQ", "#ff7b72", 600);
+
+        log("NAT APPLIED @ ISP. New Source IP: 103.5.x.x (Public)", "#ff7b72");
+        log("Leaving Bangladesh via Submarine Cable...", "#8b949e");
+        await animatePath(["isp", "sub_bd", "sub_dest"], "REQ", "#ff7b72", 800);
+
+        log(
+          "Arrived at Continental Landing. Routing to Data Center.",
+          "#8b949e",
+        );
+        await animatePath(["sub_dest", "dc", "server"], "REQ", "#ff7b72", 600);
+        log("Server received request. Processing database...", "#f2cc60");
+
+        // Pause for server
+        await new Promise((r) => setTimeout(r, 500));
+
+        // Response Phase
+        log("[PHASE 3] 200 OK Response Sent", "#39d353");
+        await animatePath(["server", "dc", "sub_dest"], "RES", "#39d353", 600);
+
+        log("Crossing ocean back to Bangladesh...", "#8b949e");
+        await animatePath(["sub_dest", "sub_bd", "isp"], "RES", "#39d353", 800);
+
+        log(
+          "NAT REVERSED @ ISP. Routing back to Private IP 192.168.1.5",
+          "#39d353",
+        );
+        await animatePath(["isp", "access", "user"], "RES", "#39d353", 600);
+
+        log("=== CYCLE COMPLETE: Page Rendered on Screen ===", "#58a6ff");
+      }
+    </script>
+  </body>
+</html>

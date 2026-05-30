@@ -1,0 +1,2535 @@
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  :root {
+    /* Soft, eye-soothing palette (light mode) */
+    --color-background-tertiary: #f3f6f2;
+    --color-background-primary: #f8fbf9;
+    --color-background-secondary: #eef6ee;
+    --color-background-info: #dff4ff;
+    --color-background-success: #e6f4ec;
+    --color-background-warning: #fff6ea;
+
+    --color-text-primary: #263238;
+    --color-text-secondary: #4a5560;
+    --color-text-tertiary: #6b7280;
+    --color-text-info: #0b5ea6;
+    --color-text-success: #1d7a3a;
+    --color-text-warning: #b35b00;
+
+    --color-border-tertiary: rgba(38,50,56,0.08);
+    --color-border-secondary: rgba(38,50,56,0.12);
+
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      /* Dark mode overrides (muted, low-contrast for eye comfort) */
+      --color-background-tertiary: #121312;
+      --color-background-primary: #161615;
+      --color-background-secondary: #1d1e1c;
+      --color-background-info: #0d3550;
+      --color-background-success: #143b2b;
+      --color-background-warning: #4a370b;
+
+      --color-text-primary: #e6f0ea;
+      --color-text-secondary: #cbd5cf;
+      --color-text-tertiary: #9aa4a0;
+      --color-text-info: #9fd6ff;
+      --color-text-success: #9be1a7;
+      --color-text-warning: #ffd9a6;
+
+      --color-border-tertiary: rgba(255,255,255,0.06);
+      --color-border-secondary: rgba(255,255,255,0.08);
+    }
+  }
+  /* Typography & spacing for readability */
+  html, body {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  #app {
+    padding: 10px;
+  }
+  #sidebar {
+    padding-top: 8px;
+  }
+  #sb-head h1 {
+    font-size: 16px;
+    letter-spacing: 0;
+  }
+  #sb-head p {
+    font-size: 12px;
+  }
+  .ni {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+  #topbar h2 {
+    font-size: 16px;
+  }
+  h2.pt {
+    font-size: 20px;
+  }
+  p.ps {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--color-text-secondary);
+  }
+  .sc {
+    padding: 18px;
+    border-radius: var(--border-radius-lg);
+    margin-bottom: 16px;
+  }
+  .sc h3 {
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+  .sc p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+  }
+  .cb {
+    font-size: 13px;
+    padding: 12px;
+    white-space: pre-wrap;
+    background: var(--color-background-secondary);
+    border-radius: 8px;
+    max-height: 40vh;
+    overflow: auto;
+  }
+  .ig .ic .v {
+    font-size: 22px;
+  }
+  table.rt th, table.rt td {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+  table.rt {
+    overflow-wrap: anywhere;
+  }
+  #map-info {
+    min-height: auto;
+    max-height: 40vh;
+  }
+  .panel {
+    padding: 24px;
+  }
+  #app {
+    display: flex;
+    height: 100vh;
+    min-height: 640px;
+    overflow: hidden;
+    background: var(--color-background-tertiary);
+  }
+  #sidebar {
+    width: 252px;
+    flex-shrink: 0;
+    background: var(--color-background-primary);
+    border-right: 0.5px solid var(--color-border-tertiary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #sb-head {
+    padding: 14px 16px;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+  }
+  #sb-head h1 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    line-height: 1.4;
+  }
+  #sb-head p {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    margin-top: 3px;
+  }
+  #nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 0;
+  }
+  .ns {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-text-tertiary);
+    padding: 10px 14px 3px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  .ni {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition:
+      background 0.1s,
+      color 0.1s;
+    user-select: none;
+  }
+  .ni:hover {
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+  }
+  .ni.active {
+    background: var(--color-background-info);
+    color: var(--color-text-info);
+    font-weight: 500;
+  }
+  .ni i {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  #main {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  #topbar {
+    padding: 10px 18px;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  #topbar h2 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+  .panel {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    padding: 20px;
+    display: none;
+  }
+  .panel.show {
+    display: block;
+  }
+  #map-panel {
+    padding: 0;
+    display: none;
+    flex-direction: column;
+  }
+  #map-panel.show {
+    display: flex;
+  }
+
+  #map-ctrl {
+    padding: 8px 14px;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .mc {
+    padding: 4px 10px;
+    font-size: 11px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 20px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--color-text-secondary);
+    transition: all 0.12s;
+  }
+  .mc.on {
+    background: var(--color-background-success);
+    color: var(--color-text-success);
+    border-color: transparent;
+  }
+  .mc:hover {
+    background: var(--color-background-secondary);
+  }
+  #spd {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--color-text-secondary);
+  }
+
+  #map-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  #mc {
+    width: 100%;
+    height: 100%;
+  }
+
+  #leg {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 8px 10px;
+    font-size: 11px;
+    color: var(--color-text-secondary);
+  }
+  #leg div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 3px;
+  }
+  #leg div:last-child {
+    margin-bottom: 0;
+  }
+  .ld {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .ll {
+    width: 16px;
+    height: 0;
+    flex-shrink: 0;
+    border-top-width: 2px;
+    border-top-style: solid;
+  }
+
+  #map-info {
+    padding: 12px 18px;
+    border-top: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-primary);
+    min-height: 90px;
+    max-height: 160px;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  #mi-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 4px;
+  }
+  #mi-body {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 1.65;
+  }
+
+  .sc {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .sc h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 7px;
+  }
+  .sc p {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: 6px;
+  }
+  .sc p:last-child {
+    margin-bottom: 0;
+  }
+  .cb {
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 10px 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-text-primary);
+    white-space: pre;
+    overflow-x: auto;
+    margin: 7px 0;
+    line-height: 1.6;
+  }
+  .ig {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px;
+    margin: 8px 0;
+  }
+  .ic {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 10px;
+    text-align: center;
+  }
+  .ic .v {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+  .ic .l {
+    font-size: 10px;
+    color: var(--color-text-tertiary);
+    margin-top: 2px;
+  }
+  .sr {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 9px;
+  }
+  .sn {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-background-info);
+    color: var(--color-text-info);
+    font-size: 11px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .sr p {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 1.65;
+  }
+  h2.pt {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 3px;
+    color: var(--color-text-primary);
+  }
+  p.ps {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-bottom: 16px;
+    line-height: 1.65;
+  }
+  table.rt {
+    width: 100%;
+    font-size: 11px;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  table.rt th {
+    text-align: left;
+    padding: 6px 8px;
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+  }
+  table.rt td {
+    padding: 6px 8px;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    color: var(--color-text-secondary);
+    word-break: break-word;
+  }
+  table.rt tr:last-child td {
+    border-bottom: none;
+  }
+  table.rt td:first-child {
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+  .tb {
+    padding: 4px 10px;
+    font-size: 11px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    background: transparent;
+    color: var(--color-text-secondary);
+    transition: all 0.12s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .tb.on {
+    background: var(--color-background-info);
+    color: var(--color-text-info);
+    border-color: transparent;
+  }
+  .tb:hover {
+    background: var(--color-background-secondary);
+  }
+</style>
+
+<div id="app">
+  <div id="sidebar">
+    <div id="sb-head">
+      <h1>How the Internet Works</h1>
+      <p>Interactive deep-dive reference</p>
+    </div>
+    <div id="nav">
+      <div class="ns">Interactive</div>
+      <div class="ni active" data-p="map">
+        <i class="ti ti-topology-ring" aria-hidden="true"></i>Internet map
+      </div>
+      <div class="ni" data-p="pkt">
+        <i class="ti ti-player-play" aria-hidden="true"></i>Packet flow animator
+      </div>
+      <div class="ns">Foundations</div>
+      <div class="ni" data-p="what">
+        <i class="ti ti-world" aria-hidden="true"></i>What is the internet?
+      </div>
+      <div class="ni" data-p="phys">
+        <i class="ti ti-wave-sine" aria-hidden="true"></i>Physical transmission
+      </div>
+      <div class="ni" data-p="hw">
+        <i class="ti ti-server" aria-hidden="true"></i>Network hardware
+      </div>
+      <div class="ns">Protocols</div>
+      <div class="ni" data-p="ip">
+        <i class="ti ti-network" aria-hidden="true"></i>IP addressing & NAT
+      </div>
+      <div class="ni" data-p="dns">
+        <i class="ti ti-world-search" aria-hidden="true"></i>DNS system
+      </div>
+      <div class="ni" data-p="bgp">
+        <i class="ti ti-route" aria-hidden="true"></i>Routing & BGP
+      </div>
+      <div class="ni" data-p="tcp">
+        <i class="ti ti-layers" aria-hidden="true"></i>TCP / UDP / ICMP
+      </div>
+      <div class="ns">Models & Security</div>
+      <div class="ni" data-p="osi">
+        <i class="ti ti-stack-2" aria-hidden="true"></i>OSI & TCP/IP models
+      </div>
+      <div class="ni" data-p="tls">
+        <i class="ti ti-lock" aria-hidden="true"></i>TLS / HTTPS
+      </div>
+      <div class="ns">End-to-End Scenarios</div>
+      <div class="ni" data-p="s1">
+        <i class="ti ti-device-laptop" aria-hidden="true"></i>WiFi → website
+      </div>
+      <div class="ni" data-p="s2">
+        <i class="ti ti-device-mobile" aria-hidden="true"></i>Mobile data →
+        website
+      </div>
+      <div class="ni" data-p="s3">
+        <i class="ti ti-message" aria-hidden="true"></i>Messaging app
+      </div>
+      <div class="ni" data-p="s4">
+        <i class="ti ti-cloud-download" aria-hidden="true"></i>Cross-ocean
+        download
+      </div>
+      <div class="ni" data-p="cmd">
+        <i class="ti ti-terminal" aria-hidden="true"></i>Linux commands &
+        Wireshark
+      </div>
+    </div>
+  </div>
+
+  <div id="main">
+    <div id="topbar"><h2 id="ptitle">Interactive internet map</h2></div>
+    <div id="content">
+      <div id="map-panel" class="show">
+        <div id="map-ctrl">
+          <button class="mc on" id="fa" onclick="filt('all', this)">
+            All links
+          </button>
+          <button class="mc" id="ff" onclick="filt('fiber', this)">
+            Fiber
+          </button>
+          <button class="mc" id="fw" onclick="filt('wireless', this)">
+            Wireless
+          </button>
+          <button class="mc" id="fs" onclick="filt('sub', this)">
+            Submarine cables
+          </button>
+          <div id="spd">
+            <span>Speed</span
+            ><input
+              type="range"
+              min="0.5"
+              max="4"
+              step="0.5"
+              value="1.5"
+              id="sld"
+              style="width: 70px"
+              oninput="spd = parseFloat(this.value)"
+            />
+          </div>
+        </div>
+        <div id="map-wrap">
+          <canvas id="mc"></canvas>
+          <div id="leg">
+            <div>
+              <span class="ld" style="background: #185fa5"></span>User devices
+            </div>
+            <div>
+              <span class="ld" style="background: #1d9e75"></span>ISP / network
+            </div>
+            <div>
+              <span class="ld" style="background: #ba7517"></span>Backbone / IXP
+            </div>
+            <div>
+              <span class="ld" style="background: #534ab7"></span>Data center
+            </div>
+            <div>
+              <span class="ll" style="border-color: #1d9e75"></span>Fiber
+            </div>
+            <div>
+              <span
+                class="ll"
+                style="border-color: #185fa5; border-top-style: dashed"
+              ></span
+              >Wireless
+            </div>
+            <div>
+              <span class="ll" style="border-color: #a32d2d"></span>Submarine
+            </div>
+          </div>
+        </div>
+        <div id="map-info">
+          <div id="mi-title">Click any node to learn about it</div>
+          <div id="mi-body">
+            The map shows all major Internet infrastructure layers — from your
+            device through ISPs, backbone, IXPs, submarine cables, and into data
+            centers. Use filter buttons to highlight connection types. Animated
+            dots show live packet flow.
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="p-pkt">
+        <h2 class="pt">Packet flow animator</h2>
+        <p class="ps">
+          Watch a packet travel hop by hop. Select a scenario, press Play, and
+          see every step explained in real time.
+        </p>
+        <div
+          style="display: flex; gap: 7px; margin-bottom: 14px; flex-wrap: wrap"
+        >
+          <button class="tb on" onclick="setScen(0, this)">
+            WiFi → website
+          </button>
+          <button class="tb" onclick="setScen(1, this)">Mobile → server</button>
+          <button class="tb" onclick="setScen(2, this)">
+            Cross-ocean request
+          </button>
+        </div>
+        <canvas
+          id="pc"
+          style="
+            width: 100%;
+            border: 0.5px solid var(--color-border-tertiary);
+            border-radius: var(--border-radius-lg);
+          "
+        ></canvas>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+          "
+        >
+          <button
+            id="pb"
+            class="tb on"
+            onclick="tglPkt()"
+            style="min-width: 72px"
+          >
+            <i class="ti ti-player-play"></i>Play
+          </button>
+          <button class="tb" onclick="rstPkt()">
+            <i class="ti ti-refresh"></i>Reset
+          </button>
+          <div
+            id="psl"
+            style="font-size: 11px; color: var(--color-text-secondary); flex: 1"
+          ></div>
+        </div>
+        <div id="psteps" style="margin-top: 14px"></div>
+      </div>
+
+      <div class="panel" id="p-what">
+        <h2 class="pt">What is the internet?</h2>
+        <p class="ps">
+          The Internet is not a location or a company. It is a global system of
+          interconnected networks united by shared rules.
+        </p>
+        <div class="sc">
+          <h3>Core definition</h3>
+          <p>
+            The Internet is a packet-switched, decentralized network of
+            networks, united by the TCP/IP protocol suite. Every device
+            participates because it speaks the same language: IP. That shared
+            protocol — enforced by nothing except mutual adoption — is what
+            makes global communication possible.
+          </p>
+          <p>
+            It has no central server. No single entity owns it. If one path
+            breaks, traffic reroutes automatically through other paths.
+          </p>
+        </div>
+        <div class="ig">
+          <div class="ic">
+            <div class="v">5.4B+</div>
+            <div class="l">Internet users (2024)</div>
+          </div>
+          <div class="ic">
+            <div class="v">~99%</div>
+            <div class="l">Intercontinental traffic via fiber</div>
+          </div>
+          <div class="ic">
+            <div class="v">~76K</div>
+            <div class="l">Autonomous Systems (ASes)</div>
+          </div>
+          <div class="ic">
+            <div class="v">900K+</div>
+            <div class="l">Global BGP routes</div>
+          </div>
+        </div>
+        <div class="sc">
+          <h3>The web is not the internet</h3>
+          <p>
+            The World Wide Web (HTTP/HTTPS pages in browsers) is one application
+            that runs on top of the Internet. Email, SSH, gaming, VoIP, and file
+            transfers are other applications that also use the Internet. The
+            Internet is the highway; the Web is one type of vehicle.
+          </p>
+        </div>
+        <div class="sc">
+          <h3>Key milestones</h3>
+          <table class="rt">
+            <tr>
+              <th style="width: 20%">Year</th>
+              <th>Event</th>
+            </tr>
+            <tr>
+              <td>1969</td>
+              <td>
+                ARPANET first packet sent — UCLA to Stanford, crashed after two
+                letters
+              </td>
+            </tr>
+            <tr>
+              <td>1974</td>
+              <td>Cerf &amp; Kahn publish TCP/IP specification</td>
+            </tr>
+            <tr>
+              <td>1983</td>
+              <td>ARPANET adopts TCP/IP — the Internet is officially born</td>
+            </tr>
+            <tr>
+              <td>1984</td>
+              <td>DNS created, replacing shared /etc/hosts files</td>
+            </tr>
+            <tr>
+              <td>1991</td>
+              <td>Tim Berners-Lee invents the World Wide Web at CERN</td>
+            </tr>
+            <tr>
+              <td>1993</td>
+              <td>Mosaic — first graphical web browser — goes public</td>
+            </tr>
+            <tr>
+              <td>2007</td>
+              <td>iPhone launches; mobile internet revolution begins</td>
+            </tr>
+            <tr>
+              <td>2012</td>
+              <td>IPv6 World Launch Day — addressing IP address exhaustion</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel" id="p-phys">
+        <h2 class="pt">Physical transmission of data</h2>
+        <p class="ps">
+          All digital data is binary. To send it, we encode 1s and 0s as
+          variations in voltage, light intensity, or electromagnetic field
+          strength.
+        </p>
+        <div class="sc">
+          <h3>Copper wire (Ethernet)</h3>
+          <p>
+            Ethernet encodes data as voltage variations. High voltage (+5V) =
+            binary 1, low voltage (0V) = binary 0. Modern Gigabit Ethernet uses
+            PAM-5 encoding across 4 twisted wire pairs — 2 bits per symbol per
+            pair.
+          </p>
+          <div class="cb">
+            +5V ─┐ ┌─────┐ ┌── Bit: 1 0 1 1 0 1 │ │ │ │ 0V └────┘ └────┘ ← clock
+            period (1 ns for 1 GbE) →
+          </div>
+          <p>
+            The 100 m limit exists because resistance converts electrical energy
+            to heat, and capacitance blurs bit boundaries. Beyond 100 m, the
+            signal degrades below reliable detection threshold.
+          </p>
+        </div>
+        <div class="sc">
+          <h3>Fiber optic (light)</h3>
+          <p>
+            A glass strand thinner than a hair carries pulses of light via total
+            internal reflection — the core has a higher refractive index than
+            the cladding, so light bounces down the fiber rather than escaping.
+          </p>
+          <p>
+            DWDM (Dense Wavelength Division Multiplexing) puts 80+ different
+            wavelengths on one fiber simultaneously. Each wavelength is an
+            independent data stream. One fiber can carry 8+ Tbps total.
+          </p>
+          <table class="rt">
+            <tr>
+              <th>Type</th>
+              <th>Core size</th>
+              <th>Max distance</th>
+              <th>Use case</th>
+            </tr>
+            <tr>
+              <td>Single-mode</td>
+              <td>8–10 μm</td>
+              <td>1000+ km</td>
+              <td>All long-haul &amp; submarine</td>
+            </tr>
+            <tr>
+              <td>Multimode OM4</td>
+              <td>50 μm</td>
+              <td>300 m</td>
+              <td>Data center, campus</td>
+            </tr>
+          </table>
+        </div>
+        <div class="sc">
+          <h3>WiFi (radio waves)</h3>
+          <p>
+            WiFi uses OFDM — the channel is split into hundreds of narrow
+            subcarriers. WiFi 6 uses 1024-QAM, encoding 10 bits per symbol by
+            varying both amplitude and phase across 1024 distinct states.
+          </p>
+          <p>
+            CSMA/CA governs channel access: before transmitting, a device
+            listens for silence, waits a random backoff period, then transmits.
+            This prevents constant collisions in shared air.
+          </p>
+          <table class="rt">
+            <tr>
+              <th>Standard</th>
+              <th>Max speed</th>
+              <th>Band</th>
+              <th>Key feature</th>
+            </tr>
+            <tr>
+              <td>WiFi 5 (802.11ac)</td>
+              <td>3.5 Gbps</td>
+              <td>5 GHz</td>
+              <td>MU-MIMO</td>
+            </tr>
+            <tr>
+              <td>WiFi 6 (802.11ax)</td>
+              <td>9.6 Gbps</td>
+              <td>2.4/5/6 GHz</td>
+              <td>OFDMA, BSS Coloring</td>
+            </tr>
+            <tr>
+              <td>WiFi 7 (802.11be)</td>
+              <td>46 Gbps</td>
+              <td>2.4/5/6 GHz</td>
+              <td>320 MHz channels, 4K-QAM</td>
+            </tr>
+          </table>
+        </div>
+        <div class="sc">
+          <h3>Mobile networks (2G → 5G)</h3>
+          <table class="rt">
+            <tr>
+              <th>Gen</th>
+              <th>Technology</th>
+              <th>Peak speed</th>
+              <th>Access method</th>
+            </tr>
+            <tr>
+              <td>2G</td>
+              <td>GSM / GPRS / EDGE</td>
+              <td>384 kbps</td>
+              <td>TDMA — time slots per user</td>
+            </tr>
+            <tr>
+              <td>3G</td>
+              <td>UMTS / HSPA+</td>
+              <td>42 Mbps</td>
+              <td>WCDMA — spreading codes</td>
+            </tr>
+            <tr>
+              <td>4G</td>
+              <td>LTE / LTE-A</td>
+              <td>300 Mbps</td>
+              <td>OFDMA — subcarriers per user</td>
+            </tr>
+            <tr>
+              <td>5G</td>
+              <td>NR Sub-6 / mmWave</td>
+              <td>20 Gbps</td>
+              <td>OFDMA + Massive MIMO</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel" id="p-hw">
+        <h2 class="pt">Network hardware</h2>
+        <p class="ps">
+          The physical devices that move data through the network — each
+          operating at a specific OSI layer.
+        </p>
+        <div class="sc">
+          <h3>Router (Layer 3 — Network)</h3>
+          <p>
+            A router receives IP packets, consults its routing table to find the
+            best next hop for the destination IP address, and forwards the
+            packet out the correct interface. Routers connect different networks
+            together.
+          </p>
+          <div class="cb">
+            Routing table lookup for dst=203.0.113.5: 203.0.113.0/24 → eth1 (via
+            10.1.2.1) ← longest match, wins 203.0.0.0/8 → eth2 (via 10.1.3.1)
+            0.0.0.0/0 → eth0 (default route) Result: forward out eth1
+          </div>
+        </div>
+        <div class="sc">
+          <h3>Switch (Layer 2 — Data Link)</h3>
+          <p>
+            A switch connects devices within the same LAN. It builds a MAC
+            address table by recording which source MAC arrives on which port.
+            When a frame arrives, it forwards to the known port — or floods to
+            all ports if unknown. Modern switches are full-duplex: each device
+            gets its own dedicated bandwidth in both directions.
+          </p>
+        </div>
+        <div class="sc">
+          <h3>Firewall</h3>
+          <p>
+            A stateful firewall tracks TCP connection state — it allows
+            established sessions to receive responses while blocking unsolicited
+            inbound connections. Rules specify which source/destination IP and
+            port combinations are permitted. Next-Generation Firewalls (NGFW)
+            operate at Layer 7: they can inspect application content, block
+            specific apps by name, and perform TLS inspection.
+          </p>
+        </div>
+        <div class="sc">
+          <h3>Load balancer</h3>
+          <p>
+            Distributes incoming traffic across multiple servers. Layer 4:
+            forwards by IP and port. Layer 7: routes by URL path, hostname, or
+            cookie value — also terminates TLS. Algorithms: Round Robin, Least
+            Connections, IP Hash (for session stickiness), Weighted.
+          </p>
+        </div>
+        <div class="sc">
+          <h3>Modem</h3>
+          <p>
+            Modulates (converts digital data to analog signal) and demodulates
+            (converts analog back to digital). A DSL modem converts Ethernet
+            packets to a signal that travels over copper telephone wire. A cable
+            modem converts for coaxial cable TV infrastructure. It is the bridge
+            between your home network and the ISP's access network.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel" id="p-ip">
+        <h2 class="pt">IP addressing &amp; NAT</h2>
+        <p class="ps">
+          Every device needs an address so packets know where to go. IP
+          addresses are the Internet's postal system.
+        </p>
+        <div class="sc">
+          <h3>IPv4</h3>
+          <p>
+            32-bit addresses written as 4 decimal octets: 192.168.1.1. Provides
+            ~4.3 billion addresses — exhausted globally in 2011. A subnet mask
+            divides the address into network and host portions.
+          </p>
+          <div class="cb">
+            192.168.1.100/24 Network: 192.168.1.0 (first 24 bits fixed) Host:
+            .100 (last 8 bits = 256 addresses) Broadcast: 192.168.1.255 Usable
+            range: .1 to .254 (254 hosts)
+          </div>
+          <p>
+            Private ranges (RFC 1918) — not routable on the public Internet:
+          </p>
+          <div class="cb">
+            10.0.0.0/8 → 10.x.x.x 172.16.0.0/12 → 172.16.x.x to 172.31.x.x
+            192.168.0.0/16 → 192.168.x.x
+          </div>
+        </div>
+        <div class="sc">
+          <h3>IPv6</h3>
+          <p>
+            128-bit addresses written as 8 groups of 4 hex digits:
+            2001:0db8:85a3::8a2e:0370:7334. Provides 3.4×10³⁸ addresses —
+            effectively unlimited. Eliminates the need for NAT. Built-in IPsec.
+            Global adoption is now ~45–50% of Google traffic.
+          </p>
+        </div>
+        <div class="sc">
+          <h3>NAT (Network Address Translation)</h3>
+          <p>
+            NAT lets many devices share one public IP. Your router rewrites
+            outbound packets to use its public IP and a unique port, keeps a
+            mapping table, and routes responses back to the correct internal
+            device.
+          </p>
+          <div class="cb">
+            Your laptop: 192.168.1.5:52341 → [NAT] → 203.0.113.1:52341 Your
+            phone: 192.168.1.8:61234 → [NAT] → 203.0.113.1:61234 ↑ same public
+            IP, different port numbers
+          </div>
+        </div>
+        <div class="sc">
+          <h3>MAC addresses &amp; ARP</h3>
+          <p>
+            MAC addresses are 48-bit hardware identifiers burned into every
+            network interface: 00:1A:2B:3C:4D:5E. Used for Layer 2 (local)
+            communication only — never routed across the Internet.
+          </p>
+          <p>
+            ARP (Address Resolution Protocol) maps IP to MAC. When your device
+            wants to send to 192.168.1.1, it broadcasts "Who has 192.168.1.1?"
+            and the router replies with its MAC address. The result is cached in
+            the ARP table.
+          </p>
+        </div>
+        <div class="sc">
+          <h3>DHCP</h3>
+          <p>
+            DHCP (Dynamic Host Configuration Protocol) automatically assigns
+            network config. The DORA process: Discover (broadcast) → Offer
+            (server proposes IP) → Request (client accepts) → Acknowledge
+            (server confirms). You receive: IP address, subnet mask, default
+            gateway, DNS server address, lease time.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel" id="p-dns">
+        <h2 class="pt">DNS — the internet's phone book</h2>
+        <p class="ps">
+          DNS translates domain names (google.com) into IP addresses
+          (142.250.80.46). Without it, you'd need to memorize IPs for every
+          site.
+        </p>
+        <div class="sc">
+          <h3>DNS hierarchy</h3>
+          <div class="cb">
+            . (Root — 13 logical servers, 1500+ physical via anycast) /|\ .com
+            .org .net .io (TLD servers — e.g. Verisign runs .com) / google.com
+            (authoritative nameserver — Google controls this zone) /
+            www.google.com A record → 142.250.80.46
+          </div>
+        </div>
+        <div class="sc">
+          <h3>Full DNS lookup walkthrough for google.com</h3>
+          <div class="sr">
+            <div class="sn">1</div>
+            <p>Browser checks its own DNS cache. Cache miss.</p>
+          </div>
+          <div class="sr">
+            <div class="sn">2</div>
+            <p>OS checks /etc/hosts and the OS resolver cache. Cache miss.</p>
+          </div>
+          <div class="sr">
+            <div class="sn">3</div>
+            <p>
+              OS sends query to the configured recursive resolver (e.g. 1.1.1.1
+              or 8.8.8.8).
+            </p>
+          </div>
+          <div class="sr">
+            <div class="sn">4</div>
+            <p>
+              Resolver queries a root server: "Where is .com?" — receives
+              address of Verisign's TLD servers.
+            </p>
+          </div>
+          <div class="sr">
+            <div class="sn">5</div>
+            <p>
+              Resolver queries Verisign's TLD server: "Where is google.com?" —
+              receives address of Google's authoritative nameservers.
+            </p>
+          </div>
+          <div class="sr">
+            <div class="sn">6</div>
+            <p>
+              Resolver queries Google's authoritative server: "What is the A
+              record for google.com?" — receives 142.250.80.46.
+            </p>
+          </div>
+          <div class="sr">
+            <div class="sn">7</div>
+            <p>
+              Resolver returns the IP to the OS. OS gives it to the browser.
+              Both cache per the TTL value (e.g. 300 seconds for Google).
+            </p>
+          </div>
+        </div>
+        <div class="sc">
+          <h3>Common DNS record types</h3>
+          <table class="rt">
+            <tr>
+              <th>Record</th>
+              <th>Purpose</th>
+              <th>Example</th>
+            </tr>
+            <tr>
+              <td>A</td>
+              <td>Domain → IPv4</td>
+              <td>google.com → 142.250.80.46</td>
+            </tr>
+            <tr>
+              <td>AAAA</td>
+              <td>Domain → IPv6</td>
+              <td>google.com → 2607:f8b0:4004::200e</td>
+            </tr>
+            <tr>
+              <td>CNAME</td>
+              <td>Alias to another name</td>
+              <td>www → google.com</td>
+            </tr>
+            <tr>
+              <td>MX</td>
+              <td>Mail server for domain</td>
+              <td>aspmx.l.google.com</td>
+            </tr>
+            <tr>
+              <td>TXT</td>
+              <td>Arbitrary text (SPF, DKIM)</td>
+              <td>v=spf1 include:...</td>
+            </tr>
+            <tr>
+              <td>NS</td>
+              <td>Authoritative nameservers</td>
+              <td>ns1.google.com</td>
+            </tr>
+            <tr>
+              <td>PTR</td>
+              <td>Reverse DNS (IP → name)</td>
+              <td>46.80.250.142.in-addr.arpa</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel" id="p-bgp">
+        <h2 class="pt">Routing &amp; BGP</h2>
+        <p class="ps">
+          How does a packet navigate from your laptop to a server in Tokyo?
+          Routing. How do networks tell each other what they can reach? BGP.
+        </p>
+        <div class="sc">
+          <h3>Autonomous Systems (AS)</h3>
+          <p>
+            An Autonomous System is a collection of IP prefixes under control of
+            one organization with a single routing policy. Each AS gets a
+            globally unique ASN. Well-known examples: AS15169 (Google), AS16509
+            (Amazon AWS), AS13335 (Cloudflare), AS32934 (Meta), AS8075
+            (Microsoft).
+          </p>
+          <p>
+            The Internet is ~76,000 ASes exchanging routing information with
+            each other via BGP. Your home ISP is an AS. So is Google, your
+            university, and large enterprises.
+          </p>
+        </div>
+        <div class="sc">
+          <h3>BGP: Border Gateway Protocol</h3>
+          <p>
+            BGP is the routing protocol of the Internet. It runs over TCP port
+            179. ASes use BGP to advertise which IP prefixes they own and can
+            route to. BGP is path-vector: each advertisement includes the full
+            sequence of ASes a packet must traverse — this prevents routing
+            loops.
+          </p>
+          <div class="cb">
+            AS 65001 (your ISP) advertises to peer AS 65002: Prefix:
+            203.0.113.0/24 AS_PATH: [65001] AS 65002 re-advertises to AS 15169
+            (Google): Prefix: 203.0.113.0/24 AS_PATH: [65002, 65001] Google now
+            knows: to reach 203.0.113.0/24, go to AS 65002, which will then
+            route to AS 65001.
+          </div>
+        </div>
+        <div class="sc">
+          <h3>BGP route selection order</h3>
+          <table class="rt">
+            <tr>
+              <th>#</th>
+              <th>Attribute</th>
+              <th>Prefer</th>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>Local Preference</td>
+              <td>Highest value (admin set)</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>AS Path length</td>
+              <td>Fewest AS hops</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Origin</td>
+              <td>IGP > EGP > Incomplete</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>MED</td>
+              <td>Lowest value</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>Route type</td>
+              <td>eBGP over iBGP</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>IGP metric to next-hop</td>
+              <td>Lowest cost</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>Router ID</td>
+              <td>Lowest (tiebreaker)</td>
+            </tr>
+          </table>
+        </div>
+        <div class="sc">
+          <h3>ISP tier hierarchy</h3>
+          <table class="rt">
+            <tr>
+              <th>Tier</th>
+              <th>Description</th>
+              <th>Examples</th>
+            </tr>
+            <tr>
+              <td>Tier 1</td>
+              <td>
+                Global backbone. Pays nobody for transit. Peers freely with all
+                other Tier 1s.
+              </td>
+              <td>AT&amp;T, NTT, Telia, Cogent, Lumen</td>
+            </tr>
+            <tr>
+              <td>Tier 2</td>
+              <td>
+                Regional/national. Pays Tier 1 for global reach, peers with
+                equals.
+              </td>
+              <td>BT, Deutsche Telekom, Telstra</td>
+            </tr>
+            <tr>
+              <td>Tier 3</td>
+              <td>
+                Local access provider. Buys transit from Tier 1/2. Your home
+                ISP.
+              </td>
+              <td>Local broadband providers</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel" id="p-tcp">
+        <h2 class="pt">TCP / UDP / ICMP</h2>
+        <p class="ps">
+          Transport layer protocols define how data is packaged and delivered
+          between two endpoints across the Internet.
+        </p>
+        <div class="sc">
+          <h3>TCP — Transmission Control Protocol</h3>
+          <p>
+            TCP provides reliable, ordered, error-checked delivery.
+            Connection-oriented: a 3-way handshake establishes the session
+            before data flows. Lost packets are retransmitted. Flow control
+            prevents overwhelming receivers. Congestion control backs off when
+            the network is saturated.
+          </p>
+          <div class="cb">
+            3-way handshake: Client → Server: SYN (seq=1000) Server → Client:
+            SYN-ACK (seq=5000, ack=1001) Client → Server: ACK (ack=5001)
+            [Connection established] Teardown: FIN → FIN-ACK → FIN → FIN-ACK
+            (4-way)
+          </div>
+        </div>
+        <div class="sc">
+          <h3>UDP — User Datagram Protocol</h3>
+          <p>
+            UDP is connectionless and has no delivery guarantee — no handshake,
+            no acknowledgment, no retransmission. If a packet is lost, the
+            application must handle it or ignore it. Used where speed matters
+            more than perfection: DNS queries, video streaming, gaming, VoIP,
+            and HTTP/3 (QUIC). UDP header is only 8 bytes vs TCP's 20 bytes
+            minimum.
+          </p>
+        </div>
+        <div class="sc">
+          <h3>ICMP — Internet Control Message Protocol</h3>
+          <p>
+            ICMP carries network control messages — not user data. It operates
+            at Layer 3 with no ports. Used by ping (echo request/reply, types 8
+            and 0), traceroute (TTL exceeded, type 11), and path MTU discovery.
+            Every router that drops a packet due to TTL expiry sends an ICMP
+            Time Exceeded back to the source — this is how traceroute reveals
+            each hop.
+          </p>
+          <div class="cb">
+            traceroute google.com Sends packets with TTL=1, then TTL=2, then
+            TTL=3... Each router decrements TTL by 1. When TTL hits 0: router
+            sends ICMP "Time Exceeded" back. Source records that router's IP and
+            RTT, increments TTL.
+          </div>
+        </div>
+        <div class="sc">
+          <h3>Packet switching</h3>
+          <p>
+            The Internet breaks data into packets (up to 1500 bytes, the
+            Ethernet MTU). Each packet is routed independently. They may take
+            different paths and arrive out of order — TCP reorders them. One
+            network path simultaneously carries packets from millions of
+            conversations, unlike circuit switching (which dedicates a path per
+            call, like traditional telephony).
+          </p>
+        </div>
+      </div>
+
+      <div class="panel" id="p-osi">
+        <h2 class="pt">OSI model &amp; TCP/IP model</h2>
+        <p class="ps">
+          Layered models explain why networking works. Each layer solves one
+          specific problem and presents a clean interface to the layers above
+          and below it.
+        </p>
+        <div class="sc">
+          <h3>Why layers exist</h3>
+          <p>
+            Separation of concerns. An HTTP developer doesn't need to know
+            whether their data travels over WiFi, fiber, or 5G. A WiFi engineer
+            doesn't need to know whether the traffic is HTTP or FTP. Each layer
+            trusts the layer below and provides a clean API upward. This is why
+            a TCP socket works identically over cable, DSL, 4G, or satellite —
+            the transport layer doesn't care about the physical medium.
+          </p>
+        </div>
+        <div class="sc">
+          <h3>OSI vs TCP/IP mapping</h3>
+          <table class="rt">
+            <tr>
+              <th>OSI layer</th>
+              <th>TCP/IP layer</th>
+              <th>Protocols</th>
+              <th>Data unit</th>
+            </tr>
+            <tr>
+              <td>7 — Application</td>
+              <td rowspan="3">Application</td>
+              <td>HTTP, DNS, SMTP, FTP, SSH</td>
+              <td>Message</td>
+            </tr>
+            <tr>
+              <td>6 — Presentation</td>
+              <td>TLS, encoding, compression</td>
+              <td>Message</td>
+            </tr>
+            <tr>
+              <td>5 — Session</td>
+              <td>TLS sessions, RPC</td>
+              <td>Message</td>
+            </tr>
+            <tr>
+              <td>4 — Transport</td>
+              <td>Transport</td>
+              <td>TCP, UDP, QUIC</td>
+              <td>Segment</td>
+            </tr>
+            <tr>
+              <td>3 — Network</td>
+              <td>Internet</td>
+              <td>IP, ICMP, BGP, OSPF</td>
+              <td>Packet</td>
+            </tr>
+            <tr>
+              <td>2 — Data Link</td>
+              <td rowspan="2">Network Access</td>
+              <td>Ethernet (802.3), WiFi (802.11)</td>
+              <td>Frame</td>
+            </tr>
+            <tr>
+              <td>1 — Physical</td>
+              <td>Copper wire, fiber, radio</td>
+              <td>Bit</td>
+            </tr>
+          </table>
+        </div>
+        <div class="sc">
+          <h3>Encapsulation: data traveling down the stack</h3>
+          <div class="cb">
+            Application: "GET / HTTP/1.1\r\nHost: google.com\r\n\r\n" ↓ TCP
+            wraps it: [TCP hdr | HTTP data] = Segment ↓ IP wraps it: [IP hdr |
+            TCP hdr | HTTP data] = Packet ↓ Ethernet wraps it: [ETH hdr | IP hdr
+            | TCP | data | FCS] = Frame ↓ Physical: 110100010111... (bits on the
+            wire) At destination: each layer strips its header and passes
+            payload up until the application receives the HTTP text.
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="p-tls">
+        <h2 class="pt">TLS / HTTPS &amp; encryption</h2>
+        <p class="ps">
+          HTTPS = HTTP running inside a TLS tunnel. TLS provides authentication,
+          confidentiality, and integrity for any TCP connection.
+        </p>
+        <div class="sc">
+          <h3>TLS 1.3 handshake</h3>
+          <div class="sr">
+            <div class="sn">1</div>
+            <p>
+              ClientHello: client sends supported cipher suites, TLS version,
+              random nonce, and a Diffie-Hellman key share (its public key).
+            </p>
+          </div>
+          <div class="sr">
+            <div class="sn">2</div>
+            <p>
+              ServerHello: server selects cipher suite, sends its own DH key
+              share and its certificate (containing the server's public key,
+              signed by a CA).
+            </p>
+          </div>
+          <div class="sr">
+            <div class="sn">3</div>
+            <p>
+              Key derivation: both sides independently compute identical session
+              keys using their DH private key combined with the other's public
+              key. No key material is ever transmitted over the network.
+            </p>
+          </div>
+          <div class="sr">
+            <div class="sn">4</div>
+            <p>
+              Certificate verification: client checks the server's certificate
+              is signed by a trusted CA and matches the domain name. Prevents
+              MITM attacks.
+            </p>
+          </div>
+          <div class="sr">
+            <div class="sn">5</div>
+            <p>
+              Finished: both sides confirm handshake integrity with a MAC.
+              Encrypted data exchange begins. TLS 1.3 completes in 1 round-trip
+              (TLS 1.2 required 2).
+            </p>
+          </div>
+        </div>
+        <div class="sc">
+          <h3>Certificates and certificate authorities</h3>
+          <p>
+            A TLS certificate is a signed document stating "this public key
+            belongs to google.com". The signature comes from a Certificate
+            Authority (CA) — a trusted third party such as DigiCert, Let's
+            Encrypt, or GlobalSign. Your browser ships with ~150 trusted root
+            CAs. If a certificate chains to one of these roots, the browser
+            trusts it. The domain in the certificate must exactly match the
+            domain being visited.
+          </p>
+        </div>
+        <div class="sc">
+          <h3>Encryption algorithms in TLS 1.3</h3>
+          <table class="rt">
+            <tr>
+              <th>Purpose</th>
+              <th>Algorithm</th>
+              <th>Why</th>
+            </tr>
+            <tr>
+              <td>Key exchange</td>
+              <td>ECDHE (Curve25519)</td>
+              <td>Perfect forward secrecy — unique key per session</td>
+            </tr>
+            <tr>
+              <td>Authentication</td>
+              <td>ECDSA or RSA</td>
+              <td>Signs the certificate to prove identity</td>
+            </tr>
+            <tr>
+              <td>Bulk encryption</td>
+              <td>AES-256-GCM</td>
+              <td>Symmetric cipher with hardware acceleration</td>
+            </tr>
+            <tr>
+              <td>Integrity</td>
+              <td>SHA-384 HMAC</td>
+              <td>Detects tampering with each record</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel" id="p-s1">
+        <h2 class="pt">Scenario: WiFi laptop → website (HTTPS)</h2>
+        <p class="ps">
+          Every step from typing https://google.com to seeing the page — traced
+          through every layer and infrastructure component.
+        </p>
+        <div class="sr">
+          <div class="sn">1</div>
+          <p>
+            Browser parses URL: scheme=https, host=google.com, path=/. Needs the
+            IP address for google.com.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">2</div>
+          <p>
+            DNS lookup: browser cache miss → OS cache miss → query sent to
+            recursive resolver (1.1.1.1). Full walk: root server → .com TLD
+            (Verisign) → google.com authoritative → returns 142.250.80.46.
+            Cached per TTL (~300s).
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">3</div>
+          <p>
+            TCP handshake to 142.250.80.46:443. OS creates socket, sends SYN.
+            Path: WiFi NIC → 802.11 radio frame → access point → Ethernet → home
+            router (NAT rewrites src IP to public IP) → DSL/fiber modem → ISP
+            POP → backbone → Google's network. SYN-ACK returns. ACK sent. TCP
+            established.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">4</div>
+          <p>
+            TLS 1.3 handshake: ClientHello → ServerHello + certificate → both
+            derive session keys via ECDHE → Finished messages. ~1 round-trip.
+            All subsequent data is encrypted with AES-256-GCM.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">5</div>
+          <p>
+            HTTP/2 GET request sent encrypted: headers (Host, Accept,
+            User-Agent) compressed with HPACK. Google's load balancer terminates
+            TLS, routes to an HTTP server cluster.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">6</div>
+          <p>
+            Server generates HTML response. Streams back through: data center
+            switch → load balancer → Google backbone → IXP or direct peering →
+            ISP backbone → DSLAM/CMTS → home router (NAT maps response to your
+            laptop's private IP) → WiFi → NIC.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">7</div>
+          <p>
+            Browser receives response: TCP reassembles segments in order → TLS
+            decrypts → HTTP/2 decompresses → HTML parsed → DOM built → CSS
+            applied → JS executed → sub-requests for images/fonts/APIs follow
+            the same entire process.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel" id="p-s2">
+        <h2 class="pt">Scenario: mobile data → website</h2>
+        <p class="ps">
+          The same journey, but your signal starts at a cellular base station
+          instead of a WiFi access point.
+        </p>
+        <div class="sr">
+          <div class="sn">1</div>
+          <p>
+            Radio link: your phone's modem connects to the nearest 4G base
+            station (eNodeB) using licensed spectrum. The radio channel uses
+            OFDMA subcarriers. Signal digitized and modulated (e.g. 64-QAM or
+            256-QAM depending on signal strength).
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">2</div>
+          <p>
+            RAN to core: base station sends traffic via fiber backhaul to the
+            Evolved Packet Core (EPC). Your session passes through the Mobility
+            Management Entity (MME) for authentication, Serving Gateway (SGW)
+            for local routing, and Packet Data Network Gateway (PGW) which
+            assigns you a public IP and connects to the Internet.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">3</div>
+          <p>
+            Public IP assignment: many carriers use CGNAT (Carrier-Grade NAT) —
+            you share one public IP with thousands of other subscribers, with
+            different port ranges assigned per user. This is an additional NAT
+            layer beyond your phone's own NAT.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">4</div>
+          <p>
+            Internet path: from the PGW, your traffic enters the carrier's IP
+            backbone, routes through their peering/transit connections to reach
+            the destination AS — identical to the WiFi scenario from step 3
+            onward.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">5</div>
+          <p>
+            Key differences from WiFi: higher air latency (4G: 30–50 ms to tower
+            vs ~1 ms to WiFi AP), CGNAT means you may not be reachable for
+            incoming connections, and handover between cells adds occasional
+            brief interruptions managed transparently by the EPC.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel" id="p-s3">
+        <h2 class="pt">Scenario: messaging app (end-to-end encrypted)</h2>
+        <p class="ps">
+          Sending a WhatsApp or Signal message — tracing encryption, servers,
+          push notifications, and delivery.
+        </p>
+        <div class="sr">
+          <div class="sn">1</div>
+          <p>
+            On-device encryption: Signal Protocol (used by both WhatsApp and
+            Signal) encrypts the message with the recipient's public key before
+            it ever leaves your device. The server never sees plaintext content
+            — only encrypted blobs.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">2</div>
+          <p>
+            Transport to server: encrypted message travels over a persistent TCP
+            connection (WebSocket or XMPP-like protocol) with TLS to the
+            messaging provider's servers. Path: device → WiFi/4G → ISP →
+            backbone → CDN/load balancer → messaging server in a data center.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">3</div>
+          <p>
+            Server handling: if recipient is online, server relays message
+            immediately. If offline, server stores the encrypted message. The
+            server sees only: sender ID, recipient ID, timestamp, message size,
+            and the encrypted payload — never the content.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">4</div>
+          <p>
+            Push notification: server sends a push notification via Apple Push
+            Notification Service (APNs) for iOS or Google Firebase Cloud
+            Messaging (FCM) for Android. These services wake the app in the
+            background without revealing the message content.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">5</div>
+          <p>
+            Recipient decryption: only the recipient's private key (stored
+            exclusively on their device, never uploaded) can decrypt the
+            message. Even if the messaging company's servers are compromised,
+            the message content remains unreadable.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel" id="p-s4">
+        <h2 class="pt">Scenario: cross-ocean file download</h2>
+        <p class="ps">
+          Downloading a 1 GB file from a server on another continent — every hop
+          traced.
+        </p>
+        <div class="sr">
+          <div class="sn">1</div>
+          <p>
+            GeoDNS: CDN providers return different IPs based on where your
+            resolver is. You likely get routed to a CDN PoP in your country, not
+            the origin server — even if the origin is across the ocean. This is
+            the single biggest optimization in global content delivery.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">2</div>
+          <p>
+            CDN edge connection: your TCP session terminates at the nearest CDN
+            PoP (~5–20 ms away). The CDN has a persistent, pre-warmed,
+            high-bandwidth TCP connection to the origin — far more efficient
+            than one long thin pipe across an ocean.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">3</div>
+          <p>
+            TCP slow start &amp; congestion control: TCP begins at a small
+            congestion window (~10 segments), doubles every RTT (slow start),
+            until it detects packet loss, then backs off. Over a 150 ms RTT
+            intercontinental path, maximum throughput is limited by: window_size
+            ÷ RTT. This is the bandwidth-delay product problem.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">4</div>
+          <p>
+            If no CDN (direct): US East Coast to Europe travels: client → US
+            backbone → landing station (e.g. Manasquan Beach, NJ) → submarine
+            fiber cable (~6,700 km, 33 ms one-way) → landing station (e.g.
+            Widemouth Bay, UK) → UK backbone → destination ISP → server.
+            Round-trip ~70–90 ms just for propagation.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">5</div>
+          <p>
+            Data center: request hits load balancer → reverse proxy checks
+            object cache → cache miss fetches from object storage (e.g. S3,
+            Ceph) → streams back. Data is chunked and pipelined: multiple TCP
+            segments in flight simultaneously per the congestion window size.
+          </p>
+        </div>
+        <div class="sr">
+          <div class="sn">6</div>
+          <p>
+            Completion: TCP ACKs confirm every segment. Any dropped packet
+            triggers selective retransmission (SACK). TLS MAC verifies integrity
+            of each record. Application may also verify with a SHA-256 checksum
+            of the complete file.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel" id="p-cmd">
+        <h2 class="pt">Linux networking commands &amp; Wireshark</h2>
+        <p class="ps">
+          Practical tools to observe and troubleshoot every concept covered in
+          this document.
+        </p>
+        <div class="sc">
+          <h3>IP configuration &amp; connectivity</h3>
+          <div class="cb">
+            ip addr show # All interfaces, IP addresses, MAC addresses ip route
+            show # Kernel routing table ip neighbour show # ARP cache: IP → MAC
+            mappings ping 8.8.8.8 # ICMP echo — test reachability, measure RTT
+            ping6 2001:4860:4860::88 # Ping over IPv6
+          </div>
+        </div>
+        <div class="sc">
+          <h3>DNS debugging</h3>
+          <div class="cb">
+            dig google.com # Full DNS query with all details dig google.com A #
+            Only A (IPv4) records dig google.com AAAA # IPv6 address records dig
+            @1.1.1.1 google.com # Query Cloudflare's resolver directly dig
+            +trace google.com # Full walk: root → TLD → authoritative nameserver
+            host google.com # Simple forward and reverse lookups
+          </div>
+        </div>
+        <div class="sc">
+          <h3>Route tracing</h3>
+          <div class="cb">
+            traceroute google.com # Reveal each hop (uses UDP by default)
+            traceroute -T google.com # Use TCP SYN — bypasses some firewalls
+            traceroute -I google.com # Use ICMP echo packets mtr google.com #
+            Real-time traceroute with per-hop packet loss % ip route get 8.8.8.8
+            # Which interface/route for a specific destination?
+          </div>
+        </div>
+        <div class="sc">
+          <h3>Active connections &amp; ports</h3>
+          <div class="cb">
+            ss -tuln # All listening TCP/UDP sockets ss -tnp # Active TCP
+            connections with process names ss -s # Socket statistics summary ss
+            -o state established # Only established TCP connections
+          </div>
+        </div>
+        <div class="sc">
+          <h3>Packet capture with tcpdump</h3>
+          <div class="cb">
+            tcpdump -i eth0 # All traffic on eth0 tcpdump -i any host 8.8.8.8 #
+            Filter by IP address tcpdump -i eth0 port 443 # HTTPS traffic only
+            tcpdump -i eth0 'tcp[tcpflags] & tcp-syn != 0' # SYN packets (new
+            connections) tcpdump -w /tmp/capture.pcap # Save to file for
+            Wireshark tcpdump -r /tmp/capture.pcap # Read saved capture file
+          </div>
+        </div>
+        <div class="sc">
+          <h3>Wireshark display filters</h3>
+          <div class="cb">
+            ip.addr == 8.8.8.8 # Filter by IP (source or destination) tcp.port
+            == 443 # All HTTPS traffic tcp.flags.syn == 1 # TCP connection
+            attempts tls.handshake.type == 1 # TLS ClientHello packets dns # All
+            DNS queries and responses http.request.method == "GET" # HTTP GET
+            requests (unencrypted HTTP only) frame contains "google" # Any
+            packet containing the string "google"
+          </div>
+          <p>
+            Right-click any packet → Follow → TCP Stream to see the complete
+            conversation reassembled in order. Statistics → Flow Graph shows a
+            visual timeline of the handshake and data exchange.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const PAGES = {
+    map: { id: "map-panel", t: "Interactive internet map" },
+    pkt: { id: "p-pkt", t: "Packet flow animator" },
+    what: { id: "p-what", t: "What is the internet?" },
+    phys: { id: "p-phys", t: "Physical transmission" },
+    hw: { id: "p-hw", t: "Network hardware" },
+    ip: { id: "p-ip", t: "IP addressing & NAT" },
+    dns: { id: "p-dns", t: "DNS system" },
+    bgp: { id: "p-bgp", t: "Routing & BGP" },
+    tcp: { id: "p-tcp", t: "TCP / UDP / ICMP" },
+    osi: { id: "p-osi", t: "OSI & TCP/IP models" },
+    tls: { id: "p-tls", t: "TLS / HTTPS" },
+    s1: { id: "p-s1", t: "Scenario: WiFi → website" },
+    s2: { id: "p-s2", t: "Scenario: mobile data → website" },
+    s3: { id: "p-s3", t: "Scenario: messaging app" },
+    s4: { id: "p-s4", t: "Scenario: cross-ocean download" },
+    cmd: { id: "p-cmd", t: "Linux commands & Wireshark" },
+  };
+
+  let cur = "map";
+  document.querySelectorAll(".ni").forEach((el) => {
+    el.addEventListener("click", () => {
+      const pg = el.dataset.p;
+      cur = pg;
+      document.getElementById("ptitle").textContent = PAGES[pg].t;
+      document.querySelectorAll("#content > div").forEach((d) => {
+        d.classList.remove("show");
+        d.style.display = "";
+      });
+      const target = document.getElementById(PAGES[pg].id);
+      if (pg === "map") {
+        target.style.display = "flex";
+        target.classList.add("show");
+      } else {
+        target.style.display = "block";
+        target.classList.add("show");
+      }
+      document
+        .querySelectorAll(".ni")
+        .forEach((x) => x.classList.remove("active"));
+      el.classList.add("active");
+      if (pg === "pkt" && !pktInited) initPkt();
+    });
+  });
+
+  /* ── DETECT DARK MODE ── */
+  const dark = () => window.matchMedia("(prefers-color-scheme:dark)").matches;
+  const theme = () => ({
+    bg: dark() ? "#1c1c1a" : "#f8f8f6",
+    bg2: dark() ? "#2a2a27" : "#eeede7",
+    text: dark() ? "#c2c0b6" : "#3d3d3a",
+    text2: dark() ? "#888780" : "#73726c",
+    border: dark() ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.12)",
+  });
+
+  /* ── MAP ── */
+  const MC = document.getElementById("mc");
+  const CX = MC.getContext("2d");
+  let mfilt = "all",
+    spd = 1.5,
+    mraf,
+    hovN = null,
+    pkts = [];
+
+  const NINFO = {
+    laptop: {
+      t: "Your laptop / device",
+      b: "Origin of all your network requests. Your browser, OS TCP/IP stack, and NIC all live here. The NIC has a burned-in MAC address. Your OS gets an IP via DHCP from your router. All outbound packets go through NAT at the router.",
+    },
+    phone: {
+      t: "Smartphone (4G/5G)",
+      b: "Connects via LTE or 5G NR to the nearest base station using licensed spectrum. Your carrier assigns an IP through its mobile core network — often via CGNAT, sharing one public IP among thousands of subscribers.",
+    },
+    wifi: {
+      t: "WiFi access point / home router",
+      b: "Translates between 802.11 wireless frames and Ethernet. Performs NAT: maps your private IP (192.168.x.x) to your single public IP. Also runs DHCP to assign local IPs, and DNS forwarding to your ISP's resolver.",
+    },
+    tower: {
+      t: "Cell tower (eNodeB / gNodeB)",
+      b: 'Base station handling the radio link with your phone. Converts RF signals to IP traffic. Connects via fiber backhaul to the carrier\'s Evolved Packet Core (4G EPC) or 5G Core. The "g" in gNodeB stands for "next generation."',
+    },
+    isp: {
+      t: "Access ISP (Tier 3)",
+      b: "Your local broadband provider. Connects your home via DSL, cable, or fiber. Buys Internet transit from Tier 1 or Tier 2 ISPs. Operates your public IP range, DNS resolvers, and often runs CGNAT for mobile or legacy subscribers.",
+    },
+    isp2: {
+      t: "Regional ISP (Tier 2)",
+      b: "Connects multiple local ISPs and large enterprise customers. Has its own backbone within one or more countries. Pays Tier 1 ISPs for global reach but peers freely with networks of similar size at IXPs.",
+    },
+    bb: {
+      t: "Tier 1 global backbone",
+      b: "Global backbone operators (AT&T, NTT, Telia, Cogent, Lumen) do not pay anyone for transit — they peer freely with all other Tier 1s. They operate intercontinental fiber links and carry traffic between continents, cities, and countries.",
+    },
+    ixp: {
+      t: "Internet Exchange Point (IXP)",
+      b: "Facility where multiple networks meet and exchange traffic for free (beyond port fees). All members connect to a shared switching fabric and establish BGP sessions. Avoids expensive transit. Major examples: DE-CIX Frankfurt (14+ Tbps peak), AMS-IX Amsterdam, LINX London.",
+    },
+    sub: {
+      t: "Submarine fiber optic cable",
+      b: "Undersea cables carry ~99% of intercontinental Internet traffic. Optical repeaters every 50–100 km use EDFA amplifiers to boost the signal. Powered by high-voltage DC (up to 15 kV) from shore stations. A single cable may carry 200+ Tbps via DWDM.",
+    },
+    land: {
+      t: "Cable landing station",
+      b: "Onshore facility where submarine cables terminate. Houses optical terminal equipment and power feed systems for undersea repeaters. Physically secured, often nondescript buildings near the coast. A failure here can affect entire countries' Internet connectivity.",
+    },
+    cdn: {
+      t: "CDN edge server (Cloudflare, Akamai, Fastly)",
+      b: "CDN PoPs (Points of Presence) are distributed in cities worldwide. GeoDNS returns the nearest CDN IP to your resolver. Content is served from a nearby edge node, reducing intercontinental latency from 200 ms to under 20 ms for cached content.",
+    },
+    dc: {
+      t: "Data center / origin server",
+      b: "Houses the web servers, app servers, databases, and storage that power websites and APIs. Connected to the Internet via multiple redundant Tier 1/2 links. Internal network uses leaf-spine topology at 100GE or 400GE. Tiers I–IV define redundancy levels (Tier IV: 99.995% uptime).",
+    },
+    fw: {
+      t: "Firewall &amp; load balancer",
+      b: "Stateful firewall at the data center edge drops unauthorized traffic based on connection state and ACL rules. Layer 7 load balancer distributes requests across server pools, terminates TLS, routes by URL path, and performs health checking of backend servers.",
+    },
+  };
+
+  const NODES = [
+    {
+      id: "laptop",
+      x: 0.07,
+      y: 0.22,
+      lbl: "Your laptop",
+      sub: "WiFi device",
+      col: "#185FA5",
+      r: 19,
+    },
+    {
+      id: "phone",
+      x: 0.07,
+      y: 0.65,
+      lbl: "Smartphone",
+      sub: "4G/5G",
+      col: "#185FA5",
+      r: 17,
+    },
+    {
+      id: "wifi",
+      x: 0.2,
+      y: 0.22,
+      lbl: "Home router",
+      sub: "NAT+WiFi",
+      col: "#1D9E75",
+      r: 19,
+    },
+    {
+      id: "tower",
+      x: 0.2,
+      y: 0.65,
+      lbl: "Cell tower",
+      sub: "eNodeB",
+      col: "#1D9E75",
+      r: 19,
+    },
+    {
+      id: "isp",
+      x: 0.34,
+      y: 0.43,
+      lbl: "Access ISP",
+      sub: "Tier 3",
+      col: "#1D9E75",
+      r: 21,
+    },
+    {
+      id: "isp2",
+      x: 0.47,
+      y: 0.26,
+      lbl: "Regional ISP",
+      sub: "Tier 2",
+      col: "#BA7517",
+      r: 21,
+    },
+    {
+      id: "bb",
+      x: 0.47,
+      y: 0.68,
+      lbl: "Backbone",
+      sub: "Tier 1",
+      col: "#BA7517",
+      r: 23,
+    },
+    {
+      id: "ixp",
+      x: 0.62,
+      y: 0.47,
+      lbl: "IXP",
+      sub: "Exchange",
+      col: "#BA7517",
+      r: 21,
+    },
+    {
+      id: "sub",
+      x: 0.62,
+      y: 0.76,
+      lbl: "Submarine",
+      sub: "Undersea",
+      col: "#A32D2D",
+      r: 19,
+    },
+    {
+      id: "land",
+      x: 0.76,
+      y: 0.76,
+      lbl: "Landing stn",
+      sub: "Terminus",
+      col: "#A32D2D",
+      r: 17,
+    },
+    {
+      id: "cdn",
+      x: 0.76,
+      y: 0.32,
+      lbl: "CDN edge",
+      sub: "Cloudflare",
+      col: "#534AB7",
+      r: 21,
+    },
+    {
+      id: "fw",
+      x: 0.87,
+      y: 0.32,
+      lbl: "Firewall/LB",
+      sub: "Edge sec",
+      col: "#534AB7",
+      r: 17,
+    },
+    {
+      id: "dc",
+      x: 0.87,
+      y: 0.55,
+      lbl: "Data center",
+      sub: "Origin srv",
+      col: "#534AB7",
+      r: 23,
+    },
+  ];
+
+  const LINKS = [
+    { a: "laptop", b: "wifi", type: "wireless" },
+    { a: "phone", b: "tower", type: "wireless" },
+    { a: "wifi", b: "isp", type: "fiber" },
+    { a: "tower", b: "isp", type: "fiber" },
+    { a: "isp", b: "isp2", type: "fiber" },
+    { a: "isp", b: "bb", type: "fiber" },
+    { a: "isp2", b: "ixp", type: "fiber" },
+    { a: "bb", b: "ixp", type: "fiber" },
+    { a: "bb", b: "sub", type: "sub" },
+    { a: "ixp", b: "cdn", type: "fiber" },
+    { a: "ixp", b: "dc", type: "fiber" },
+    { a: "sub", b: "land", type: "sub" },
+    { a: "land", b: "dc", type: "fiber" },
+    { a: "cdn", b: "fw", type: "fiber" },
+    { a: "fw", b: "dc", type: "fiber" },
+  ];
+
+  function npos(id, w, h) {
+    const n = NODES.find((x) => x.id === id);
+    return { x: n.x * w, y: n.y * h };
+  }
+
+  function initPkts() {
+    pkts = [];
+    LINKS.forEach((l) => {
+      pkts.push({ a: l.a, b: l.b, t: Math.random(), tp: l.type });
+    });
+    LINKS.forEach((l) => {
+      if (Math.random() > 0.4)
+        pkts.push({ a: l.b, b: l.a, t: Math.random() * 0.6, tp: l.type });
+    });
+  }
+
+  function drawMap() {
+    const wrap = document.getElementById("map-wrap");
+    const W = wrap.clientWidth,
+      H = wrap.clientHeight;
+    if (!W || !H) {
+      mraf = requestAnimationFrame(drawMap);
+      return;
+    }
+    MC.width = W;
+    MC.height = H;
+    const th = theme();
+    CX.clearRect(0, 0, W, H);
+    CX.fillStyle = th.bg;
+    CX.fillRect(0, 0, W, H);
+
+    LINKS.forEach((lk) => {
+      if (mfilt !== "all" && lk.type !== mfilt) return;
+      const a = npos(lk.a, W, H),
+        b = npos(lk.b, W, H);
+      CX.save();
+      CX.strokeStyle =
+        lk.type === "sub"
+          ? "#A32D2D"
+          : lk.type === "wireless"
+            ? "#185FA5"
+            : "#1D9E75";
+      CX.lineWidth = lk.type === "sub" ? 2.5 : 1.5;
+      CX.globalAlpha = 0.45;
+      CX.setLineDash(
+        lk.type === "wireless" ? [5, 4] : lk.type === "sub" ? [9, 3] : [],
+      );
+      CX.beginPath();
+      CX.moveTo(a.x, a.y);
+      CX.lineTo(b.x, b.y);
+      CX.stroke();
+      CX.restore();
+    });
+
+    pkts.forEach((p) => {
+      if (mfilt !== "all" && p.tp !== mfilt) return;
+      const a = npos(p.a, W, H),
+        b = npos(p.b, W, H);
+      const px = a.x + (b.x - a.x) * p.t,
+        py = a.y + (b.y - a.y) * p.t;
+      const pc =
+        p.tp === "sub"
+          ? "#E24B4A"
+          : p.tp === "wireless"
+            ? "#378ADD"
+            : "#1D9E75";
+      CX.save();
+      CX.fillStyle = pc;
+      CX.globalAlpha = 0.95;
+      CX.beginPath();
+      CX.arc(px, py, 3.5, 0, Math.PI * 2);
+      CX.fill();
+      CX.globalAlpha = 0.2;
+      CX.beginPath();
+      CX.arc(px, py, 8, 0, Math.PI * 2);
+      CX.fill();
+      CX.restore();
+      p.t += 0.007 * spd;
+      if (p.t > 1) p.t = 0;
+    });
+
+    NODES.forEach((n) => {
+      if (mfilt !== "all") {
+        const ok = LINKS.some(
+          (l) => (l.a === n.id || l.b === n.id) && l.type === mfilt,
+        );
+        if (!ok) return;
+      }
+      const x = n.x * W,
+        y = n.y * H,
+        hov = hovN === n.id;
+      CX.save();
+      CX.beginPath();
+      CX.arc(x, y, n.r + (hov ? 3 : 0), 0, Math.PI * 2);
+      CX.fillStyle = n.col;
+      CX.globalAlpha = hov ? 1 : 0.88;
+      CX.fill();
+      CX.strokeStyle = dark()
+        ? "rgba(255,255,255,0.35)"
+        : "rgba(255,255,255,0.85)";
+      CX.lineWidth = hov ? 2.5 : 1.5;
+      CX.globalAlpha = 1;
+      CX.stroke();
+      const fs = Math.max(9, Math.min(11, W / 88));
+      CX.font = `500 ${fs}px sans-serif`;
+      CX.textAlign = "center";
+      CX.textBaseline = "middle";
+      CX.fillStyle = "#fff";
+      const wds = n.lbl.split(" ");
+      const lh = fs * 1.3,
+        tot = wds.length * lh;
+      wds.forEach((w, i) => {
+        CX.fillText(w, x, y - tot / 2 + lh * i + lh / 2);
+      });
+      CX.restore();
+      CX.save();
+      CX.fillStyle = th.text2;
+      CX.font = `${Math.max(8, Math.min(9, W / 100))}px sans-serif`;
+      CX.textAlign = "center";
+      CX.textBaseline = "top";
+      CX.fillText(n.sub, x, y + n.r + 3);
+      CX.restore();
+    });
+
+    mraf = requestAnimationFrame(drawMap);
+  }
+
+  function filt(f, btn) {
+    mfilt = f;
+    document.querySelectorAll(".mc").forEach((b) => b.classList.remove("on"));
+    btn.classList.add("on");
+  }
+
+  MC.addEventListener("mousemove", (e) => {
+    const r = MC.getBoundingClientRect(),
+      W = MC.width,
+      H = MC.height;
+    const mx = (e.clientX - r.left) * (W / r.width),
+      my = (e.clientY - r.top) * (H / r.height);
+    hovN = null;
+    NODES.forEach((n) => {
+      const dx = n.x * W - mx,
+        dy = n.y * H - my;
+      if (Math.sqrt(dx * dx + dy * dy) < n.r + 5) hovN = n.id;
+    });
+    MC.style.cursor = hovN ? "pointer" : "default";
+  });
+
+  MC.addEventListener("click", (e) => {
+    const r = MC.getBoundingClientRect(),
+      W = MC.width,
+      H = MC.height;
+    const mx = (e.clientX - r.left) * (W / r.width),
+      my = (e.clientY - r.top) * (H / r.height);
+    NODES.forEach((n) => {
+      const dx = n.x * W - mx,
+        dy = n.y * H - my;
+      if (Math.sqrt(dx * dx + dy * dy) < n.r + 5) {
+        const inf = NINFO[n.id];
+        if (inf) {
+          document.getElementById("mi-title").textContent = inf.t;
+          document.getElementById("mi-body").innerHTML = inf.b;
+        }
+      }
+    });
+  });
+
+  initPkts();
+  setTimeout(() => {
+    cancelAnimationFrame(mraf);
+    drawMap();
+  }, 120);
+  window.addEventListener("resize", () => {
+    if (cur === "map") {
+      cancelAnimationFrame(mraf);
+      drawMap();
+    }
+  });
+  window
+    .matchMedia("(prefers-color-scheme:dark)")
+    .addEventListener("change", () => {
+      if (cur === "map") {
+        cancelAnimationFrame(mraf);
+        drawMap();
+      }
+    });
+
+  /* ── PACKET ANIMATOR ── */
+  const SCENS = [
+    {
+      lbl: "WiFi → website",
+      nodes: [
+        "Laptop",
+        "WiFi AP",
+        "Home router\n(NAT)",
+        "ISP POP",
+        "IXP",
+        "CDN edge",
+        "Data center",
+      ],
+      cols: [
+        "#185FA5",
+        "#1D9E75",
+        "#1D9E75",
+        "#BA7517",
+        "#BA7517",
+        "#534AB7",
+        "#534AB7",
+      ],
+      steps: [
+        "Browser resolves DNS: checks cache → OS resolver → 1.1.1.1 → walks root → .com TLD → google.com authoritative → returns 142.250.80.46",
+        "TCP SYN sent from laptop NIC as 802.11 WiFi frame to access point (2.4 or 5 GHz, OFDM subcarriers)",
+        "Frame reaches home router; NAT rewrites source IP from 192.168.x.x to public IP; packet enters ISP network",
+        "Packet routes through ISP backbone; BGP selects path toward destination AS via shortest AS path",
+        "Traffic crosses Internet Exchange Point — free peering between ASes avoids expensive transit costs",
+        "CDN edge terminates TLS 1.3 handshake (1 RTT); decrypts and routes HTTP/2 request to origin if cache miss",
+        "Response streams back: data center → CDN → IXP → ISP → NAT maps back to laptop private IP → WiFi → browser renders",
+      ],
+    },
+    {
+      lbl: "Mobile → server",
+      nodes: [
+        "Phone",
+        "Cell tower\n(eNodeB)",
+        "Mobile\ncore EPC",
+        "Carrier\nbackbone",
+        "IXP /\npeering",
+        "Load\nbalancer",
+        "Server",
+      ],
+      cols: [
+        "#185FA5",
+        "#1D9E75",
+        "#1D9E75",
+        "#BA7517",
+        "#BA7517",
+        "#534AB7",
+        "#534AB7",
+      ],
+      steps: [
+        "Phone transmits 4G OFDMA subcarriers to nearest eNodeB using licensed spectrum (e.g. Band 3, 1800 MHz)",
+        "eNodeB converts radio to IP; sends via fiber backhaul to Evolved Packet Core (EPC) in carrier data center",
+        "EPC: MME handles auth, SGW routes locally, PGW assigns public IP and connects to Internet; CGNAT may add another NAT layer",
+        "Traffic enters carrier IP backbone; routes via BGP toward destination — same global routing as any ISP",
+        "May traverse IXP for free traffic exchange, or use paid transit depending on carrier peering agreements",
+        "Load balancer terminates TLS, distributes to server pool by least-connections or IP hash algorithm",
+        "Response follows reverse BGP path: server → LB → carrier backbone → EPC PGW → SGW → eNodeB → phone radio",
+      ],
+    },
+    {
+      lbl: "Cross-ocean download",
+      nodes: [
+        "Client\n(US)",
+        "US backbone\n& landing stn",
+        "Submarine\nfiber cable",
+        "European\nlanding stn",
+        "EU backbone\n& ISP",
+        "CDN /\nload balancer",
+        "Origin\nserver (EU)",
+      ],
+      cols: [
+        "#185FA5",
+        "#1D9E75",
+        "#A32D2D",
+        "#A32D2D",
+        "#1D9E75",
+        "#534AB7",
+        "#534AB7",
+      ],
+      steps: [
+        "GeoDNS returns nearest CDN edge IP — likely in your country, not the origin continent, saving 150+ ms round-trip",
+        "TCP SYN exits US network, routes to coastal landing station; signal enters submarine fiber cable termination equipment",
+        "Light pulses travel 6,700 km under the Atlantic; EDFA repeaters every 50–100 km amplify signal; 80+ DWDM wavelengths in parallel; ~33 ms one-way propagation delay",
+        "Signal arrives at UK/EU landing station; optical terminal equipment converts light back to Ethernet; connects to EU backbone",
+        "Traffic routes through EU ISP backbone via BGP; destination AS receives packets and routes to server",
+        "Load balancer at data center edge terminates TLS, routes to backend servers, checks CDN cache",
+        "Server streams response; CDN caches it for future requests; TCP slow start grows window size each RTT to maximize throughput",
+      ],
+    },
+  ];
+
+  let scen = 0,
+    pT = 0,
+    pPlay = false,
+    pInited = false;
+  const PC = document.getElementById("pc");
+  const PCX = PC.getContext("2d");
+
+  function initPkt() {
+    pInited = true;
+    PC.width = PC.parentElement.clientWidth || 600;
+    PC.height = Math.min(280, PC.width * 0.4);
+    drawPkt();
+  }
+  let pktInited = false;
+
+  function drawPkt() {
+    const sc = SCENS[scen];
+    const W = PC.width,
+      H = PC.height;
+    const th = theme();
+    PCX.clearRect(0, 0, W, H);
+    PCX.fillStyle = th.bg;
+    PCX.fillRect(0, 0, W, H);
+
+    const N = sc.nodes.length;
+    const mg = 44,
+      sp = (W - mg * 2) / (N - 1);
+    const ny = H / 2 - 22,
+      nr = 18;
+
+    LINKS.forEach(() => {});
+    for (let i = 0; i < N - 1; i++) {
+      const x1 = mg + i * sp,
+        x2 = mg + (i + 1) * sp;
+      PCX.save();
+      PCX.strokeStyle = sc.cols[i];
+      PCX.lineWidth = 1.5;
+      PCX.globalAlpha = 0.3;
+      PCX.setLineDash([]);
+      PCX.beginPath();
+      PCX.moveTo(x1, ny);
+      PCX.lineTo(x2, ny);
+      PCX.stroke();
+      PCX.restore();
+    }
+
+    if (pT > 0 || pPlay) {
+      const segF = pT * (N - 1),
+        seg = Math.floor(Math.min(segF, N - 1.001)),
+        tS = segF - seg;
+      const x1 = mg + seg * sp,
+        x2 = mg + (seg + 1) * sp;
+      const px = x1 + (x2 - x1) * tS;
+      const pc = sc.cols[seg];
+      PCX.save();
+      PCX.fillStyle = pc;
+      PCX.globalAlpha = 1;
+      PCX.beginPath();
+      PCX.arc(px, ny, 6, 0, Math.PI * 2);
+      PCX.fill();
+      PCX.globalAlpha = 0.25;
+      PCX.beginPath();
+      PCX.arc(px, ny, 13, 0, Math.PI * 2);
+      PCX.fill();
+      PCX.restore();
+      const si = Math.min(Math.floor(segF), sc.steps.length - 1);
+      document.getElementById("psl").textContent =
+        `Step ${si + 1}/${sc.steps.length}`;
+      document.getElementById("psteps").innerHTML = sc.steps
+        .map(
+          (s, i) => `
+      <div class="sr" style="opacity:${i <= si ? 1 : 0.35}">
+        <div class="sn" style="${i === si ? "background:var(--color-background-warning);color:var(--color-text-warning)" : ""}">${i + 1}</div>
+        <p>${s}</p>
+      </div>`,
+        )
+        .join("");
+    } else {
+      document.getElementById("psl").textContent = "Press Play to animate";
+      document.getElementById("psteps").innerHTML = sc.steps
+        .map(
+          (s, i) => `
+      <div class="sr" style="opacity:0.45">
+        <div class="sn">${i + 1}</div><p>${s}</p>
+      </div>`,
+        )
+        .join("");
+    }
+
+    sc.nodes.forEach((name, i) => {
+      const x = mg + i * sp,
+        act = pT * (N - 1) >= i;
+      PCX.save();
+      PCX.beginPath();
+      PCX.arc(x, ny, nr, 0, Math.PI * 2);
+      PCX.fillStyle = sc.cols[i];
+      PCX.globalAlpha = act ? 1 : 0.3;
+      PCX.fill();
+      PCX.strokeStyle = dark()
+        ? "rgba(255,255,255,0.4)"
+        : "rgba(255,255,255,0.85)";
+      PCX.lineWidth = 1.5;
+      PCX.globalAlpha = 1;
+      PCX.stroke();
+      PCX.fillStyle = "#fff";
+      PCX.font = `500 9px sans-serif`;
+      PCX.textAlign = "center";
+      PCX.textBaseline = "middle";
+      PCX.fillText(i + 1, x, ny);
+      PCX.restore();
+      const lines = name.split("\n");
+      const fsub = Math.max(9, Math.min(10, W / 70));
+      PCX.save();
+      PCX.fillStyle = th.text;
+      PCX.font = `${fsub}px sans-serif`;
+      PCX.textAlign = "center";
+      PCX.textBaseline = "top";
+      lines.forEach((ln, li) => PCX.fillText(ln, x, ny + nr + 4 + li * 11));
+      PCX.restore();
+    });
+  }
+
+  function animPkt() {
+    if (!pPlay) return;
+    pT += 0.0028 * spd;
+    if (pT >= 1) {
+      pT = 1;
+      pPlay = false;
+      document.getElementById("pb").innerHTML =
+        '<i class="ti ti-player-play"></i>Play';
+    }
+    drawPkt();
+    if (pPlay) requestAnimationFrame(animPkt);
+  }
+
+  function tglPkt() {
+    if (pT >= 1) pT = 0;
+    pPlay = !pPlay;
+    document.getElementById("pb").innerHTML = pPlay
+      ? '<i class="ti ti-player-pause"></i>Pause'
+      : '<i class="ti ti-player-play"></i>Play';
+    if (pPlay) animPkt();
+  }
+
+  function rstPkt() {
+    pPlay = false;
+    pT = 0;
+    document.getElementById("pb").innerHTML =
+      '<i class="ti ti-player-play"></i>Play';
+    document.getElementById("psl").textContent = "Press Play to animate";
+    if (pInited) drawPkt();
+  }
+
+  function setScen(i, btn) {
+    scen = i;
+    pPlay = false;
+    pT = 0;
+    document
+      .querySelectorAll("#p-pkt .tb:not(#pb)")
+      .forEach((b) => b.classList.remove("on"));
+    btn.classList.add("on");
+    document.getElementById("pb").innerHTML =
+      '<i class="ti ti-player-play"></i>Play';
+    if (pInited) drawPkt();
+  }
+
+  window
+    .matchMedia("(prefers-color-scheme:dark)")
+    .addEventListener("change", () => {
+      if (pInited) drawPkt();
+    });
+</script>

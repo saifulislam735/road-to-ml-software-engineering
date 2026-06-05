@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive DNS Lookup</title>
+    <style>
+      /* 1. Define the missing color variables */
+      :root {
+        --color-background-primary: #ffffff;
+        --color-background-secondary: #f3f4f6;
+        --color-background-tertiary: #f8fafc;
+        --color-border-secondary: #e2e8f0;
+        --color-border-tertiary: #cbd5e1;
+
+        --color-border-info: #3b82f6;
+        --color-background-info: #eff6ff;
+        --color-text-info: #2563eb;
+
+        --color-border-success: #22c55e;
+        --color-background-success: #f0fdf4;
+        --color-text-success: #16a34a;
+
+        --color-background-warning: #fefce8;
+        --color-text-warning: #ca8a04;
+
+        --color-text-primary: #0f172a;
+        --color-text-secondary: #64748b;
+
+        --border-radius-lg: 12px;
+        --font-mono:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New",
+          monospace;
+      }
+
+      /* 2. Basic page styling so it looks good on a screen */
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        background-color: #f9fafb;
+        color: var(--color-text-primary);
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 20px;
+        line-height: 1.5;
+      }
+
+      /* 3. Your original styling with a few button/input improvements */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+
+      .step-card {
+        border: 1px solid var(--color-border-tertiary);
+        border-radius: var(--border-radius-lg);
+        padding: 1rem 1.25rem;
+        margin-bottom: 12px;
+        transition:
+          border-color 0.3s,
+          background 0.3s,
+          box-shadow 0.3s;
+        background: var(--color-background-primary);
+      }
+      .step-card.active {
+        border-color: var(--color-border-info);
+        background: var(--color-background-info);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .step-card.done {
+        border-color: var(--color-border-success);
+      }
+
+      .step-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .step-num {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 600;
+        background: var(--color-background-secondary);
+        color: var(--color-text-secondary);
+        transition:
+          background 0.3s,
+          color 0.3s;
+        flex-shrink: 0;
+      }
+      .step-card.active .step-num {
+        background: var(--color-text-info);
+        color: #fff;
+      }
+      .step-card.done .step-num {
+        background: var(--color-text-success);
+        color: #fff;
+      }
+
+      .step-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--color-text-primary);
+      }
+      .step-card.active .step-title {
+        color: var(--color-text-info);
+      }
+
+      .step-detail {
+        margin-top: 10px;
+        font-size: 14px;
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+        display: none;
+      }
+      .step-card.active .step-detail {
+        display: block;
+      }
+
+      .packet-box {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        background: var(--color-background-tertiary);
+        border: 1px solid var(--color-border-secondary);
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 12px;
+        color: var(--color-text-primary);
+        line-height: 1.6;
+      }
+
+      .controls {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+        align-items: center;
+      }
+      .domain-input-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+      }
+
+      input[type="text"] {
+        padding: 8px 12px;
+        border: 1px solid var(--color-border-tertiary);
+        border-radius: 6px;
+        font-size: 14px;
+        outline: none;
+      }
+      input[type="text"]:focus {
+        border-color: var(--color-border-info);
+        box-shadow: 0 0 0 3px var(--color-background-info);
+      }
+
+      button {
+        cursor: pointer;
+        border: 1px solid var(--color-border-tertiary);
+        border-radius: 6px;
+        background: var(--color-background-primary);
+        color: var(--color-text-primary);
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+      button:hover:not(:disabled) {
+        background: var(--color-background-secondary);
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .nav-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+      .reset-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+        color: var(--color-text-secondary);
+      }
+
+      .progress-bar {
+        height: 4px;
+        background: var(--color-border-tertiary);
+        border-radius: 2px;
+        margin-bottom: 24px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        border-radius: 2px;
+        background: var(--color-text-info);
+        transition: width 0.4s ease-out;
+      }
+
+      .step-sub {
+        font-size: 13px;
+        color: var(--color-text-secondary);
+        margin-top: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 class="sr-only">
+      Interactive DNS lookup walkthrough — step through each stage of how a
+      browser resolves a domain name to an IP address
+    </h2>
+
+    <div style="padding: 1rem 0 0.5rem">
+      <div
+        style="
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--color-text-primary);
+          margin-bottom: 8px;
+        "
+      >
+        Try a domain:
+      </div>
+      <div class="controls">
+        <div class="domain-input-wrap">
+          <input
+            type="text"
+            id="domain"
+            value="google.com"
+            style="flex: 1; max-width: 220px"
+          />
+          <button class="nav-btn" onclick="restart()">↗ Simulate lookup</button>
+        </div>
+        <button class="reset-btn" onclick="resetAll()">Reset</button>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="prog" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div id="steps-container"></div>
+
+    <div
+      style="display: flex; justify-content: space-between; margin-top: 20px"
+      id="nav-btns"
+    >
+      <button class="nav-btn" id="prev-btn" onclick="prev()" disabled>
+        ← Back
+      </button>
+      <button
+        class="nav-btn"
+        id="next-btn"
+        onclick="next()"
+        style="background: var(--color-text-info); color: white; border: none"
+      >
+        Next →
+      </button>
+    </div>
+
+    <script>
+      const STEPS = [
+        {
+          title: "You type a URL into your browser",
+          sub: "Browser initiates DNS resolution",
+          detail: (d) =>
+            `You type <strong>https://${d}</strong> into your browser. The browser doesn't know the server's IP address — it only has a human-readable domain name. Before any HTTP request can be made, the browser must resolve <strong>${d}</strong> to an IP address. This is DNS lookup.`,
+          packet: null,
+        },
+        {
+          title: "Browser checks its local DNS cache",
+          sub: "TTL-based in-memory cache",
+          detail: (d) =>
+            `The browser first checks <em>its own DNS cache</em>. If you visited ${d} recently and the record's TTL (Time to Live) hasn't expired, the IP address is returned instantly from memory — no network request needed. This can cache for seconds to hours depending on the domain's TTL setting. On a cache miss, the browser moves to the OS.`,
+          packet: (d) =>
+            `CACHE LOOKUP: ${d}\nStatus   : MISS (not in cache / TTL expired)\nAction   : → escalate to OS resolver`,
+        },
+        {
+          title: "OS checks its own resolver cache",
+          sub: "System-level DNS cache (e.g. nscd, dnsmasq)",
+          detail: (d) =>
+            `The operating system has its own DNS cache, separate from the browser. On Linux this might be <code>systemd-resolved</code> or <code>nscd</code>; on Windows it's the DNS Client Service. The OS also checks <code>/etc/hosts</code> for static overrides. Still a miss? The OS forwards to the configured DNS resolver.`,
+          packet: (d) =>
+            `OS RESOLVER CHECK\nHosts file : no match\nOS cache   : MISS\nForwarding : → 192.168.1.1 (your router/ISP resolver)`,
+        },
+        {
+          title: "UDP packet sent to the DNS Resolver",
+          sub: "Port 53, usually your ISP or a public resolver",
+          detail: (d) =>
+            `The OS sends a UDP datagram to the configured DNS resolver — usually your router (which forwards to your ISP), or a public resolver like <strong>8.8.8.8</strong> (Google) or <strong>1.1.1.1</strong> (Cloudflare). Why UDP? It's fast, connectionless, and DNS queries fit in a single 512-byte packet. TCP is only used as fallback when the response is larger.`,
+          packet: (d) =>
+            `UDP PACKET\nSrc  : 192.168.1.5:54231\nDst  : 8.8.8.8:53\nType : A record query (IPv4)\nQNAME: ${d}\nQTYPE: A\nID   : 0x4A3F`,
+        },
+        {
+          title: "Resolver checks its own cache",
+          sub: "Recursive resolver may already know the answer",
+          detail: (d) =>
+            `The DNS resolver (e.g. 8.8.8.8) is a <em>recursive resolver</em>. It maintains a large shared cache serving millions of users. If ${d} was recently queried by anyone, the answer is cached and returned immediately. Cache hit rate for popular domains is very high — Google/Cloudflare resolvers rarely need to do a full recursive lookup for well-known sites.`,
+          packet: (d) =>
+            `RESOLVER CACHE CHECK: ${d}\nCache entries: ~billions\nStatus : MISS (cold start / expired)\nAction : → begin recursive resolution`,
+        },
+        {
+          title: "Resolver queries the Root DNS servers",
+          sub: "13 root server clusters worldwide",
+          detail: (d) =>
+            `The resolver starts from the top of the DNS hierarchy: the <strong>Root Servers</strong>. There are 13 logical root servers but thousands of physical machines via anycast. The resolver asks: "Who is authoritative for <strong>.com</strong>?" The root server doesn't know ${d}'s IP — it only knows which TLD servers handle <em>.com</em>.`,
+          packet: (d) =>
+            `QUERY → Root Server (198.41.0.4)\nQNAME: ${d}\nQTYPE: NS\n\nRESPONSE (referral)\nAuthority: .com → a.gtld-servers.net\n           .com → b.gtld-servers.net`,
+        },
+        {
+          title: "Resolver queries the TLD Name Server",
+          sub: "TLD servers run by registries like Verisign",
+          detail: (d) =>
+            `Now the resolver asks the <strong>TLD server</strong>: "Who is authoritative for <strong>${d}</strong>?" The TLD server holds a registry of all second-level domain registrations. It responds with a referral to the <em>authoritative name servers</em> for ${d} — the ones registered when the domain was purchased.`,
+          packet: (d) => {
+            const ns = d.replace(/\.[^.]+$/, "");
+            return `QUERY → a.gtld-servers.net\nQNAME: ${d}\nQTYPE: NS\n\nRESPONSE (referral)\nAuthority: ${d} → ns1.${ns}.com\n           ${d} → ns2.${ns}.com`;
+          },
+        },
+        {
+          title: "Resolver queries the Authoritative Name Server",
+          sub: "The definitive source for this domain",
+          detail: (d) =>
+            `The resolver now contacts the domain's own <strong>authoritative name server</strong>. This is the server configured by the domain owner (often Cloudflare, AWS Route 53, or a registrar). This server holds the actual DNS records. It returns the <strong>A record</strong> — the IPv4 address — along with a TTL that tells caches how long to keep this answer.`,
+          packet: (d) => {
+            const ns = d.replace(/\.[^.]+$/, "");
+            return `QUERY → ns1.${ns}.com\nQNAME: ${d}\nQTYPE: A\n\nRESPONSE (authoritative)\nAnswer: ${d}  TTL:300  A  142.250.80.46\nFlags: QR AA (authoritative answer)`;
+          },
+        },
+        {
+          title: "UDP response returned with IP address",
+          sub: "Answer travels back through the chain",
+          detail: (d) =>
+            `The authoritative answer travels back to the recursive resolver, which <strong>caches it</strong> for the TTL duration and returns it to your OS resolver. Your OS resolver caches it too, and returns it to the browser. The browser caches it. The entire chain typically takes <strong>20–120ms</strong> on a cold lookup.`,
+          packet: (d) =>
+            `UDP RESPONSE\nSrc  : 8.8.8.8:53\nDst  : 192.168.1.5:54231\nID   : 0x4A3F (matched)\nType : A record\nQNAME: ${d}\nANSWER: 142.250.80.46\nTTL  : 300 seconds`,
+        },
+        {
+          title: "Browser connects to the IP address",
+          sub: "DNS is done — HTTP/TLS begins",
+          detail: (d) =>
+            `The browser now has <strong>142.250.80.46</strong>. DNS's job is complete. The browser opens a TCP connection to port 443, performs a TLS handshake, and sends the HTTP request. All of this happened before a single byte of the web page was fetched.`,
+          packet: (d) =>
+            `TCP SYN → 142.250.80.46:443\nTLS ClientHello...\nGET / HTTP/2\nHost: ${d}\n\n[DNS lookup: complete ✓]`,
+        },
+      ];
+
+      let current = 0;
+      let domain = "google.com";
+
+      function getDomain() {
+        return document.getElementById("domain").value.trim() || "google.com";
+      }
+
+      function renderSteps() {
+        const container = document.getElementById("steps-container");
+        container.innerHTML = "";
+        STEPS.forEach((s, i) => {
+          const div = document.createElement("div");
+          div.className =
+            "step-card" +
+            (i === current ? " active" : i < current ? " done" : "");
+          div.onclick = () => {
+            current = i;
+            renderSteps();
+          };
+          div.style.cursor = "pointer";
+
+          const numIcon = i < current ? "✓" : i + 1;
+          const detailHTML =
+            typeof s.detail === "function" ? s.detail(domain) : "";
+          const packetHTML = s.packet
+            ? `<div class="packet-box">${(typeof s.packet === "function" ? s.packet(domain) : s.packet).replace(/\n/g, "<br>")}</div>`
+            : "";
+
+          div.innerHTML = `
+        <div class="step-header">
+          <div class="step-num">${numIcon}</div>
+          <div>
+            <div class="step-title">${s.title}</div>
+            <div class="step-sub">${s.sub}</div>
+          </div>
+        </div>
+        <div class="step-detail">${detailHTML}${packetHTML}</div>
+      `;
+          container.appendChild(div);
+        });
+
+        const pct = Math.round((current / (STEPS.length - 1)) * 100);
+        document.getElementById("prog").style.width = pct + "%";
+
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+
+        prevBtn.disabled = current === 0;
+
+        if (current === STEPS.length - 1) {
+          nextBtn.disabled = true;
+          nextBtn.textContent = "Done ✓";
+          nextBtn.style.background = "var(--color-border-success)";
+        } else {
+          nextBtn.disabled = false;
+          nextBtn.textContent = "Next →";
+          nextBtn.style.background = "var(--color-text-info)";
+        }
+
+        const active = document.querySelector(".step-card.active");
+        if (active)
+          active.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function next() {
+        if (current < STEPS.length - 1) {
+          current++;
+          renderSteps();
+        }
+      }
+      function prev() {
+        if (current > 0) {
+          current--;
+          renderSteps();
+        }
+      }
+
+      function restart() {
+        domain = getDomain();
+        current = 0;
+        renderSteps();
+      }
+
+      function resetAll() {
+        domain = "google.com";
+        document.getElementById("domain").value = domain;
+        current = 0;
+        renderSteps();
+      }
+
+      domain = getDomain();
+      renderSteps();
+    </script>
+  </body>
+</html>

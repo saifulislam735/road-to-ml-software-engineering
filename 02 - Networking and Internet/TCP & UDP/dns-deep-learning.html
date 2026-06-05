@@ -1,0 +1,3904 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DNS — Complete Deep Learning Guide</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0c0f18;
+        --bg2: #111520;
+        --bg3: #161c2e;
+        --bg4: #1b2338;
+        --panel: #1f2940;
+        --panel2: #243252;
+        --border: rgba(100, 149, 255, 0.1);
+        --border2: rgba(100, 149, 255, 0.22);
+
+        --blue: #4f8ef7;
+        --blue-bg: rgba(79, 142, 247, 0.08);
+        --blue-glow: rgba(79, 142, 247, 0.2);
+
+        --teal: #2dd4bf;
+        --teal-bg: rgba(45, 212, 191, 0.08);
+
+        --amber: #f59e0b;
+        --amber-bg: rgba(245, 158, 11, 0.08);
+
+        --green: #22c55e;
+        --green-bg: rgba(34, 197, 94, 0.08);
+
+        --red: #f87171;
+        --red-bg: rgba(248, 113, 113, 0.08);
+
+        --purple: #a78bfa;
+        --purple-bg: rgba(167, 139, 250, 0.08);
+
+        --pink: #f472b6;
+        --pink-bg: rgba(244, 114, 182, 0.08);
+
+        --orange: #fb923c;
+        --orange-bg: rgba(251, 146, 60, 0.08);
+
+        --text: #e1e7f5;
+        --text2: #8b99bf;
+        --text3: #4a5578;
+
+        --mono: "JetBrains Mono", monospace;
+        --body: "Space Grotesk", sans-serif;
+        --serif: "Playfair Display", serif;
+        --r: 10px;
+        --rlg: 16px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--body);
+        background: var(--bg);
+        color: var(--text);
+        font-size: 15px;
+        line-height: 1.7;
+        overflow-x: hidden;
+      }
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--panel2);
+        border-radius: 4px;
+      }
+
+      /* PROGRESS */
+      #rprog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--blue), var(--teal));
+        z-index: 200;
+        transition: width 0.1s;
+      }
+
+      /* NAV */
+      .snav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: rgba(12, 15, 24, 0.92);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border);
+        padding: 10px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transform: translateY(-100%);
+        transition: transform 0.3s;
+      }
+      .snav.on {
+        transform: translateY(0);
+      }
+      .nlogo {
+        font-family: var(--mono);
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+      }
+      .nlogo .d {
+        color: var(--blue);
+      }
+      .nlinks {
+        display: flex;
+        gap: 20px;
+      }
+      .nlinks a {
+        font-size: 12px;
+        color: var(--text2);
+        text-decoration: none;
+        font-family: var(--mono);
+        transition: color 0.2s;
+      }
+      .nlinks a:hover {
+        color: var(--text);
+      }
+
+      /* HERO */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 80px 24px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hgrid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(79, 142, 247, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(79, 142, 247, 0.035) 1px, transparent 1px);
+        background-size: 52px 52px;
+        mask-image: radial-gradient(
+          ellipse 80% 60% at 50% 50%,
+          black 30%,
+          transparent 100%
+        );
+      }
+      .horb1 {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        background: var(--blue);
+        filter: blur(100px);
+        opacity: 0.12;
+        top: -200px;
+        left: -150px;
+      }
+      .horb2 {
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        background: var(--teal);
+        filter: blur(100px);
+        opacity: 0.1;
+        bottom: -100px;
+        right: -100px;
+      }
+
+      .hlabel {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--blue);
+        background: var(--blue-bg);
+        border: 1px solid rgba(79, 142, 247, 0.28);
+        padding: 6px 18px;
+        border-radius: 99px;
+        margin-bottom: 28px;
+      }
+      .hero h1 {
+        font-size: clamp(52px, 10vw, 120px);
+        font-weight: 700;
+        letter-spacing: -4px;
+        line-height: 0.95;
+        margin-bottom: 20px;
+        font-family: var(--serif);
+      }
+      .hero h1 em {
+        font-style: italic;
+        color: var(--blue);
+      }
+      .hsub {
+        font-size: clamp(14px, 2vw, 17px);
+        color: var(--text2);
+        max-width: 580px;
+        margin: 0 auto 40px;
+        font-weight: 400;
+      }
+      .htoc {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        max-width: 740px;
+      }
+      .htoc a {
+        font-family: var(--mono);
+        font-size: 11px;
+        padding: 7px 14px;
+        border-radius: 8px;
+        border: 1px solid var(--border2);
+        color: var(--text2);
+        text-decoration: none;
+        transition: all 0.2s;
+        background: var(--bg3);
+      }
+      .htoc a:hover {
+        border-color: var(--blue);
+        color: var(--blue);
+        background: var(--blue-bg);
+      }
+
+      /* SECTIONS */
+      .sec {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 80px 24px;
+      }
+      .sec-lbl {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-bottom: 12px;
+      }
+      .sec-title {
+        font-size: clamp(26px, 4vw, 38px);
+        font-weight: 700;
+        letter-spacing: -1px;
+        margin-bottom: 14px;
+      }
+      .sec-desc {
+        color: var(--text2);
+        max-width: 680px;
+        margin-bottom: 44px;
+        font-size: 15px;
+      }
+      .divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border2),
+          transparent
+        );
+        margin: 0 24px;
+      }
+      .bgalt {
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          var(--bg2),
+          transparent
+        );
+      }
+
+      /* CARDS */
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+      .grid3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+      }
+      .grid4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+      }
+      @media (max-width: 760px) {
+        .grid2,
+        .grid3,
+        .grid4 {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 900px) {
+        .grid4 {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .card {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--rlg);
+        padding: 24px;
+      }
+      .card-top {
+        height: 3px;
+        border-radius: 2px 2px 0 0;
+        margin: -24px -24px 20px;
+        border-radius: var(--rlg) var(--rlg) 0 0;
+      }
+
+      /* SERVER CARDS */
+      .server-card {
+        background: var(--bg3);
+        border-radius: var(--rlg);
+        padding: 28px;
+        border: 1px solid;
+        position: relative;
+        overflow: hidden;
+      }
+      .server-card::after {
+        content: attr(data-num);
+        position: absolute;
+        right: 20px;
+        top: 16px;
+        font-family: var(--mono);
+        font-size: 11px;
+        opacity: 0.3;
+        font-weight: 600;
+      }
+      .sc-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 18px;
+      }
+      .sc-name {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .sc-full {
+        font-size: 11px;
+        font-family: var(--mono);
+        opacity: 0.5;
+        margin-bottom: 12px;
+      }
+      .sc-myth {
+        background: rgba(248, 113, 113, 0.08);
+        border: 1px solid rgba(248, 113, 113, 0.2);
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin: 14px 0;
+        font-size: 12px;
+        color: var(--red);
+      }
+      .sc-myth strong {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 11px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .sc-truth {
+        background: rgba(34, 197, 94, 0.07);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin: 8px 0;
+        font-size: 12px;
+        color: var(--green);
+      }
+      .sc-truth strong {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 11px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .sc-detail {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.7;
+        margin-top: 10px;
+      }
+      .sc-list {
+        list-style: none;
+        margin-top: 10px;
+      }
+      .sc-list li {
+        font-size: 12px;
+        color: var(--text2);
+        padding: 5px 0;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        gap: 8px;
+      }
+      .sc-list li:last-child {
+        border: none;
+      }
+      .sc-list li::before {
+        content: "→";
+        color: var(--text3);
+        flex-shrink: 0;
+      }
+
+      /* CALLOUTS */
+      .co {
+        padding: 16px 20px;
+        border-radius: var(--r);
+        border-left: 3px solid;
+        margin: 16px 0;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+      .co-blue {
+        background: var(--blue-bg);
+        border-color: var(--blue);
+      }
+      .co-teal {
+        background: var(--teal-bg);
+        border-color: var(--teal);
+      }
+      .co-amber {
+        background: var(--amber-bg);
+        border-color: var(--amber);
+      }
+      .co-green {
+        background: var(--green-bg);
+        border-color: var(--green);
+      }
+      .co-red {
+        background: var(--red-bg);
+        border-color: var(--red);
+      }
+      .co-title {
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        font-family: var(--mono);
+      }
+
+      /* CODE */
+      .code-wrap {
+        background: var(--bg);
+        border: 1px solid var(--border2);
+        border-radius: var(--r);
+        overflow: hidden;
+        margin: 14px 0;
+      }
+      .code-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 16px;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+      }
+      .code-lang {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+        letter-spacing: 1px;
+      }
+      .code-file {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text2);
+      }
+      .cbtn {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        padding: 2px 9px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .cbtn:hover {
+        color: var(--blue);
+        border-color: var(--blue);
+      }
+      pre {
+        padding: 18px;
+        font-family: var(--mono);
+        font-size: 12.5px;
+        line-height: 1.85;
+        overflow-x: auto;
+        color: var(--text);
+      }
+      .kw {
+        color: #93c5fd;
+      }
+      .fn {
+        color: #6ee7b7;
+      }
+      .str {
+        color: #fcd34d;
+      }
+      .num {
+        color: #f9a8d4;
+      }
+      .cm {
+        color: #3d4f6e;
+      }
+      .op {
+        color: #64748b;
+      }
+      .tag {
+        color: #fb923c;
+      }
+      .at {
+        color: #a78bfa;
+      }
+
+      /* DNS SIM */
+      .sim-wrap {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--rlg);
+        overflow: hidden;
+      }
+      .sim-bar {
+        padding: 14px 22px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .sim-title {
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .sbtn {
+        padding: 6px 16px;
+        border-radius: 8px;
+        font-family: var(--mono);
+        font-size: 11px;
+        cursor: pointer;
+        border: 1px solid;
+        transition: all 0.2s;
+      }
+      .sbtn-p {
+        background: var(--blue-bg);
+        color: var(--blue);
+        border-color: rgba(79, 142, 247, 0.35);
+      }
+      .sbtn-p:hover {
+        background: var(--blue);
+        color: #fff;
+      }
+      .sbtn-s {
+        background: transparent;
+        color: var(--text2);
+        border-color: var(--border);
+      }
+      .sbtn-s:hover {
+        border-color: var(--text2);
+      }
+
+      /* DNS Flow Simulator */
+      #dnsFlow {
+        padding: 28px;
+      }
+      .dns-stage {
+        display: grid;
+        grid-template-columns: 120px 1fr 120px;
+        gap: 0;
+        min-height: 420px;
+      }
+      .dns-actor {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding-top: 10px;
+      }
+      .dns-box {
+        width: 88px;
+        padding: 12px 8px;
+        border-radius: 14px;
+        text-align: center;
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+        border: 2px solid;
+        transition: all 0.4s;
+        cursor: pointer;
+      }
+      .dns-box:hover {
+        transform: scale(1.04);
+      }
+      .dns-box .dbig {
+        font-size: 22px;
+        margin-bottom: 6px;
+      }
+      .dns-box .dname {
+        font-weight: 700;
+        font-size: 12px;
+      }
+      .dns-box .dport {
+        font-size: 10px;
+        opacity: 0.6;
+        margin-top: 2px;
+      }
+
+      .box-browser {
+        background: rgba(79, 142, 247, 0.08);
+        border-color: rgba(79, 142, 247, 0.35);
+        color: var(--blue);
+      }
+      .box-recurse {
+        background: rgba(245, 158, 11, 0.08);
+        border-color: rgba(245, 158, 11, 0.35);
+        color: var(--amber);
+      }
+      .box-root {
+        background: rgba(167, 139, 250, 0.08);
+        border-color: rgba(167, 139, 250, 0.35);
+        color: var(--purple);
+      }
+      .box-tld {
+        background: rgba(45, 212, 191, 0.08);
+        border-color: rgba(45, 212, 191, 0.35);
+        color: var(--teal);
+      }
+      .box-auth {
+        background: rgba(34, 197, 94, 0.08);
+        border-color: rgba(34, 197, 94, 0.35);
+        color: var(--green);
+      }
+      .box-active {
+        box-shadow: 0 0 20px currentColor;
+        transform: scale(1.06);
+      }
+
+      .dns-timeline {
+        position: relative;
+        padding: 0 8px;
+      }
+      .dns-vert {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: var(--border);
+        transform: translateX(-50%);
+      }
+
+      .dns-msg {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 12px;
+        border-radius: 9px;
+        border: 1px solid;
+        font-family: var(--mono);
+        font-size: 11px;
+        margin: 6px 0;
+        opacity: 0.25;
+        transition: all 0.4s;
+        position: relative;
+        z-index: 1;
+        background: var(--bg);
+      }
+      .dns-msg.show {
+        opacity: 1;
+      }
+      .dns-msg.toright {
+        justify-content: flex-start;
+      }
+      .dns-msg.toleft {
+        justify-content: flex-end;
+      }
+      .dns-msg.toright.show {
+        background: var(--blue-bg);
+        border-color: rgba(79, 142, 247, 0.3);
+      }
+      .dns-msg.toleft.show {
+        background: var(--teal-bg);
+        border-color: rgba(45, 212, 191, 0.3);
+      }
+      .dns-msg.answer.show {
+        background: var(--green-bg);
+        border-color: rgba(34, 197, 94, 0.3);
+      }
+
+      .dns-flag {
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .f-q {
+        background: rgba(79, 142, 247, 0.2);
+        color: var(--blue);
+      }
+      .f-r {
+        background: rgba(34, 197, 94, 0.2);
+        color: var(--green);
+      }
+      .f-ref {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--amber);
+      }
+
+      .dns-actors-right {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        padding-top: 10px;
+      }
+
+      /* Explain box */
+      #dnsExplain {
+        margin-top: 18px;
+        padding: 16px 20px;
+        background: var(--panel);
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        font-size: 14px;
+        color: var(--text2);
+        line-height: 1.7;
+        display: none;
+      }
+
+      /* HIERARCHY VISUAL */
+      .hier-wrap {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--rlg);
+        padding: 32px;
+      }
+      .hier-level {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 8px;
+        position: relative;
+      }
+      .hier-node {
+        padding: 10px 18px;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 12px;
+        font-family: var(--mono);
+        border: 1px solid;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .hier-node:hover {
+        transform: translateY(-2px);
+      }
+      .hier-conn {
+        text-align: center;
+        color: var(--text3);
+        font-size: 18px;
+        margin: 4px 0;
+      }
+
+      /* RECORD TABLE */
+      .rec-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      .rec-table th {
+        padding: 10px 14px;
+        background: var(--panel);
+        color: var(--text2);
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 1.5px;
+        text-align: left;
+        border-bottom: 1px solid var(--border2);
+      }
+      .rec-table td {
+        padding: 11px 14px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      .rec-table tr:hover td {
+        background: rgba(255, 255, 255, 0.015);
+      }
+      .rec-table tr:last-child td {
+        border-bottom: none;
+      }
+      .rtag {
+        display: inline-block;
+        padding: 2px 9px;
+        border-radius: 5px;
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      /* TTL DEMO */
+      .ttl-bar-wrap {
+        background: var(--panel);
+        border-radius: 6px;
+        overflow: hidden;
+        height: 12px;
+        margin: 8px 0;
+      }
+      .ttl-bar {
+        height: 100%;
+        border-radius: 6px;
+        transition: width 0.5s linear;
+      }
+      .cache-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: var(--bg);
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        margin: 8px 0;
+        font-size: 13px;
+      }
+      .cache-row .cr-label {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text3);
+        min-width: 110px;
+      }
+      .cache-row .cr-status {
+        font-family: var(--mono);
+        font-size: 11px;
+        min-width: 70px;
+        text-align: right;
+      }
+
+      /* SECURITY */
+      .threat-card {
+        background: var(--bg3);
+        border-radius: var(--r);
+        padding: 20px;
+        border: 1px solid rgba(248, 113, 113, 0.15);
+      }
+      .threat-title {
+        font-weight: 700;
+        color: var(--red);
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+      .defense-card {
+        background: var(--bg3);
+        border-radius: var(--r);
+        padding: 20px;
+        border: 1px solid rgba(34, 197, 94, 0.15);
+      }
+      .defense-title {
+        font-weight: 700;
+        color: var(--green);
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      /* PROPAGATION SIM */
+      .prop-world {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+        margin: 16px 0;
+      }
+      .prop-node {
+        background: var(--panel);
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        font-family: var(--mono);
+        font-size: 10px;
+        border: 1px solid var(--border);
+        transition: all 0.5s;
+      }
+      .prop-node .pn-flag {
+        font-size: 18px;
+        margin-bottom: 4px;
+      }
+      .prop-node .pn-name {
+        color: var(--text3);
+      }
+      .prop-node.updated {
+        background: var(--green-bg);
+        border-color: rgba(34, 197, 94, 0.35);
+        color: var(--green);
+      }
+      .prop-node.stale {
+        background: var(--amber-bg);
+        border-color: rgba(245, 158, 11, 0.3);
+        color: var(--amber);
+      }
+
+      /* STAT CARDS */
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 14px;
+        margin: 24px 0;
+      }
+      .stat-card {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--r);
+        padding: 18px;
+        text-align: center;
+      }
+      .stat-v {
+        font-size: 26px;
+        font-weight: 700;
+        font-family: var(--mono);
+        margin-bottom: 4px;
+      }
+      .stat-l {
+        font-size: 12px;
+        color: var(--text2);
+      }
+      .stat-s {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 3px;
+        font-family: var(--mono);
+      }
+
+      /* FLOW STEPS */
+      .steps {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .step {
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        position: relative;
+      }
+      .step::after {
+        content: "";
+        position: absolute;
+        left: 25px;
+        top: 52px;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, var(--border2), transparent);
+      }
+      .step:last-child::after {
+        display: none;
+      }
+      .step-num {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+        margin-top: 12px;
+        flex-shrink: 0;
+        z-index: 1;
+      }
+      .step-body {
+        padding: 12px 0 28px 18px;
+      }
+      .step-t {
+        font-weight: 700;
+        font-size: 15px;
+        margin-bottom: 5px;
+      }
+      .step-d {
+        color: var(--text2);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      /* BADGE */
+      .badge {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 99px;
+        font-size: 11px;
+        font-weight: 600;
+        font-family: var(--mono);
+      }
+      .badge-blue {
+        background: var(--blue-bg);
+        color: var(--blue);
+        border: 1px solid rgba(79, 142, 247, 0.25);
+      }
+      .badge-amber {
+        background: var(--amber-bg);
+        color: var(--amber);
+        border: 1px solid rgba(245, 158, 11, 0.25);
+      }
+      .badge-green {
+        background: var(--green-bg);
+        color: var(--green);
+        border: 1px solid rgba(34, 197, 94, 0.25);
+      }
+      .badge-purple {
+        background: var(--purple-bg);
+        color: var(--purple);
+        border: 1px solid rgba(167, 139, 250, 0.25);
+      }
+      .badge-teal {
+        background: var(--teal-bg);
+        color: var(--teal);
+        border: 1px solid rgba(45, 212, 191, 0.25);
+      }
+      .badge-red {
+        background: var(--red-bg);
+        color: var(--red);
+        border: 1px solid rgba(248, 113, 113, 0.25);
+      }
+
+      /* CDN SIM */
+      .world-map {
+        position: relative;
+        background: var(--bg3);
+        border-radius: var(--rlg);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        height: 260px;
+        margin: 16px 0;
+      }
+      .wm-label {
+        font-size: 11px;
+        font-family: var(--mono);
+        color: var(--text3);
+        padding: 12px 16px 0;
+      }
+      .edge-node {
+        position: absolute;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--panel);
+        border: 2px solid;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: var(--mono);
+      }
+      .edge-node.origin {
+        background: rgba(248, 113, 113, 0.1);
+        border-color: rgba(248, 113, 113, 0.5);
+      }
+      .edge-node:not(.origin) {
+        background: rgba(45, 212, 191, 0.1);
+        border-color: rgba(45, 212, 191, 0.4);
+      }
+      .edge-node.active {
+        box-shadow: 0 0 0 8px rgba(34, 197, 94, 0.15);
+        border-color: var(--green);
+      }
+      .route-line {
+        position: absolute;
+        pointer-events: none;
+      }
+      .user-dot {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--blue);
+        border: 2px solid #fff;
+        display: none;
+      }
+
+      /* FOOTER */
+      .footer {
+        text-align: center;
+        padding: 56px 24px;
+        color: var(--text3);
+        font-size: 12px;
+        font-family: var(--mono);
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="rprog"></div>
+
+    <nav class="snav" id="snav">
+      <div class="nlogo"><span class="d">DNS</span> Deep Learning</div>
+      <div class="nlinks">
+        <a href="#what">What is DNS</a>
+        <a href="#servers">All 4 Servers</a>
+        <a href="#simulation">Live Sim</a>
+        <a href="#records">Records</a>
+        <a href="#ttl">TTL & Cache</a>
+        <a href="#security">Security</a>
+        <a href="#sysdesign">System Design</a>
+      </div>
+    </nav>
+
+    <!-- ══════════════════════ HERO ══════════════════════ -->
+    <header class="hero">
+      <div class="hgrid"></div>
+      <div class="horb1"></div>
+      <div class="horb2"></div>
+      <div class="hlabel">Internet Infrastructure · Beginner → Advanced</div>
+      <h1>Domain<br /><em>Name</em><br />System</h1>
+      <p class="hsub">
+        The internet's phone book — and the invisible system behind every single
+        website you visit. Full breakdown with live simulations, all server
+        types explained, and real-world scenarios.
+      </p>
+      <div class="htoc">
+        <a href="#what">01 / What is DNS</a>
+        <a href="#analogy">02 / Real Analogy</a>
+        <a href="#servers">03 / All 4 Servers (myth-busted)</a>
+        <a href="#simulation">04 / Live Simulation</a>
+        <a href="#hierarchy">05 / Hierarchy</a>
+        <a href="#records">06 / DNS Records</a>
+        <a href="#ttl">07 / TTL & Caching</a>
+        <a href="#propagation">08 / Propagation</a>
+        <a href="#security">09 / Security</a>
+        <a href="#sysdesign">10 / System Design</a>
+      </div>
+    </header>
+    <div class="divider"></div>
+
+    <!-- ══════════════════════ SECTION 01: WHAT IS DNS ══════════════════════ -->
+    <section class="sec" id="what">
+      <p class="sec-lbl">Section 01</p>
+      <h2 class="sec-title">What Is DNS? The Big Picture</h2>
+      <p class="sec-desc">
+        You type
+        <code style="font-family: var(--mono); color: var(--blue)"
+          >google.com</code
+        >
+        — a human-readable name. Computers communicate using IP addresses like
+        <code style="font-family: var(--mono); color: var(--teal)"
+          >142.250.190.46</code
+        >. DNS is the translation layer between the two.
+      </p>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-v" style="color: var(--blue)">340T</div>
+          <div class="stat-l">IPv6 addresses possible</div>
+          <div class="stat-s">humans can't memorize</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-v" style="color: var(--teal)">~1B</div>
+          <div class="stat-l">DNS queries per day</div>
+          <div class="stat-s">on Google's 8.8.8.8 alone</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-v" style="color: var(--amber)">13</div>
+          <div class="stat-l">Root server clusters</div>
+          <div class="stat-s">but 1600+ physical machines</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-v" style="color: var(--green)">1ms</div>
+          <div class="stat-l">Cache lookup time</div>
+          <div class="stat-s">vs 100ms+ cold lookup</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-v" style="color: var(--purple)">48h</div>
+          <div class="stat-l">Max propagation time</div>
+          <div class="stat-s">when you change your IP</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-v" style="color: var(--pink)">1987</div>
+          <div class="stat-l">DNS invented</div>
+          <div class="stat-s">RFC 1034 by Paul Mockapetris</div>
+        </div>
+      </div>
+
+      <div class="co co-blue" style="margin-top: 8px">
+        <div class="co-title">🔑 The Core Problem DNS Solves</div>
+        Before DNS, every computer on the internet had a file called
+        <strong>HOSTS.TXT</strong> — a text file manually updated with every
+        hostname and its IP. As the internet grew from 100 computers to
+        millions, this became impossible. DNS replaced it with a distributed,
+        automatic, always-updated system. That HOSTS.TXT concept still exists
+        today as
+        <code style="font-family: var(--mono); font-size: 12px"
+          >/etc/hosts</code
+        >
+        on Linux/Mac and
+        <code style="font-family: var(--mono); font-size: 12px"
+          >C:\Windows\System32\drivers\etc\hosts</code
+        >
+        on Windows — and it's still checked <em>before</em> DNS on every query.
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════ SECTION 02: ANALOGY ══════════════════════ -->
+    <section class="sec bgalt" id="analogy">
+      <p class="sec-lbl">Section 02</p>
+      <h2 class="sec-title">The Hotel Receptionist Analogy</h2>
+      <p class="sec-desc">
+        The "phone book" analogy is okay but let's go deeper with something more
+        accurate.
+      </p>
+
+      <div class="grid2">
+        <div class="card" style="border-color: rgba(79, 142, 247, 0.2)">
+          <div style="font-size: 32px; margin-bottom: 14px">🏨</div>
+          <div
+            style="
+              font-weight: 700;
+              font-size: 16px;
+              color: var(--blue);
+              margin-bottom: 10px;
+            "
+          >
+            You = Your Browser
+          </div>
+          <div style="font-size: 14px; color: var(--text2); line-height: 1.8">
+            You walk into a giant hotel and say "I want to visit Google." You
+            don't know the room number (IP). You go to the front desk.
+          </div>
+        </div>
+        <div class="card" style="border-color: rgba(245, 158, 11, 0.2)">
+          <div style="font-size: 32px; margin-bottom: 14px">🛎️</div>
+          <div
+            style="
+              font-weight: 700;
+              font-size: 16px;
+              color: var(--amber);
+              margin-bottom: 10px;
+            "
+          >
+            Front Desk = Recursive Resolver
+          </div>
+          <div style="font-size: 14px; color: var(--text2); line-height: 1.8">
+            The receptionist says "Let me find out for you." They do all the
+            running around <em>on your behalf</em>. You wait at the desk. They
+            come back with the answer.
+          </div>
+        </div>
+        <div class="card" style="border-color: rgba(167, 139, 250, 0.2)">
+          <div style="font-size: 32px; margin-bottom: 14px">📋</div>
+          <div
+            style="
+              font-weight: 700;
+              font-size: 16px;
+              color: var(--purple);
+              margin-bottom: 10px;
+            "
+          >
+            Hotel Directory = Root Server
+          </div>
+          <div style="font-size: 14px; color: var(--text2); line-height: 1.8">
+            The receptionist first checks the master hotel directory. It doesn't
+            have room numbers — it just says "All .com guests are in Wing B." It
+            points to the right wing manager.
+          </div>
+        </div>
+        <div class="card" style="border-color: rgba(45, 212, 191, 0.2)">
+          <div style="font-size: 32px; margin-bottom: 14px">🗂️</div>
+          <div
+            style="
+              font-weight: 700;
+              font-size: 16px;
+              color: var(--teal);
+              margin-bottom: 10px;
+            "
+          >
+            Wing Manager = TLD Server
+          </div>
+          <div style="font-size: 14px; color: var(--text2); line-height: 1.8">
+            Wing B's manager knows every guest registered in .com. They say
+            "Google's concierge is on Floor 7." They point to Google's own
+            staff.
+          </div>
+        </div>
+        <div
+          class="card"
+          style="border-color: rgba(34, 197, 94, 0.2); grid-column: 1/-1"
+        >
+          <div style="font-size: 32px; margin-bottom: 14px">🔑</div>
+          <div
+            style="
+              font-weight: 700;
+              font-size: 16px;
+              color: var(--green);
+              margin-bottom: 10px;
+            "
+          >
+            Google's Concierge = Authoritative Name Server
+          </div>
+          <div style="font-size: 14px; color: var(--text2); line-height: 1.8">
+            This is Google's own staff who works specifically for Google. They
+            have a register with every single room in the Google wing:
+            <em>www.google.com = Room 142</em>,
+            <em>mail.google.com = Room 99</em>, etc.
+            <strong style="color: var(--green)"
+              >THIS is the definitive, authoritative answer.</strong
+            >
+            The receptionist takes this back to you and writes it in their notes
+            (cache) so next time they can answer immediately.
+          </div>
+        </div>
+      </div>
+
+      <div class="co co-amber" style="margin-top: 24px">
+        <div class="co-title">
+          ❓ Your Question Answered: Is the Authoritative Server the Same as the
+          Web Server?
+        </div>
+        <strong>NO — they are completely different machines.</strong
+        ><br /><br />
+        The <strong>Authoritative Name Server</strong> only knows about
+        <em>DNS records</em> — it's like a hotel concierge who holds the room
+        assignments list. It doesn't serve your website. It just says "Room 142
+        (IP: 142.250.80.46) is where Google lives."<br /><br />
+        The <strong>Web Server</strong> (like Google's Apache/Nginx running at
+        142.250.80.46:443) is the actual room — it serves HTML, CSS, images. It
+        knows nothing about DNS.<br /><br />
+        Think of it this way:
+        <span style="color: var(--amber)"
+          >Authoritative Server = the hotel staff with the address book</span
+        >.
+        <span style="color: var(--blue)"
+          >Web Server = the actual building at that address</span
+        >. Totally different jobs, often totally different physical machines in
+        different data centers.
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════ SECTION 03: ALL 4 SERVERS ══════════════════════ -->
+    <section class="sec" id="servers">
+      <p class="sec-lbl">Section 03 · The Most Important Part</p>
+      <h2 class="sec-title">All 4 DNS Servers — Fully Explained</h2>
+      <p class="sec-desc">
+        Most people confuse these. Let's destroy the confusion with real-world
+        examples, who runs them, where they physically live, and what they
+        actually do.
+      </p>
+
+      <!-- SERVER 1: RECURSIVE RESOLVER -->
+      <div
+        class="server-card"
+        data-num="01"
+        style="border-color: rgba(245, 158, 11, 0.25); margin-bottom: 20px"
+      >
+        <div
+          class="card-top"
+          style="
+            background: linear-gradient(90deg, var(--amber), transparent);
+            height: 2px;
+            margin: -28px -28px 24px;
+            border-radius: var(--rlg) var(--rlg) 0 0;
+          "
+        ></div>
+        <div
+          class="sc-icon"
+          style="
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+          "
+        >
+          🛎️
+        </div>
+        <div class="sc-name" style="color: var(--amber)">
+          Recursive Resolver
+        </div>
+        <div class="sc-full">
+          Also called: DNS Recursor, Full-Service Resolver, Recursive DNS Server
+        </div>
+
+        <div class="sc-myth">
+          <strong>❌ Common Myth</strong>This is some magical centralized server
+          that knows everything.
+        </div>
+        <div class="sc-truth">
+          <strong>✅ Reality</strong>This is YOUR first point of contact. It
+          does the legwork for you — it queries Root → TLD → Authoritative on
+          your behalf. It's a middleman that caches results aggressively.
+        </div>
+
+        <div class="sc-detail">
+          <strong>Who runs it?</strong> Usually your ISP automatically assigns
+          one. But you can manually choose any:
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0">
+            <span class="badge badge-amber">8.8.8.8 — Google</span>
+            <span class="badge badge-amber">1.1.1.1 — Cloudflare</span>
+            <span class="badge badge-amber">9.9.9.9 — Quad9</span>
+            <span class="badge badge-amber">208.67.222.222 — OpenDNS</span>
+            <span class="badge badge-amber">Your ISP's server</span>
+            <span class="badge badge-amber"
+              >Your router (forwards to above)</span
+            >
+          </div>
+          <strong>Where does it live?</strong> Distributed globally. Google's
+          8.8.8.8 runs on hundreds of servers across 100+ locations via anycast.
+          When you query 8.8.8.8, you hit the nearest one.<br /><br />
+          <strong>What it holds:</strong> A massive cache of recently resolved
+          domains. If 1 million people queried google.com today, the resolver
+          has the answer cached — no need to go to Root/TLD/Authoritative again
+          until TTL expires.<br /><br />
+          <strong>Privacy implication:</strong> Your ISP's resolver can see
+          every domain you visit. This is why DNS-over-HTTPS (DoH) was invented
+          — it encrypts queries so even your ISP can't read them.
+        </div>
+        <ul class="sc-list">
+          <li>Receives queries from your OS</li>
+          <li>Checks its cache first (often returns instantly)</li>
+          <li>If cache miss: asks Root → TLD → Authoritative</li>
+          <li>Returns answer to you AND caches it</li>
+          <li>Does NOT store your website's content — only IP mappings</li>
+        </ul>
+      </div>
+
+      <!-- SERVER 2: ROOT NAME SERVER -->
+      <div
+        class="server-card"
+        data-num="02"
+        style="border-color: rgba(167, 139, 250, 0.25); margin-bottom: 20px"
+      >
+        <div
+          class="card-top"
+          style="
+            background: linear-gradient(90deg, var(--purple), transparent);
+            height: 2px;
+            margin: -28px -28px 24px;
+            border-radius: var(--rlg) var(--rlg) 0 0;
+          "
+        ></div>
+        <div
+          class="sc-icon"
+          style="
+            background: rgba(167, 139, 250, 0.1);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+          "
+        >
+          🌍
+        </div>
+        <div class="sc-name" style="color: var(--purple)">Root Name Server</div>
+        <div class="sc-full">
+          The Top of the DNS Hierarchy — a.root-servers.net through
+          m.root-servers.net
+        </div>
+
+        <div class="sc-myth">
+          <strong>❌ Common Myth</strong>There are only 13 root servers in 13
+          physical locations. If they go down, the internet breaks.
+        </div>
+        <div class="sc-truth">
+          <strong>✅ Reality</strong>There are 13 logical identities (letters
+          a–m) but over 1,600 physical machines distributed globally via anycast
+          routing. "13 root servers" is technically the number of root server IP
+          addresses. Extremely resilient — none have ever all failed
+          simultaneously.
+        </div>
+
+        <div class="sc-detail">
+          <strong>Who runs them?</strong>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0">
+            <span class="badge badge-purple">a — Verisign (USA)</span>
+            <span class="badge badge-purple">b — USC-ISI (USA)</span>
+            <span class="badge badge-purple">c — Cogent (USA)</span>
+            <span class="badge badge-purple">d — University of Maryland</span>
+            <span class="badge badge-purple">e — NASA (USA)</span>
+            <span class="badge badge-purple"
+              >f — Internet Systems Consortium</span
+            >
+            <span class="badge badge-purple">g — US DoD Network</span>
+            <span class="badge badge-purple">h — US Army Research Lab</span>
+            <span class="badge badge-purple">i — Netnod (Sweden)</span>
+            <span class="badge badge-purple">j — Verisign</span>
+            <span class="badge badge-purple">k — RIPE NCC (Netherlands)</span>
+            <span class="badge badge-purple">l — ICANN</span>
+            <span class="badge badge-purple">m — WIDE Project (Japan)</span>
+          </div>
+          <strong>What does it actually know?</strong> Almost nothing! Root
+          servers only know: "The .com TLD is managed by
+          <em>a.gtld-servers.net</em>. The .org TLD is at
+          <em>a0.org.afilias-nst.info</em>." That's it. They're like a master
+          index: "Go look in Shelf B for .com." They don't know individual
+          domains.
+        </div>
+
+        <div class="co co-blue" style="margin: 14px 0 0">
+          <div class="co-title">🔒 Why 13? A Historical Constraint</div>
+          In the 1980s, DNS responses over UDP had a 512-byte limit. Each NS
+          (Name Server) record takes ~30 bytes. 13 × 30 bytes = ~390 bytes — the
+          maximum that fit in one UDP packet. The number 13 is a historical
+          artifact, not a design choice.
+        </div>
+      </div>
+
+      <!-- SERVER 3: TLD SERVER -->
+      <div
+        class="server-card"
+        data-num="03"
+        style="border-color: rgba(45, 212, 191, 0.25); margin-bottom: 20px"
+      >
+        <div
+          class="card-top"
+          style="
+            background: linear-gradient(90deg, var(--teal), transparent);
+            height: 2px;
+            margin: -28px -28px 24px;
+            border-radius: var(--rlg) var(--rlg) 0 0;
+          "
+        ></div>
+        <div
+          class="sc-icon"
+          style="
+            background: rgba(45, 212, 191, 0.1);
+            border: 1px solid rgba(45, 212, 191, 0.3);
+          "
+        >
+          🗂️
+        </div>
+        <div class="sc-name" style="color: var(--teal)">TLD Name Server</div>
+        <div class="sc-full">
+          Top-Level Domain Server — manages .com, .org, .net, .bd, .uk, .io,
+          .app, etc.
+        </div>
+
+        <div class="sc-myth">
+          <strong>❌ Common Myth</strong>There's one TLD server for .com that
+          handles everything.
+        </div>
+        <div class="sc-truth">
+          <strong>✅ Reality</strong>The .com TLD alone has 13 clusters of
+          servers (a–m.gtld-servers.net) handling hundreds of billions of
+          queries. Each TLD is independently managed by its registry operator.
+        </div>
+
+        <div class="sc-detail">
+          <strong>Who runs them?</strong>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0">
+            <span class="badge badge-teal">.com / .net — Verisign</span>
+            <span class="badge badge-teal"
+              >.org — Public Interest Registry</span
+            >
+            <span class="badge badge-teal">.io — Internet Computer Bureau</span>
+            <span class="badge badge-teal">.uk — Nominet (UK)</span>
+            <span class="badge badge-teal"
+              >.bd — Bangladesh Telecom Regulatory</span
+            >
+            <span class="badge badge-teal">.app / .dev — Google Registry</span>
+            <span class="badge badge-teal">.amazon — Amazon</span>
+            <span class="badge badge-teal">.google — Google</span>
+          </div>
+          <strong>What does it know?</strong> For every domain registered under
+          its TLD, it stores the NS records pointing to that domain's
+          authoritative name servers. When you register <em>myblog.com</em> with
+          GoDaddy, GoDaddy tells Verisign's .com TLD: "myblog.com's name servers
+          are ns1.godaddy.com and ns2.godaddy.com." That's the only entry the
+          TLD server has.<br /><br />
+          <strong>Key insight:</strong> The TLD server doesn't store A records
+          (IP addresses) directly. It only stores NS records (pointers to
+          authoritative servers).
+        </div>
+      </div>
+
+      <!-- SERVER 4: AUTHORITATIVE -->
+      <div
+        class="server-card"
+        data-num="04"
+        style="border-color: rgba(34, 197, 94, 0.25); margin-bottom: 20px"
+      >
+        <div
+          class="card-top"
+          style="
+            background: linear-gradient(90deg, var(--green), transparent);
+            height: 2px;
+            margin: -28px -28px 24px;
+            border-radius: var(--rlg) var(--rlg) 0 0;
+          "
+        ></div>
+        <div
+          class="sc-icon"
+          style="
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+          "
+        >
+          🔑
+        </div>
+        <div class="sc-name" style="color: var(--green)">
+          Authoritative Name Server
+        </div>
+        <div class="sc-full">
+          The Final Word — the definitive source for a specific domain's DNS
+          records
+        </div>
+
+        <div class="sc-myth">
+          <strong>❌ Your Question — Very Common Misconception!</strong>"Is the
+          Authoritative Server the server where my website is hosted?"
+        </div>
+        <div class="sc-truth">
+          <strong
+            >✅ Absolutely NOT. They are different things entirely.</strong
+          >
+          The Authoritative Name Server only stores DNS records (IP mappings).
+          Your web server actually serves the website files. They're often on
+          completely different machines, different companies, even different
+          continents.
+        </div>
+
+        <div class="sc-detail">
+          <strong>Real example: myblog.com</strong>
+          <div class="code-wrap" style="margin: 10px 0">
+            <pre style="font-size: 12px; padding: 14px">
+<span class="cm"># Your domain: myblog.com</span>
+
+<span class="cm"># Authoritative Name Server (handles DNS only):</span>
+  Provider: Cloudflare DNS (for free with Cloudflare)
+  Physical: Cloudflare's global network, not your server
+  Holds: myblog.com A record → 142.93.120.45
+         www.myblog.com A record → 142.93.120.45
+         myblog.com MX record → mail.google.com
+         myblog.com TXT record → "v=spf1 include:google.com ~all"
+
+<span class="cm"># Web Server (serves your actual website):</span>
+  Provider: DigitalOcean VPS (your rented server)
+  Physical: A machine in Frankfurt, Germany
+  IP: 142.93.120.45
+  Runs: Nginx serving your HTML/CSS/JS files
+
+<span class="cm"># They are COMPLETELY DIFFERENT MACHINES with DIFFERENT JOBS</span></pre>
+          </div>
+
+          <strong>Who runs authoritative servers?</strong>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0">
+            <span class="badge badge-green"
+              >Cloudflare DNS (most popular, free)</span
+            >
+            <span class="badge badge-green">AWS Route 53</span>
+            <span class="badge badge-green"
+              >GoDaddy (if you bought domain there)</span
+            >
+            <span class="badge badge-green">Google Cloud DNS</span>
+            <span class="badge badge-green">NS1 / Namecheap / Porkbun</span>
+            <span class="badge badge-green"
+              >Your own server (if you host it yourself)</span
+            >
+          </div>
+
+          <strong>When you buy a domain from GoDaddy:</strong> GoDaddy's name
+          servers become your authoritative servers by default. You can change
+          them to Cloudflare or AWS by updating your "nameserver" settings at
+          your registrar.
+        </div>
+
+        <div class="co co-green" style="margin-top: 14px">
+          <div class="co-title">
+            🏗️ The Full Chain: Registrar vs Registry vs Authoritative Server
+          </div>
+          <strong>Domain Registrar</strong> (GoDaddy, Namecheap, Porkbun) =
+          Where you BUY the domain. They tell the Registry you own it.<br />
+          <strong>Domain Registry</strong> (Verisign for .com) = Runs the TLD
+          server. Stores "myblog.com → ns1.godaddy.com".<br />
+          <strong>Authoritative DNS Provider</strong> (Cloudflare, Route 53) =
+          Stores actual IP records. "myblog.com → 142.93.120.45".<br />
+          <strong>Web Host</strong> (DigitalOcean, AWS EC2) = Runs your actual
+          website at that IP.<br /><br />
+          You can use all 4 from different companies simultaneously. Many
+          people: buy domain at Namecheap → DNS at Cloudflare → host at AWS.
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════ SECTION 04: LIVE SIMULATION ══════════════════════ -->
+    <section class="sec bgalt" id="simulation">
+      <p class="sec-lbl">Section 04 · Interactive</p>
+      <h2 class="sec-title">Live DNS Resolution Simulation</h2>
+      <p class="sec-desc">
+        Step through every single hop of a DNS query from your browser to the
+        final IP address. Each step shows exactly what packet is sent and what
+        the response contains.
+      </p>
+
+      <div class="sim-wrap">
+        <div class="sim-bar">
+          <div class="sim-title">
+            dns_resolver.sim — querying:
+            <span id="simDomain" style="color: var(--blue)">myblog.com</span>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center">
+            <input
+              type="text"
+              id="simDomainInput"
+              placeholder="try: google.com"
+              style="
+                background: var(--bg);
+                border: 1px solid var(--border2);
+                border-radius: 7px;
+                padding: 5px 12px;
+                font-family: var(--mono);
+                font-size: 11px;
+                color: var(--text);
+                width: 140px;
+                outline: none;
+              "
+            />
+            <button class="sbtn sbtn-s" onclick="resetSim()">Reset</button>
+            <button class="sbtn sbtn-p" id="simNextBtn" onclick="stepSim()">
+              ▶ Next Step
+            </button>
+          </div>
+        </div>
+        <div id="dnsFlow">
+          <!-- Progress bar -->
+          <div
+            style="
+              background: var(--panel);
+              border-radius: 6px;
+              height: 4px;
+              overflow: hidden;
+              margin-bottom: 20px;
+            "
+          >
+            <div
+              id="simProgress"
+              style="
+                height: 100%;
+                width: 0%;
+                background: linear-gradient(90deg, var(--blue), var(--teal));
+                transition: width 0.5s;
+                border-radius: 6px;
+              "
+            ></div>
+          </div>
+
+          <!-- Actors row -->
+          <div
+            style="
+              display: flex;
+              gap: 12px;
+              flex-wrap: wrap;
+              justify-content: center;
+              margin-bottom: 24px;
+            "
+          >
+            <div
+              class="dns-box box-browser"
+              id="actBrowser"
+              onclick="showActorInfo('browser')"
+            >
+              <div class="dbig">💻</div>
+              <div class="dname">YOUR BROWSER</div>
+              <div class="dport">your device</div>
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                color: var(--text3);
+                font-size: 20px;
+              "
+            >
+              →
+            </div>
+            <div
+              class="dns-box box-recurse"
+              id="actRecurse"
+              onclick="showActorInfo('recurse')"
+            >
+              <div class="dbig">🛎️</div>
+              <div class="dname">RESOLVER</div>
+              <div class="dport">8.8.8.8</div>
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                color: var(--text3);
+                font-size: 20px;
+              "
+            >
+              →
+            </div>
+            <div
+              class="dns-box box-root"
+              id="actRoot"
+              onclick="showActorInfo('root')"
+            >
+              <div class="dbig">🌍</div>
+              <div class="dname">ROOT</div>
+              <div class="dport">a.root-servers.net</div>
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                color: var(--text3);
+                font-size: 20px;
+              "
+            >
+              →
+            </div>
+            <div
+              class="dns-box box-tld"
+              id="actTld"
+              onclick="showActorInfo('tld')"
+            >
+              <div class="dbig">🗂️</div>
+              <div class="dname">TLD (.com)</div>
+              <div class="dport">a.gtld-servers.net</div>
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                color: var(--text3);
+                font-size: 20px;
+              "
+            >
+              →
+            </div>
+            <div
+              class="dns-box box-auth"
+              id="actAuth"
+              onclick="showActorInfo('auth')"
+            >
+              <div class="dbig">🔑</div>
+              <div class="dname">AUTHORITATIVE</div>
+              <div class="dport">ns1.cloudflare.com</div>
+            </div>
+          </div>
+
+          <!-- Message log -->
+          <div
+            style="
+              font-size: 11px;
+              font-family: var(--mono);
+              color: var(--text3);
+              margin-bottom: 8px;
+              letter-spacing: 1px;
+            "
+          >
+            QUERY FLOW
+          </div>
+          <div
+            id="msgLog"
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 6px;
+              min-height: 80px;
+            "
+          ></div>
+
+          <!-- Step explanation -->
+          <div id="dnsExplain"></div>
+
+          <!-- Result box -->
+          <div
+            id="dnsResult"
+            style="
+              display: none;
+              margin-top: 16px;
+              background: var(--green-bg);
+              border: 1px solid rgba(34, 197, 94, 0.3);
+              border-radius: 12px;
+              padding: 18px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 12px;
+                color: var(--green);
+                margin-bottom: 8px;
+                letter-spacing: 1px;
+              "
+            >
+              ✅ RESOLUTION COMPLETE
+            </div>
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 14px;
+                color: var(--text);
+              "
+              id="dnsResultText"
+            ></div>
+            <div style="margin-top: 10px; font-size: 13px; color: var(--text2)">
+              Browser now opens TCP connection to this IP on port 443 (HTTPS).
+              DNS is done — its job is over.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Net log -->
+      <div
+        style="
+          margin-top: 14px;
+          font-size: 11px;
+          font-family: var(--mono);
+          color: var(--text3);
+          margin-bottom: 6px;
+          letter-spacing: 1px;
+        "
+      >
+        PACKET LOG (raw DNS over UDP port 53)
+      </div>
+      <div
+        id="netLog"
+        style="
+          background: var(--bg);
+          border: 1px solid var(--border);
+          border-radius: var(--r);
+          padding: 14px;
+          font-family: var(--mono);
+          font-size: 11px;
+          color: var(--text2);
+          height: 200px;
+          overflow-y: auto;
+          line-height: 1.8;
+        "
+      ></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════ SECTION 05: HIERARCHY ══════════════════════ -->
+    <section class="sec" id="hierarchy">
+      <p class="sec-lbl">Section 05</p>
+      <h2 class="sec-title">DNS Hierarchy — The Tree Structure</h2>
+      <p class="sec-desc">
+        DNS is organized as an inverted tree. Every domain name maps to a
+        position in this tree. Understanding the tree makes everything else
+        click.
+      </p>
+
+      <div class="hier-wrap">
+        <div style="text-align: center; margin-bottom: 8px">
+          <div
+            style="
+              font-family: var(--mono);
+              font-size: 11px;
+              color: var(--text3);
+              letter-spacing: 2px;
+            "
+          >
+            THE DNS NAMESPACE TREE
+          </div>
+        </div>
+
+        <!-- Root -->
+        <div class="hier-level">
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(167, 139, 250, 0.4);
+              color: var(--purple);
+              background: var(--purple-bg);
+            "
+            onclick="showHierInfo('root')"
+          >
+            <div style="font-size: 10px; opacity: 0.6">The Root</div>
+            <div style="font-weight: 700">. (dot)</div>
+            <div style="font-size: 10px; opacity: 0.5">Root Zone</div>
+          </div>
+        </div>
+        <div class="hier-conn">│</div>
+        <!-- TLDs -->
+        <div class="hier-level" style="gap: 6px">
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(45, 212, 191, 0.35);
+              color: var(--teal);
+              background: var(--teal-bg);
+              font-size: 11px;
+            "
+            onclick="showHierInfo('tld')"
+          >
+            .com<br /><span style="font-size: 10px; opacity: 0.5"
+              >Verisign</span
+            >
+          </div>
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(45, 212, 191, 0.35);
+              color: var(--teal);
+              background: var(--teal-bg);
+              font-size: 11px;
+            "
+          >
+            .org
+          </div>
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(45, 212, 191, 0.35);
+              color: var(--teal);
+              background: var(--teal-bg);
+              font-size: 11px;
+            "
+          >
+            .net
+          </div>
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(45, 212, 191, 0.35);
+              color: var(--teal);
+              background: var(--teal-bg);
+              font-size: 11px;
+            "
+          >
+            .io
+          </div>
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(45, 212, 191, 0.35);
+              color: var(--teal);
+              background: var(--teal-bg);
+              font-size: 11px;
+            "
+          >
+            .bd
+          </div>
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(45, 212, 191, 0.35);
+              color: var(--teal);
+              background: var(--teal-bg);
+              font-size: 11px;
+            "
+          >
+            .uk
+          </div>
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(45, 212, 191, 0.35);
+              color: var(--teal);
+              background: var(--teal-bg);
+              font-size: 11px;
+            "
+          >
+            .app
+          </div>
+        </div>
+        <div class="hier-conn">│</div>
+        <!-- 2nd Level -->
+        <div class="hier-level" style="gap: 6px">
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(34, 197, 94, 0.35);
+              color: var(--green);
+              background: var(--green-bg);
+              font-size: 11px;
+            "
+            onclick="showHierInfo('sld')"
+          >
+            google.com<br /><span style="font-size: 10px; opacity: 0.5"
+              >Google LLC</span
+            >
+          </div>
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(34, 197, 94, 0.35);
+              color: var(--green);
+              background: var(--green-bg);
+              font-size: 11px;
+            "
+          >
+            amazon.com
+          </div>
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(34, 197, 94, 0.35);
+              color: var(--green);
+              background: var(--green-bg);
+              font-size: 11px;
+            "
+          >
+            myblog.com
+          </div>
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(34, 197, 94, 0.35);
+              color: var(--green);
+              background: var(--green-bg);
+              font-size: 11px;
+            "
+          >
+            github.com
+          </div>
+        </div>
+        <div class="hier-conn">│</div>
+        <!-- Subdomains -->
+        <div class="hier-level" style="gap: 6px">
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(79, 142, 247, 0.35);
+              color: var(--blue);
+              background: var(--blue-bg);
+              font-size: 11px;
+            "
+            onclick="showHierInfo('sub')"
+          >
+            www.google.com<br /><span style="font-size: 10px; opacity: 0.5"
+              >A: 142.250.80.46</span
+            >
+          </div>
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(79, 142, 247, 0.35);
+              color: var(--blue);
+              background: var(--blue-bg);
+              font-size: 11px;
+            "
+          >
+            mail.google.com<br /><span style="font-size: 10px; opacity: 0.5"
+              >A: 172.217.3.100</span
+            >
+          </div>
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(79, 142, 247, 0.35);
+              color: var(--blue);
+              background: var(--blue-bg);
+              font-size: 11px;
+            "
+          >
+            maps.google.com<br /><span style="font-size: 10px; opacity: 0.5"
+              >CNAME → www</span
+            >
+          </div>
+          <div
+            class="hier-node"
+            style="
+              border-color: rgba(79, 142, 247, 0.35);
+              color: var(--blue);
+              background: var(--blue-bg);
+              font-size: 11px;
+            "
+          >
+            api.myblog.com<br /><span style="font-size: 10px; opacity: 0.5"
+              >A: 192.168.1.5</span
+            >
+          </div>
+        </div>
+
+        <div
+          id="hierInfo"
+          style="
+            margin-top: 18px;
+            padding: 14px 18px;
+            background: var(--panel);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text2);
+            display: none;
+          "
+        ></div>
+      </div>
+
+      <div class="co co-blue" style="margin-top: 20px">
+        <div class="co-title">📖 How to Read a Domain Name</div>
+        Domains are read <strong>right to left</strong> in the hierarchy:
+        <code style="font-family: var(--mono); color: var(--blue)"
+          >www.google.com.</code
+        >
+        (the trailing dot is the root, usually hidden)<br />
+        <code style="font-family: var(--mono)">.com</code> = TLD (managed by
+        Verisign) → <code style="font-family: var(--mono)">google</code> =
+        Second-Level Domain (registered by Google) →
+        <code style="font-family: var(--mono)">www</code> = Subdomain
+        (configured by Google's DNS team)<br /><br />
+        Subdomains can go deep:
+        <code style="font-family: var(--mono); color: var(--teal)"
+          >api.v2.staging.myblog.com</code
+        >
+        — all fully controlled by whoever manages the authoritative server for
+        myblog.com.
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════ SECTION 06: DNS RECORDS ══════════════════════ -->
+    <section class="sec bgalt" id="records">
+      <p class="sec-lbl">Section 06</p>
+      <h2 class="sec-title">DNS Record Types — Complete Reference</h2>
+      <p class="sec-desc">
+        DNS isn't just about IP addresses. Records are like different types of
+        database entries, each serving a specific purpose.
+      </p>
+
+      <table class="rec-table" style="margin-bottom: 28px">
+        <thead>
+          <tr>
+            <th>RECORD</th>
+            <th>FULL NAME</th>
+            <th>WHAT IT STORES</th>
+            <th>REAL EXAMPLE</th>
+            <th>USED BY</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span
+                class="rtag"
+                style="background: rgba(79, 142, 247, 0.15); color: var(--blue)"
+                >A</span
+              >
+            </td>
+            <td style="color: var(--text2)">Address</td>
+            <td>Domain → IPv4 address</td>
+            <td>
+              <code
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  color: var(--blue);
+                "
+                >google.com → 142.250.80.46</code
+              >
+            </td>
+            <td>All web traffic</td>
+          </tr>
+          <tr>
+            <td>
+              <span
+                class="rtag"
+                style="background: rgba(79, 142, 247, 0.15); color: var(--blue)"
+                >AAAA</span
+              >
+            </td>
+            <td style="color: var(--text2)">IPv6 Address</td>
+            <td>Domain → IPv6 address</td>
+            <td>
+              <code
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  color: var(--blue);
+                "
+                >google.com → 2607:f8b0:4004::200e</code
+              >
+            </td>
+            <td>Modern IPv6 web</td>
+          </tr>
+          <tr>
+            <td>
+              <span
+                class="rtag"
+                style="background: rgba(45, 212, 191, 0.15); color: var(--teal)"
+                >CNAME</span
+              >
+            </td>
+            <td style="color: var(--text2)">Canonical Name</td>
+            <td>Alias → another domain (not IP)</td>
+            <td>
+              <code
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  color: var(--teal);
+                "
+                >www.myblog.com → myblog.com</code
+              >
+            </td>
+            <td>Subdomains, CDN</td>
+          </tr>
+          <tr>
+            <td>
+              <span
+                class="rtag"
+                style="
+                  background: rgba(245, 158, 11, 0.15);
+                  color: var(--amber);
+                "
+                >MX</span
+              >
+            </td>
+            <td style="color: var(--text2)">Mail Exchanger</td>
+            <td>Email server for domain</td>
+            <td>
+              <code
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  color: var(--amber);
+                "
+                >myblog.com MX → mail.google.com (pri=10)</code
+              >
+            </td>
+            <td>Gmail, Outlook integration</td>
+          </tr>
+          <tr>
+            <td>
+              <span
+                class="rtag"
+                style="
+                  background: rgba(167, 139, 250, 0.15);
+                  color: var(--purple);
+                "
+                >NS</span
+              >
+            </td>
+            <td style="color: var(--text2)">Name Server</td>
+            <td>Who is authoritative for domain</td>
+            <td>
+              <code
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  color: var(--purple);
+                "
+                >myblog.com NS → ns1.cloudflare.com</code
+              >
+            </td>
+            <td>Delegation, registrar</td>
+          </tr>
+          <tr>
+            <td>
+              <span
+                class="rtag"
+                style="background: rgba(34, 197, 94, 0.15); color: var(--green)"
+                >TXT</span
+              >
+            </td>
+            <td style="color: var(--text2)">Text Record</td>
+            <td>Arbitrary text data</td>
+            <td>
+              <code
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  color: var(--green);
+                "
+                >"v=spf1 include:google.com ~all"</code
+              >
+            </td>
+            <td>Email auth, domain verification</td>
+          </tr>
+          <tr>
+            <td>
+              <span
+                class="rtag"
+                style="
+                  background: rgba(251, 146, 60, 0.15);
+                  color: var(--orange);
+                "
+                >SOA</span
+              >
+            </td>
+            <td style="color: var(--text2)">Start of Authority</td>
+            <td>Primary NS, admin email, serial, refresh times</td>
+            <td>
+              <code
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  color: var(--orange);
+                "
+                >ns1.cloudflare.com admin.myblog.com 2024010101</code
+              >
+            </td>
+            <td>Zone management</td>
+          </tr>
+          <tr>
+            <td>
+              <span
+                class="rtag"
+                style="
+                  background: rgba(244, 114, 182, 0.15);
+                  color: var(--pink);
+                "
+                >PTR</span
+              >
+            </td>
+            <td style="color: var(--text2)">Pointer (Reverse DNS)</td>
+            <td>IP address → domain name</td>
+            <td>
+              <code
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  color: var(--pink);
+                "
+                >46.80.250.142.in-addr.arpa → google.com</code
+              >
+            </td>
+            <td>Email anti-spam, logging</td>
+          </tr>
+          <tr>
+            <td>
+              <span
+                class="rtag"
+                style="background: rgba(248, 113, 113, 0.15); color: var(--red)"
+                >SRV</span
+              >
+            </td>
+            <td style="color: var(--text2)">Service</td>
+            <td>Service location (host + port + priority)</td>
+            <td>
+              <code
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  color: var(--red);
+                "
+                >_sip._tcp.example.com → 10 443 sip.example.com</code
+              >
+            </td>
+            <td>VoIP, gaming, SIP</td>
+          </tr>
+          <tr>
+            <td>
+              <span
+                class="rtag"
+                style="background: rgba(79, 142, 247, 0.15); color: var(--blue)"
+                >CAA</span
+              >
+            </td>
+            <td style="color: var(--text2)">Cert Authority Authorization</td>
+            <td>Which CAs can issue SSL certs</td>
+            <td>
+              <code
+                style="
+                  font-family: var(--mono);
+                  font-size: 11px;
+                  color: var(--blue);
+                "
+                >myblog.com CAA 0 issue "letsencrypt.org"</code
+              >
+            </td>
+            <td>SSL certificate security</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="co co-amber">
+        <div class="co-title">⚡ CNAME vs A Record — When to Use Which</div>
+        <strong>A record:</strong> Points directly to an IP. Use this for your
+        root domain (<code style="font-family: var(--mono)">myblog.com</code
+        >).<br />
+        <strong>CNAME:</strong> Points to another domain name, not an IP. DNS
+        resolves that name to find the IP. Use for subdomains, CDN integration,
+        or when an IP might change.<br /><br />
+        <strong>Why can't root domains use CNAME?</strong> RFC 1034 forbids
+        CNAME at the zone apex (root domain) because MX and NS records must
+        resolve to an actual hostname. Cloudflare solved this with "CNAME
+        Flattening" (also called ALIAS records) — they secretly do the extra
+        lookup server-side and return a plain A record.
+      </div>
+
+      <!-- Interactive record builder -->
+      <div class="sim-wrap" style="margin-top: 28px">
+        <div class="sim-bar">
+          <div class="sim-title">
+            dns_zone_visualizer.sim — myblog.com zone file
+          </div>
+        </div>
+        <div style="padding: 20px">
+          <div
+            style="
+              font-size: 12px;
+              color: var(--text3);
+              font-family: var(--mono);
+              margin-bottom: 12px;
+            "
+          >
+            Click any record to understand what it does
+          </div>
+          <div id="zoneRecords"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════ SECTION 07: TTL & CACHING ══════════════════════ -->
+    <section class="sec" id="ttl">
+      <p class="sec-lbl">Section 07</p>
+      <h2 class="sec-title">TTL & Caching — Why DNS is Fast</h2>
+      <p class="sec-desc">
+        Every DNS record has a TTL (Time To Live) — a number in seconds. After
+        TTL seconds, cached records expire and must be re-fetched. This is the
+        key to DNS performance.
+      </p>
+
+      <div class="grid2">
+        <div>
+          <div class="co co-blue">
+            <div class="co-title">🕐 How TTL Works</div>
+            When a resolver gets a DNS answer, it stores it with a countdown.
+            Every second, the TTL decreases. When it hits 0, the record is
+            evicted from cache and the next query must do a fresh full
+            resolution.
+          </div>
+
+          <div class="code-wrap">
+            <div class="code-bar">
+              <span class="code-lang">DNS ZONE</span
+              ><span class="code-file">myblog.com</span>
+            </div>
+            <pre
+              style="font-size: 12px"
+            >myblog.com. <span class="num">3600</span> IN A 142.93.120.45
+<span class="cm">            ↑ TTL = 3600 seconds = 1 hour
+            After 1 hour, resolvers must ask again</span>
+
+mail.myblog.com. <span class="num">86400</span> IN A 167.71.10.12
+<span class="cm">              ↑ TTL = 86400 = 24 hours
+              Email server rarely changes → long TTL</span>
+
+cdn.myblog.com. <span class="num">60</span> IN A 104.18.22.41
+<span class="cm">            ↑ TTL = 60 seconds = 1 minute
+            CDN IPs change often → short TTL</span></pre>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="margin-bottom: 14px; font-size: 15px">
+            TTL Countdown Simulator
+          </h4>
+          <div id="ttlCacheRows"></div>
+          <div style="margin-top: 12px; display: flex; gap: 8px">
+            <button class="sbtn sbtn-p" onclick="startTTLSim()">
+              ▶ Start Time
+            </button>
+            <button class="sbtn sbtn-s" onclick="resetTTLSim()">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 32px">
+        <h3 style="margin-bottom: 16px; font-size: 18px">
+          The 4 Cache Layers — What Gets Cached Where
+        </h3>
+        <div class="steps">
+          <div class="step">
+            <div
+              class="step-num"
+              style="
+                background: var(--blue-bg);
+                color: var(--blue);
+                border: 1px solid rgba(79, 142, 247, 0.3);
+              "
+            >
+              1
+            </div>
+            <div class="step-body">
+              <div class="step-t">Browser Cache (Chrome, Firefox, Safari)</div>
+              <div class="step-d">
+                Chrome caches DNS for 60 seconds (hardcoded) regardless of TTL.
+                Open
+                <code style="font-family: var(--mono); font-size: 12px"
+                  >chrome://net-internals/#dns</code
+                >
+                to see and clear it. Firefox respects TTL more closely. Safari:
+                similar to Chrome. This is the fastest cache — local memory,
+                sub-millisecond.
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div
+              class="step-num"
+              style="
+                background: var(--teal-bg);
+                color: var(--teal);
+                border: 1px solid rgba(45, 212, 191, 0.3);
+              "
+            >
+              2
+            </div>
+            <div class="step-body">
+              <div class="step-t">OS DNS Cache (Windows/macOS/Linux)</div>
+              <div class="step-d">
+                Your OS caches DNS at the system level, shared across all apps.
+                On Windows:
+                <code style="font-family: var(--mono); font-size: 12px"
+                  >ipconfig /flushdns</code
+                >. On macOS:
+                <code style="font-family: var(--mono); font-size: 12px"
+                  >sudo dscacheutil -flushcache</code
+                >. On Linux (systemd):
+                <code style="font-family: var(--mono); font-size: 12px"
+                  >systemd-resolve --flush-caches</code
+                >. Also checks
+                <code style="font-family: var(--mono); font-size: 12px"
+                  >/etc/hosts</code
+                >
+                before any network query.
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div
+              class="step-num"
+              style="
+                background: var(--amber-bg);
+                color: var(--amber);
+                border: 1px solid rgba(245, 158, 11, 0.3);
+              "
+            >
+              3
+            </div>
+            <div class="step-body">
+              <div class="step-t">
+                Recursive Resolver Cache (Your ISP or 8.8.8.8)
+              </div>
+              <div class="step-d">
+                The resolver (like 8.8.8.8) maintains a massive shared cache.
+                Since it serves millions of users, popular domains are almost
+                always cached here. Google's resolver serves 1B+ queries/day —
+                google.com is cached essentially permanently (constantly
+                refreshed). Less popular domains expire per their TTL.
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div
+              class="step-num"
+              style="
+                background: var(--green-bg);
+                color: var(--green);
+                border: 1px solid rgba(34, 197, 94, 0.3);
+              "
+            >
+              4
+            </div>
+            <div class="step-body">
+              <div class="step-t">
+                Authoritative Server (Never Caches Answers)
+              </div>
+              <div class="step-d">
+                The authoritative server doesn't cache — it IS the source of
+                truth. When queried, it responds immediately from its zone
+                database. However, it responds with TTL values that tell
+                everyone else how long to cache. Low TTL = frequent fresh
+                queries = more load on authoritative server.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════ SECTION 08: PROPAGATION ══════════════════════ -->
+    <section class="sec bgalt" id="propagation">
+      <p class="sec-lbl">Section 08</p>
+      <h2 class="sec-title">DNS Propagation — Why Changes Take 24–48 Hours</h2>
+      <p class="sec-desc">
+        You changed your domain's IP. Why can't everyone see the new site
+        immediately? Because of caches. Every resolver in the world has your old
+        IP cached until TTL expires.
+      </p>
+
+      <div class="grid2">
+        <div>
+          <div class="co co-amber">
+            <div class="co-title">🌍 The Propagation Problem</div>
+            When you change your A record (IP address) at your DNS provider, the
+            authoritative server has the new IP immediately. But all the
+            recursive resolvers around the world have your OLD IP cached. They
+            won't check for updates until their cached copy's TTL expires.<br /><br />
+            If your TTL was 86400 (24 hours), resolvers won't re-query for up to
+            24 hours. This is why "DNS propagation takes 24-48 hours" — it's the
+            world's resolvers gradually expiring their old cached entry and
+            fetching the new one.
+          </div>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 12px; font-size: 15px">
+            💡 Pro Tip: Lower TTL Before Migration
+          </h4>
+          <div style="font-size: 14px; color: var(--text2); line-height: 1.8">
+            <strong>1 week before moving:</strong> Lower TTL from 86400 → 300 (5
+            minutes)<br />
+            Wait 24 hours for all resolvers to pick up the new short TTL<br />
+            <strong>Day of migration:</strong> Change A record to new IP<br />
+            Now propagation takes only 5 minutes worldwide!<br />
+            <strong>After stable:</strong> Raise TTL back to 86400 for
+            performance
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px">
+        <h4 style="margin-bottom: 14px; font-size: 15px">
+          Propagation Simulator — myblog.com IP change: old 142.93.120.45 → new
+          203.0.113.42
+        </h4>
+        <div class="sim-wrap">
+          <div class="sim-bar">
+            <div class="sim-title">
+              dns_propagation.sim (TTL=3600, 1hr per tick)
+            </div>
+            <div style="display: flex; gap: 8px">
+              <button class="sbtn sbtn-s" onclick="resetProp()">Reset</button>
+              <button class="sbtn sbtn-p" onclick="stepProp()">
+                ▶ Advance 1 Hour
+              </button>
+            </div>
+          </div>
+          <div style="padding: 20px">
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 12px;
+                color: var(--text3);
+                margin-bottom: 10px;
+              "
+            >
+              Hour: <span id="propHour" style="color: var(--blue)">0</span> / 48
+            </div>
+            <div class="prop-world" id="propWorld"></div>
+            <div
+              id="propStatus"
+              style="
+                font-size: 13px;
+                color: var(--text2);
+                margin-top: 12px;
+                padding: 12px;
+                background: var(--panel);
+                border-radius: 8px;
+              "
+            >
+              You just changed your DNS A record. The authoritative server has
+              the new IP. All resolvers worldwide still have the old IP cached.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════ SECTION 09: SECURITY ══════════════════════ -->
+    <section class="sec" id="security">
+      <p class="sec-lbl">Section 09</p>
+      <h2 class="sec-title">DNS Security — Attacks & Defenses</h2>
+      <p class="sec-desc">
+        DNS was designed in the 1980s with zero security in mind. Decades of
+        patches and extensions have been added on top. Here's what can go wrong
+        and how it's defended.
+      </p>
+
+      <div class="grid2" style="margin-bottom: 20px">
+        <div class="threat-card">
+          <div class="threat-title">🎣 DNS Spoofing / Cache Poisoning</div>
+          <div
+            style="
+              font-size: 13px;
+              color: var(--text2);
+              line-height: 1.7;
+              margin-bottom: 10px;
+            "
+          >
+            An attacker sends fake DNS responses to a resolver faster than the
+            real authoritative server. The resolver caches the fake IP. All
+            users are redirected to the attacker's server (phishing site). The
+            famous Kaminsky attack (2008) exploited this.
+          </div>
+          <div class="defense-title" style="margin-top: 12px">
+            🛡️ Defense: DNSSEC
+          </div>
+          <div style="font-size: 13px; color: var(--text2); line-height: 1.7">
+            DNS Security Extensions — digitally signs every DNS record.
+            Resolvers verify the signature using the domain's public key. A fake
+            response without a valid signature is rejected.
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-title">👁️ DNS Eavesdropping</div>
+          <div
+            style="
+              font-size: 13px;
+              color: var(--text2);
+              line-height: 1.7;
+              margin-bottom: 10px;
+            "
+          >
+            Plain DNS queries are sent in cleartext UDP. Your ISP, router, and
+            anyone on your network can see every domain you visit (even on HTTPS
+            sites). Your ISP can sell this data, censor results, or inject ads.
+          </div>
+          <div class="defense-title" style="margin-top: 12px">
+            🛡️ Defense: DoH & DoT
+          </div>
+          <div style="font-size: 13px; color: var(--text2); line-height: 1.7">
+            <strong>DoH</strong> (DNS over HTTPS port 443): Wraps DNS in HTTPS,
+            indistinguishable from normal web traffic. Used by Firefox, Chrome,
+            Brave. <strong>DoT</strong> (DNS over TLS port 853): Dedicated
+            encrypted DNS port.
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-title">💣 DNS DDoS Amplification</div>
+          <div
+            style="
+              font-size: 13px;
+              color: var(--text2);
+              line-height: 1.7;
+              margin-bottom: 10px;
+            "
+          >
+            Attacker sends tiny DNS queries (40B) with the victim's spoofed IP
+            as source. DNS servers respond with large responses (3000B) to the
+            victim. 75× amplification. Used to take down major services.
+          </div>
+          <div class="defense-title" style="margin-top: 12px">
+            🛡️ Defense: Response Rate Limiting (RRL)
+          </div>
+          <div style="font-size: 13px; color: var(--text2); line-height: 1.7">
+            DNS servers throttle responses to the same IP. Anycast routing
+            distributes attack traffic. Cloudflare's network absorbs up to 154
+            Tbps of DDoS.
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-title">🔄 DNS Hijacking</div>
+          <div
+            style="
+              font-size: 13px;
+              color: var(--text2);
+              line-height: 1.7;
+              margin-bottom: 10px;
+            "
+          >
+            Your router's DNS settings are changed by malware (router
+            hijacking). Or an ISP intercepts and modifies DNS responses
+            (NXDOMAIN hijacking — redirecting failed lookups to ad pages). Or an
+            attacker changes your domain registrar login and points NS records
+            to attacker's servers.
+          </div>
+          <div class="defense-title" style="margin-top: 12px">
+            🛡️ Defense: Registry Lock + 2FA
+          </div>
+          <div style="font-size: 13px; color: var(--text2); line-height: 1.7">
+            Enable "Registry Lock" at your registrar — requires manual phone
+            verification to change NS records. Enable 2FA on your registrar
+            account. Use a reputable registrar with strong security (Cloudflare
+            Registrar, Namecheap).
+          </div>
+        </div>
+      </div>
+
+      <div class="co co-teal">
+        <div class="co-title">
+          🔒 Modern DNS Privacy Stack (What You Should Use)
+        </div>
+        <div
+          style="font-family: var(--mono); font-size: 12px; line-height: 2.2"
+        >
+          <span style="color: var(--teal)">DoH</span> → 1.1.1.1 (Cloudflare) or
+          8.8.8.8 (Google) — Encrypts queries from your device<br />
+          <span style="color: var(--teal)">DNSSEC</span> → Validates responses
+          aren't tampered with<br />
+          <span style="color: var(--teal)">HTTPS (TLS)</span> → Even if DNS is
+          spoofed, the browser rejects a mismatched SSL certificate<br />
+          <span style="color: var(--teal)">CAA Records</span> → Prevents
+          unauthorized SSL certificate issuance for your domain
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════ SECTION 10: SYSTEM DESIGN ══════════════════════ -->
+    <section class="sec bgalt" id="sysdesign">
+      <p class="sec-lbl">Section 10 · Advanced</p>
+      <h2 class="sec-title">DNS in System Design — Advanced Patterns</h2>
+      <p class="sec-desc">
+        In large-scale systems, DNS is not just "find the IP." It's used as
+        infrastructure for geo-routing, load balancing, failover, and CDN edge
+        selection.
+      </p>
+
+      <div class="grid2" style="margin-bottom: 24px">
+        <div class="card" style="border-color: rgba(79, 142, 247, 0.2)">
+          <div
+            style="
+              font-weight: 700;
+              color: var(--blue);
+              margin-bottom: 10px;
+              font-size: 15px;
+            "
+          >
+            🌍 Geo-DNS Routing
+          </div>
+          <div
+            style="
+              font-size: 13px;
+              color: var(--text2);
+              line-height: 1.7;
+              margin-bottom: 12px;
+            "
+          >
+            The same domain returns DIFFERENT IP addresses based on where the
+            query comes from. A user in Bangladesh queries myblog.com → gets
+            103.21.244.0 (a Singapore server). A user in Germany gets 185.85.4.1
+            (a Frankfurt server).
+          </div>
+          <div class="code-wrap">
+            <pre
+              style="font-size: 11px; padding: 12px"
+            ><span class="cm"># AWS Route 53 Geo Policy:</span>
+myblog.com A 103.21.244.0  <span class="cm"># Asia</span>
+myblog.com A 185.85.4.1   <span class="cm"># Europe</span>
+myblog.com A 104.22.10.2  <span class="cm"># N. America</span>
+<span class="cm"># Route 53 detects requester's region
+# and responds with the nearest IP</span></pre>
+          </div>
+        </div>
+        <div class="card" style="border-color: rgba(45, 212, 191, 0.2)">
+          <div
+            style="
+              font-weight: 700;
+              color: var(--teal);
+              margin-bottom: 10px;
+              font-size: 15px;
+            "
+          >
+            ⚖️ Round-Robin DNS Load Balancing
+          </div>
+          <div
+            style="
+              font-size: 13px;
+              color: var(--text2);
+              line-height: 1.7;
+              margin-bottom: 12px;
+            "
+          >
+            One domain, multiple A records with multiple IPs. The DNS resolver
+            cycles through them. Each client gets a different IP, distributing
+            load across servers. Simple but crude — doesn't account for server
+            health.
+          </div>
+          <div class="code-wrap">
+            <pre
+              style="font-size: 11px; padding: 12px"
+            ><span class="cm"># Round-robin: 4 servers</span>
+myblog.com A 10.0.0.1
+myblog.com A 10.0.0.2
+myblog.com A 10.0.0.3
+myblog.com A 10.0.0.4
+<span class="cm"># Client 1 → 10.0.0.1
+# Client 2 → 10.0.0.2
+# Client 3 → 10.0.0.3 ... etc</span></pre>
+          </div>
+        </div>
+        <div class="card" style="border-color: rgba(34, 197, 94, 0.2)">
+          <div
+            style="
+              font-weight: 700;
+              color: var(--green);
+              margin-bottom: 10px;
+              font-size: 15px;
+            "
+          >
+            🔄 DNS Failover
+          </div>
+          <div
+            style="
+              font-size: 13px;
+              color: var(--text2);
+              line-height: 1.7;
+              margin-bottom: 12px;
+            "
+          >
+            Health checks monitor your primary server. If it goes down, the DNS
+            provider automatically updates the A record to point to a backup
+            server. Low TTL (60s) means switchover happens in under a minute.
+          </div>
+          <div class="code-wrap">
+            <pre
+              style="font-size: 11px; padding: 12px"
+            ><span class="cm"># Normal state:</span>
+myblog.com A 142.93.120.45  <span class="cm"># Primary</span>
+<span class="cm"># Primary goes down → Route 53 detects:
+# health check FAILS after 3 consecutive fails</span>
+<span class="cm"># Automatic update:</span>
+myblog.com A 142.93.120.99  <span class="cm"># Backup</span>
+<span class="cm"># TTL=60 → users see new IP in 60s</span></pre>
+          </div>
+        </div>
+        <div class="card" style="border-color: rgba(251, 146, 60, 0.2)">
+          <div
+            style="
+              font-weight: 700;
+              color: var(--orange);
+              margin-bottom: 10px;
+              font-size: 15px;
+            "
+          >
+            ☁️ CDN — How Cloudflare Uses DNS
+          </div>
+          <div
+            style="
+              font-size: 13px;
+              color: var(--text2);
+              line-height: 1.7;
+              margin-bottom: 12px;
+            "
+          >
+            When you proxy through Cloudflare, your domain's A record returns a
+            Cloudflare edge IP, not your real server IP. Cloudflare proxies all
+            traffic. Your real server IP is hidden from the world (DDoS
+            protection).
+          </div>
+          <div class="code-wrap">
+            <pre
+              style="font-size: 11px; padding: 12px"
+            ><span class="cm"># Without Cloudflare (orange cloud off):</span>
+myblog.com A 142.93.120.45
+<span class="cm"># Everyone knows your real server IP</span>
+
+<span class="cm"># With Cloudflare (orange cloud on):</span>
+myblog.com A 104.21.55.186  <span class="cm"># Cloudflare edge!</span>
+<span class="cm"># Real IP 142.93.120.45 is hidden</span>
+<span class="cm"># Cloudflare → your server (origin)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- CDN edge simulation -->
+      <h3 style="margin-bottom: 14px; font-size: 17px">
+        CDN Edge Selection via DNS — Click a User Location
+      </h3>
+      <div class="world-map" id="worldMap">
+        <div class="wm-label">
+          Click a user flag to simulate DNS geo-routing to nearest CDN edge
+        </div>
+        <div id="edgeNodes"></div>
+        <canvas
+          id="mapCanvas"
+          style="
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+          "
+        ></canvas>
+        <div id="userDot" class="user-dot"></div>
+      </div>
+      <div
+        id="cdnResult"
+        style="
+          font-family: var(--mono);
+          font-size: 12px;
+          color: var(--text2);
+          padding: 12px;
+          background: var(--panel);
+          border-radius: 8px;
+          display: none;
+        "
+      ></div>
+
+      <!-- QUIC section -->
+      <div style="margin-top: 32px">
+        <div
+          class="co co-purple"
+          style="border-left-color: var(--purple); background: var(--purple-bg)"
+        >
+          <div class="co-title" style="color: var(--purple)">
+            ⚡ The Future: HTTP/3 and QUIC Changes DNS
+          </div>
+          HTTP/3 uses <strong>QUIC</strong> (over UDP). When combined with HTTPS
+          DNS (DoH), the browser can establish an encrypted connection AND
+          resolve DNS in the same round-trip. New DNS record types like
+          <strong>HTTPS records</strong> (replacing CNAME for HTTPS) allow
+          browsers to skip DNS → TCP → TLS negotiation and go straight to QUIC —
+          saving 100–300ms on every new connection.
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════ CODE SECTION ══════════════════════ -->
+    <section class="sec" id="code">
+      <p class="sec-lbl">Section 11 · Code Level</p>
+      <h2 class="sec-title">DNS at the Code Level</h2>
+      <p class="sec-desc">
+        What actually happens in code when a DNS query is made — from the OS
+        call to the raw UDP packet.
+      </p>
+
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span class="code-lang">PYTHON</span
+          ><span class="code-file">dns_from_scratch.py</span
+          ><button class="cbtn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="kw">import</span> socket
+<span class="kw">import</span> struct
+
+<span class="cm">## ─── LEVEL 1: OS Handles Everything (99% of code uses this) ──────</span>
+<span class="cm">## One line. The OS does all the DNS lookups for you.</span>
+<span class="fn">ip</span> = socket.gethostbyname(<span class="str">"google.com"</span>)
+<span class="fn">print</span>(ip)  <span class="cm"># "142.250.80.46"</span>
+
+<span class="cm">## But what does the OS actually do? Let's go deeper...</span>
+
+<span class="cm">## ─── LEVEL 2: Manual UDP DNS Query ──────────────────────────────</span>
+<span class="cm">## This is what the OS resolver does under the hood</span>
+
+<span class="kw">def</span> <span class="fn">build_dns_query</span>(domain):
+    <span class="cm">"""Build a raw DNS query packet for an A record"""</span>
+    
+    <span class="cm"># DNS Header (12 bytes)</span>
+    transaction_id = <span class="num">0xABCD</span>       <span class="cm"># Random ID to match query/response</span>
+    flags = <span class="num">0x0100</span>               <span class="cm"># QR=0 (query), RD=1 (recursion desired)</span>
+    questions = <span class="num">1</span>                <span class="cm"># 1 question</span>
+    answer_rrs = <span class="num">0</span>               <span class="cm"># 0 answers (this is a query)</span>
+    authority_rrs = <span class="num">0</span>
+    additional_rrs = <span class="num">0</span>
+    
+    header = struct.pack(<span class="str">'!HHHHHH'</span>,
+        transaction_id, flags,
+        questions, answer_rrs,
+        authority_rrs, additional_rrs
+    )
+    
+    <span class="cm"># DNS Question section</span>
+    <span class="cm"># Domain "google.com" is encoded as: \x06google\x03com\x00</span>
+    <span class="cm"># Each label is length-prefixed</span>
+    qname = <span class="str">b''</span>
+    <span class="kw">for</span> part <span class="kw">in</span> domain.split(<span class="str">'.'</span>):
+        qname += bytes([len(part)]) + part.encode()
+    qname += <span class="str">b'\x00'</span>  <span class="cm"># Root label (null terminator)</span>
+    
+    qtype = <span class="num">1</span>   <span class="cm"># A record (IPv4 address)</span>
+    qclass = <span class="num">1</span>  <span class="cm"># IN (Internet class)</span>
+    question = qname + struct.pack(<span class="str">'!HH'</span>, qtype, qclass)
+    
+    <span class="kw">return</span> header + question
+
+<span class="kw">def</span> <span class="fn">query_dns_server</span>(domain, server=<span class="str">'8.8.8.8'</span>, port=<span class="num">53</span>):
+    <span class="cm">"""Send DNS query over UDP to a resolver"""</span>
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  <span class="cm"># UDP!</span>
+    sock.settimeout(<span class="num">3</span>)
+    
+    query = <span class="fn">build_dns_query</span>(domain)
+    
+    <span class="cm"># Send query (no connection needed — UDP)</span>
+    sock.sendto(query, (server, port))
+    
+    <span class="cm"># Receive response (DNS response fits in one UDP datagram)</span>
+    response, _ = sock.recvfrom(<span class="num">4096</span>)
+    sock.close()
+    
+    <span class="kw">return</span> <span class="fn">parse_dns_response</span>(response)
+
+<span class="kw">def</span> <span class="fn">parse_dns_response</span>(data):
+    <span class="cm">"""Extract IP from DNS response packet"""</span>
+    <span class="cm"># Skip header (12 bytes) and question section</span>
+    <span class="cm"># Find answer section and extract the A record (4 bytes = IPv4)</span>
+    
+    <span class="cm"># Transaction ID + flags + counts</span>
+    txid, flags, qdcount, ancount, _, _ = struct.unpack(<span class="str">'!HHHHHH'</span>, data[:<span class="num">12</span>])
+    
+    <span class="kw">if</span> ancount == <span class="num">0</span>:
+        <span class="kw">raise</span> <span class="cls">Exception</span>(<span class="str">"No answer in DNS response — NXDOMAIN?"</span>)
+    
+    <span class="cm"># Skip to answer section (skip header + questions)</span>
+    pos = <span class="num">12</span>
+    <span class="kw">for</span> _ <span class="kw">in</span> range(qdcount):  <span class="cm"># Skip question(s)</span>
+        <span class="kw">while</span> data[pos] != <span class="num">0</span>: pos += data[pos] + <span class="num">1</span>
+        pos += <span class="num">5</span>  <span class="cm"># null byte + QTYPE(2) + QCLASS(2)</span>
+    
+    <span class="cm"># Parse first answer record</span>
+    pos += <span class="num">2</span>  <span class="cm"># Name (compressed pointer, 2 bytes)</span>
+    rtype, rclass, ttl, rdlength = struct.unpack(<span class="str">'!HHIH'</span>, data[pos:pos+<span class="num">10</span>])
+    pos += <span class="num">10</span>
+    
+    <span class="kw">if</span> rtype == <span class="num">1</span> <span class="kw">and</span> rdlength == <span class="num">4</span>:  <span class="cm"># A record = 4 byte IPv4</span>
+        ip_bytes = data[pos:pos+<span class="num">4</span>]
+        ip = <span class="str">'.'</span>.join(str(b) <span class="kw">for</span> b <span class="kw">in</span> ip_bytes)
+        <span class="kw">return</span> {<span class="str">'ip'</span>: ip, <span class="str">'ttl'</span>: ttl}
+
+<span class="cm"># Usage:</span>
+result = <span class="fn">query_dns_server</span>(<span class="str">"google.com"</span>)
+<span class="cm"># → {'ip': '142.250.80.46', 'ttl': 300}</span></pre>
+      </div>
+
+      <div class="co co-teal" style="margin-top: 16px">
+        <div class="co-title">🧱 The Raw DNS Packet Structure</div>
+        <div
+          style="
+            font-family: var(--mono);
+            font-size: 12px;
+            line-height: 2;
+            margin-top: 6px;
+          "
+        >
+          <span style="color: var(--blue)">HEADER (12 bytes):</span> ID(2) +
+          Flags(2) + QDcount(2) + ANcount(2) + NScount(2) + ARcount(2)<br />
+          <span style="color: var(--teal)">QUESTION:</span> QNAME(variable) +
+          QTYPE(2) + QCLASS(2)<br />
+          <span style="color: var(--green)">ANSWER:</span> NAME(2 compressed) +
+          TYPE(2) + CLASS(2) + TTL(4) + RDLENGTH(2) + RDATA(4 for IPv4)<br /><br />
+          Total query packet for "google.com A IN" = <strong>29 bytes</strong>.
+          Total response = ~45 bytes. That's it. DNS is tiny.
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div style="margin-bottom: 14px; font-size: 15px">
+        <span style="color: var(--blue)">Recursive Resolver</span>
+        <span style="color: var(--text3)">→</span>
+        <span style="color: var(--purple)">Root Server</span>
+        <span style="color: var(--text3)">→</span>
+        <span style="color: var(--teal)">TLD Server</span>
+        <span style="color: var(--text3)">→</span>
+        <span style="color: var(--green)">Authoritative Server</span>
+        <span style="color: var(--text3)">→</span>
+        <span style="color: var(--amber)">IP Address</span>
+      </div>
+      <div>DNS Deep Learning Guide — System Design Bangla companion</div>
+      <div style="margin-top: 6px; color: var(--text3)">
+        Beginner to Advanced · All servers explained · Live simulations
+      </div>
+    </footer>
+
+    <script>
+      // ── SCROLL / NAV ────────────────────────────────────────────────
+      window.addEventListener("scroll", () => {
+        const h = document.documentElement;
+        const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+        document.getElementById("rprog").style.width = pct + "%";
+        document
+          .getElementById("snav")
+          .classList.toggle("on", h.scrollTop > 300);
+      });
+
+      // ── DNS SIM ──────────────────────────────────────────────────────
+      let simStep = -1;
+
+      const simSteps = [
+        {
+          actor: "actBrowser",
+          msg: {
+            dir: "toright",
+            label: "QUERY",
+            text: "What is the IP of {D}?",
+          },
+          explain:
+            "🔵 <strong>Step 1 — Your Browser Asks</strong><br>You typed {D} and hit Enter. Before any HTTP request can happen, the browser must resolve the domain to an IP address. The browser checks its own internal DNS cache first (Chrome caches for ~60s). <strong>Cache miss</strong> — it passes the query to the OS resolver.",
+          log: "[Browser] Cache MISS for {D}. Forwarding to OS resolver.",
+          pct: 10,
+        },
+        {
+          actor: "actBrowser",
+          msg: {
+            dir: "toright",
+            label: "OS",
+            text: "/etc/hosts check + OS cache check",
+          },
+          explain:
+            "💻 <strong>Step 2 — OS Checks Local Sources</strong><br>The OS first scans <code>/etc/hosts</code> for a hardcoded entry. Not found. Then checks the OS DNS cache (nscd / systemd-resolved). <strong>Cache miss</strong>. OS forwards to the configured recursive resolver — in this case Google's <code>8.8.8.8</code> via UDP port 53.",
+          log: "[OS] /etc/hosts: no match. OS cache: MISS. Sending UDP to 8.8.8.8:53",
+          pct: 20,
+        },
+        {
+          actor: "actRecurse",
+          msg: {
+            dir: "toright",
+            label: "QUERY",
+            text: "Resolver: checking cache for {D}",
+          },
+          explain:
+            "🛎️ <strong>Step 3 — Recursive Resolver Checks Its Cache</strong><br>The resolver (8.8.8.8) receives the UDP query. It checks its massive cache — shared by millions of users. If {D} was recently queried by anyone using this resolver, it returns the cached answer immediately. <strong>Cache miss</strong> (cold start). Now it must do a full recursive lookup.",
+          log: "[8.8.8.8] Received query ID=0x4A3F for {D} A IN. Cache: MISS. Starting recursive lookup.",
+          pct: 30,
+        },
+        {
+          actor: "actRoot",
+          msg: {
+            dir: "toright",
+            label: "QUERY",
+            text: "→ Root: Where is .com TLD?",
+          },
+          explain:
+            '🌍 <strong>Step 4 — Query the Root Server</strong><br>The resolver sends a query to one of the 13 root server clusters (e.g., 198.41.0.4 — a.root-servers.net). It asks: <em>"Who manages .com?"</em> The root server doesn\'t know {D}\'s IP — it only has a list of TLD servers. It responds with a <strong>referral</strong>: "The .com TLD is at a.gtld-servers.net (192.5.6.30)."',
+          log: "[Root] 198.41.0.4 → REFERRAL: .com → a.gtld-servers.net (192.5.6.30). TTL=172800",
+          pct: 45,
+        },
+        {
+          actor: "actTld",
+          msg: {
+            dir: "toright",
+            label: "QUERY",
+            text: "→ TLD .com: Who manages {D}?",
+          },
+          explain:
+            '🗂️ <strong>Step 5 — Query the .com TLD Server</strong><br>The resolver now contacts the .com TLD server at 192.5.6.30 (a.gtld-servers.net, run by Verisign). It asks: <em>"Who is the authoritative name server for {D}?"</em><br><br>The TLD server looks up its registry (where the domain was registered) and responds: <em>"The authoritative servers for {D} are ns1.cloudflare.com and ns2.cloudflare.com."</em> Another <strong>referral</strong> — still no IP!',
+          log: "[TLD .com] 192.5.6.30 → REFERRAL: {D} NS → ns1.cloudflare.com, ns2.cloudflare.com. TTL=172800",
+          pct: 60,
+        },
+        {
+          actor: "actAuth",
+          msg: {
+            dir: "toright",
+            label: "QUERY",
+            text: "→ Authoritative: IP of {D}?",
+          },
+          explain:
+            "🔑 <strong>Step 6 — Query the Authoritative Name Server</strong><br>The resolver contacts ns1.cloudflare.com — the <strong>definitive source</strong> for {D}'s DNS records. This server was configured by the domain owner. It holds the actual A record: the IP address.<br><br><strong>This is the only server that actually knows the real IP.</strong> It's NOT the web server — it's a separate DNS server run by Cloudflare (or whoever the domain owner chose as their DNS provider).",
+          log: "[Auth] ns1.cloudflare.com → ANSWER: {D} A 142.250.80.46 TTL=300. Authoritative=YES",
+          pct: 78,
+        },
+        {
+          actor: "actRecurse",
+          msg: {
+            dir: "toleft answer",
+            label: "ANSWER",
+            text: "← {D} = 142.250.80.46 (TTL:300)",
+          },
+          explain:
+            "📦 <strong>Step 7 — Answer Travels Back + Gets Cached</strong><br>The authoritative server responds: <strong>{D} → 142.250.80.46, TTL=300 seconds</strong><br><br>The recursive resolver:<br>1. Caches this answer for 300 seconds<br>2. Returns it to your OS resolver (which caches it)<br>3. Your OS returns it to the browser (which caches it)<br><br>Any future query for {D} from anyone using 8.8.8.8 in the next 5 minutes = instant answer from cache.",
+          log: "[8.8.8.8] Caching {D}=142.250.80.46 for 300s. Returning answer to client.",
+          pct: 92,
+        },
+        {
+          actor: "actBrowser",
+          msg: {
+            dir: "toright answer",
+            label: "DONE",
+            text: "✓ IP resolved → TCP connect to 142.250.80.46:443",
+          },
+          explain:
+            "🎉 <strong>Step 8 — DNS Complete. HTTP Begins.</strong><br>Your browser now has the IP: <strong>142.250.80.46</strong><br><br>DNS's job is <strong>completely over</strong>. The browser:<br>1. Opens a TCP connection to 142.250.80.46:443<br>2. Performs TLS handshake<br>3. Sends HTTP GET request<br>4. Receives and renders the page<br><br>Total DNS time: <strong>~50–120ms</strong> cold. <strong>&lt;1ms</strong> from cache.",
+          log: "[Browser] DNS resolved in ~87ms. Opening TCP → 142.250.80.46:443. DNS complete.",
+          pct: 100,
+        },
+      ];
+
+      function getDomain() {
+        const v = document.getElementById("simDomainInput").value.trim();
+        return v || "myblog.com";
+      }
+
+      function stepSim() {
+        simStep++;
+        const domain = getDomain();
+        document.getElementById("simDomain").textContent = domain;
+
+        if (simStep >= simSteps.length) {
+          simStep = simSteps.length - 1;
+          return;
+        }
+
+        const s = simSteps[simStep];
+
+        // Highlight active actor
+        ["actBrowser", "actRecurse", "actRoot", "actTld", "actAuth"].forEach(
+          (id) => {
+            document.getElementById(id).classList.remove("box-active");
+          },
+        );
+        document.getElementById(s.actor).classList.add("box-active");
+
+        // Progress bar
+        document.getElementById("simProgress").style.width = s.pct + "%";
+
+        // Add message
+        const log = document.getElementById("msgLog");
+        const div = document.createElement("div");
+        div.className = "dns-msg " + s.msg.dir + " show";
+        div.innerHTML = `<span class="dns-flag ${s.msg.dir.includes("answer") ? "f-r" : s.msg.dir.includes("toright") ? "f-q" : "f-ref"}">${s.msg.label}</span> ${s.msg.text.replace(/{D}/g, domain)}`;
+        log.appendChild(div);
+
+        // Explain
+        const ex = document.getElementById("dnsExplain");
+        ex.style.display = "block";
+        ex.innerHTML = s.explain.replace(
+          /{D}/g,
+          `<code style="font-family:var(--mono);color:var(--blue)">${domain}</code>`,
+        );
+
+        // Net log
+        const netLog = document.getElementById("netLog");
+        const t = new Date().toTimeString().slice(0, 8);
+        netLog.innerHTML += `<div><span style="color:var(--text3)">[${t}]</span> ${s.log.replace(/{D}/g, domain)}</div>`;
+        netLog.scrollTop = netLog.scrollHeight;
+
+        // Show result
+        if (simStep === simSteps.length - 1) {
+          document.getElementById("dnsResult").style.display = "block";
+          document.getElementById("dnsResultText").textContent =
+            `${domain} → 142.250.80.46 (TTL: 300s, cached for ~5 minutes)`;
+          document.getElementById("simNextBtn").textContent = "✓ Done";
+        }
+      }
+
+      function resetSim() {
+        simStep = -1;
+        ["actBrowser", "actRecurse", "actRoot", "actTld", "actAuth"].forEach(
+          (id) => {
+            document.getElementById(id).classList.remove("box-active");
+          },
+        );
+        document.getElementById("simProgress").style.width = "0%";
+        document.getElementById("msgLog").innerHTML = "";
+        document.getElementById("dnsExplain").style.display = "none";
+        document.getElementById("dnsResult").style.display = "none";
+        document.getElementById("netLog").innerHTML = "";
+        document.getElementById("simNextBtn").textContent = "▶ Next Step";
+        document.getElementById("simDomain").textContent = getDomain();
+      }
+
+      // ── ACTOR INFO (click on boxes) ──────────────────────────────────
+      const actorInfo = {
+        browser: {
+          color: "var(--blue)",
+          title: "Your Browser",
+          body: "Initiates DNS resolution. Checks its own DNS cache first (~60s for Chrome). If miss, asks the OS resolver. No network packet sent yet at this stage.",
+        },
+        recurse: {
+          color: "var(--amber)",
+          title: "Recursive Resolver (8.8.8.8)",
+          body: "Does all the heavy lifting on your behalf. Queries Root → TLD → Authoritative. Caches results for TTL duration. Does NOT hold your website — only DNS mappings.",
+        },
+        root: {
+          color: "var(--purple)",
+          title: "Root Name Server",
+          body: "13 logical clusters, 1600+ physical machines. Only knows which TLD servers handle each extension (.com, .org, etc.). Never knows individual domains' IPs.",
+        },
+        tld: {
+          color: "var(--teal)",
+          title: "TLD Server (.com)",
+          body: "Managed by Verisign for .com. Only knows NS records (which authoritative server handles each registered domain). Populated when you register a domain.",
+        },
+        auth: {
+          color: "var(--green)",
+          title: "Authoritative Name Server",
+          body: "The final answer. Holds actual DNS records (A, AAAA, MX, TXT, etc.) for the domain. Run by Cloudflare/AWS Route 53/GoDaddy. NOT the same as your web server — completely different machine.",
+        },
+      };
+
+      function showActorInfo(type) {
+        const info = actorInfo[type];
+        const ex = document.getElementById("dnsExplain");
+        ex.style.display = "block";
+        ex.innerHTML = `<strong style="color:${info.color}">${info.title}</strong><br><br>${info.body}`;
+      }
+
+      // ── HIERARCHY INFO ────────────────────────────────────────────────
+      function showHierInfo(type) {
+        const info = {
+          root: 'The root zone "." is the top of the DNS tree. It\'s managed by ICANN. The root zone file lists all TLD servers. There are 13 logical root server identities (a–m), each operated by different organizations. Root servers only have NS records for TLDs, not for individual domains.',
+          tld: "Top-Level Domains are the categories: .com (commercial), .org (organizations), .net (network), country codes like .bd (Bangladesh), .uk, .de, and new gTLDs like .app, .cloud, .guru. Each TLD's registry operator maintains the list of all second-level domains registered under it.",
+          sld: "Second-Level Domains are what you register (myblog, google, amazon). When you buy a domain from a registrar, they register it in the TLD registry and set the NS records to point to your authoritative DNS servers.",
+          sub: "Subdomains (www, mail, api, cdn) are created by adding DNS records in your authoritative name server. You can create unlimited subdomains without registering anything — just add an A record in your DNS provider's dashboard.",
+        };
+        const box = document.getElementById("hierInfo");
+        box.style.display = "block";
+        box.textContent = info[type];
+      }
+
+      // ── ZONE FILE VIEWER ──────────────────────────────────────────────
+      const zoneRecords = [
+        {
+          type: "A",
+          name: "myblog.com.",
+          ttl: 300,
+          value: "142.93.120.45",
+          color: "var(--blue)",
+          info: "The main A record. Maps your root domain to your server's IPv4 address. TTL=300 means resolvers cache this for 5 minutes.",
+        },
+        {
+          type: "A",
+          name: "www.myblog.com.",
+          ttl: 300,
+          value: "142.93.120.45",
+          color: "var(--blue)",
+          info: "Separate A record for www subdomain. Same IP as root. Many hosts point both to the same server.",
+        },
+        {
+          type: "A",
+          name: "api.myblog.com.",
+          ttl: 300,
+          value: "142.93.120.60",
+          color: "var(--blue)",
+          info: "A different server handles the API. Subdomains can point to different IPs entirely.",
+        },
+        {
+          type: "AAAA",
+          name: "myblog.com.",
+          ttl: 300,
+          value: "2001:db8::1234",
+          color: "var(--purple)",
+          info: "IPv6 address record. Modern browsers prefer IPv6 when available. Works alongside A records.",
+        },
+        {
+          type: "MX",
+          name: "myblog.com.",
+          ttl: 3600,
+          value: "10 mail.google.com.",
+          color: "var(--amber)",
+          info: "Email for @myblog.com goes to Google Workspace (priority 10). Lower number = higher priority. Multiple MX records for redundancy.",
+        },
+        {
+          type: "CNAME",
+          name: "blog.myblog.com.",
+          ttl: 3600,
+          value: "myblog.com.",
+          color: "var(--teal)",
+          info: "Alias: blog.myblog.com resolves to whatever myblog.com resolves to. If you change the A record, CNAME automatically follows.",
+        },
+        {
+          type: "TXT",
+          name: "myblog.com.",
+          ttl: 3600,
+          value: '"v=spf1 include:google.com ~all"',
+          color: "var(--green)",
+          info: "SPF record — tells mail servers which IPs are allowed to send email from @myblog.com. Prevents email spoofing.",
+        },
+        {
+          type: "TXT",
+          name: "_dmarc.myblog.com.",
+          ttl: 3600,
+          value: '"v=DMARC1; p=quarantine; rua=mailto:admin@myblog.com"',
+          color: "var(--green)",
+          info: "DMARC policy — what to do with emails that fail SPF/DKIM checks. Quarantine means put in spam folder.",
+        },
+        {
+          type: "NS",
+          name: "myblog.com.",
+          ttl: 86400,
+          value: "ns1.cloudflare.com.",
+          color: "var(--orange)",
+          info: "Name Server record — tells the TLD server (.com) which servers are authoritative for myblog.com. This is set at your registrar, not your DNS provider.",
+        },
+        {
+          type: "CAA",
+          name: "myblog.com.",
+          ttl: 3600,
+          value: '0 issue "letsencrypt.org"',
+          color: "var(--pink)",
+          info: "Certificate Authority Authorization — only Let's Encrypt can issue SSL certificates for myblog.com. Prevents other CAs from issuing fake certs.",
+        },
+      ];
+
+      let activeRec = null;
+      function buildZoneFile() {
+        const container = document.getElementById("zoneRecords");
+        container.innerHTML = "";
+        zoneRecords.forEach((r, i) => {
+          const div = document.createElement("div");
+          div.style.cssText =
+            "display:flex;align-items:flex-start;gap:12px;padding:9px 12px;border-radius:8px;cursor:pointer;transition:background .15s;border:1px solid transparent;margin-bottom:4px;";
+          div.innerHTML = `
+      <span style="min-width:52px;padding:2px 8px;border-radius:4px;font-family:var(--mono);font-size:11px;font-weight:600;text-align:center;background:rgba(255,255,255,.05);color:${r.color}">${r.type}</span>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--text2);min-width:200px;flex-shrink:0">${r.name}</span>
+      <span style="font-family:var(--mono);font-size:10px;color:var(--text3);min-width:55px">${r.ttl}s</span>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--text)">${r.value}</span>
+    `;
+          div.addEventListener("click", () => {
+            if (activeRec === i) {
+              activeRec = null;
+              const inf = document.getElementById("recInfo");
+              if (inf) inf.remove();
+            } else {
+              activeRec = i;
+              let inf = document.getElementById("recInfo");
+              if (inf) inf.remove();
+              inf = document.createElement("div");
+              inf.id = "recInfo";
+              inf.style.cssText = `margin:8px 0 12px;padding:12px 16px;background:var(--panel);border-radius:9px;border:1px solid ${r.color}30;font-size:13px;color:var(--text2);line-height:1.7`;
+              inf.innerHTML = `<span style="color:${r.color};font-family:var(--mono);font-size:11px;font-weight:600">${r.type} RECORD</span><br><br>${r.info}`;
+              div.after(inf);
+            }
+            div.style.background = activeRec === i ? "var(--panel)" : "";
+          });
+          div.onmouseenter = () => {
+            if (activeRec !== i) div.style.background = "rgba(255,255,255,.03)";
+          };
+          div.onmouseleave = () => {
+            if (activeRec !== i) div.style.background = "";
+          };
+          container.appendChild(div);
+        });
+      }
+      buildZoneFile();
+
+      // ── TTL SIM ───────────────────────────────────────────────────────
+      const ttlEntries = [
+        {
+          name: "Browser Cache",
+          domain: "google.com",
+          max: 60,
+          color: "var(--blue)",
+        },
+        {
+          name: "OS Cache",
+          domain: "github.com",
+          max: 120,
+          color: "var(--teal)",
+        },
+        {
+          name: "Resolver Cache",
+          domain: "myblog.com",
+          max: 300,
+          color: "var(--amber)",
+        },
+        {
+          name: "Resolver Cache",
+          domain: "api.stripe.com",
+          max: 86400,
+          color: "var(--purple)",
+        },
+      ];
+
+      let ttlTimers = [];
+      let ttlRem = [];
+
+      function buildTTL() {
+        const c = document.getElementById("ttlCacheRows");
+        c.innerHTML = "";
+        ttlRem = ttlEntries.map((e) => e.max);
+        ttlEntries.forEach((e, i) => {
+          c.innerHTML += `
+      <div class="cache-row">
+        <div class="cr-label">${e.name}</div>
+        <div style="flex:1">
+          <div style="font-size:11px;font-family:var(--mono);color:var(--text2);margin-bottom:4px">${e.domain}</div>
+          <div class="ttl-bar-wrap"><div class="ttl-bar" id="ttlBar${i}" style="width:100%;background:${e.color}"></div></div>
+        </div>
+        <div class="cr-status" id="ttlStat${i}" style="color:${e.color}">${e.max}s</div>
+      </div>`;
+        });
+      }
+      buildTTL();
+
+      function startTTLSim() {
+        ttlTimers.forEach(clearInterval);
+        ttlTimers = [];
+        ttlRem = ttlEntries.map((e) => e.max);
+
+        ttlEntries.forEach((e, i) => {
+          const t = setInterval(() => {
+            const speed = e.max > 3600 ? 100 : e.max > 300 ? 10 : 1;
+            ttlRem[i] = Math.max(0, ttlRem[i] - speed);
+            const pct = (ttlRem[i] / e.max) * 100;
+            document.getElementById("ttlBar" + i).style.width = pct + "%";
+            const stat = document.getElementById("ttlStat" + i);
+            if (ttlRem[i] <= 0) {
+              stat.textContent = "EXPIRED";
+              stat.style.color = "var(--red)";
+              document.getElementById("ttlBar" + i).style.background =
+                "var(--red)";
+              clearInterval(t);
+            } else {
+              stat.textContent = ttlRem[i] + "s";
+            }
+          }, 100);
+          ttlTimers.push(t);
+        });
+      }
+
+      function resetTTLSim() {
+        ttlTimers.forEach(clearInterval);
+        ttlTimers = [];
+        buildTTL();
+      }
+
+      // ── PROPAGATION SIM ───────────────────────────────────────────────
+      const propNodes = [
+        { flag: "🇧🇩", name: "Dhaka" },
+        { flag: "🇸🇬", name: "Singapore" },
+        { flag: "🇩🇪", name: "Frankfurt" },
+        { flag: "🇺🇸", name: "New York" },
+        { flag: "🇦🇺", name: "Sydney" },
+        { flag: "🇧🇷", name: "São Paulo" },
+        { flag: "🇯🇵", name: "Tokyo" },
+        { flag: "🇫🇷", name: "Paris" },
+        { flag: "🇿🇦", name: "Cape Town" },
+        { flag: "🇨🇦", name: "Toronto" },
+        { flag: "🇮🇳", name: "Mumbai" },
+        { flag: "🇳🇱", name: "Amsterdam" },
+      ];
+      let propHour = 0;
+      let propState = propNodes.map(() => "stale");
+
+      function buildPropWorld() {
+        const w = document.getElementById("propWorld");
+        w.innerHTML = "";
+        propNodes.forEach((n, i) => {
+          const d = document.createElement("div");
+          d.className = "prop-node " + propState[i];
+          d.id = "pn" + i;
+          d.innerHTML = `<div class="pn-flag">${n.flag}</div><div class="pn-name">${n.name}</div><div style="font-size:10px;margin-top:4px">${propState[i] === "updated" ? "✓ new IP" : propState[i] === "stale" ? "⏳ old IP" : "?"}</div>`;
+          w.appendChild(d);
+        });
+      }
+      buildPropWorld();
+
+      function stepProp() {
+        propHour = Math.min(propHour + 1, 48);
+        document.getElementById("propHour").textContent = propHour;
+        // Random nodes update per hour
+        propNodes.forEach((_, i) => {
+          if (propState[i] !== "updated") {
+            // Random TTL expiry: weighted by hour
+            const chance = propHour / 12;
+            if (Math.random() < chance) propState[i] = "updated";
+          }
+        });
+        if (propHour >= 2) propState[0] = "updated"; // Authoritative update is instant
+        buildPropWorld();
+        const updated = propState.filter((s) => s === "updated").length;
+        const pct = Math.round((updated / propNodes.length) * 100);
+        document.getElementById("propStatus").innerHTML =
+          `Hour ${propHour}: <span style="color:var(--green)">${updated}/${propNodes.length} resolvers (${pct}%)</span> have the new IP. ` +
+          (pct >= 100
+            ? '<strong style="color:var(--green)">✅ Propagation complete!</strong>'
+            : propHour >= 24
+              ? "Most resolvers updated. Some remote ones may still be stale."
+              : "Propagation in progress. Resolvers update as their cached TTL expires.");
+      }
+
+      function resetProp() {
+        propHour = 0;
+        propState = propNodes.map(() => "stale");
+        document.getElementById("propHour").textContent = 0;
+        buildPropWorld();
+        document.getElementById("propStatus").textContent =
+          "You just changed your DNS A record. The authoritative server has the new IP. All resolvers worldwide still have the old IP cached.";
+      }
+
+      // ── CDN MAP ───────────────────────────────────────────────────────
+      const edges = [
+        {
+          id: "origin",
+          name: "Origin\n(your server)",
+          x: 50,
+          y: 40,
+          flag: "🖥️",
+          origin: true,
+          location: "Frankfurt, Germany",
+        },
+        {
+          id: "sg",
+          name: "Singapore",
+          x: 78,
+          y: 55,
+          flag: "🇸🇬",
+          latency: 8,
+          ip: "103.21.244.0",
+        },
+        {
+          id: "ny",
+          name: "New York",
+          x: 22,
+          y: 30,
+          flag: "🇺🇸",
+          latency: 5,
+          ip: "104.22.10.2",
+        },
+        {
+          id: "ld",
+          name: "London",
+          x: 44,
+          y: 22,
+          flag: "🇬🇧",
+          latency: 3,
+          ip: "185.85.4.1",
+        },
+        {
+          id: "au",
+          name: "Sydney",
+          x: 82,
+          y: 72,
+          flag: "🇦🇺",
+          latency: 18,
+          ip: "103.31.4.10",
+        },
+        {
+          id: "bd",
+          name: "Dhaka",
+          x: 70,
+          y: 42,
+          flag: "🇧🇩",
+          latency: 12,
+          ip: "103.21.248.0",
+        },
+      ];
+
+      function buildEdgeMap() {
+        const container = document.getElementById("edgeNodes");
+        container.innerHTML = "";
+        const mapEl = document.getElementById("worldMap");
+        const mw = mapEl.offsetWidth || 600;
+        const mh = mapEl.offsetHeight || 260;
+
+        edges.forEach((e) => {
+          const d = document.createElement("div");
+          d.className = "edge-node" + (e.origin ? " origin" : "");
+          d.id = "edge_" + e.id;
+          d.title = e.name;
+          d.innerHTML = e.flag;
+          d.style.left = (e.x / 100) * mw - 19 + "px";
+          d.style.top = (e.y / 100) * mh - 19 + "px";
+          if (!e.origin) {
+            d.onclick = () => selectEdge(e, mw, mh);
+          }
+          container.appendChild(d);
+        });
+
+        // User dot at Bangladesh
+        const bd = edges.find((e) => e.id === "bd");
+        const udot = document.getElementById("userDot");
+        udot.style.display = "block";
+        udot.style.left = (bd.x / 100) * mw - 6 + "px";
+        udot.style.top = (bd.y / 100) * mh - 20 + "px";
+      }
+
+      function selectEdge(edge, mw, mh) {
+        document
+          .querySelectorAll(".edge-node")
+          .forEach((e) => e.classList.remove("active"));
+        document.getElementById("edge_" + edge.id).classList.add("active");
+        const result = document.getElementById("cdnResult");
+        result.style.display = "block";
+        const isSelf = edge.id === "bd";
+        result.innerHTML =
+          `<span style="color:var(--green)">DNS GEO-RESPONSE for myblog.com (queried from Bangladesh):</span><br>` +
+          `Nearest edge selected: <span style="color:var(--teal)">${edge.name}</span> — ${edge.ip} (latency ~${edge.latency}ms)<br>` +
+          (isSelf
+            ? `<span style="color:var(--green)">✓ Optimal — you are routing to the nearest edge node</span>`
+            : `<span style="color:var(--amber)">⚠ This is NOT the nearest — Dhaka edge would be ${edge.latency - 12}ms faster</span>`);
+      }
+
+      setTimeout(buildEdgeMap, 100);
+      window.addEventListener("resize", buildEdgeMap);
+
+      // ── COPY CODE ─────────────────────────────────────────────────────
+      function copyCode(btn) {
+        const text = btn.closest(".code-wrap").querySelector("pre").innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.textContent = "copied!";
+          btn.style.color = "var(--green)";
+          setTimeout(() => {
+            btn.textContent = "copy";
+            btn.style.color = "";
+          }, 2000);
+        });
+      }
+    </script>
+  </body>
+</html>

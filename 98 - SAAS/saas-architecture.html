@@ -1,0 +1,2886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building SaaS Like Shopify — Complete Architecture Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c10;
+  --bg2: #0f1219;
+  --bg3: #161b26;
+  --bg4: #1c2333;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8eaf0;
+  --text2: #8b91a8;
+  --text3: #555e78;
+  --accent: #4f9cf9;
+  --accent2: #7c6af7;
+  --green: #34c78a;
+  --amber: #f5a623;
+  --red: #f25555;
+  --pink: #f06292;
+  --teal: #26c6da;
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'Outfit', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* GRID LINES BACKGROUND */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;
+  z-index:0;
+  opacity:0.4;
+}
+
+/* SIDEBAR NAV */
+.sidebar{
+  position:fixed;
+  left:0;top:0;bottom:0;
+  width:240px;
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  z-index:100;
+  overflow-y:auto;
+  padding:24px 0;
+}
+.sidebar-logo{
+  padding:0 20px 20px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:16px;
+}
+.sidebar-logo h1{
+  font-family:var(--serif);
+  font-size:17px;
+  color:var(--text);
+  line-height:1.3;
+}
+.sidebar-logo span{
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--accent);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+.nav-section{
+  padding:4px 20px;
+  font-size:10px;
+  font-weight:600;
+  color:var(--text3);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-top:12px;
+  margin-bottom:4px;
+}
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 20px;
+  cursor:pointer;
+  transition:all .15s;
+  border-left:2px solid transparent;
+  font-size:13px;
+  color:var(--text2);
+  text-decoration:none;
+}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{
+  background:rgba(79,156,249,0.08);
+  color:var(--accent);
+  border-left-color:var(--accent);
+}
+.nav-dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:currentColor;
+  opacity:0.6;
+  flex-shrink:0;
+}
+
+/* MAIN CONTENT */
+.main{
+  margin-left:240px;
+  position:relative;
+  z-index:1;
+}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:80px 60px;
+  border-bottom:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.hero::after{
+  content:'';
+  position:absolute;
+  top:-200px;right:-200px;
+  width:600px;height:600px;
+  background:radial-gradient(circle, rgba(79,156,249,0.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(79,156,249,0.1);
+  border:1px solid rgba(79,156,249,0.2);
+  border-radius:20px;
+  padding:6px 14px;
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--accent);
+  letter-spacing:.08em;
+  margin-bottom:32px;
+  width:fit-content;
+}
+.hero h1{
+  font-family:var(--serif);
+  font-size:clamp(40px, 5vw, 72px);
+  font-weight:400;
+  line-height:1.1;
+  margin-bottom:20px;
+  max-width:700px;
+}
+.hero h1 em{
+  font-style:italic;
+  color:var(--accent);
+}
+.hero p{
+  font-size:18px;
+  color:var(--text2);
+  max-width:600px;
+  line-height:1.7;
+  margin-bottom:40px;
+  font-weight:300;
+}
+.hero-stats{
+  display:flex;
+  gap:40px;
+  flex-wrap:wrap;
+}
+.hero-stat{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.hero-stat .num{
+  font-family:var(--serif);
+  font-size:32px;
+  color:var(--text);
+  line-height:1;
+}
+.hero-stat .label{
+  font-size:12px;
+  color:var(--text3);
+  font-family:var(--mono);
+  letter-spacing:.06em;
+}
+
+/* SECTION */
+.section{
+  padding:80px 60px;
+  border-bottom:1px solid var(--border);
+}
+.section-tag{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--accent);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+.section h2{
+  font-family:var(--serif);
+  font-size:clamp(28px,3vw,44px);
+  font-weight:400;
+  line-height:1.2;
+  margin-bottom:16px;
+}
+.section .lead{
+  font-size:16px;
+  color:var(--text2);
+  max-width:680px;
+  line-height:1.7;
+  margin-bottom:48px;
+  font-weight:300;
+}
+
+/* CARDS */
+.card{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:24px;
+  transition:border-color .2s;
+}
+.card:hover{border-color:var(--border2)}
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:16px;
+}
+.card h3{
+  font-family:var(--sans);
+  font-size:15px;
+  font-weight:600;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.card p{
+  font-size:13px;
+  color:var(--text2);
+  line-height:1.6;
+}
+
+/* TIMELINE */
+.timeline{
+  position:relative;
+  padding-left:32px;
+}
+.timeline::before{
+  content:'';
+  position:absolute;
+  left:8px;top:0;bottom:0;
+  width:1px;
+  background:linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+}
+.timeline-item{
+  position:relative;
+  margin-bottom:40px;
+}
+.timeline-item::before{
+  content:'';
+  position:absolute;
+  left:-28px;top:6px;
+  width:10px;height:10px;
+  border-radius:50%;
+  background:var(--accent);
+  border:2px solid var(--bg);
+  box-shadow:0 0 0 3px rgba(79,156,249,0.2);
+}
+.timeline-item h3{
+  font-size:16px;
+  font-weight:600;
+  margin-bottom:6px;
+  color:var(--text);
+}
+.timeline-item p{
+  font-size:13px;
+  color:var(--text2);
+  line-height:1.6;
+}
+.timeline-badge{
+  display:inline-block;
+  font-family:var(--mono);
+  font-size:10px;
+  padding:3px 10px;
+  border-radius:4px;
+  margin-bottom:8px;
+  letter-spacing:.05em;
+}
+.badge-green{background:rgba(52,199,138,0.1);color:var(--green);border:1px solid rgba(52,199,138,0.2)}
+.badge-amber{background:rgba(245,166,35,0.1);color:var(--amber);border:1px solid rgba(245,166,35,0.2)}
+.badge-red{background:rgba(242,85,85,0.1);color:var(--red);border:1px solid rgba(242,85,85,0.2)}
+.badge-blue{background:rgba(79,156,249,0.1);color:var(--accent);border:1px solid rgba(79,156,249,0.2)}
+.badge-purple{background:rgba(124,106,247,0.1);color:var(--accent2);border:1px solid rgba(124,106,247,0.2)}
+.badge-teal{background:rgba(38,198,218,0.1);color:var(--teal);border:1px solid rgba(38,198,218,0.2)}
+
+/* CODE BLOCK */
+.code-block{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:10px;
+  overflow:hidden;
+  margin:16px 0;
+}
+.code-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 16px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg2);
+}
+.code-header span{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--text3);
+}
+.code-dots{display:flex;gap:6px}
+.code-dot{width:10px;height:10px;border-radius:50%}
+pre{
+  padding:20px;
+  font-family:var(--mono);
+  font-size:12.5px;
+  line-height:1.7;
+  overflow-x:auto;
+  color:var(--text);
+}
+pre .k{color:#c792ea}
+pre .s{color:#c3e88d}
+pre .c{color:var(--text3);font-style:italic}
+pre .n{color:var(--accent)}
+pre .num{color:var(--amber)}
+pre .kw{color:var(--teal)}
+pre .cm{color:var(--text3)}
+pre .fn{color:var(--pink)}
+pre .prop{color:var(--amber)}
+
+/* DIAGRAM / FLOW */
+.flow-container{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:32px;
+  margin:24px 0;
+}
+
+/* TABLE */
+.data-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+.data-table th{
+  text-align:left;
+  padding:10px 14px;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--text3);
+  border-bottom:1px solid var(--border);
+  font-family:var(--mono);
+}
+.data-table td{
+  padding:10px 14px;
+  border-bottom:1px solid var(--border);
+  font-family:var(--mono);
+  font-size:12px;
+  vertical-align:top;
+}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,255,255,0.02)}
+.col-pk{color:var(--amber)}
+.col-fk{color:var(--green)}
+.col-enc{color:var(--pink)}
+.col-type{color:var(--text3)}
+.col-note{color:var(--text2);font-family:var(--sans);font-size:12px}
+
+/* TABS */
+.tab-container{margin:24px 0}
+.tab-nav{
+  display:flex;
+  gap:4px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:24px;
+  overflow-x:auto;
+}
+.tab-btn{
+  padding:10px 18px;
+  font-size:13px;
+  cursor:pointer;
+  color:var(--text2);
+  border:none;
+  background:none;
+  font-family:var(--sans);
+  border-bottom:2px solid transparent;
+  white-space:nowrap;
+  transition:all .15s;
+}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* STEP FLOW */
+.step-flow{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+.step{
+  display:flex;
+  gap:20px;
+  padding:20px 0;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  transition:background .15s;
+  border-radius:8px;
+  padding:16px;
+}
+.step:last-child{border-bottom:none}
+.step:hover{background:rgba(255,255,255,0.02)}
+.step-num{
+  width:36px;height:36px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:var(--mono);
+  font-size:13px;
+  font-weight:500;
+  flex-shrink:0;
+}
+.step-content h4{
+  font-size:15px;
+  font-weight:600;
+  margin-bottom:4px;
+}
+.step-content p{
+  font-size:13px;
+  color:var(--text2);
+  line-height:1.6;
+}
+.step-content code{
+  font-family:var(--mono);
+  font-size:12px;
+  background:var(--bg);
+  padding:1px 6px;
+  border-radius:4px;
+  color:var(--accent);
+  border:1px solid var(--border);
+}
+
+/* TRADEOFF TABLE */
+.tradeoff{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin:16px 0;
+}
+.tradeoff-col{
+  background:var(--bg3);
+  border-radius:10px;
+  padding:20px;
+}
+.tradeoff-col h4{
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.tradeoff-col ul{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.tradeoff-col li{
+  font-size:13px;
+  color:var(--text2);
+  padding-left:16px;
+  position:relative;
+  line-height:1.5;
+}
+.tradeoff-col li::before{
+  content:'';
+  position:absolute;
+  left:0;top:7px;
+  width:6px;height:6px;
+  border-radius:50%;
+}
+.pro li::before{background:var(--green)}
+.con li::before{background:var(--red)}
+.pro{border:1px solid rgba(52,199,138,0.15)}
+.con{border:1px solid rgba(242,85,85,0.15)}
+
+/* HIGHLIGHT BOX */
+.highlight{
+  border-left:3px solid var(--accent);
+  background:rgba(79,156,249,0.05);
+  border-radius:0 8px 8px 0;
+  padding:16px 20px;
+  margin:16px 0;
+  font-size:14px;
+  color:var(--text2);
+  line-height:1.6;
+}
+.highlight.warning{border-left-color:var(--amber);background:rgba(245,166,35,0.05);color:var(--text2)}
+.highlight.danger{border-left-color:var(--red);background:rgba(242,85,85,0.05)}
+.highlight.success{border-left-color:var(--green);background:rgba(52,199,138,0.05)}
+
+/* ARCH DIAGRAM */
+.arch-layer{
+  border:1px solid var(--border);
+  border-radius:8px;
+  margin-bottom:8px;
+  overflow:hidden;
+}
+.arch-layer-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 16px;
+  background:var(--bg4);
+  cursor:pointer;
+  transition:background .15s;
+}
+.arch-layer-header:hover{background:rgba(255,255,255,0.04)}
+.arch-layer-body{
+  padding:16px;
+  border-top:1px solid var(--border);
+  display:none;
+  background:var(--bg3);
+}
+.arch-layer-body.open{display:block}
+.arch-label{
+  font-size:13px;
+  font-weight:600;
+  flex:1;
+}
+.arch-sub{font-size:12px;color:var(--text3)}
+
+/* COMPARISON GRID */
+.compare-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin:20px 0;
+}
+.compare-card{
+  border-radius:10px;
+  padding:20px;
+  border:1px solid var(--border);
+  background:var(--bg3);
+  position:relative;
+}
+.compare-card.recommended{
+  border-color:rgba(79,156,249,0.3);
+  background:rgba(79,156,249,0.05);
+}
+.compare-card.recommended::before{
+  content:'RECOMMENDED';
+  position:absolute;
+  top:-10px;left:50%;transform:translateX(-50%);
+  background:var(--accent);
+  color:#000;
+  font-size:9px;
+  font-family:var(--mono);
+  font-weight:500;
+  letter-spacing:.1em;
+  padding:3px 10px;
+  border-radius:4px;
+}
+.compare-card h4{font-size:14px;font-weight:600;margin-bottom:8px}
+.compare-card p{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px}
+.compare-card .compare-tag{
+  font-size:11px;
+  font-family:var(--mono);
+  padding:3px 9px;
+  border-radius:4px;
+  display:inline-block;
+  margin-bottom:10px;
+}
+.compare-card ul{font-size:12px;color:var(--text2);padding-left:16px}
+.compare-card li{margin-bottom:4px}
+
+/* SIMULATE BUTTON */
+.sim-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 20px;
+  background:rgba(79,156,249,0.1);
+  border:1px solid rgba(79,156,249,0.25);
+  border-radius:8px;
+  color:var(--accent);
+  font-size:13px;
+  cursor:pointer;
+  font-family:var(--sans);
+  transition:all .15s;
+  margin:8px 4px;
+}
+.sim-btn:hover{background:rgba(79,156,249,0.2)}
+.sim-btn.running{
+  background:rgba(52,199,138,0.1);
+  border-color:rgba(52,199,138,0.25);
+  color:var(--green);
+}
+
+/* SIMULATION OUTPUT */
+.sim-output{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:16px;
+  font-family:var(--mono);
+  font-size:12px;
+  line-height:1.8;
+  min-height:120px;
+  margin:12px 0;
+  max-height:280px;
+  overflow-y:auto;
+}
+.sim-line{animation:fadeInLine .1s ease}
+@keyframes fadeInLine{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.sim-ok{color:var(--green)}
+.sim-info{color:var(--accent)}
+.sim-warn{color:var(--amber)}
+.sim-err{color:var(--red)}
+.sim-dim{color:var(--text3)}
+
+/* PROGRESS */
+.progress-bar{
+  height:4px;
+  background:var(--bg4);
+  border-radius:2px;
+  overflow:hidden;
+  margin:8px 0;
+}
+.progress-fill{
+  height:100%;
+  border-radius:2px;
+  transition:width .5s ease;
+}
+
+/* METRIC CARDS */
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;
+  margin:20px 0;
+}
+.metric{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px;
+}
+.metric .val{
+  font-family:var(--serif);
+  font-size:28px;
+  line-height:1;
+  margin-bottom:4px;
+}
+.metric .lbl{
+  font-size:12px;
+  color:var(--text3);
+  font-family:var(--mono);
+  letter-spacing:.05em;
+}
+.metric .chg{
+  font-size:11px;
+  margin-top:6px;
+}
+
+/* INLINE TAGS */
+.tag{
+  display:inline-block;
+  font-size:11px;
+  font-family:var(--mono);
+  padding:2px 8px;
+  border-radius:4px;
+  margin:0 2px;
+}
+
+/* DECISION TREE */
+.decision-node{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin:20px 0;
+}
+.d-node{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px 20px;
+  cursor:pointer;
+  transition:all .2s;
+  position:relative;
+}
+.d-node:hover{border-color:var(--border2)}
+.d-node.selected{border-color:var(--accent);background:rgba(79,156,249,0.05)}
+.d-node h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.d-node p{font-size:12px;color:var(--text2)}
+.d-result{
+  background:rgba(52,199,138,0.08);
+  border:1px solid rgba(52,199,138,0.2);
+  border-radius:10px;
+  padding:16px 20px;
+  margin-top:8px;
+  font-size:13px;
+  color:var(--green);
+  display:none;
+}
+.d-result.show{display:block}
+
+/* CHART BARS */
+.bar-chart{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin:16px 0;
+}
+.bar-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.bar-label{
+  font-size:12px;
+  font-family:var(--mono);
+  color:var(--text2);
+  width:160px;
+  flex-shrink:0;
+  text-align:right;
+}
+.bar-track{
+  flex:1;
+  height:24px;
+  background:var(--bg4);
+  border-radius:4px;
+  overflow:hidden;
+}
+.bar-fill{
+  height:100%;
+  border-radius:4px;
+  display:flex;
+  align-items:center;
+  padding-left:10px;
+  font-size:11px;
+  font-family:var(--mono);
+  color:rgba(0,0,0,0.7);
+  font-weight:500;
+  transition:width 1s ease;
+}
+
+/* PILL */
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:3px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-family:var(--mono);
+  border:1px solid;
+}
+
+/* SECTION IDs for nav */
+#hardware{scroll-margin-top:40px}
+#journey{scroll-margin-top:40px}
+#multitenancy{scroll-margin-top:40px}
+#database{scroll-margin-top:40px}
+#domains{scroll-margin-top:40px}
+#storefront{scroll-margin-top:40px}
+#payments{scroll-margin-top:40px}
+#security{scroll-margin-top:40px}
+#infra{scroll-margin-top:40px}
+#deployment{scroll-margin-top:40px}
+#checklist{scroll-margin-top:40px}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .sidebar{display:none}
+  .main{margin-left:0}
+  .section{padding:40px 24px}
+  .hero{padding:40px 24px}
+  .compare-grid{grid-template-columns:1fr}
+  .tradeoff{grid-template-columns:1fr}
+}
+
+/* ANIMATION */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.pulse{animation:pulse 2s infinite}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.slide-in{animation:slideIn .3s ease forwards}
+
+/* SVG DIAGRAM STYLES */
+.svg-container{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:24px;
+  overflow-x:auto;
+}
+svg text{font-family:'Outfit', sans-serif}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>SaaS Architecture<br>Complete Guide</h1>
+    <span>From Zero to Shopify</span>
+  </div>
+
+  <div class="nav-section">Foundation</div>
+  <a class="nav-item" href="#hero"><span class="nav-dot"></span>Overview</a>
+  <a class="nav-item" href="#journey"><span class="nav-dot"></span>Journey Map</a>
+  <a class="nav-item" href="#hardware"><span class="nav-dot"></span>Hardware & Infra</a>
+
+  <div class="nav-section">Architecture</div>
+  <a class="nav-item" href="#multitenancy"><span class="nav-dot"></span>Multi-tenancy</a>
+  <a class="nav-item" href="#database"><span class="nav-dot"></span>Database Design</a>
+  <a class="nav-item" href="#domains"><span class="nav-dot"></span>Domains & Subdomains</a>
+
+  <div class="nav-section">Core Systems</div>
+  <a class="nav-item" href="#storefront"><span class="nav-dot"></span>Dynamic Storefronts</a>
+  <a class="nav-item" href="#payments"><span class="nav-dot"></span>Payment Systems</a>
+  <a class="nav-item" href="#security"><span class="nav-dot"></span>Security Design</a>
+
+  <div class="nav-section">Operations</div>
+  <a class="nav-item" href="#infra"><span class="nav-dot"></span>Infrastructure</a>
+  <a class="nav-item" href="#deployment"><span class="nav-dot"></span>Deployment Models</a>
+  <a class="nav-item" href="#checklist"><span class="nav-dot"></span>Launch Checklist</a>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-badge">
+    <span class="pulse" style="width:6px;height:6px;background:var(--green);border-radius:50%;display:inline-block"></span>
+    Deep Research Guide · 2024
+  </div>
+  <h1>Building <em>SaaS</em> like<br>Shopify — Complete</h1>
+  <p>Everything from bare metal servers to wildcard SSL certificates, from row-level security to dynamic storefront generation. A complete engineering map for building a multi-tenant e-commerce platform.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="num">12</span>
+      <span class="label">Architecture Layers</span>
+    </div>
+    <div class="hero-stat">
+      <span class="num">47</span>
+      <span class="label">Design Decisions</span>
+    </div>
+    <div class="hero-stat">
+      <span class="num">6</span>
+      <span class="label">Live Simulations</span>
+    </div>
+    <div class="hero-stat">
+      <span class="num">∞</span>
+      <span class="label">Tenants Supported</span>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNEY MAP -->
+<section class="section" id="journey">
+  <div class="section-tag">§ 01 — The Big Picture</div>
+  <h2>From Your App to Shopify Scale</h2>
+  <p class="lead">You have a working e-commerce app. Here's exactly how it evolves into a platform that hosts thousands of stores — each decision and what it unlocks.</p>
+
+  <div class="tab-container">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab(this,'journey-stages')">Evolution Stages</button>
+      <button class="tab-btn" onclick="switchTab(this,'journey-shopify')">What Shopify Actually Does</button>
+      <button class="tab-btn" onclick="switchTab(this,'journey-mental')">Mental Model</button>
+    </div>
+    <div id="tab-journey-stages" class="tab-panel active">
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-badge badge-blue">Stage 0 — You Are Here</span>
+          <h3>Single-tenant e-commerce app</h3>
+          <p>One database, one admin, one frontend, one backend. Your app serves exactly one store — yours. The codebase is simple, fast to build, but impossible to sell to other businesses as-is.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-badge badge-green">Stage 1 — Add store_id everywhere</span>
+          <h3>Shared database, shared schema</h3>
+          <p>You add a <code style="font-family:var(--mono);color:var(--accent);background:var(--bg4);padding:1px 5px;border-radius:3px">store_id</code> UUID column to every table. Every query appends <code style="font-family:var(--mono);color:var(--accent);background:var(--bg4);padding:1px 5px;border-radius:3px">WHERE store_id = $ctx</code>. You now host multiple stores on one database. This is the most important structural change — everything else builds on it.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-badge badge-green">Stage 2 — Subdomain routing</span>
+          <h3>Dynamic subdomains per store</h3>
+          <p>A wildcard DNS record (<code style="font-family:var(--mono);color:var(--accent);background:var(--bg4);padding:1px 5px;border-radius:3px">*.yourplatform.com → your-server</code>) routes every subdomain to you. Your server reads the <code style="font-family:var(--mono);color:var(--accent);background:var(--bg4);padding:1px 5px;border-radius:3px">Host</code> header and looks up the store. Merchants get <code style="font-family:var(--mono);color:var(--accent);background:var(--bg4);padding:1px 5px;border-radius:3px">their-store.yourplatform.com</code> instantly.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-badge badge-amber">Stage 3 — Custom domains</span>
+          <h3>Merchants bring their own domain</h3>
+          <p>Merchants add a CNAME record pointing to you. You verify ownership, provision a TLS certificate via Let's Encrypt, and route traffic to their store. Each custom domain gets a unique SSL cert automatically.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-badge badge-amber">Stage 4 — Theme system</span>
+          <h3>Dynamic storefront rendering</h3>
+          <p>Themes are JSON config stored in your database — not code. Your renderer reads the JSON and generates the HTML. Merchants use a visual editor to change colors, layouts, and sections. No code is ever written by merchants.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-badge badge-red">Stage 5 — Payment isolation</span>
+          <h3>Per-store payment credentials</h3>
+          <p>Each store connects their own Stripe account (or SSLCommerz / bKash for BD markets). Your platform handles the routing — detect which store is checking out, decrypt their credentials, initiate the charge on their behalf. Money flows directly to them.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-badge badge-purple">Stage 6 — Shopify scale</span>
+          <h3>Platform marketplace, apps, webhooks</h3>
+          <p>App ecosystem, Liquid-like templating, storefront API for headless builds, webhooks per store, revenue sharing. This is where you have hundreds of thousands of stores and need a dedicated infra team.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-journey-shopify" class="tab-panel">
+      <div class="highlight">Shopify was built exactly this way — starting as a single store (for snowboards) and gradually becoming the platform. Tobi Lütke literally extracted the store engine into a framework (Merb → Rails) and opened it up.</div>
+
+      <div class="card-grid" style="margin-top:20px">
+        <div class="card">
+          <h3>🏗️ Infrastructure reality</h3>
+          <p>Shopify runs on Google Cloud Platform (GCP) with a mix of bare-metal servers co-located in data centers. They use MySQL (Vitess sharded) as primary database, Redis for caching/sessions, Kafka for event streaming. At 2024 scale: 1.75 million merchants, petabytes of data.</p>
+        </div>
+        <div class="card">
+          <h3>🗄️ Database architecture</h3>
+          <p>Shopify uses a technique called "pod architecture" — they shard the database into hundreds of pods, each containing a slice of stores. A store always lives in one pod. This is how they went from one MySQL instance to handling Black Friday spikes.</p>
+        </div>
+        <div class="card">
+          <h3>🌐 Domain handling</h3>
+          <p>Shopify uses Cloudflare's "Cloudflare for SaaS" product for custom domain SSL at scale. Each custom domain gets a TLS cert via ACME/Let's Encrypt automatically within minutes of CNAME verification.</p>
+        </div>
+        <div class="card">
+          <h3>💡 Key insight</h3>
+          <p>Shopify's entire storefront rendering went headless — Hydrogen (React), Oxygen (hosting), Storefront API. The "theme" is just a React app that calls their GraphQL API. You can replicate this pattern at any scale.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-journey-mental" class="tab-panel">
+      <p style="color:var(--text2);font-size:14px;margin-bottom:24px">The core mental model: you are not building an e-commerce store. You are building a <strong style="color:var(--text)">store factory</strong>.</p>
+      <div class="svg-container">
+        <svg width="100%" viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowW" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="#4f9cf9" stroke-width="1.5" stroke-linecap="round"/>
+            </marker>
+          </defs>
+          <!-- Your Platform Box -->
+          <rect x="20" y="80" width="220" height="140" rx="10" fill="rgba(79,156,249,0.06)" stroke="rgba(79,156,249,0.3)" stroke-width="1"/>
+          <text x="130" y="110" text-anchor="middle" fill="#4f9cf9" font-size="13" font-weight="600">YOUR PLATFORM</text>
+          <text x="130" y="130" text-anchor="middle" fill="#8b91a8" font-size="11">1 database</text>
+          <text x="130" y="148" text-anchor="middle" fill="#8b91a8" font-size="11">1 backend API</text>
+          <text x="130" y="166" text-anchor="middle" fill="#8b91a8" font-size="11">1 codebase</text>
+          <text x="130" y="184" text-anchor="middle" fill="#8b91a8" font-size="11">∞ stores</text>
+          <!-- Arrow -->
+          <line x1="240" y1="150" x2="310" y2="150" stroke="#4f9cf9" stroke-width="1.5" marker-end="url(#arrowW)"/>
+          <text x="275" y="142" text-anchor="middle" fill="#8b91a8" font-size="10">generates</text>
+          <!-- Store 1 -->
+          <rect x="320" y="40" width="150" height="70" rx="8" fill="rgba(52,199,138,0.06)" stroke="rgba(52,199,138,0.25)" stroke-width="1"/>
+          <text x="395" y="65" text-anchor="middle" fill="#34c78a" font-size="12" font-weight="600">Store A</text>
+          <text x="395" y="82" text-anchor="middle" fill="#8b91a8" font-size="10">brand.yourplatform.com</text>
+          <text x="395" y="97" text-anchor="middle" fill="#8b91a8" font-size="10">Blue theme • Stripe BD</text>
+          <!-- Store 2 -->
+          <rect x="320" y="130" width="150" height="70" rx="8" fill="rgba(124,106,247,0.06)" stroke="rgba(124,106,247,0.25)" stroke-width="1"/>
+          <text x="395" y="155" text-anchor="middle" fill="#7c6af7" font-size="12" font-weight="600">Store B</text>
+          <text x="395" y="172" text-anchor="middle" fill="#8b91a8" font-size="10">shop.theirdomain.com</text>
+          <text x="395" y="187" text-anchor="middle" fill="#8b91a8" font-size="10">Dark theme • bKash</text>
+          <!-- Store 3 -->
+          <rect x="320" y="220" width="150" height="70" rx="8" fill="rgba(245,166,35,0.06)" stroke="rgba(245,166,35,0.25)" stroke-width="1"/>
+          <text x="395" y="245" text-anchor="middle" fill="#f5a623" font-size="12" font-weight="600">Store N</text>
+          <text x="395" y="262" text-anchor="middle" fill="#8b91a8" font-size="10">fashion.myshop.com</text>
+          <text x="395" y="277" text-anchor="middle" fill="#8b91a8" font-size="10">Custom theme • SSLCommerz</text>
+          <!-- Arrows to stores -->
+          <line x1="315" y1="85" x2="285" y2="130" stroke="rgba(52,199,138,0.4)" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="315" y1="165" x2="285" y2="155" stroke="rgba(124,106,247,0.4)" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="315" y1="245" x2="285" y2="175" stroke="rgba(245,166,35,0.4)" stroke-width="1" stroke-dasharray="4 3"/>
+          <!-- Right side: what each store sees -->
+          <line x1="470" y1="75" x2="540" y2="75" stroke="rgba(52,199,138,0.4)" stroke-width="1" marker-end="url(#arrowW)"/>
+          <line x1="470" y1="165" x2="540" y2="165" stroke="rgba(124,106,247,0.4)" stroke-width="1" marker-end="url(#arrowW)"/>
+          <line x1="470" y1="255" x2="540" y2="255" stroke="rgba(245,166,35,0.4)" stroke-width="1" marker-end="url(#arrowW)"/>
+          <!-- Customer boxes -->
+          <rect x="545" y="50" width="130" height="50" rx="6" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+          <text x="610" y="72" text-anchor="middle" fill="#e8eaf0" font-size="11">Customers see</text>
+          <text x="610" y="88" text-anchor="middle" fill="#8b91a8" font-size="10">unique branded store</text>
+          <rect x="545" y="140" width="130" height="50" rx="6" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+          <text x="610" y="162" text-anchor="middle" fill="#e8eaf0" font-size="11">Customers see</text>
+          <text x="610" y="178" text-anchor="middle" fill="#8b91a8" font-size="10">unique branded store</text>
+          <rect x="545" y="230" width="130" height="50" rx="6" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+          <text x="610" y="252" text-anchor="middle" fill="#e8eaf0" font-size="11">Customers see</text>
+          <text x="610" y="268" text-anchor="middle" fill="#8b91a8" font-size="10">unique branded store</text>
+          <!-- Note -->
+          <rect x="700" y="100" width="185" height="100" rx="8" fill="rgba(79,156,249,0.05)" stroke="rgba(79,156,249,0.2)" stroke-width="1"/>
+          <text x="793" y="125" text-anchor="middle" fill="#4f9cf9" font-size="11" font-weight="600">KEY INSIGHT</text>
+          <text x="793" y="145" text-anchor="middle" fill="#8b91a8" font-size="10">One server handles all.</text>
+          <text x="793" y="162" text-anchor="middle" fill="#8b91a8" font-size="10">Isolation = data queries.</text>
+          <text x="793" y="179" text-anchor="middle" fill="#8b91a8" font-size="10">Branding = database config.</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HARDWARE & INFRASTRUCTURE -->
+<section class="section" id="hardware">
+  <div class="section-tag">§ 02 — Bottom Layer</div>
+  <h2>Hardware to Network Stack</h2>
+  <p class="lead">Understanding what physically runs your platform — from the actual servers to how bytes travel from a data center to a customer's browser in Bangladesh.</p>
+
+  <div class="tab-container">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab(this,'hw-stack')">The Full Stack</button>
+      <button class="tab-btn" onclick="switchTab(this,'hw-options')">Hosting Options</button>
+      <button class="tab-btn" onclick="switchTab(this,'hw-sizing')">Right-sizing</button>
+      <button class="tab-btn" onclick="switchTab(this,'hw-sim')">Network Simulation</button>
+    </div>
+
+    <div id="tab-hw-stack" class="tab-panel active">
+      <div class="svg-container">
+        <svg width="100%" viewBox="0 0 860 480" xmlns="http://www.w3.org/2000/svg">
+          <!-- Layer labels -->
+          <!-- L7: User -->
+          <rect x="20" y="20" width="820" height="50" rx="6" fill="rgba(79,156,249,0.05)" stroke="rgba(79,156,249,0.15)" stroke-width="1"/>
+          <text x="40" y="50" fill="#4f9cf9" font-size="12" font-weight="600">LAYER 7 — USER</text>
+          <text x="220" y="50" fill="#8b91a8" font-size="11">Browser / Mobile App — sends HTTP request to shop.merchant.com</text>
+          <!-- Arrow down -->
+          <line x1="430" y1="70" x2="430" y2="90" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" marker-end="url(#arrowW)"/>
+          <!-- L6: DNS -->
+          <rect x="20" y="92" width="820" height="50" rx="6" fill="rgba(38,198,218,0.05)" stroke="rgba(38,198,218,0.15)" stroke-width="1"/>
+          <text x="40" y="122" fill="#26c6da" font-size="12" font-weight="600">LAYER 6 — DNS RESOLUTION</text>
+          <text x="300" y="122" fill="#8b91a8" font-size="11">shop.merchant.com → CNAME → yourplatform.com → A record → 203.0.113.10</text>
+          <line x1="430" y1="142" x2="430" y2="162" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" marker-end="url(#arrowW)"/>
+          <!-- L5: CDN/Proxy -->
+          <rect x="20" y="164" width="820" height="50" rx="6" fill="rgba(124,106,247,0.05)" stroke="rgba(124,106,247,0.15)" stroke-width="1"/>
+          <text x="40" y="194" fill="#7c6af7" font-size="12" font-weight="600">LAYER 5 — CDN / REVERSE PROXY</text>
+          <text x="330" y="194" fill="#8b91a8" font-size="11">Cloudflare / Nginx / Caddy — TLS termination, caching, rate limiting</text>
+          <line x1="430" y1="214" x2="430" y2="234" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" marker-end="url(#arrowW)"/>
+          <!-- L4: Load Balancer -->
+          <rect x="20" y="236" width="820" height="50" rx="6" fill="rgba(245,166,35,0.05)" stroke="rgba(245,166,35,0.15)" stroke-width="1"/>
+          <text x="40" y="266" fill="#f5a623" font-size="12" font-weight="600">LAYER 4 — LOAD BALANCER</text>
+          <text x="270" y="266" fill="#8b91a8" font-size="11">Distributes requests across app server instances — round-robin or least-connections</text>
+          <line x1="430" y1="286" x2="430" y2="306" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" marker-end="url(#arrowW)"/>
+          <!-- L3: App Servers -->
+          <rect x="20" y="308" width="820" height="50" rx="6" fill="rgba(52,199,138,0.05)" stroke="rgba(52,199,138,0.15)" stroke-width="1"/>
+          <text x="40" y="338" fill="#34c78a" font-size="12" font-weight="600">LAYER 3 — APP SERVERS</text>
+          <text x="270" y="338" fill="#8b91a8" font-size="11">Node.js / Python / Go — reads Host header → looks up store → queries DB → renders response</text>
+          <line x1="430" y1="358" x2="430" y2="378" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" marker-end="url(#arrowW)"/>
+          <!-- L2: Data Layer -->
+          <rect x="20" y="380" width="390" height="50" rx="6" fill="rgba(242,85,85,0.05)" stroke="rgba(242,85,85,0.15)" stroke-width="1"/>
+          <text x="40" y="410" fill="#f25555" font-size="12" font-weight="600">LAYER 2 — DATABASE</text>
+          <text x="220" y="410" fill="#8b91a8" font-size="11">Postgres — all tenant data</text>
+          <rect x="450" y="380" width="390" height="50" rx="6" fill="rgba(242,85,85,0.05)" stroke="rgba(242,85,85,0.15)" stroke-width="1"/>
+          <text x="470" y="410" fill="#f25555" font-size="12" font-weight="600">LAYER 2 — CACHE</text>
+          <text x="600" y="410" fill="#8b91a8" font-size="11">Redis — sessions, hot data</text>
+          <!-- L1: Storage -->
+          <rect x="20" y="440" width="820" height="30" rx="6" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+          <text x="430" y="460" text-anchor="middle" fill="#555e78" font-size="11">LAYER 1 — OBJECT STORAGE: Cloudflare R2 / AWS S3 — product images, assets</text>
+        </svg>
+      </div>
+    </div>
+
+    <div id="tab-hw-options" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:20px">Three deployment philosophies. Each has distinct cost profiles, operational burden, and scaling limits.</p>
+      <div class="compare-grid">
+        <div class="compare-card recommended">
+          <div class="compare-tag badge-blue">Cloud-managed PaaS</div>
+          <h4>Railway / Render / Fly.io</h4>
+          <p>Fully managed containers. You push code, they handle servers, networking, scaling, SSL.</p>
+          <div class="bar-chart" style="margin:12px 0">
+            <div class="bar-row"><span class="bar-label" style="width:80px;font-size:10px">Ops burden</span><div class="bar-track"><div class="bar-fill" style="width:15%;background:#34c78a">Low</div></div></div>
+            <div class="bar-row"><span class="bar-label" style="width:80px;font-size:10px">Cost (100 stores)</span><div class="bar-track"><div class="bar-fill" style="width:30%;background:#f5a623">~$50/mo</div></div></div>
+            <div class="bar-row"><span class="bar-label" style="width:80px;font-size:10px">Scale ceiling</span><div class="bar-track"><div class="bar-fill" style="width:60%;background:#4f9cf9">Medium</div></div></div>
+          </div>
+          <ul><li style="font-size:12px;color:var(--text2)">Start here — launch fast</li><li style="font-size:12px;color:var(--text2)">Pay as you grow</li><li style="font-size:12px;color:var(--text2)">No infrastructure expertise needed</li></ul>
+        </div>
+        <div class="compare-card">
+          <div class="compare-tag badge-amber">IaaS — Cloud VMs</div>
+          <h4>AWS EC2 / GCP / DigitalOcean</h4>
+          <p>You manage virtual servers. Full control over OS, software, networking.</p>
+          <div class="bar-chart" style="margin:12px 0">
+            <div class="bar-row"><span class="bar-label" style="width:80px;font-size:10px">Ops burden</span><div class="bar-track"><div class="bar-fill" style="width:55%;background:#f5a623">Med</div></div></div>
+            <div class="bar-row"><span class="bar-label" style="width:80px;font-size:10px">Cost (100 stores)</span><div class="bar-track"><div class="bar-fill" style="width:25%;background:#f5a623">~$30/mo</div></div></div>
+            <div class="bar-row"><span class="bar-label" style="width:80px;font-size:10px">Scale ceiling</span><div class="bar-track"><div class="bar-fill" style="width:85%;background:#4f9cf9">High</div></div></div>
+          </div>
+          <ul><li style="font-size:12px;color:var(--text2)">Move here at 1000+ stores</li><li style="font-size:12px;color:var(--text2)">More control, more ops work</li></ul>
+        </div>
+        <div class="compare-card">
+          <div class="compare-tag badge-purple">Bare Metal / Dedicated</div>
+          <h4>Hetzner / OVH dedicated servers</h4>
+          <p>Physical servers in a data center. No virtualization overhead, maximum performance per dollar.</p>
+          <div class="bar-chart" style="margin:12px 0">
+            <div class="bar-row"><span class="bar-label" style="width:80px;font-size:10px">Ops burden</span><div class="bar-track"><div class="bar-fill" style="width:90%;background:#f25555">High</div></div></div>
+            <div class="bar-row"><span class="bar-label" style="width:80px;font-size:10px">Cost (100 stores)</span><div class="bar-track"><div class="bar-fill" style="width:12%;background:#34c78a">~$20/mo</div></div></div>
+            <div class="bar-row"><span class="bar-label" style="width:80px;font-size:10px">Scale ceiling</span><div class="bar-track"><div class="bar-fill" style="width:95%;background:#4f9cf9">Very High</div></div></div>
+          </div>
+          <ul><li style="font-size:12px;color:var(--text2)">Shopify uses this at scale</li><li style="font-size:12px;color:var(--text2)">Needs dedicated SRE team</li></ul>
+        </div>
+      </div>
+      <div class="highlight warning">
+        <strong style="color:var(--amber)">Decision rule:</strong> Start with Railway or Fly.io. Move to AWS when your monthly infra bill exceeds $500 or you hit performance walls. Move to bare metal only when you have a dedicated infra team. Never start with bare metal.
+      </div>
+    </div>
+
+    <div id="tab-hw-sizing" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:20px">Rough resource requirements at each growth stage. These are minimums — always have headroom.</p>
+      <table class="data-table">
+        <thead><tr><th>Stage</th><th>Stores</th><th>App Server</th><th>Database</th><th>Cache</th><th>Monthly Cost</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge-green badge" style="font-size:11px;padding:2px 7px">Launch</span></td><td class="col-pk">1–50</td><td class="col-note">1× 2 vCPU / 2GB RAM</td><td class="col-note">Neon free tier / $20 plan</td><td class="col-note">Upstash Redis free</td><td style="color:var(--green)">~$20–50</td></tr>
+          <tr><td><span class="badge-blue badge" style="font-size:11px;padding:2px 7px">Growth</span></td><td class="col-pk">50–500</td><td class="col-note">2–3× 4 vCPU / 8GB</td><td class="col-note">Supabase Pro $25/mo</td><td class="col-note">Upstash $10/mo</td><td style="color:var(--accent)">~$100–300</td></tr>
+          <tr><td><span class="badge-amber badge" style="font-size:11px;padding:2px 7px">Scale</span></td><td class="col-pk">500–5K</td><td class="col-note">Auto-scaling pods 8+ vCPU</td><td class="col-note">RDS Postgres r6g.large</td><td class="col-note">ElastiCache cluster</td><td style="color:var(--amber)">~$500–2K</td></tr>
+          <tr><td><span class="badge-red badge" style="font-size:11px;padding:2px 7px">Enterprise</span></td><td class="col-pk">5K+</td><td class="col-note">K8s cluster with HPA</td><td class="col-note">Aurora + read replicas + Vitess sharding</td><td class="col-note">Redis Cluster multi-AZ</td><td style="color:var(--red)">$2K–20K+</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="tab-hw-sim" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Simulate the lifecycle of an HTTP request from customer browser to your database and back.</p>
+      <button class="sim-btn" onclick="simRequest()">▶ Simulate HTTP Request</button>
+      <div id="sim-request" class="sim-output"><span class="sim-dim">// Click simulate to trace a request through the stack...</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MULTI-TENANCY -->
+<section class="section" id="multitenancy">
+  <div class="section-tag">§ 03 — Core Architecture</div>
+  <h2>Multi-tenancy Design</h2>
+  <p class="lead">The foundational architectural decision. How you store and isolate data for multiple merchants sharing one platform. This decision affects every query you write forever.</p>
+
+  <div class="compare-grid" style="margin-bottom:32px">
+    <div class="compare-card recommended" onclick="selectTenancy(this,'t1')" style="cursor:pointer">
+      <div class="compare-tag badge-green">Start here</div>
+      <h4>Shared DB, Shared Schema</h4>
+      <p>One database. One set of tables. <code style="font-family:var(--mono);font-size:11px;color:var(--accent)">store_id</code> on every row.</p>
+      <ul>
+        <li style="font-size:12px;color:var(--green)">✓ Cheapest to operate</li>
+        <li style="font-size:12px;color:var(--green)">✓ One migration for all stores</li>
+        <li style="font-size:12px;color:var(--green)">✓ Easy cross-store analytics</li>
+        <li style="font-size:12px;color:var(--red)">✗ Must enforce isolation in code</li>
+        <li style="font-size:12px;color:var(--red)">✗ Noisy neighbor problem</li>
+      </ul>
+    </div>
+    <div class="compare-card" onclick="selectTenancy(this,'t2')" style="cursor:pointer">
+      <div class="compare-tag badge-amber">Scale tier</div>
+      <h4>Shared DB, Separate Schemas</h4>
+      <p>One Postgres DB. Each tenant gets their own schema namespace.</p>
+      <ul>
+        <li style="font-size:12px;color:var(--green)">✓ Better logical isolation</li>
+        <li style="font-size:12px;color:var(--green)">✓ Schema-level RLS built in</li>
+        <li style="font-size:12px;color:var(--red)">✗ N migrations per deployment</li>
+        <li style="font-size:12px;color:var(--red)">✗ Complex query routing</li>
+      </ul>
+    </div>
+    <div class="compare-card" onclick="selectTenancy(this,'t3')" style="cursor:pointer">
+      <div class="compare-tag badge-purple">Enterprise only</div>
+      <h4>Database per Tenant</h4>
+      <p>Each merchant gets a dedicated Postgres instance.</p>
+      <ul>
+        <li style="font-size:12px;color:var(--green)">✓ Maximum isolation</li>
+        <li style="font-size:12px;color:var(--green)">✓ Independent backups/restores</li>
+        <li style="font-size:12px;color:var(--red)">✗ Very expensive at scale</li>
+        <li style="font-size:12px;color:var(--red)">✗ N DBs to manage/monitor</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="tenancy-detail" style="margin-bottom:32px">
+    <div class="highlight success">
+      <strong style="color:var(--green)">Recommended: Shared DB, Shared Schema</strong><br>
+      This is how Shopify, Stripe, Slack, and virtually every SaaS platform started. The pattern is called "pool model" tenancy. Add Postgres Row Level Security (RLS) as an automatic safety net — even if your application code forgets to filter by store_id, the database itself will block cross-tenant access.
+    </div>
+  </div>
+
+  <h3 style="font-size:18px;font-weight:600;margin-bottom:16px">The store_id Rule — Implementation</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <span>middleware/tenant.ts — Request context injection</span>
+      <div class="code-dots">
+        <div class="code-dot" style="background:#f25555"></div>
+        <div class="code-dot" style="background:#f5a623"></div>
+        <div class="code-dot" style="background:#34c78a"></div>
+      </div>
+    </div>
+    <pre><span class="c">// This runs on EVERY request. Never skip it.</span>
+<span class="k">export const</span> <span class="fn">tenantMiddleware</span> = <span class="k">async</span> (req, res, next) => {
+  <span class="k">const</span> host = req.headers[<span class="s">'host'</span>];
+
+  <span class="c">// Extract store from subdomain or custom domain</span>
+  <span class="k">let</span> store = <span class="k">await</span> db.stores.<span class="fn">findFirst</span>({
+    where: {
+      OR: [
+        { custom_domain: host },
+        { subdomain: <span class="fn">extractSubdomain</span>(host) }
+      ]
+    }
+  });
+
+  <span class="k">if</span> (!store) <span class="k">return</span> res.<span class="fn">status</span>(<span class="num">404</span>).<span class="fn">json</span>({ error: <span class="s">'Store not found'</span> });
+
+  <span class="c">// Inject store context into the request object</span>
+  <span class="c">// ALL downstream code uses req.storeId — NEVER trust client-supplied IDs</span>
+  req.storeId = store.id;
+  req.store = store;
+  <span class="fn">next</span>();
+};
+
+<span class="c">// In every database query, ALWAYS scope by storeId:</span>
+<span class="k">const</span> products = <span class="k">await</span> db.products.<span class="fn">findMany</span>({
+  where: {
+    store_id: req.storeId,  <span class="c">// ← THIS IS NOT OPTIONAL</span>
+    status: <span class="s">'active'</span>
+  }
+});
+
+<span class="c">// Postgres RLS as safety net (belt + suspenders):</span>
+<span class="k">CREATE POLICY</span> tenant_isolation <span class="k">ON</span> products
+  <span class="k">USING</span> (store_id = <span class="fn">current_setting</span>(<span class="s">'app.current_store_id'</span>)::<span class="kw">uuid</span>);</pre>
+  </div>
+</section>
+
+<!-- DATABASE DESIGN -->
+<section class="section" id="database">
+  <div class="section-tag">§ 04 — Data Layer</div>
+  <h2>Database Architecture & Schema</h2>
+  <p class="lead">The complete schema for a multi-tenant e-commerce platform. Every table, every relationship, every index that matters — with the reasoning behind each decision.</p>
+
+  <div class="tab-container">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab(this,'db-tables')">Core Tables</button>
+      <button class="tab-btn" onclick="switchTab(this,'db-rls')">Row-Level Security</button>
+      <button class="tab-btn" onclick="switchTab(this,'db-indexes')">Indexes & Performance</button>
+      <button class="tab-btn" onclick="switchTab(this,'db-managed')">Managed DB Options</button>
+      <button class="tab-btn" onclick="switchTab(this,'db-sim')">Query Simulation</button>
+    </div>
+
+    <div id="tab-db-tables" class="tab-panel active">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px" id="table-tabs">
+        <button class="sim-btn" style="padding:6px 14px" onclick="showDBTable('stores')">stores</button>
+        <button class="sim-btn" style="padding:6px 14px" onclick="showDBTable('products')">products</button>
+        <button class="sim-btn" style="padding:6px 14px" onclick="showDBTable('orders')">orders</button>
+        <button class="sim-btn" style="padding:6px 14px" onclick="showDBTable('customers')">customers</button>
+        <button class="sim-btn" style="padding:6px 14px" onclick="showDBTable('domains')">domains</button>
+        <button class="sim-btn" style="padding:6px 14px" onclick="showDBTable('payment_methods')">payment_methods</button>
+        <button class="sim-btn" style="padding:6px 14px" onclick="showDBTable('themes')">themes</button>
+        <button class="sim-btn" style="padding:6px 14px" onclick="showDBTable('staff')">staff</button>
+      </div>
+      <div id="db-table-container" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+        <table class="data-table" id="db-table-view"></table>
+      </div>
+      <p style="font-size:11px;color:var(--text3);margin-top:10px;font-family:var(--mono)">
+        <span class="col-pk">■ PK</span> &nbsp;
+        <span class="col-fk">■ FK → stores.id (indexed)</span> &nbsp;
+        <span class="col-enc">■ Encrypted at rest</span> &nbsp;
+        <span class="col-type">■ Type</span>
+      </p>
+    </div>
+
+    <div id="tab-db-rls" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Row Level Security is your last line of defense. Even if your application code has a bug and forgets to add <code style="font-family:var(--mono);color:var(--accent)">WHERE store_id</code>, Postgres will block cross-tenant access.</p>
+      <div class="code-block">
+        <div class="code-header"><span>SQL — Enable RLS on all tenant tables</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre><span class="c">-- Enable RLS on every tenant-scoped table</span>
+<span class="kw">ALTER TABLE</span> products <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">ALTER TABLE</span> orders   <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">ALTER TABLE</span> customers <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="c">-- ... repeat for all tenant tables</span>
+
+<span class="c">-- Create policies that enforce tenant isolation</span>
+<span class="kw">CREATE POLICY</span> products_tenant_isolation <span class="kw">ON</span> products
+  <span class="k">AS</span> <span class="s">PERMISSIVE</span>
+  <span class="k">FOR ALL</span>
+  <span class="kw">TO</span> app_user
+  <span class="kw">USING</span> (
+    store_id = <span class="fn">current_setting</span>(<span class="s">'app.current_store_id'</span>, <span class="s">true</span>)::<span class="kw">uuid</span>
+  );
+
+<span class="c">-- Your app sets this before every query:</span>
+<span class="c">-- SET LOCAL app.current_store_id = '&lt;uuid&gt;';</span>
+
+<span class="c">-- Super-admin bypasses RLS (for platform admin only)</span>
+<span class="kw">CREATE POLICY</span> superadmin_bypass <span class="kw">ON</span> products
+  <span class="k">AS</span> <span class="s">PERMISSIVE</span>
+  <span class="k">FOR ALL</span>
+  <span class="kw">TO</span> superadmin_user
+  <span class="kw">USING</span> (<span class="s">true</span>);  <span class="c">-- no restriction</span></pre>
+      </div>
+    </div>
+
+    <div id="tab-db-indexes" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Without the right indexes, every query that filters by store_id does a full table scan. At 10,000 stores with 10,000 products each, that's 100M rows per scan.</p>
+      <div class="code-block">
+        <div class="code-header"><span>SQL — Critical indexes for multi-tenant performance</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre><span class="c">-- Composite indexes: store_id FIRST, then the filter column</span>
+<span class="c">-- This matters: (store_id, status) ≠ (status, store_id)</span>
+
+<span class="kw">CREATE INDEX</span> idx_products_store_status
+  <span class="kw">ON</span> products (store_id, status)
+  <span class="k">WHERE</span> status = <span class="s">'active'</span>;  <span class="c">-- partial index = even faster</span>
+
+<span class="kw">CREATE INDEX</span> idx_orders_store_created
+  <span class="kw">ON</span> orders (store_id, created_at <span class="k">DESC</span>);
+
+<span class="kw">CREATE INDEX</span> idx_orders_store_status
+  <span class="kw">ON</span> orders (store_id, status);
+
+<span class="c">-- Domain lookup — must be instant</span>
+<span class="kw">CREATE UNIQUE INDEX</span> idx_stores_subdomain
+  <span class="kw">ON</span> stores (subdomain);
+
+<span class="kw">CREATE UNIQUE INDEX</span> idx_stores_custom_domain
+  <span class="kw">ON</span> stores (custom_domain)
+  <span class="k">WHERE</span> custom_domain <span class="k">IS NOT NULL</span>;
+
+<span class="c">-- Customers lookup by email within a store</span>
+<span class="kw">CREATE UNIQUE INDEX</span> idx_customers_store_email
+  <span class="kw">ON</span> customers (store_id, email);
+
+<span class="c">-- Query planner verification:</span>
+<span class="kw">EXPLAIN ANALYZE</span>
+  <span class="kw">SELECT</span> * <span class="kw">FROM</span> products
+  <span class="k">WHERE</span> store_id = <span class="s">'uuid-here'</span> <span class="k">AND</span> status = <span class="s">'active'</span>;</pre>
+      </div>
+    </div>
+
+    <div id="tab-db-managed" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Managed database services — you do not run your own Postgres server. Ever. The cost savings from "managing it yourself" are eaten by ops time and incidents within the first month.</p>
+      <table class="data-table">
+        <thead><tr><th>Service</th><th>Type</th><th>Free Tier</th><th>First paid tier</th><th>Best for</th><th>Drawback</th></tr></thead>
+        <tbody>
+          <tr><td class="col-pk">Neon</td><td class="col-type">Serverless Postgres</td><td class="col-note">512MB storage</td><td style="color:var(--green)">$19/mo</td><td class="col-note">Starting out, branching for dev/staging</td><td class="col-note">Can be slow on cold start</td></tr>
+          <tr><td class="col-pk">Supabase</td><td class="col-type">Postgres + extras</td><td class="col-note">500MB, 2 proj</td><td style="color:var(--green)">$25/mo</td><td class="col-note">Built-in auth, storage, realtime</td><td class="col-note">Vendor lock-in risk</td></tr>
+          <tr><td class="col-pk">PlanetScale</td><td class="col-type">MySQL (Vitess)</td><td class="col-note">5GB, 1B rows read</td><td style="color:var(--amber)">$39/mo</td><td class="col-note">Shopify uses this. Branching + sharding</td><td class="col-note">MySQL, not Postgres</td></tr>
+          <tr><td class="col-pk">Railway Postgres</td><td class="col-type">Managed Postgres</td><td class="col-note">None</td><td style="color:var(--green)">~$5/mo + usage</td><td class="col-note">Dead simple if already on Railway</td><td class="col-note">Limited scaling options</td></tr>
+          <tr><td class="col-pk">AWS RDS</td><td class="col-type">Postgres / MySQL</td><td class="col-note">None (t3.micro 1yr)</td><td style="color:var(--amber)">~$30/mo</td><td class="col-note">Scale tier — full AWS ecosystem</td><td class="col-note">Complex setup, no free tier</td></tr>
+          <tr><td class="col-pk">Aurora Serverless</td><td class="col-type">MySQL/Postgres</td><td class="col-note">None</td><td style="color:var(--red)">~$100/mo+</td><td class="col-note">Variable traffic — scales to zero</td><td class="col-note">Cold starts, expensive at high load</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="tab-db-sim" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Simulate cross-tenant query isolation — what happens when Store A tries to access Store B's data.</p>
+      <button class="sim-btn" onclick="simTenantIsolation()">▶ Simulate Tenant Isolation</button>
+      <button class="sim-btn" onclick="simQueryPlan()">▶ Simulate Query Plan</button>
+      <div id="sim-tenant" class="sim-output"><span class="sim-dim">// Click to simulate...</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- DOMAINS -->
+<section class="section" id="domains">
+  <div class="section-tag">§ 05 — Domain System</div>
+  <h2>Subdomains & Custom Domains</h2>
+  <p class="lead">How to give every merchant their own subdomain instantly, and how custom domains work — from DNS records to auto-provisioned TLS certificates. This is one of the most technically interesting parts of SaaS.</p>
+
+  <div class="tab-container">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab(this,'dom-sub')">Subdomain System</button>
+      <button class="tab-btn" onclick="switchTab(this,'dom-custom')">Custom Domains</button>
+      <button class="tab-btn" onclick="switchTab(this,'dom-ssl')">SSL/TLS at Scale</button>
+      <button class="tab-btn" onclick="switchTab(this,'dom-sim')">DNS Simulation</button>
+    </div>
+
+    <div id="tab-dom-sub" class="tab-panel active">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">How wildcard subdomains work</h3>
+      <div class="step-flow">
+        <div class="step">
+          <div class="step-num" style="background:rgba(79,156,249,0.15);color:var(--accent)">1</div>
+          <div class="step-content">
+            <h4>One DNS wildcard record</h4>
+            <p>In your DNS provider (Cloudflare, Route53), add: <code>*.yourplatform.com → A → YOUR_SERVER_IP</code>. This single record makes EVERY possible subdomain resolve to your server — <code>store1.yourplatform.com</code>, <code>store2.yourplatform.com</code>, <code>anything.yourplatform.com</code>. You set this once and never touch it again.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(38,198,218,0.15);color:var(--teal)">2</div>
+          <div class="step-content">
+            <h4>Wildcard SSL certificate</h4>
+            <p>Get a wildcard TLS certificate: <code>*.yourplatform.com</code>. This single cert covers every subdomain. Use Let's Encrypt with DNS-01 challenge (Certbot + Cloudflare API). Renews automatically every 90 days. Cost: free.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(124,106,247,0.15);color:var(--accent2)">3</div>
+          <div class="step-content">
+            <h4>Your server reads the Host header</h4>
+            <p>Every HTTP request arrives with a <code>Host: their-store.yourplatform.com</code> header. Your server extracts the subdomain: <code>their-store</code>. Queries the database: <code>SELECT * FROM stores WHERE subdomain = 'their-store'</code>. Instant — this is a unique indexed column, sub-millisecond lookup.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(52,199,138,0.15);color:var(--green)">4</div>
+          <div class="step-content">
+            <h4>Merchant signup = instant subdomain</h4>
+            <p>When a merchant signs up and picks their store name, you just insert a row in the <code>stores</code> table with their chosen subdomain (validated: lowercase alphanumeric + hyphens only, no reserved names like <code>admin</code>, <code>api</code>, <code>www</code>). Their store is live at <code>their-name.yourplatform.com</code> within seconds, zero DNS changes needed.</p>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span>Caddy config — Wildcard subdomain routing</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre><span class="c"># Caddyfile — handles *.yourplatform.com AND custom domains</span>
+<span class="c"># Caddy auto-provisions wildcard SSL via DNS-01 challenge</span>
+
+*.yourplatform.com {
+    tls {
+        dns cloudflare {env.CF_API_TOKEN}  <span class="c"># DNS-01 for wildcard</span>
+    }
+    reverse_proxy localhost:3000 {
+        header_up Host {host}  <span class="c"># Pass Host header to app</span>
+    }
+}
+
+<span class="c"># Custom domains are handled dynamically by the app</span>
+<span class="c"># Caddy's on_demand_tls provisions certs as domains are hit</span>
+:443 {
+    tls {
+        on_demand  <span class="c"># Auto cert for ANY domain that hits this server</span>
+        ask https://yourplatform.com/tls-check?domain={tls_servername}
+    }
+    reverse_proxy localhost:3000
+}</pre>
+      </div>
+    </div>
+
+    <div id="tab-dom-custom" class="tab-panel">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">Custom domain flow — step by step</h3>
+      <div class="svg-container">
+        <svg width="100%" viewBox="0 0 860 360" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="#4f9cf9" stroke-width="1.5" stroke-linecap="round"/>
+            </marker>
+            <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="#34c78a" stroke-width="1.5" stroke-linecap="round"/>
+            </marker>
+            <marker id="arrA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="#f5a623" stroke-width="1.5" stroke-linecap="round"/>
+            </marker>
+          </defs>
+
+          <!-- Merchant -->
+          <rect x="20" y="60" width="130" height="60" rx="8" fill="rgba(79,156,249,0.08)" stroke="rgba(79,156,249,0.2)" stroke-width="1"/>
+          <text x="85" y="87" text-anchor="middle" fill="#4f9cf9" font-size="12" font-weight="600">Merchant</text>
+          <text x="85" y="106" text-anchor="middle" fill="#8b91a8" font-size="10">adds domain in admin</text>
+
+          <!-- Step 1: Merchant adds CNAME -->
+          <line x1="150" y1="90" x2="240" y2="90" stroke="#4f9cf9" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="195" y="82" text-anchor="middle" fill="#4f9cf9" font-size="10">① sets CNAME</text>
+
+          <!-- DNS Provider -->
+          <rect x="250" y="60" width="140" height="60" rx="8" fill="rgba(38,198,218,0.08)" stroke="rgba(38,198,218,0.2)" stroke-width="1"/>
+          <text x="320" y="87" text-anchor="middle" fill="#26c6da" font-size="12" font-weight="600">DNS Provider</text>
+          <text x="320" y="106" text-anchor="middle" fill="#8b91a8" font-size="10">shop.theirdomain.com</text>
+
+          <!-- Step 2: also adds TXT verify -->
+          <line x1="320" y1="120" x2="320" y2="200" stroke="#f5a623" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arrA)"/>
+          <text x="350" y="168" fill="#f5a623" font-size="10">② TXT verify</text>
+          <text x="350" y="182" fill="#8b91a8" font-size="10">_saas-verify.shop.theirdomain.com</text>
+          <text x="350" y="196" fill="#8b91a8" font-size="10">= {store_token}</text>
+
+          <!-- Platform checks DNS -->
+          <rect x="250" y="210" width="140" height="60" rx="8" fill="rgba(52,199,138,0.08)" stroke="rgba(52,199,138,0.2)" stroke-width="1"/>
+          <text x="320" y="237" text-anchor="middle" fill="#34c78a" font-size="12" font-weight="600">Your Platform</text>
+          <text x="320" y="256" text-anchor="middle" fill="#8b91a8" font-size="10">DNS lookup verify TXT</text>
+
+          <!-- Step 3: mark verified -->
+          <line x1="390" y1="240" x2="500" y2="240" stroke="#34c78a" stroke-width="1.5" marker-end="url(#arrG)"/>
+          <text x="445" y="232" text-anchor="middle" fill="#34c78a" font-size="10">③ verified!</text>
+
+          <!-- Database -->
+          <rect x="510" y="210" width="140" height="60" rx="8" fill="rgba(124,106,247,0.08)" stroke="rgba(124,106,247,0.2)" stroke-width="1"/>
+          <text x="580" y="237" text-anchor="middle" fill="#7c6af7" font-size="12" font-weight="600">Database</text>
+          <text x="580" y="256" text-anchor="middle" fill="#8b91a8" font-size="10">domain_verified = true</text>
+
+          <!-- Step 4: SSL provisioning -->
+          <line x1="320" y1="270" x2="320" y2="330" stroke="#4f9cf9" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+          <!-- Let's Encrypt -->
+          <rect x="250" y="295" width="140" height="50" rx="8" fill="rgba(245,166,35,0.08)" stroke="rgba(245,166,35,0.2)" stroke-width="1"/>
+          <text x="320" y="318" text-anchor="middle" fill="#f5a623" font-size="12" font-weight="600">Let's Encrypt</text>
+          <text x="320" y="334" text-anchor="middle" fill="#8b91a8" font-size="10">auto TLS cert issued</text>
+
+          <!-- Active -->
+          <rect x="680" y="130" width="160" height="120" rx="8" fill="rgba(52,199,138,0.05)" stroke="rgba(52,199,138,0.2)" stroke-width="1"/>
+          <text x="760" y="158" text-anchor="middle" fill="#34c78a" font-size="12" font-weight="600">✓ LIVE</text>
+          <text x="760" y="178" text-anchor="middle" fill="#8b91a8" font-size="10">shop.theirdomain.com</text>
+          <text x="760" y="196" text-anchor="middle" fill="#8b91a8" font-size="10">→ CNAME yourplatform.com</text>
+          <text x="760" y="214" text-anchor="middle" fill="#8b91a8" font-size="10">→ Host header lookup</text>
+          <text x="760" y="232" text-anchor="middle" fill="#8b91a8" font-size="10">→ HTTPS ✓ auto-cert</text>
+
+          <line x1="580" y1="210" x2="680" y2="190" stroke="rgba(52,199,138,0.4)" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arrG)"/>
+          <line x1="320" y1="295" x2="680" y2="215" stroke="rgba(245,166,35,0.4)" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arrA)"/>
+
+          <!-- Time indicator -->
+          <text x="760" y="270" text-anchor="middle" fill="#555e78" font-size="10">Total time: ~5 minutes</text>
+          <text x="760" y="284" text-anchor="middle" fill="#555e78" font-size="10">(DNS propagation)</text>
+        </svg>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>Domain verification endpoint</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre><span class="c">// Caddy calls this to check if a domain is allowed</span>
+<span class="c">// GET /tls-check?domain=shop.theirdomain.com</span>
+app.<span class="fn">get</span>(<span class="s">'/tls-check'</span>, <span class="k">async</span> (req, res) => {
+  <span class="k">const</span> domain = req.query.domain;
+
+  <span class="k">const</span> store = <span class="k">await</span> db.stores.<span class="fn">findFirst</span>({
+    where: {
+      custom_domain: domain,
+      domain_verified: <span class="k">true</span>  <span class="c">// ← only verified domains get certs</span>
+    }
+  });
+
+  <span class="c">// 200 = Caddy provisions the cert</span>
+  <span class="c">// 4xx = Caddy rejects — no cert for unknown domains</span>
+  <span class="k">return</span> store ? res.<span class="fn">sendStatus</span>(<span class="num">200</span>) : res.<span class="fn">sendStatus</span>(<span class="num">403</span>);
+});
+
+<span class="c">// Verify domain ownership via DNS TXT lookup</span>
+<span class="k">const</span> <span class="fn">verifyDomain</span> = <span class="k">async</span> (domain, storeToken) => {
+  <span class="k">const</span> records = <span class="k">await</span> dns.<span class="fn">resolveTxt</span>(`_saas-verify.${domain}`);
+  <span class="k">const</span> flat = records.<span class="fn">flat</span>();
+  <span class="k">return</span> flat.<span class="fn">includes</span>(storeToken);
+};</pre>
+      </div>
+    </div>
+
+    <div id="tab-dom-ssl" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:20px">TLS certificate provisioning strategies at different scales.</p>
+      <table class="data-table">
+        <thead><tr><th>Strategy</th><th>Covers</th><th>Tool</th><th>Scale</th><th>Cost</th><th>Auto-renewal</th></tr></thead>
+        <tbody>
+          <tr><td class="col-pk">Wildcard cert</td><td class="col-note">*.yourplatform.com</td><td class="col-note">Certbot + DNS-01</td><td class="col-type">0–∞ subdomains</td><td style="color:var(--green)">Free</td><td style="color:var(--green)">✓ Yes</td></tr>
+          <tr><td class="col-pk">On-demand TLS</td><td class="col-note">Custom domains</td><td class="col-note">Caddy built-in</td><td class="col-type">Hundreds/day</td><td style="color:var(--green)">Free</td><td style="color:var(--green)">✓ Yes</td></tr>
+          <tr><td class="col-pk">cert-manager</td><td class="col-note">Custom domains</td><td class="col-note">K8s operator</td><td class="col-type">Thousands/day</td><td style="color:var(--green)">Free</td><td style="color:var(--green)">✓ Yes</td></tr>
+          <tr><td class="col-pk">Cloudflare for SaaS</td><td class="col-note">Custom domains</td><td class="col-note">Cloudflare API</td><td class="col-type">Millions</td><td style="color:var(--amber)">$0.10/domain/mo</td><td style="color:var(--green)">✓ Yes</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight warning">
+        <strong style="color:var(--amber)">Rate limits matter:</strong> Let's Encrypt allows 50 certificates per registered domain per week. For custom domains, you're issuing certs for OTHER people's domains (e.g., shop.theirdomain.com), which doesn't hit your rate limit — each domain's owner has their own limit. You are fine.
+      </div>
+      <div class="highlight">
+        <strong>Cloudflare for SaaS</strong> is what Shopify uses at scale. It proxies all custom domain traffic through Cloudflare's network, handling TLS termination, DDoS protection, and caching globally. At $0.10/custom domain/month, it's negligible cost and eliminates all the cert management complexity. Use this when you have 1000+ custom domains.
+      </div>
+    </div>
+
+    <div id="tab-dom-sim" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Simulate the full domain resolution chain — from DNS query to store data lookup.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="sim-btn" onclick="simSubdomain()">▶ Simulate Subdomain Lookup</button>
+        <button class="sim-btn" onclick="simCustomDomain()">▶ Simulate Custom Domain</button>
+        <button class="sim-btn" onclick="simDomainVerify()">▶ Simulate Domain Verification</button>
+      </div>
+      <div id="sim-dns" class="sim-output"><span class="sim-dim">// Click to simulate DNS and domain resolution...</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- STOREFRONT -->
+<section class="section" id="storefront">
+  <div class="section-tag">§ 06 — Dynamic Rendering</div>
+  <h2>Dynamic Storefront System</h2>
+  <p class="lead">How each store looks completely different while running on your single platform. Themes as data, visual editors, and on-demand site generation — from simple to headless.</p>
+
+  <div class="tab-container">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab(this,'sf-themes')">Theme Architecture</button>
+      <button class="tab-btn" onclick="switchTab(this,'sf-render')">Rendering Pipeline</button>
+      <button class="tab-btn" onclick="switchTab(this,'sf-export')">Export / Deploy</button>
+      <button class="tab-btn" onclick="switchTab(this,'sf-sim')">Live Preview Sim</button>
+    </div>
+
+    <div id="tab-sf-themes" class="tab-panel active">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:20px">The core idea: a "theme" is not CSS or HTML files. It is a JSON document describing the structure and configuration of the storefront.</p>
+      <div class="code-block">
+        <div class="code-header"><span>themes table — config column (JSON)</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre>{
+  <span class="prop">"version"</span>: <span class="s">"2.1"</span>,
+  <span class="prop">"colors"</span>: {
+    <span class="prop">"primary"</span>: <span class="s">"#1a1a2e"</span>,
+    <span class="prop">"accent"</span>: <span class="s">"#e94560"</span>,
+    <span class="prop">"background"</span>: <span class="s">"#ffffff"</span>
+  },
+  <span class="prop">"typography"</span>: {
+    <span class="prop">"heading_font"</span>: <span class="s">"Playfair Display"</span>,
+    <span class="prop">"body_font"</span>: <span class="s">"Lato"</span>,
+    <span class="prop">"base_size"</span>: <span class="num">16</span>
+  },
+  <span class="prop">"sections"</span>: [
+    {
+      <span class="prop">"type"</span>: <span class="s">"hero_banner"</span>,
+      <span class="prop">"settings"</span>: {
+        <span class="prop">"title"</span>: <span class="s">"Premium Fashion"</span>,
+        <span class="prop">"subtitle"</span>: <span class="s">"New arrivals weekly"</span>,
+        <span class="prop">"background_image"</span>: <span class="s">"stores/uuid/hero.jpg"</span>,
+        <span class="prop">"cta_text"</span>: <span class="s">"Shop Now"</span>,
+        <span class="prop">"overlay_opacity"</span>: <span class="num">0.4</span>
+      }
+    },
+    {
+      <span class="prop">"type"</span>: <span class="s">"product_grid"</span>,
+      <span class="prop">"settings"</span>: {
+        <span class="prop">"columns"</span>: <span class="num">3</span>,
+        <span class="prop">"show_prices"</span>: <span class="k">true</span>,
+        <span class="prop">"collection_id"</span>: <span class="s">"featured"</span>
+      }
+    }
+  ]
+}</pre>
+      </div>
+      <div class="highlight success">Your renderer takes this JSON, fetches the referenced data (products for the grid, image URLs for the banner), and generates the final HTML. Merchants never write code — they just set values in a visual editor that writes JSON.</div>
+    </div>
+
+    <div id="tab-sf-render" class="tab-panel">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">Rendering pipeline — request to HTML</h3>
+      <div class="step-flow">
+        <div class="step">
+          <div class="step-num" style="background:rgba(79,156,249,0.15);color:var(--accent)">1</div>
+          <div class="step-content"><h4>Request arrives with Host header</h4><p>Browser requests <code>shop.theirdomain.com/products</code>. Middleware resolves this to <code>store_id = 'abc-123'</code>.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(38,198,218,0.15);color:var(--teal)">2</div>
+          <div class="step-content"><h4>Cache check</h4><p>Check Redis: <code>storefront:abc-123:/products</code>. Cache hit = return HTML immediately (sub-5ms). Cache miss = proceed to render.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(124,106,247,0.15);color:var(--accent2)">3</div>
+          <div class="step-content"><h4>Fetch theme + page data</h4><p>Load published theme JSON from DB. Load page data (products for /products, single product for /products/slug). One round trip to DB, parallelized.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(52,199,138,0.15);color:var(--green)">4</div>
+          <div class="step-content"><h4>Render sections</h4><p>Walk the sections array. For each section, call the section renderer: <code>renderSection(sectionType, settings, data)</code>. Returns HTML fragment. Concatenate.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(245,166,35,0.15);color:var(--amber)">5</div>
+          <div class="step-content"><h4>Inject store CSS variables</h4><p>Wrap in layout template, inject CSS variables from theme colors, load correct Google Fonts for typography settings. Return full HTML document.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(242,85,85,0.15);color:var(--red)">6</div>
+          <div class="step-content"><h4>Cache & return</h4><p>Store rendered HTML in Redis with TTL (5 minutes for product pages, 30 minutes for homepage). Invalidate cache when merchant publishes changes.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-sf-export" class="tab-panel">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">Deploy-yourself model — headless storefront</h3>
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">For merchants who want to host on their own server, you generate a complete Next.js project pre-configured with their store credentials.</p>
+      <div class="code-block">
+        <div class="code-header"><span>Generated .env file inside exported project</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre><span class="c"># Auto-generated by YourPlatform Export</span>
+<span class="c"># Deploy to Vercel / Netlify / any Node.js host</span>
+
+STORE_PUBLIC_KEY=<span class="s">pk_live_abc123def456</span>
+API_BASE_URL=<span class="s">https://api.yourplatform.com</span>
+STOREFRONT_VERSION=<span class="s">3.2</span>
+
+<span class="c"># The storefront only has READ access via public key</span>
+<span class="c"># All data still lives in YOUR database</span>
+<span class="c"># Checkout still goes through YOUR API</span></pre>
+      </div>
+      <div class="step-flow">
+        <div class="step">
+          <div class="step-num" style="background:rgba(79,156,249,0.15);color:var(--accent)">1</div>
+          <div class="step-content"><h4>Merchant clicks "Export Store"</h4><p>You generate a ZIP of the Next.js template with their credentials baked in. Or: provide a one-click "Deploy to Vercel" button that clones your template repo and sets env vars via Vercel API.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(52,199,138,0.15);color:var(--green)">2</div>
+          <div class="step-content"><h4>Their deployed site calls your API</h4><p>Every page in their Next.js site uses your Storefront API: <code>GET /v1/products?store_key=pk_live_abc</code>. Your API returns their products. Data stays centralized — they just control the rendering layer.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(245,166,35,0.15);color:var(--amber)">3</div>
+          <div class="step-content"><h4>Security: public key is truly public</h4><p>The public API key can only READ their store's public data. It cannot access orders, customer PII, or admin operations. The secret API key never leaves your servers. Even if someone extracts the public key from the deployed site, they can only read product catalogs.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-sf-sim" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Watch how a theme config is rendered into a live storefront page.</p>
+      <button class="sim-btn" onclick="simThemeRender()">▶ Simulate Theme Rendering</button>
+      <div id="sim-theme" class="sim-output"><span class="sim-dim">// Click to simulate theme → HTML rendering pipeline...</span></div>
+      <div id="theme-preview" style="display:none;margin-top:16px;border:1px solid var(--border);border-radius:10px;overflow:hidden">
+        <div style="background:#1a1a2e;color:white;padding:40px 24px;text-align:center">
+          <div style="font-family:serif;font-size:28px;margin-bottom:8px" id="preview-title">Preview Store</div>
+          <div style="font-size:14px;opacity:0.7;margin-bottom:20px" id="preview-sub">Loading...</div>
+          <div style="display:inline-block;background:#e94560;color:white;padding:10px 24px;border-radius:4px;cursor:pointer;font-size:14px">Shop Now</div>
+        </div>
+        <div style="background:white;padding:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="preview-products"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAYMENTS -->
+<section class="section" id="payments">
+  <div class="section-tag">§ 07 — Money Flow</div>
+  <h2>Payment System Architecture</h2>
+  <p class="lead">Per-store payment credentials, routing logic, and how to support Stripe, SSLCommerz, bKash, Nagad, and any future gateway — without changing your core checkout code.</p>
+
+  <div class="tab-container">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab(this,'pay-arch')">Payment Architecture</button>
+      <button class="tab-btn" onclick="switchTab(this,'pay-plugin')">Plugin System</button>
+      <button class="tab-btn" onclick="switchTab(this,'pay-bd')">Bangladesh Gateways</button>
+      <button class="tab-btn" onclick="switchTab(this,'pay-webhooks')">Webhooks</button>
+      <button class="tab-btn" onclick="switchTab(this,'pay-sim')">Checkout Simulation</button>
+    </div>
+
+    <div id="tab-pay-arch" class="tab-panel active">
+      <div class="svg-container">
+        <svg width="100%" viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrP" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="#8b91a8" stroke-width="1.5" stroke-linecap="round"/>
+            </marker>
+          </defs>
+          <!-- Customer -->
+          <rect x="20" y="110" width="110" height="50" rx="8" fill="rgba(79,156,249,0.08)" stroke="rgba(79,156,249,0.2)" stroke-width="1"/>
+          <text x="75" y="132" text-anchor="middle" fill="#4f9cf9" font-size="12" font-weight="600">Customer</text>
+          <text x="75" y="150" text-anchor="middle" fill="#8b91a8" font-size="10">checks out</text>
+
+          <line x1="130" y1="135" x2="190" y2="135" stroke="#8b91a8" stroke-width="1.5" marker-end="url(#arrP)"/>
+
+          <!-- Your Checkout API -->
+          <rect x="200" y="80" width="150" height="110" rx="8" fill="rgba(124,106,247,0.08)" stroke="rgba(124,106,247,0.2)" stroke-width="1"/>
+          <text x="275" y="108" text-anchor="middle" fill="#7c6af7" font-size="12" font-weight="600">Your Checkout</text>
+          <text x="275" y="125" text-anchor="middle" fill="#7c6af7" font-size="11">Service</text>
+          <text x="275" y="148" text-anchor="middle" fill="#8b91a8" font-size="10">1. Identify store</text>
+          <text x="275" y="163" text-anchor="middle" fill="#8b91a8" font-size="10">2. Load credentials</text>
+          <text x="275" y="178" text-anchor="middle" fill="#8b91a8" font-size="10">3. Route to gateway</text>
+
+          <line x1="350" y1="135" x2="410" y2="135" stroke="#8b91a8" stroke-width="1.5" marker-end="url(#arrP)"/>
+          <text x="380" y="127" text-anchor="middle" fill="#f5a623" font-size="10">decrypt &amp;</text>
+          <text x="380" y="140" text-anchor="middle" fill="#f5a623" font-size="10">route</text>
+
+          <!-- Payment Router -->
+          <rect x="420" y="80" width="130" height="110" rx="8" fill="rgba(245,166,35,0.08)" stroke="rgba(245,166,35,0.2)" stroke-width="1"/>
+          <text x="485" y="108" text-anchor="middle" fill="#f5a623" font-size="12" font-weight="600">Payment</text>
+          <text x="485" y="124" text-anchor="middle" fill="#f5a623" font-size="11">Router</text>
+          <text x="485" y="148" text-anchor="middle" fill="#8b91a8" font-size="10">Provider switch:</text>
+          <text x="485" y="163" text-anchor="middle" fill="#8b91a8" font-size="10">stripe | sslcommerz</text>
+          <text x="485" y="178" text-anchor="middle" fill="#8b91a8" font-size="10">bkash | nagad | ...</text>
+
+          <!-- Gateways -->
+          <line x1="550" y1="100" x2="620" y2="60" stroke="rgba(52,199,138,0.5)" stroke-width="1" marker-end="url(#arrG)"/>
+          <line x1="550" y1="135" x2="620" y2="135" stroke="rgba(79,156,249,0.5)" stroke-width="1" marker-end="url(#arr2)"/>
+          <line x1="550" y1="165" x2="620" y2="210" stroke="rgba(242,85,85,0.5)" stroke-width="1" marker-end="url(#arrP)"/>
+
+          <rect x="625" y="30" width="100" height="45" rx="6" fill="rgba(52,199,138,0.08)" stroke="rgba(52,199,138,0.2)" stroke-width="1"/>
+          <text x="675" y="57" text-anchor="middle" fill="#34c78a" font-size="11" font-weight="600">Stripe API</text>
+
+          <rect x="625" y="112" width="100" height="45" rx="6" fill="rgba(79,156,249,0.08)" stroke="rgba(79,156,249,0.2)" stroke-width="1"/>
+          <text x="675" y="132" text-anchor="middle" fill="#4f9cf9" font-size="11" font-weight="600">SSLCommerz</text>
+          <text x="675" y="148" text-anchor="middle" fill="#8b91a8" font-size="10">/ bKash / Nagad</text>
+
+          <rect x="625" y="192" width="100" height="45" rx="6" fill="rgba(242,85,85,0.08)" stroke="rgba(242,85,85,0.2)" stroke-width="1"/>
+          <text x="675" y="212" text-anchor="middle" fill="#f25555" font-size="11" font-weight="600">Future</text>
+          <text x="675" y="228" text-anchor="middle" fill="#8b91a8" font-size="10">Gateways</text>
+
+          <!-- Money to merchant -->
+          <line x1="725" y1="52" x2="810" y2="80" stroke="rgba(52,199,138,0.5)" stroke-width="1" marker-end="url(#arrG)"/>
+          <line x1="725" y1="135" x2="810" y2="135" stroke="rgba(79,156,249,0.5)" stroke-width="1" marker-end="url(#arr2)"/>
+          <line x1="725" y1="214" x2="810" y2="190" stroke="rgba(242,85,85,0.5)" stroke-width="1" marker-end="url(#arrP)"/>
+
+          <rect x="815" y="90" width="30" height="90" rx="4" fill="rgba(52,199,138,0.08)" stroke="rgba(52,199,138,0.2)" stroke-width="1"/>
+          <text x="830" y="240" text-anchor="middle" fill="#34c78a" font-size="10" transform="rotate(-90, 830, 200)">Merchant's Bank</text>
+        </svg>
+      </div>
+      <div class="highlight success">
+        <strong style="color:var(--green)">Key principle:</strong> Your platform is a router, not a payment processor. You never hold merchant funds. The money flows from customer → payment gateway → merchant's own account. You just orchestrate using their credentials.
+      </div>
+    </div>
+
+    <div id="tab-pay-plugin" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">The plugin pattern — each payment gateway is a module implementing the same interface. Adding a new gateway = one new file.</p>
+      <div class="code-block">
+        <div class="code-header"><span>payments/interface.ts — Gateway contract</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre><span class="c">// Every payment gateway must implement this interface</span>
+<span class="k">interface</span> <span class="kw">PaymentGateway</span> {
+  <span class="fn">initiatePayment</span>(order: Order, credentials: Credentials): <span class="k">Promise</span>&lt;PaymentSession&gt;;
+  <span class="fn">verifyPayment</span>(sessionId: <span class="kw">string</span>, webhookData: <span class="k">any</span>): <span class="k">Promise</span>&lt;PaymentResult&gt;;
+  <span class="fn">refund</span>(transactionId: <span class="kw">string</span>, amount: <span class="kw">number</span>): <span class="k">Promise</span>&lt;RefundResult&gt;;
+}
+
+<span class="c">// The router selects the right implementation</span>
+<span class="k">const</span> <span class="fn">getGateway</span> = (provider: <span class="kw">string</span>): <span class="kw">PaymentGateway</span> => {
+  <span class="k">switch</span>(provider) {
+    <span class="k">case</span> <span class="s">'stripe'</span>:        <span class="k">return new</span> <span class="fn">StripeGateway</span>();
+    <span class="k">case</span> <span class="s">'sslcommerz'</span>:   <span class="k">return new</span> <span class="fn">SSLCommerzGateway</span>();
+    <span class="k">case</span> <span class="s">'bkash'</span>:         <span class="k">return new</span> <span class="fn">BkashGateway</span>();
+    <span class="k">case</span> <span class="s">'nagad'</span>:         <span class="k">return new</span> <span class="fn">NagadGateway</span>();
+    default: <span class="k">throw new</span> <span class="fn">Error</span>(<span class="s">`Unknown gateway: ${provider}`</span>);
+  }
+};
+
+<span class="c">// Checkout flow — same for ALL gateways</span>
+<span class="k">const</span> <span class="fn">checkout</span> = <span class="k">async</span> (req) => {
+  <span class="k">const</span> { provider, credentials } = <span class="k">await</span> <span class="fn">getStorePaymentMethod</span>(req.storeId);
+  <span class="k">const</span> decrypted = <span class="fn">decrypt</span>(credentials);       <span class="c">// AES-256 decrypt</span>
+  <span class="k">const</span> gateway = <span class="fn">getGateway</span>(provider);
+  <span class="k">return</span> gateway.<span class="fn">initiatePayment</span>(req.order, decrypted);
+};</pre>
+      </div>
+    </div>
+
+    <div id="tab-pay-bd" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Bangladesh-specific payment gateways — essential for local merchants.</p>
+      <table class="data-table">
+        <thead><tr><th>Gateway</th><th>Type</th><th>Credentials needed</th><th>Webhook</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="col-pk">SSLCommerz</td><td class="col-type">Card + MFS + Bank</td><td class="col-note">store_id, store_passwd</td><td style="color:var(--green)">✓ IPN URL</td><td class="col-note">Most popular BD gateway. Card, bKash, Nagad, Rocket via one integration.</td></tr>
+          <tr><td class="col-pk">bKash PGW</td><td class="col-type">Mobile banking</td><td class="col-note">username, password, app_key, app_secret</td><td style="color:var(--green)">✓ Callback URL</td><td class="col-note">Direct bKash API. Better UX than SSLCommerz bKash option.</td></tr>
+          <tr><td class="col-pk">Nagad</td><td class="col-type">Mobile banking</td><td class="col-note">merchant_id, merchant_private_key</td><td style="color:var(--green)">✓ Callback URL</td><td class="col-note">RSA key-pair auth. Government-backed MFS.</td></tr>
+          <tr><td class="col-pk">SUST Pay / ShurjoPay</td><td class="col-type">Card + MFS</td><td class="col-note">username, password</td><td style="color:var(--green)">✓ IPN URL</td><td class="col-note">Alternative aggregator. Growing merchant base.</td></tr>
+          <tr><td class="col-pk">Stripe</td><td class="col-type">International card</td><td class="col-note">publishable_key, secret_key</td><td style="color:var(--green)">✓ Webhook secret</td><td class="col-note">For stores selling internationally. Not natively BD.</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight warning">
+        <strong style="color:var(--amber)">Credential storage rule:</strong> All gateway credentials are encrypted with AES-256-GCM before writing to the database. The encryption key itself lives in a secrets manager (AWS Secrets Manager, Doppler, or Infisical) — never hardcoded, never in your source code, never in environment variables that get logged.
+      </div>
+    </div>
+
+    <div id="tab-pay-webhooks" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Payment gateways send webhook events when payments complete, fail, or are disputed. You must route these to the right store.</p>
+      <div class="code-block">
+        <div class="code-header"><span>Webhook routing — per-store endpoints</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre><span class="c">// Each store gets a unique webhook URL with their store_id:</span>
+<span class="c">// https://api.yourplatform.com/webhooks/stripe/STORE_ID</span>
+<span class="c">// https://api.yourplatform.com/webhooks/sslcommerz/STORE_ID</span>
+
+app.<span class="fn">post</span>(<span class="s">'/webhooks/stripe/:storeId'</span>, <span class="k">async</span> (req, res) => {
+  <span class="k">const</span> { storeId } = req.params;
+
+  <span class="c">// Load this store's Stripe webhook secret</span>
+  <span class="k">const</span> pm = <span class="k">await</span> db.payment_methods.<span class="fn">findFirst</span>({
+    where: { store_id: storeId, provider: <span class="s">'stripe'</span> }
+  });
+  <span class="k">const</span> secret = <span class="fn">decrypt</span>(pm.webhook_secret);
+
+  <span class="c">// Verify signature — reject if tampered</span>
+  <span class="k">const</span> event = stripe.webhooks.<span class="fn">constructEvent</span>(
+    req.rawBody,
+    req.headers[<span class="s">'stripe-signature'</span>],
+    secret  <span class="c">// ← MERCHANT'S webhook secret, not yours</span>
+  );
+
+  <span class="c">// Process event scoped to this store</span>
+  <span class="k">switch</span>(event.type) {
+    <span class="k">case</span> <span class="s">'payment_intent.succeeded'</span>:
+      <span class="k">await</span> <span class="fn">markOrderPaid</span>(event.data.object, storeId);
+      <span class="k">break</span>;
+    <span class="k">case</span> <span class="s">'charge.dispute.created'</span>:
+      <span class="k">await</span> <span class="fn">handleDispute</span>(event.data.object, storeId);
+      <span class="k">break</span>;
+  }
+
+  res.<span class="fn">json</span>({ received: <span class="k">true</span> });
+});</pre>
+      </div>
+    </div>
+
+    <div id="tab-pay-sim" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Simulate the full checkout flow — from cart to payment confirmation.</p>
+      <div style="margin-bottom:12px">
+        <label style="font-size:13px;color:var(--text2);margin-right:10px">Payment gateway:</label>
+        <select id="pay-gateway" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-family:var(--sans);font-size:13px">
+          <option value="stripe">Stripe</option>
+          <option value="sslcommerz">SSLCommerz</option>
+          <option value="bkash">bKash</option>
+          <option value="nagad">Nagad</option>
+        </select>
+      </div>
+      <button class="sim-btn" onclick="simPayment()">▶ Simulate Payment Flow</button>
+      <div id="sim-payment" class="sim-output"><span class="sim-dim">// Select a gateway and simulate...</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section class="section" id="security">
+  <div class="section-tag">§ 08 — Security Design</div>
+  <h2>Security Architecture</h2>
+  <p class="lead">Multi-tenant security is fundamentally different from single-tenant. One misconfiguration can expose every customer's data. Here is the complete defense-in-depth model.</p>
+
+  <div class="tab-container">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab(this,'sec-threats')">Threat Model</button>
+      <button class="tab-btn" onclick="switchTab(this,'sec-auth')">Auth Architecture</button>
+      <button class="tab-btn" onclick="switchTab(this,'sec-encrypt')">Encryption</button>
+      <button class="tab-btn" onclick="switchTab(this,'sec-rate')">Rate Limiting</button>
+      <button class="tab-btn" onclick="switchTab(this,'sec-checklist')">Security Checklist</button>
+    </div>
+
+    <div id="tab-sec-threats" class="tab-panel active">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:20px">The unique threats of a multi-tenant platform — things that don't exist in a single-store app.</p>
+      <div class="card-grid">
+        <div class="card" style="border-color:rgba(242,85,85,0.2)">
+          <h3><span style="color:var(--red)">⚠</span> Tenant data leak</h3>
+          <p><strong style="color:var(--red)">Critical.</strong> A query bug that forgets <code style="font-family:var(--mono);color:var(--accent)">WHERE store_id</code> returns data from all tenants. Defense: Postgres RLS, middleware enforcement, query auditing.</p>
+        </div>
+        <div class="card" style="border-color:rgba(242,85,85,0.2)">
+          <h3><span style="color:var(--red)">⚠</span> Credential theft</h3>
+          <p><strong style="color:var(--red)">Critical.</strong> Your DB contains every merchant's payment API keys. If stolen, attackers can drain every merchant's Stripe account. Defense: AES-256 encryption at rest + access in memory only.</p>
+        </div>
+        <div class="card" style="border-color:rgba(245,166,35,0.2)">
+          <h3><span style="color:var(--amber)">!</span> Subdomain takeover</h3>
+          <p>If a merchant deletes their store but still owns the subdomain slug, and DNS still points to your server — someone else can claim that slug. Defense: soft-delete + subdomain lockout period.</p>
+        </div>
+        <div class="card" style="border-color:rgba(245,166,35,0.2)">
+          <h3><span style="color:var(--amber)">!</span> Noisy neighbor DoS</h3>
+          <p>One store receives a flood of traffic, consuming all server resources and starving other stores. Defense: per-store rate limiting at the API gateway level.</p>
+        </div>
+        <div class="card" style="border-color:rgba(79,156,249,0.2)">
+          <h3><span style="color:var(--accent)">→</span> Merchant XSS via themes</h3>
+          <p>If you let merchants write raw HTML/JS, a malicious merchant can inject scripts that steal customer payment data from other stores. Defense: structured JSON themes only — never raw HTML input.</p>
+        </div>
+        <div class="card" style="border-color:rgba(79,156,249,0.2)">
+          <h3><span style="color:var(--accent)">→</span> Super-admin impersonation</h3>
+          <p>An attacker who gains super-admin access has access to ALL stores' data. Defense: separate auth system, IP whitelist, mandatory MFA, audit logs on every action.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-sec-auth" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Four completely separate authentication contexts. They must never share sessions, tokens, or user tables.</p>
+      <div class="step-flow">
+        <div class="step">
+          <div class="step-num" style="background:rgba(79,156,249,0.15);color:var(--accent)">A</div>
+          <div class="step-content">
+            <h4>Merchant auth (admin dashboard)</h4>
+            <p>Staff login. JWT contains <code>user_id</code> + <code>store_id</code> + <code>role</code>. Role = owner | admin | editor | viewer. Token valid only for the store it was issued for. Refresh tokens stored in DB, revocable. OAuth providers (Google, GitHub) supported.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(38,198,218,0.15);color:var(--teal)">B</div>
+          <div class="step-content">
+            <h4>Customer auth (storefront)</h4>
+            <p>Per-store customer tables. <code>customers</code> table has <code>store_id</code> column. Email+password or social login. JWT identifies a customer within a specific store — a customer account at Store A does not work at Store B.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(124,106,247,0.15);color:var(--accent2)">C</div>
+          <div class="step-content">
+            <h4>API key auth (storefront API)</h4>
+            <p>For headless storefronts. Two keys: <code>pk_</code> (public, read-only, embedded in frontend) and <code>sk_</code> (secret, server-side only, full access). Public key visible to everyone = only exposes public catalog data. Secret key = never in browser code.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(242,85,85,0.15);color:var(--red)">D</div>
+          <div class="step-content">
+            <h4>Super-admin auth (platform admin)</h4>
+            <p>IP-restricted endpoint. Completely separate JWT issuer. Mandatory TOTP MFA. Every action is audit-logged with the admin's identity. Consider hardware security keys (YubiKey) for this auth. Never on the same subdomain as merchant admin.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-sec-encrypt" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">What needs encrypting, what encryption to use, and how to manage keys.</p>
+      <table class="data-table">
+        <thead><tr><th>Data</th><th>Encryption</th><th>Key storage</th><th>When decrypted</th></tr></thead>
+        <tbody>
+          <tr><td class="col-enc">Payment API keys</td><td class="col-type">AES-256-GCM</td><td class="col-note">Secrets Manager (never in DB)</td><td class="col-note">Only in payment service, in memory</td></tr>
+          <tr><td class="col-enc">Webhook secrets</td><td class="col-type">AES-256-GCM</td><td class="col-note">Secrets Manager</td><td class="col-note">Only when verifying incoming webhooks</td></tr>
+          <tr><td class="col-enc">Customer passwords</td><td class="col-type">bcrypt (cost 12)</td><td class="col-note">N/A — one-way hash</td><td class="col-note">Never — compare only</td></tr>
+          <tr><td class="col-enc">API secret keys (sk_)</td><td class="col-type">bcrypt hash</td><td class="col-note">Store only hash in DB</td><td class="col-note">Never — shown once on creation</td></tr>
+          <tr><td class="col-enc">Session tokens</td><td class="col-type">HMAC-SHA256 signed JWT</td><td class="col-note">JWT secret in Secrets Manager</td><td class="col-note">On every authenticated request</td></tr>
+          <tr><td class="col-note" style="color:var(--text2)">Product data, orders</td><td class="col-type">At-rest disk encryption</td><td class="col-note">Handled by database provider</td><td class="col-note">Normal DB access</td></tr>
+        </tbody>
+      </table>
+      <div class="code-block">
+        <div class="code-header"><span>crypto/encrypt.ts — AES-256-GCM encrypt/decrypt</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre><span class="k">import</span> { createCipheriv, createDecipheriv, randomBytes } from <span class="s">'crypto'</span>;
+
+<span class="k">const</span> ALGORITHM = <span class="s">'aes-256-gcm'</span>;
+<span class="k">const</span> KEY = <span class="fn">Buffer</span>.<span class="fn">from</span>(process.env.ENCRYPTION_KEY, <span class="s">'hex'</span>); <span class="c">// 32 bytes from Secrets Manager</span>
+
+<span class="k">export const</span> <span class="fn">encrypt</span> = (plaintext: <span class="kw">string</span>): <span class="kw">string</span> => {
+  <span class="k">const</span> iv = <span class="fn">randomBytes</span>(<span class="num">12</span>);  <span class="c">// unique per encryption</span>
+  <span class="k">const</span> cipher = <span class="fn">createCipheriv</span>(ALGORITHM, KEY, iv);
+  <span class="k">const</span> encrypted = <span class="fn">Buffer</span>.<span class="fn">concat</span>([cipher.<span class="fn">update</span>(plaintext, <span class="s">'utf8'</span>), cipher.<span class="fn">final</span>()]);
+  <span class="k">const</span> tag = cipher.<span class="fn">getAuthTag</span>();  <span class="c">// authentication tag</span>
+  <span class="c">// Store as: iv:tag:ciphertext (all hex)</span>
+  <span class="k">return</span> `${iv.<span class="fn">toString</span>(<span class="s">'hex'</span>)}:${tag.<span class="fn">toString</span>(<span class="s">'hex'</span>)}:${encrypted.<span class="fn">toString</span>(<span class="s">'hex'</span>)}`;
+};
+
+<span class="k">export const</span> <span class="fn">decrypt</span> = (stored: <span class="kw">string</span>): <span class="kw">string</span> => {
+  <span class="k">const</span> [ivHex, tagHex, dataHex] = stored.<span class="fn">split</span>(<span class="s">':'</span>);
+  <span class="k">const</span> decipher = <span class="fn">createDecipheriv</span>(ALGORITHM, KEY, <span class="fn">Buffer</span>.<span class="fn">from</span>(ivHex, <span class="s">'hex'</span>));
+  decipher.<span class="fn">setAuthTag</span>(<span class="fn">Buffer</span>.<span class="fn">from</span>(tagHex, <span class="s">'hex'</span>));
+  <span class="k">return</span> decipher.<span class="fn">update</span>(dataHex, <span class="s">'hex'</span>, <span class="s">'utf8'</span>) + decipher.<span class="fn">final</span>(<span class="s">'utf8'</span>);
+};</pre>
+      </div>
+    </div>
+
+    <div id="tab-sec-rate" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Rate limiting must be per-store, not per-IP. An attacker behind a CDN can make requests from millions of IPs.</p>
+      <div class="code-block">
+        <div class="code-header"><span>Rate limiting middleware — per store_id</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre><span class="k">import</span> { RateLimiterRedis } <span class="k">from</span> <span class="s">'rate-limiter-flexible'</span>;
+
+<span class="k">const</span> storefrontLimiter = <span class="k">new</span> <span class="fn">RateLimiterRedis</span>({
+  storeClient: redisClient,
+  points: <span class="num">1000</span>,        <span class="c">// requests per window</span>
+  duration: <span class="num">60</span>,        <span class="c">// per 60 seconds</span>
+  keyPrefix: <span class="s">'rl_store'</span>,  <span class="c">// key = rl_store_STORE_ID</span>
+});
+
+<span class="k">const</span> checkoutLimiter = <span class="k">new</span> <span class="fn">RateLimiterRedis</span>({
+  storeClient: redisClient,
+  points: <span class="num">20</span>,   <span class="c">// much stricter for checkout</span>
+  duration: <span class="num">60</span>,
+  keyPrefix: <span class="s">'rl_checkout'</span>,
+});
+
+<span class="k">export const</span> <span class="fn">rateLimitByStore</span> = <span class="k">async</span> (req, res, next) => {
+  <span class="k">try</span> {
+    <span class="k">const</span> limiter = req.path.<span class="fn">startsWith</span>(<span class="s">'/checkout'</span>) ? checkoutLimiter : storefrontLimiter;
+    <span class="k">await</span> limiter.<span class="fn">consume</span>(req.storeId);  <span class="c">// keyed to store, not IP</span>
+    <span class="fn">next</span>();
+  } <span class="k">catch</span> {
+    res.<span class="fn">status</span>(<span class="num">429</span>).<span class="fn">json</span>({ error: <span class="s">'Rate limit exceeded'</span>, retryAfter: <span class="num">60</span> });
+  }
+};</pre>
+      </div>
+    </div>
+
+    <div id="tab-sec-checklist" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Launch security checklist — do not ship without these.</p>
+      <div id="sec-checklist-items"></div>
+      <button class="sim-btn" onclick="runSecurityAudit()" style="margin-top:16px">▶ Run Security Audit Simulation</button>
+      <div id="sim-security" class="sim-output" style="margin-top:12px;display:none"><span class="sim-dim"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- INFRASTRUCTURE -->
+<section class="section" id="infra">
+  <div class="section-tag">§ 09 — Infrastructure</div>
+  <h2>Infrastructure & Scaling</h2>
+  <p class="lead">Every service layer from the reverse proxy down to object storage — what to use at each stage, and the tradeoffs of each choice.</p>
+
+  <div class="tab-container">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab(this,'infra-overview')">Architecture Overview</button>
+      <button class="tab-btn" onclick="switchTab(this,'infra-cache')">Caching Strategy</button>
+      <button class="tab-btn" onclick="switchTab(this,'infra-queue')">Background Jobs</button>
+      <button class="tab-btn" onclick="switchTab(this,'infra-cdn')">CDN & Media</button>
+      <button class="tab-btn" onclick="switchTab(this,'infra-scale')">Scaling Patterns</button>
+    </div>
+
+    <div id="tab-infra-overview" class="tab-panel active">
+      <div class="card-grid">
+        <div class="card">
+          <h3>🔀 Reverse Proxy</h3>
+          <p><strong style="color:var(--text)">Caddy</strong> (recommended to start) — auto SSL, zero config, handles wildcard + custom domains. Move to <strong style="color:var(--text)">Nginx</strong> when you need fine-grained config. Use <strong style="color:var(--text)">Cloudflare</strong> in front of everything for DDoS protection.</p>
+        </div>
+        <div class="card">
+          <h3>⚡ Cache Layer</h3>
+          <p><strong style="color:var(--text)">Redis</strong> for session storage, rate limiting counters, and storefront HTML cache. Use <strong style="color:var(--text)">Upstash</strong> (serverless Redis) to start — pay per request, no server management. Move to ElastiCache when you need predictable latency.</p>
+        </div>
+        <div class="card">
+          <h3>📦 Object Storage</h3>
+          <p><strong style="color:var(--text)">Cloudflare R2</strong> for product images and assets — zero egress fees, S3-compatible API. Serve via R2's public URL or a custom subdomain (<code style="font-family:var(--mono);color:var(--accent)">media.yourplatform.com</code>). Each store's files live under <code style="font-family:var(--mono);color:var(--accent)">stores/{store_id}/</code> prefix.</p>
+        </div>
+        <div class="card">
+          <h3>📬 Background Jobs</h3>
+          <p><strong style="color:var(--text)">BullMQ</strong> + Redis for async work: order confirmation emails, webhook processing, invoice generation, cache invalidation. Each job carries <code style="font-family:var(--mono);color:var(--accent)">store_id</code> in its payload — jobs are never cross-tenant.</p>
+        </div>
+        <div class="card">
+          <h3>📧 Transactional Email</h3>
+          <p><strong style="color:var(--text)">Resend</strong> or <strong style="color:var(--text)">Postmark</strong> for order confirmations, password resets. Emails are sent in the context of the store — from the merchant's domain (via DKIM/SPF you configure on their behalf), not yours.</p>
+        </div>
+        <div class="card">
+          <h3>🔍 Observability</h3>
+          <p><strong style="color:var(--text)">Grafana + Prometheus</strong> for metrics. <strong style="color:var(--text)">Sentry</strong> for error tracking (filter by store_id). <strong style="color:var(--text)">Axiom</strong> for log aggregation. Add a <code style="font-family:var(--mono);color:var(--accent)">store_id</code> field to every log line — this lets you diagnose per-store issues instantly.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-infra-cache" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Caching strategy for a multi-tenant platform — cache keys must always include store_id.</p>
+      <div class="code-block">
+        <div class="code-header"><span>cache/strategy.ts — Cache key patterns</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre><span class="c">// Cache key pattern: {namespace}:{store_id}:{resource_identifier}</span>
+<span class="c">// ALWAYS include store_id — never cache cross-tenant</span>
+
+<span class="k">const</span> CACHE_KEYS = {
+  storefront: (storeId: <span class="kw">string</span>, path: <span class="kw">string</span>) =>
+    `sf:${storeId}:${path}`,                      <span class="c">// Rendered HTML — 5min TTL</span>
+
+  product:  (storeId: <span class="kw">string</span>, slug: <span class="kw">string</span>) =>
+    `prod:${storeId}:${slug}`,                    <span class="c">// Product data — 10min TTL</span>
+
+  theme: (storeId: <span class="kw">string</span>) =>
+    `theme:${storeId}`,                           <span class="c">// Theme JSON — 30min TTL</span>
+
+  domain: (hostname: <span class="kw">string</span>) =>
+    `domain:${hostname}`,                         <span class="c">// Domain → store_id — 1hr TTL</span>
+
+  session: (token: <span class="kw">string</span>) =>
+    `sess:${token}`,                              <span class="c">// User session — 24hr TTL</span>
+};
+
+<span class="c">// Invalidation: when merchant publishes changes</span>
+<span class="k">const</span> <span class="fn">invalidateStore</span> = <span class="k">async</span> (storeId: <span class="kw">string</span>) => {
+  <span class="k">const</span> pattern = `sf:${storeId}:*`;
+  <span class="k">const</span> keys = <span class="k">await</span> redis.<span class="fn">keys</span>(pattern);
+  <span class="k">if</span> (keys.length) <span class="k">await</span> redis.<span class="fn">del</span>(...keys);
+};</pre>
+      </div>
+    </div>
+
+    <div id="tab-infra-queue" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Every operation that doesn't need to be synchronous goes into a queue. This keeps HTTP responses fast and prevents cascading failures.</p>
+      <table class="data-table">
+        <thead><tr><th>Job type</th><th>Queue</th><th>Trigger</th><th>Priority</th><th>Retry</th></tr></thead>
+        <tbody>
+          <tr><td class="col-pk">send_order_email</td><td class="col-type">emails</td><td class="col-note">Order created</td><td style="color:var(--red)">High</td><td class="col-note">3× with backoff</td></tr>
+          <tr><td class="col-pk">process_webhook</td><td class="col-type">webhooks</td><td class="col-note">Payment event received</td><td style="color:var(--red)">High</td><td class="col-note">5× with exp backoff</td></tr>
+          <tr><td class="col-pk">invalidate_cache</td><td class="col-type">cache</td><td class="col-note">Merchant publishes change</td><td style="color:var(--amber)">Medium</td><td class="col-note">1×</td></tr>
+          <tr><td class="col-pk">generate_invoice</td><td class="col-type">documents</td><td class="col-note">Order completed</td><td style="color:var(--text2)">Low</td><td class="col-note">3×</td></tr>
+          <tr><td class="col-pk">sync_inventory</td><td class="col-type">inventory</td><td class="col-note">Order placed</td><td style="color:var(--amber)">Medium</td><td class="col-note">3×</td></tr>
+          <tr><td class="col-pk">send_abandoned_cart</td><td class="col-type">marketing</td><td class="col-note">Cart idle 1hr</td><td style="color:var(--text2)">Low</td><td class="col-note">1×</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="tab-infra-cdn" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Every product image uploaded by every merchant gets stored in object storage and served via CDN — never your server disk.</p>
+      <div class="code-block">
+        <div class="code-header"><span>media/upload.ts — Image upload with store isolation</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre><span class="k">import</span> { S3Client, PutObjectCommand } <span class="k">from</span> <span class="s">'@aws-sdk/client-s3'</span>;
+
+<span class="c">// Cloudflare R2 is S3-compatible — same SDK</span>
+<span class="k">const</span> r2 = <span class="k">new</span> <span class="fn">S3Client</span>({
+  region: <span class="s">'auto'</span>,
+  endpoint: process.env.R2_ENDPOINT,
+  credentials: { accessKeyId: ..., secretAccessKey: ... }
+});
+
+<span class="k">export const</span> <span class="fn">uploadMedia</span> = <span class="k">async</span> (file: Buffer, storeId: <span class="kw">string</span>, filename: <span class="kw">string</span>) => {
+  <span class="c">// Key includes store_id — each store's files are namespaced</span>
+  <span class="k">const</span> key = `stores/${storeId}/media/${<span class="fn">nanoid</span>()}-${filename}`;
+
+  <span class="c">// Validate file type — NEVER trust Content-Type header</span>
+  <span class="k">const</span> type = <span class="k">await</span> <span class="fn">detectMimeType</span>(file);  <span class="c">// magic bytes check</span>
+  <span class="k">if</span> (![<span class="s">'image/jpeg'</span>, <span class="s">'image/png'</span>, <span class="s">'image/webp'</span>].<span class="fn">includes</span>(type)) {
+    <span class="k">throw new</span> <span class="fn">Error</span>(<span class="s">'Invalid file type'</span>);
+  }
+
+  <span class="k">await</span> r2.<span class="fn">send</span>(<span class="k">new</span> <span class="fn">PutObjectCommand</span>({
+    Bucket: <span class="s">'platform-media'</span>,
+    Key: key,
+    Body: file,
+    ContentType: type,
+    <span class="c">// No public ACL needed — R2 serves via CDN URL</span>
+  }));
+
+  <span class="k">return</span> `https://media.yourplatform.com/${key}`;
+};</pre>
+      </div>
+    </div>
+
+    <div id="tab-infra-scale" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Scaling patterns for a multi-tenant platform — the bottlenecks appear in a specific order as you grow.</p>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-badge badge-green">0–100 stores</span>
+          <h3>Single server handles everything</h3>
+          <p>One app server, one Postgres instance (managed), one Redis instance (Upstash). The bottleneck here is developer time, not compute. Spend zero time on scaling infrastructure.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-badge badge-blue">100–1K stores</span>
+          <h3>Database connection pooling becomes critical</h3>
+          <p>Each HTTP request opens a DB connection. At 100 concurrent requests across many stores, you hit Postgres connection limits (~100 default). Add <strong style="color:var(--text)">PgBouncer</strong> or use Neon/Supabase's built-in pooling. This is usually the first real bottleneck.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-badge badge-amber">1K–10K stores</span>
+          <h3>Read replicas + horizontal app scaling</h3>
+          <p>Add a Postgres read replica for storefront API reads (product listings, pages). All writes still go to primary. Add more app server instances behind a load balancer. Add Redis cluster for session storage.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-badge badge-red">10K+ stores</span>
+          <h3>Database sharding — the hard problem</h3>
+          <p>A single Postgres instance has limits (~10TB, ~100K QPS with good hardware). At this scale, you shard: group stores into "shards" or "pods", each pod has its own Postgres instance. A routing layer maps store_id → pod. This is what Shopify, GitHub, and Stripe all do. Tools: Vitess, Citus, or manual sharding.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPLOYMENT -->
+<section class="section" id="deployment">
+  <div class="section-tag">§ 10 — Going Live</div>
+  <h2>Deployment Models</h2>
+  <p class="lead">How to deploy your platform itself, how to let merchants deploy their storefronts, and how CI/CD works when you have thousands of stores to consider on every release.</p>
+
+  <div class="tab-container">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab(this,'dep-platform')">Platform Deployment</button>
+      <button class="tab-btn" onclick="switchTab(this,'dep-merchant')">Merchant Deployment</button>
+      <button class="tab-btn" onclick="switchTab(this,'dep-cicd')">CI/CD Strategy</button>
+      <button class="tab-btn" onclick="switchTab(this,'dep-migration')">Zero-Downtime Migrations</button>
+    </div>
+
+    <div id="tab-dep-platform" class="tab-panel active">
+      <div class="card-grid">
+        <div class="card" style="border-color:rgba(52,199,138,0.2)">
+          <h3>📦 Containerize everything</h3>
+          <p>Your app server, background workers, and any auxiliary services run as Docker containers. Same container in dev, staging, and production. No "works on my machine" issues. Docker Compose locally, Kubernetes or ECS in production.</p>
+        </div>
+        <div class="card">
+          <h3>🔄 Blue/Green deployments</h3>
+          <p>Never take your platform down for a deployment. Run two identical environments (blue = live, green = new version). Deploy to green, run smoke tests, switch load balancer to green. Instant rollback = switch back to blue.</p>
+        </div>
+        <div class="card">
+          <h3>📊 Feature flags</h3>
+          <p>New features that could affect stores roll out progressively. Enable for 1% of stores, watch metrics, then 10%, then 100%. Use a feature flag service (LaunchDarkly, Unleash, or a simple DB table) keyed by store_id.</p>
+        </div>
+        <div class="card">
+          <h3>🌍 Environments</h3>
+          <p>Development (local), Staging (production clone, no real merchant data), Production. Every PR deploys to a preview environment. Never test against production. Staging uses production-like traffic via load testing tools.</p>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span>docker-compose.yml — Local development stack</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre>services:
+  <span class="prop">app</span>:
+    build: .
+    ports: [<span class="s">"3000:3000"</span>]
+    environment:
+      DATABASE_URL: postgres://postgres:pass@db:5432/platform
+      REDIS_URL: redis://cache:6379
+    depends_on: [db, cache]
+
+  <span class="prop">worker</span>:
+    build: .
+    command: node worker.js
+    environment:
+      DATABASE_URL: postgres://postgres:pass@db:5432/platform
+      REDIS_URL: redis://cache:6379
+
+  <span class="prop">db</span>:
+    image: postgres:16
+    environment: { POSTGRES_PASSWORD: pass, POSTGRES_DB: platform }
+    volumes: [postgres_data:/var/lib/postgresql/data]
+
+  <span class="prop">cache</span>:
+    image: redis:7-alpine</pre>
+      </div>
+    </div>
+
+    <div id="tab-dep-merchant" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Two modes for merchants: hosted (you run it) and self-hosted (they deploy it). Both are valid product offerings at different price points.</p>
+      <div class="tradeoff">
+        <div class="tradeoff-col pro" style="border-color:rgba(52,199,138,0.15)">
+          <h4 style="color:var(--green)">✓ Hosted model (default)</h4>
+          <ul>
+            <li>Merchant signs up → store is instantly live</li>
+            <li>You handle all uptime, SSL, scaling</li>
+            <li>One-click theme changes take effect immediately</li>
+            <li>Easier to upsell (charge for features, not hosting)</li>
+            <li>You control the experience end-to-end</li>
+          </ul>
+        </div>
+        <div class="tradeoff-col con" style="border-color:rgba(79,156,249,0.15)">
+          <h4 style="color:var(--accent)">→ Self-hosted model (premium)</h4>
+          <ul>
+            <li>Merchant gets a Next.js project + your API</li>
+            <li>They deploy to Vercel/Netlify/their own server</li>
+            <li>Data still in your database — you're still the API</li>
+            <li>Appeals to tech-savvy merchants with custom needs</li>
+            <li>You earn on API calls, not hosting</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-dep-cicd" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">CI/CD for a multi-tenant platform has extra considerations — a bad deploy affects every store simultaneously.</p>
+      <div class="step-flow">
+        <div class="step">
+          <div class="step-num" style="background:rgba(79,156,249,0.15);color:var(--accent)">1</div>
+          <div class="step-content"><h4>Automated test suite</h4><p>Every PR runs: unit tests (business logic), integration tests (DB queries with real Postgres), tenant isolation tests (verify store_id enforcement), security tests (verify RLS, auth boundaries).</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(38,198,218,0.15);color:var(--teal)">2</div>
+          <div class="step-content"><h4>Preview environments</h4><p>Each PR gets a preview URL with a fresh database seeded with test stores. QA happens here, never in production. Use Neon's database branching — each PR gets a branch of the staging DB, instantly, for free.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(124,106,247,0.15);color:var(--accent2)">3</div>
+          <div class="step-content"><h4>Canary releases</h4><p>Route 5% of traffic to the new version. Watch error rates, latency p99, and business metrics (checkout completion). Auto-rollback if error rate spikes. Graduate to 100% if metrics are clean after 30 minutes.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(52,199,138,0.15);color:var(--green)">4</div>
+          <div class="step-content"><h4>Database migrations — zero downtime</h4><p>Never use destructive migrations in a running system. Pattern: add new column (nullable) → deploy code that writes to both → backfill old rows → make column required → remove old code. This is called expand/contract and never requires downtime.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-dep-migration" class="tab-panel">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px">The expand/contract migration pattern — how to change your database schema without downtime or data loss.</p>
+      <div class="code-block">
+        <div class="code-header"><span>migrations/example — Adding a column safely</span><div class="code-dots"><div class="code-dot" style="background:#f25555"></div><div class="code-dot" style="background:#f5a623"></div><div class="code-dot" style="background:#34c78a"></div></div></div>
+        <pre><span class="c">-- WRONG: Renaming a column in a live system</span>
+<span class="c">-- ALTER TABLE products RENAME COLUMN name TO title;</span>
+<span class="c">-- ^ This breaks all running app servers immediately</span>
+
+<span class="c">-- RIGHT: Expand/contract over 3 releases</span>
+
+<span class="c">-- RELEASE 1: Add the new column (nullable)</span>
+<span class="kw">ALTER TABLE</span> products <span class="kw">ADD COLUMN</span> title <span class="kw">TEXT</span>;
+
+<span class="c">-- RELEASE 2: App writes to BOTH columns, reads from old</span>
+<span class="c">-- Also backfill: UPDATE products SET title = name WHERE title IS NULL;</span>
+
+<span class="c">-- RELEASE 3: App reads from new column, stops writing to old</span>
+<span class="c">-- RELEASE 4: Drop old column (after confirming it's unused)</span>
+<span class="kw">ALTER TABLE</span> products <span class="kw">DROP COLUMN</span> name;
+
+<span class="c">-- Zero downtime. No locks. No data loss.</span>
+<span class="c">-- Each release can be rolled back independently.</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LAUNCH CHECKLIST -->
+<section class="section" id="checklist">
+  <div class="section-tag">§ 11 — Launch Readiness</div>
+  <h2>Launch Checklist</h2>
+  <p class="lead">Everything that must be in place before you invite your first merchant. Interactive checklist with progress tracking.</p>
+
+  <div style="margin-bottom:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-size:13px;color:var(--text2)">Launch readiness</span>
+      <span id="checklist-pct" style="font-size:13px;font-family:var(--mono);color:var(--accent)">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="checklist-progress" style="width:0%;background:var(--accent)"></div>
+    </div>
+  </div>
+
+  <div id="launch-checklist"></div>
+</section>
+
+</main>
+
+<script>
+// =============================================
+// TAB SYSTEM
+// =============================================
+function switchTab(btn, id) {
+  const panel = btn.closest('.tab-container');
+  panel.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  panel.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const prefix = id.split('-')[0];
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+// =============================================
+// NAV ACTIVE STATE
+// =============================================
+const navLinks = document.querySelectorAll('.nav-item');
+window.addEventListener('scroll', () => {
+  const sections = ['hero','journey','hardware','multitenancy','database','domains','storefront','payments','security','infra','deployment','checklist'];
+  let active = 'hero';
+  for (const id of sections) {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 100) active = id;
+  }
+  navLinks.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + active);
+  });
+});
+
+// =============================================
+// DATABASE TABLES
+// =============================================
+const dbTables = {
+  stores: {
+    cols: ['Column', 'Type', 'Role', 'Notes'],
+    rows: [
+      ['id', 'uuid', 'PK', 'Primary key — never expose directly'],
+      ['subdomain', 'text', '', 'e.g. my-store — unique, lowercase, alphanumeric'],
+      ['custom_domain', 'text', '', 'e.g. shop.theirdomain.com — nullable'],
+      ['domain_verified', 'bool', '', 'Must be true before routing custom domain traffic'],
+      ['plan', 'text', '', 'free | pro | business | enterprise'],
+      ['owner_user_id', 'uuid', 'FK → users', 'The account owner'],
+      ['created_at', 'timestamptz', '', ''],
+      ['suspended_at', 'timestamptz', '', 'null = active; set to suspend store'],
+    ]
+  },
+  products: {
+    cols: ['Column', 'Type', 'Role', 'Notes'],
+    rows: [
+      ['id', 'uuid', 'PK', ''],
+      ['store_id', 'uuid', 'FK → stores', 'INDEXED — every query filters by this'],
+      ['title', 'text', '', ''],
+      ['description', 'text', '', 'Sanitized — no raw HTML'],
+      ['price', 'numeric(10,2)', '', ''],
+      ['compare_at_price', 'numeric(10,2)', '', 'Original price for sale display'],
+      ['inventory_qty', 'integer', '', ''],
+      ['slug', 'text', '', 'URL-friendly identifier — unique per store'],
+      ['status', 'text', '', 'draft | active | archived'],
+      ['created_at', 'timestamptz', '', ''],
+    ]
+  },
+  orders: {
+    cols: ['Column', 'Type', 'Role', 'Notes'],
+    rows: [
+      ['id', 'uuid', 'PK', ''],
+      ['store_id', 'uuid', 'FK → stores', 'INDEXED'],
+      ['customer_id', 'uuid', 'FK → customers', 'nullable (guest checkout)'],
+      ['order_number', 'text', '', 'Human-readable per-store: #1001, #1002...'],
+      ['status', 'text', '', 'pending | paid | fulfilled | cancelled | refunded'],
+      ['subtotal', 'numeric(10,2)', '', ''],
+      ['total', 'numeric(10,2)', '', ''],
+      ['payment_transaction_id', 'text', '', 'Gateway transaction reference'],
+      ['shipping_address', 'jsonb', '', 'Stored as structured JSON'],
+      ['created_at', 'timestamptz', '', ''],
+    ]
+  },
+  customers: {
+    cols: ['Column', 'Type', 'Role', 'Notes'],
+    rows: [
+      ['id', 'uuid', 'PK', ''],
+      ['store_id', 'uuid', 'FK → stores', 'INDEXED — customer belongs to ONE store'],
+      ['email', 'text', '', 'Unique per store (store_id, email) composite unique'],
+      ['password_hash', 'text', 'ENCRYPTED', 'bcrypt — never store plaintext'],
+      ['full_name', 'text', '', ''],
+      ['phone', 'text', '', 'nullable'],
+      ['email_verified', 'bool', '', ''],
+      ['created_at', 'timestamptz', '', ''],
+    ]
+  },
+  domains: {
+    cols: ['Column', 'Type', 'Role', 'Notes'],
+    rows: [
+      ['id', 'uuid', 'PK', ''],
+      ['store_id', 'uuid', 'FK → stores', ''],
+      ['hostname', 'text', '', 'Full hostname e.g. shop.theirdomain.com'],
+      ['type', 'text', '', 'subdomain | custom'],
+      ['ssl_status', 'text', '', 'pending | provisioning | active | error'],
+      ['verified_at', 'timestamptz', '', 'null until DNS TXT check passes'],
+      ['ssl_expires_at', 'timestamptz', '', 'Auto-renewed before expiry'],
+    ]
+  },
+  payment_methods: {
+    cols: ['Column', 'Type', 'Role', 'Notes'],
+    rows: [
+      ['id', 'uuid', 'PK', ''],
+      ['store_id', 'uuid', 'FK → stores', ''],
+      ['provider', 'text', '', 'stripe | sslcommerz | bkash | nagad'],
+      ['credentials', 'jsonb', 'ENCRYPTED', 'AES-256-GCM — decrypted only in payment service'],
+      ['webhook_secret', 'text', 'ENCRYPTED', 'Per-store, per-provider webhook signing secret'],
+      ['is_active', 'bool', '', ''],
+      ['created_at', 'timestamptz', '', ''],
+    ]
+  },
+  themes: {
+    cols: ['Column', 'Type', 'Role', 'Notes'],
+    rows: [
+      ['id', 'uuid', 'PK', ''],
+      ['store_id', 'uuid', 'FK → stores', ''],
+      ['name', 'text', '', 'Theme name e.g. "Minimal Dark"'],
+      ['config', 'jsonb', '', 'Colors, typography, section layouts as JSON'],
+      ['is_published', 'bool', '', 'Only ONE published theme per store (enforced by trigger)'],
+      ['published_at', 'timestamptz', '', 'When this theme went live'],
+    ]
+  },
+  staff: {
+    cols: ['Column', 'Type', 'Role', 'Notes'],
+    rows: [
+      ['id', 'uuid', 'PK', ''],
+      ['store_id', 'uuid', 'FK → stores', 'Staff member belongs to this store only'],
+      ['user_id', 'uuid', 'FK → users', 'The person — one user can be staff at multiple stores'],
+      ['role', 'text', '', 'owner | admin | editor | viewer'],
+      ['invited_by', 'uuid', 'FK → users', ''],
+      ['invited_at', 'timestamptz', '', ''],
+      ['accepted_at', 'timestamptz', '', 'null until invite link used'],
+    ]
+  }
+};
+
+function showDBTable(name) {
+  const t = dbTables[name];
+  let html = '<thead><tr>' + t.cols.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>';
+  t.rows.forEach(row => {
+    const [col, type, role, note] = row;
+    let colClass = '';
+    if (role === 'PK') colClass = 'col-pk';
+    else if (role.startsWith('FK')) colClass = 'col-fk';
+    else if (role === 'ENCRYPTED') colClass = 'col-enc';
+    html += `<tr>
+      <td class="${colClass}">${col}</td>
+      <td class="col-type">${type}</td>
+      <td style="font-size:11px;font-family:var(--mono);color:${role==='ENCRYPTED'?'#f06292':role.startsWith('FK')?'#34c78a':role==='PK'?'#f5a623':'#555e78'}">${role}</td>
+      <td class="col-note">${note}</td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('db-table-view').innerHTML = html;
+}
+showDBTable('stores');
+
+// =============================================
+// TENANCY SELECTION
+// =============================================
+const tenancyInfo = {
+  t1: `<strong style="color:var(--green)">Shared DB, Shared Schema (Recommended)</strong><br>One database, one set of tables, <code style="font-family:var(--mono);color:var(--accent)">store_id</code> on every row. This is how Shopify, Stripe, Slack, and virtually every successful SaaS started. Add Postgres Row Level Security (RLS) as an automatic safety net — even if your application code forgets to filter by store_id, the database blocks cross-tenant access. Migration: run one schema migration, all stores get it simultaneously. Cheapest to operate, simplest to debug.`,
+  t2: `<strong style="color:var(--amber)">Shared DB, Separate Schemas (Scale Tier)</strong><br>One Postgres instance, but each tenant has their own schema namespace (<code style="font-family:var(--mono);color:var(--accent)">store_abc.products</code> vs <code style="font-family:var(--mono);color:var(--accent)">store_xyz.products</code>). Better logical isolation. However: running a schema migration requires running it across every tenant's schema — complex tooling needed. Move here when a specific customer requires it and pays for the isolation. Tools: pgpool-II, or custom migration runner.`,
+  t3: `<strong style="color:var(--accent2)">Database Per Tenant (Enterprise Only)</strong><br>Each store gets a dedicated Postgres instance. Maximum isolation — one tenant's performance issues cannot affect another. Independent backup/restore per tenant. However: every new store provisions a database, every migration runs N times, monitoring is N times harder. Only justified as an enterprise-tier offering where the customer pays a premium that covers the operational overhead. Provision databases on-demand using Terraform or a database control plane.`
+};
+function selectTenancy(el, id) {
+  document.querySelectorAll('.compare-card').forEach(c => {
+    c.style.borderColor = '';
+    c.style.background = '';
+  });
+  el.style.borderColor = 'rgba(79,156,249,0.4)';
+  el.style.background = 'rgba(79,156,249,0.05)';
+  document.getElementById('tenancy-detail').innerHTML = `<div class="highlight">${tenancyInfo[id]}</div>`;
+}
+
+// =============================================
+// SIMULATIONS
+// =============================================
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function simPrint(containerId, lines, clear=true) {
+  const el = document.getElementById(containerId);
+  if (clear) el.innerHTML = '';
+  for (const [text, cls, delay] of lines) {
+    await sleep(delay || 150);
+    const span = document.createElement('div');
+    span.className = 'sim-line ' + (cls || 'sim-dim');
+    span.textContent = text;
+    el.appendChild(span);
+    el.scrollTop = el.scrollHeight;
+  }
+}
+
+async function simRequest() {
+  await simPrint('sim-request', [
+    ['[→] Browser: GET https://cool-store.yourplatform.com/products', 'sim-info'],
+    ['[DNS] Resolving *.yourplatform.com wildcard...', 'sim-dim'],
+    ['[DNS] A record → 203.0.113.10 (your server)', 'sim-ok'],
+    ['[TLS] Using wildcard cert *.yourplatform.com', 'sim-ok'],
+    ['[CDN] Cloudflare edge: cache MISS for /products', 'sim-warn'],
+    ['[Proxy] Nginx: forwarding to app:3000 with Host header', 'sim-dim'],
+    ['[App] tenantMiddleware: Host = cool-store.yourplatform.com', 'sim-info'],
+    ['[App] Extracting subdomain: "cool-store"', 'sim-dim'],
+    ['[DB] SELECT * FROM stores WHERE subdomain = "cool-store"', 'sim-info'],
+    ['[DB] Query time: 0.8ms (index hit)', 'sim-ok'],
+    ['[App] store_id = "a1b2c3d4-..." injected to request context', 'sim-ok'],
+    ['[Cache] Checking Redis: storefront:a1b2c3d4:/products', 'sim-dim'],
+    ['[Cache] MISS — rendering fresh...', 'sim-warn'],
+    ['[DB] SELECT products WHERE store_id = "a1b2c3d4" AND status = "active"', 'sim-info'],
+    ['[DB] Query time: 2.1ms (composite index hit)', 'sim-ok'],
+    ['[DB] SELECT theme config WHERE store_id = "a1b2c3d4" AND is_published = true', 'sim-info'],
+    ['[Render] Processing 3 theme sections...', 'sim-dim'],
+    ['[Render] hero_banner: ✓', 'sim-ok'],
+    ['[Render] product_grid (24 products): ✓', 'sim-ok'],
+    ['[Render] footer: ✓', 'sim-ok'],
+    ['[Cache] Storing rendered HTML in Redis (TTL: 300s)', 'sim-dim'],
+    ['[Response] 200 OK — 42KB HTML, 94ms total', 'sim-ok'],
+    ['[CDN] Cloudflare caching response at edge for next request', 'sim-ok'],
+    ['', 'sim-dim'],
+    ['✓ Next request for same page: ~8ms (Redis cache hit)', 'sim-ok'],
+    ['✓ After CDN warms: ~3ms (Cloudflare edge cache)', 'sim-ok'],
+  ]);
+}
+
+async function simTenantIsolation() {
+  await simPrint('sim-tenant', [
+    ['[Test] Simulating cross-tenant data access attempt...', 'sim-warn'],
+    ['[Test] Store A (id: aaa-111) requests products', 'sim-info'],
+    ['[DB] SET LOCAL app.current_store_id = "aaa-111"', 'sim-dim'],
+    ['[DB] SELECT * FROM products WHERE store_id = "aaa-111"', 'sim-info'],
+    ['[DB] RLS policy active: checking current_setting("app.current_store_id")', 'sim-dim'],
+    ['[DB] 47 rows returned — all belong to store aaa-111 ✓', 'sim-ok'],
+    ['', 'sim-dim'],
+    ['[Attack] Attacker attempts: SELECT * FROM products WHERE store_id = "bbb-222"', 'sim-err'],
+    ['[DB] RLS policy: store_id (bbb-222) ≠ current_setting (aaa-111)', 'sim-err'],
+    ['[DB] 0 rows returned — cross-tenant access BLOCKED ✓', 'sim-ok'],
+    ['', 'sim-dim'],
+    ['[Attack] Attacker attempts to omit store_id entirely:', 'sim-err'],
+    ['[Attack] SELECT * FROM products LIMIT 100', 'sim-err'],
+    ['[DB] RLS policy applies to ALL queries — no exceptions', 'sim-err'],
+    ['[DB] Only returns rows where store_id = "aaa-111" ✓', 'sim-ok'],
+    ['', 'sim-dim'],
+    ['✓ Defense layer 1: App middleware enforces store_id', 'sim-ok'],
+    ['✓ Defense layer 2: Postgres RLS blocks even if app fails', 'sim-ok'],
+  ]);
+}
+
+async function simQueryPlan() {
+  await simPrint('sim-tenant', [
+    ['[EXPLAIN] SELECT * FROM products WHERE store_id = $1 AND status = "active"', 'sim-info'],
+    ['', 'sim-dim'],
+    ['WITHOUT index on (store_id, status):', 'sim-warn'],
+    ['  Seq Scan on products (cost=0.00..85420.00)', 'sim-err'],
+    ['  Filter: (store_id = $1 AND status = "active")', 'sim-err'],
+    ['  Rows removed by filter: 9,999,953 (of 10M total)', 'sim-err'],
+    ['  Actual time: 847ms ← CATASTROPHIC at scale', 'sim-err'],
+    ['', 'sim-dim'],
+    ['WITH index idx_products_store_status:', 'sim-ok'],
+    ['  Index Scan using idx_products_store_status', 'sim-ok'],
+    ['  Index Cond: (store_id = $1 AND status = "active")', 'sim-ok'],
+    ['  Rows: 47 (exact — index is precise)', 'sim-ok'],
+    ['  Actual time: 0.084ms ← 10,000x faster', 'sim-ok'],
+    ['', 'sim-dim'],
+    ['✓ Always index (store_id, filtered_column) together', 'sim-ok'],
+    ['✓ Put store_id FIRST in composite indexes', 'sim-ok'],
+  ], false);
+}
+
+async function simSubdomain() {
+  await simPrint('sim-dns', [
+    ['[DNS] Customer visits: fashion-bd.yourplatform.com', 'sim-info'],
+    ['[DNS] Browser queries DNS for fashion-bd.yourplatform.com', 'sim-dim'],
+    ['[DNS] Wildcard *.yourplatform.com matches → 203.0.113.10', 'sim-ok'],
+    ['[TLS] Wildcard cert *.yourplatform.com — already provisioned', 'sim-ok'],
+    ['[TLS] Handshake complete (TLS 1.3)', 'sim-ok'],
+    ['[App] Host header: fashion-bd.yourplatform.com', 'sim-dim'],
+    ['[App] Subdomain extracted: "fashion-bd"', 'sim-dim'],
+    ['[Cache] Redis: domain:fashion-bd → HIT', 'sim-ok'],
+    ['[App] store_id resolved: "f4a2b1c9-..." (from cache, 0.2ms)', 'sim-ok'],
+    ['✓ Total resolution time: ~2ms', 'sim-ok'],
+  ]);
+}
+
+async function simCustomDomain() {
+  await simPrint('sim-dns', [
+    ['[DNS] Customer visits: shop.myfashion.com.bd', 'sim-info'],
+    ['[DNS] Browser queries DNS for shop.myfashion.com.bd', 'sim-dim'],
+    ['[DNS] CNAME shop.myfashion.com.bd → yourplatform.com', 'sim-ok'],
+    ['[DNS] A record yourplatform.com → 203.0.113.10', 'sim-ok'],
+    ['[TLS] Server Name Indication: shop.myfashion.com.bd', 'sim-dim'],
+    ['[TLS] Caddy: checking on_demand_tls callback...', 'sim-dim'],
+    ['[TLS] GET /tls-check?domain=shop.myfashion.com.bd', 'sim-info'],
+    ['[DB] SELECT store WHERE custom_domain = "shop.myfashion.com.bd" AND domain_verified = true', 'sim-info'],
+    ['[DB] Found: store_id = "d9e8f7a6-..." ✓', 'sim-ok'],
+    ['[TLS] Callback returned 200 — provisioning cert...', 'sim-ok'],
+    ['[TLS] Let\'s Encrypt ACME challenge completed', 'sim-ok'],
+    ['[TLS] Certificate issued for shop.myfashion.com.bd ✓', 'sim-ok'],
+    ['[App] Host: shop.myfashion.com.bd → store_id resolved', 'sim-ok'],
+    ['✓ First visit: ~800ms (cert provisioning)', 'sim-ok'],
+    ['✓ Subsequent visits: ~3ms (cert cached)', 'sim-ok'],
+  ]);
+}
+
+async function simDomainVerify() {
+  await simPrint('sim-dns', [
+    ['[Setup] Merchant adds custom domain: shop.newstore.com', 'sim-info'],
+    ['[Platform] Generating verification token: saas-verify-abc123xyz', 'sim-dim'],
+    ['[Platform] Instructions sent to merchant:', 'sim-dim'],
+    ['[Platform] Add TXT record: _saas-verify.shop.newstore.com = saas-verify-abc123xyz', 'sim-warn'],
+    ['', 'sim-dim'],
+    ['[Verify] Background job: check DNS TXT record...', 'sim-dim'],
+    ['[DNS] TXT lookup: _saas-verify.shop.newstore.com', 'sim-info'],
+    ['[DNS] Found: ["saas-verify-abc123xyz"]', 'sim-ok'],
+    ['[DB] UPDATE domains SET domain_verified = true, verified_at = NOW()', 'sim-ok'],
+    ['[TLS] Domain now authorized for on-demand cert provisioning', 'sim-ok'],
+    ['[Email] Notification sent to merchant: domain verified ✓', 'sim-ok'],
+    ['✓ Domain verification prevents unauthorized domain claims', 'sim-ok'],
+  ]);
+}
+
+async function simThemeRender() {
+  const el = document.getElementById('sim-theme');
+  el.innerHTML = '';
+  const lines = [
+    ['[Store] Request: GET / for store_id "theme-demo-123"', 'sim-info'],
+    ['[Cache] Redis miss — rendering fresh', 'sim-warn'],
+    ['[DB] SELECT config FROM themes WHERE store_id = "theme-demo-123" AND is_published = true', 'sim-info'],
+    ['[Theme] Loaded config: 3 sections', 'sim-ok'],
+    ['[Theme] Section 1: type = hero_banner', 'sim-dim'],
+    ['[Theme] → title: "Premium Fashion"', 'sim-dim'],
+    ['[Theme] → bg_color: "#1a1a2e"', 'sim-dim'],
+    ['[Theme] → cta_text: "Shop Now"', 'sim-dim'],
+    ['[Render] Generating hero HTML...', 'sim-dim'],
+    ['[Theme] Section 2: type = product_grid', 'sim-dim'],
+    ['[DB] SELECT products WHERE store_id = "theme-demo-123" AND status = "active" LIMIT 6', 'sim-info'],
+    ['[DB] 6 products loaded', 'sim-ok'],
+    ['[Render] Generating product grid HTML...', 'sim-dim'],
+    ['[Theme] Section 3: type = newsletter_signup', 'sim-dim'],
+    ['[CSS] Injecting CSS variables from theme colors...', 'sim-dim'],
+    ['[Fonts] Loading Playfair Display + Lato (theme typography)', 'sim-dim'],
+    ['[Cache] Stored in Redis TTL=300s', 'sim-ok'],
+    ['✓ Rendered in 23ms — unique branded storefront generated', 'sim-ok'],
+  ];
+  for (const [text, cls, delay] of lines) {
+    await sleep(120);
+    const span = document.createElement('div');
+    span.className = 'sim-line ' + cls;
+    span.textContent = text;
+    el.appendChild(span);
+    el.scrollTop = el.scrollHeight;
+  }
+
+  // Show preview
+  setTimeout(() => {
+    document.getElementById('theme-preview').style.display = 'block';
+    document.getElementById('preview-title').textContent = 'Premium Fashion';
+    document.getElementById('preview-sub').textContent = 'New arrivals weekly';
+    const prods = document.getElementById('preview-products');
+    prods.innerHTML = ['T-Shirt', 'Jacket', 'Dress', 'Shoes', 'Bag', 'Cap'].map(name =>
+      `<div style="border:1px solid #eee;border-radius:6px;padding:12px;font-family:sans-serif">
+        <div style="height:60px;background:#f5f5f5;border-radius:4px;margin-bottom:8px"></div>
+        <div style="font-size:12px;font-weight:600;color:#333">${name}</div>
+        <div style="font-size:11px;color:#e94560;margin-top:2px">৳ ${Math.floor(Math.random()*2000+500)}</div>
+      </div>`
+    ).join('');
+  }, 3000);
+}
+
+async function simPayment() {
+  const gateway = document.getElementById('pay-gateway').value;
+  const gatewayName = { stripe: 'Stripe', sslcommerz: 'SSLCommerz', bkash: 'bKash', nagad: 'Nagad' };
+  const creds = { stripe: 'sk_live_...', sslcommerz: 'SSLCZ_LIVE_...', bkash: 'app_key + app_secret', nagad: 'merchant_id + private_key' };
+
+  await simPrint('sim-payment', [
+    [`[Cart] Customer checks out at fashion-store.yourplatform.com`, 'sim-info'],
+    [`[Order] Creating order record with status = "pending"`, 'sim-dim'],
+    [`[Pay] Looking up store payment method for store_id "fa-111"`, 'sim-dim'],
+    [`[DB] SELECT * FROM payment_methods WHERE store_id = "fa-111" AND provider = "${gateway}"`, 'sim-info'],
+    [`[Pay] Found ${gatewayName[gateway]} credentials (encrypted)`, 'sim-ok'],
+    [`[Crypto] Decrypting with AES-256-GCM...`, 'sim-dim'],
+    [`[Crypto] Credentials decrypted: ${creds[gateway]}`, 'sim-ok'],
+    [`[Pay] Calling ${gatewayName[gateway]} gateway...`, 'sim-info'],
+    ...(gateway === 'stripe' ? [
+      [`[Stripe] POST /v1/payment_intents { amount: 150000, currency: "bdt" }`, 'sim-dim'],
+      [`[Stripe] Using MERCHANT'S secret key — money goes to their account`, 'sim-ok'],
+      [`[Stripe] payment_intent.id = pi_3Nk...`, 'sim-ok'],
+    ] : gateway === 'sslcommerz' ? [
+      [`[SSLCommerz] POST /gwprocess/v4/api.php`, 'sim-dim'],
+      [`[SSLCommerz] Session token generated: SSL-SESSION-abc123`, 'sim-ok'],
+      [`[SSLCommerz] Redirect URL returned to customer`, 'sim-ok'],
+    ] : gateway === 'bkash' ? [
+      [`[bKash] POST /checkout/payment/create`, 'sim-dim'],
+      [`[bKash] App key + secret authenticated`, 'sim-ok'],
+      [`[bKash] paymentID: TrxID-xxxxxxxxxxx`, 'sim-ok'],
+    ] : [
+      [`[Nagad] POST /api/dfs/check-out/initialize`, 'sim-dim'],
+      [`[Nagad] RSA signature generated with merchant private key`, 'sim-ok'],
+      [`[Nagad] Payment URL returned`, 'sim-ok'],
+    ]),
+    [`[Order] status updated to "awaiting_payment"`, 'sim-dim'],
+    [`[Webhook] Listening at: /webhooks/${gateway}/fa-111`, 'sim-dim'],
+    [`[Webhook] ${gatewayName[gateway]} will call this URL on success/failure`, 'sim-dim'],
+    [``, 'sim-dim'],
+    [`✓ Money flows: Customer → ${gatewayName[gateway]} → Merchant's account`, 'sim-ok'],
+    [`✓ Your platform never touches the funds`, 'sim-ok'],
+  ]);
+}
+
+// =============================================
+// SECURITY CHECKLIST
+// =============================================
+const secItems = [
+  { cat: 'Auth', text: 'JWT contains both user_id AND store_id — never just one', critical: true },
+  { cat: 'Auth', text: 'Password reset tokens are single-use and expire in 1 hour', critical: true },
+  { cat: 'Auth', text: 'Staff invite tokens expire in 48 hours and are revoked on use', critical: false },
+  { cat: 'Auth', text: 'Super-admin endpoints are IP-restricted', critical: true },
+  { cat: 'Data', text: 'ALL queries include store_id scope — no exceptions', critical: true },
+  { cat: 'Data', text: 'Postgres Row Level Security enabled on all tenant tables', critical: true },
+  { cat: 'Data', text: 'Payment credentials encrypted with AES-256-GCM at rest', critical: true },
+  { cat: 'Data', text: 'Webhook secrets stored encrypted — never logged', critical: true },
+  { cat: 'Input', text: 'File uploads: MIME type checked via magic bytes (not header)', critical: true },
+  { cat: 'Input', text: 'File uploads limited to images/docs — no code files', critical: true },
+  { cat: 'Input', text: 'Theme config stored as structured JSON — never raw HTML', critical: true },
+  { cat: 'Input', text: 'Merchant-provided text sanitized before rendering', critical: false },
+  { cat: 'Rate', text: 'Rate limiting keyed to store_id, not IP', critical: false },
+  { cat: 'Rate', text: 'Checkout endpoint has stricter limits than storefront', critical: false },
+  { cat: 'Domain', text: 'Domain verification via TXT record before routing', critical: true },
+  { cat: 'Domain', text: 'Reserved subdomain list (admin, api, www, etc.) enforced', critical: true },
+  { cat: 'Ops', text: 'All production secrets in Secrets Manager — not .env files', critical: true },
+  { cat: 'Ops', text: 'Database backups automated and tested for restore', critical: true },
+  { cat: 'Ops', text: 'Audit log on all sensitive actions (payment cred changes, etc.)', critical: false },
+  { cat: 'Ops', text: 'Error tracking filters out credentials and PII', critical: true },
+];
+
+function buildChecklist() {
+  const container = document.getElementById('launch-checklist');
+  const cats = [...new Set(secItems.map(i => i.cat))];
+  cats.forEach(cat => {
+    const catItems = secItems.filter(i => i.cat === cat);
+    let html = `<div style="margin-bottom:20px"><h3 style="font-size:14px;font-weight:600;color:var(--text3);font-family:var(--mono);letter-spacing:.08em;margin-bottom:10px">${cat.toUpperCase()}</h3>`;
+    catItems.forEach((item, idx) => {
+      const id = `chk-${cat}-${idx}`;
+      html += `<label for="${id}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;cursor:pointer;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background=''">
+        <input type="checkbox" id="${id}" onchange="updateChecklist()" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer">
+        <span style="font-size:13px;flex:1">${item.text}</span>
+        ${item.critical ? '<span style="font-size:10px;font-family:var(--mono);padding:2px 7px;background:rgba(242,85,85,0.1);color:#f25555;border-radius:3px;border:1px solid rgba(242,85,85,0.2)">CRITICAL</span>' : ''}
+      </label>`;
+    });
+    html += '</div>';
+    container.innerHTML += html;
+  });
+}
+
+function updateChecklist() {
+  const total = document.querySelectorAll('#launch-checklist input[type=checkbox]').length;
+  const checked = document.querySelectorAll('#launch-checklist input[type=checkbox]:checked').length;
+  const pct = Math.round((checked / total) * 100);
+  document.getElementById('checklist-pct').textContent = pct + '%';
+  document.getElementById('checklist-progress').style.width = pct + '%';
+  const fill = document.getElementById('checklist-progress');
+  fill.style.background = pct < 50 ? '#f25555' : pct < 80 ? '#f5a623' : '#34c78a';
+}
+
+async function runSecurityAudit() {
+  const simEl = document.getElementById('sim-security');
+  simEl.style.display = 'block';
+  const checked = document.querySelectorAll('#launch-checklist input[type=checkbox]:checked').length;
+  const total = document.querySelectorAll('#launch-checklist input[type=checkbox]').length;
+
+  await simPrint('sim-security', [
+    ['[Audit] Starting security scan...', 'sim-info'],
+    ['[Auth] Checking JWT implementation...', 'sim-dim'],
+    ['[Auth] ' + (checked > 2 ? '✓ JWT scope validation found' : '✗ JWT missing store_id scope!'), checked > 2 ? 'sim-ok' : 'sim-err'],
+    ['[RLS] Checking database policies...', 'sim-dim'],
+    ['[RLS] ' + (checked > 5 ? '✓ Row Level Security enabled' : '✗ No RLS policies found!'), checked > 5 ? 'sim-ok' : 'sim-err'],
+    ['[Crypto] Checking credential encryption...', 'sim-dim'],
+    ['[Crypto] ' + (checked > 7 ? '✓ AES-256-GCM encryption in use' : '✗ Credentials stored in plaintext!'), checked > 7 ? 'sim-ok' : 'sim-err'],
+    ['[Rate] Checking rate limiting...', 'sim-dim'],
+    ['[Rate] ' + (checked > 12 ? '✓ Per-store rate limiting active' : '⚠ Rate limiting not configured'), checked > 12 ? 'sim-ok' : 'sim-warn'],
+    ['[Domains] Checking domain verification...', 'sim-dim'],
+    ['[Domains] ' + (checked > 14 ? '✓ DNS TXT verification required' : '✗ Any domain can be claimed!'), checked > 14 ? 'sim-ok' : 'sim-err'],
+    ['', 'sim-dim'],
+    [`[Score] ${checked}/${total} checks passed (${Math.round(checked/total*100)}%)`, checked/total > 0.8 ? 'sim-ok' : 'sim-warn'],
+    ['', 'sim-dim'],
+    [checked/total >= 1 ? '✓ Platform is launch-ready' : checked/total > 0.8 ? '⚠ Address remaining items before launch' : '✗ Not ready for production — complete critical items first', checked/total >= 1 ? 'sim-ok' : checked/total > 0.8 ? 'sim-warn' : 'sim-err'],
+  ]);
+}
+
+// =============================================
+// INIT
+// =============================================
+buildChecklist();
+
+// Smooth scroll for nav
+document.querySelectorAll('.nav-item').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const id = link.getAttribute('href').substring(1);
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// Initial active state
+document.querySelector('.nav-item').classList.add('active');
+</script>
+</body>
+</html>

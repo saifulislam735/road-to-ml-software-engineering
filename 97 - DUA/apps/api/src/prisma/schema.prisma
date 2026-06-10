@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  email        String   @unique
+  password     String
+  name         String?
+  bio          String?
+  avatarUrl    String?
+  isPaused     Boolean  @default(false)
+  isBanned     Boolean  @default(false)
+  banReason    String?
+  bannedAt     DateTime?
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  duas         Dua[]
+  reportsFiled Report[] @relation("ReportFiler")
+}
+
+model Dua {
+  id        String   @id @default(uuid())
+  message   String
+  isRead    Boolean  @default(false)
+  isHidden  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  reports   Report[]
+}
+
+model Report {
+  id         String   @id @default(uuid())
+  reason     String
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+  duaId      String
+  dua        Dua      @relation(fields: [duaId], references: [id], onDelete: Cascade)
+  reporterId String?
+  filer      User?    @relation("ReportFiler", fields: [reporterId], references: [id])
+}

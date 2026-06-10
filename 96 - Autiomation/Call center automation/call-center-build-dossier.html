@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Platform Build Dossier — Tier 1 → Tier 3, Zero Foreign Dependencies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F3EE; --ink:#16201B; --slate:#5A6962; --line:#C7CDC4;
+  --owned:#006A4E; --owned-bg:#E2EFE9;
+  --rented:#A85E1C; --rented-bg:#F4E8DA;
+  --human:#C43528; --human-bg:#F6E3E0;
+  --card:#FBFCFA;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --body:'IBM Plex Sans',system-ui,sans-serif;
+  --disp:'Saira Condensed',var(--body);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{
+  font-family:var(--body); color:var(--ink); background:var(--paper);
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:36px 36px; background-position:-1px -1px;
+  font-size:16px; line-height:1.6;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 22px}
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(241,243,238,.94);backdrop-filter:blur(4px);border-bottom:1.5px solid var(--ink)}
+nav .wrap{display:flex;gap:4px;overflow-x:auto;padding:8px 22px}
+nav a{font-family:var(--mono);font-size:11.5px;color:var(--slate);text-decoration:none;padding:5px 9px;white-space:nowrap;border:1px solid transparent}
+nav a:hover,nav a:focus-visible{color:var(--ink);border-color:var(--ink);outline:none}
+/* ---------- title block ---------- */
+header{border-bottom:2.5px solid var(--ink)}
+.titleblock{display:grid;grid-template-columns:1fr 280px;border-left:2.5px solid var(--ink);border-right:2.5px solid var(--ink);margin-top:34px}
+.tb-main{padding:34px 30px;border-right:2.5px solid var(--ink)}
+.tb-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--owned);font-weight:600;text-transform:uppercase}
+h1{font-family:var(--disp);font-weight:700;font-size:clamp(40px,6.4vw,68px);line-height:.96;text-transform:uppercase;letter-spacing:.005em;margin:10px 0 14px}
+h1 .bn{color:var(--owned)}
+.tb-sub{max-width:560px;color:var(--slate);font-size:15.5px}
+.tb-meta{display:flex;flex-direction:column}
+.tb-meta div{padding:12px 16px;border-bottom:1.5px solid var(--ink);font-family:var(--mono);font-size:12px}
+.tb-meta div:last-child{border-bottom:none}
+.tb-meta b{display:block;font-size:10px;letter-spacing:.12em;color:var(--slate);font-weight:500;text-transform:uppercase;margin-bottom:2px}
+/* legend */
+.legend{display:flex;gap:0;border:2.5px solid var(--ink);border-top:none;margin-bottom:40px;flex-wrap:wrap}
+.legend div{flex:1;min-width:220px;padding:14px 18px;border-right:1.5px solid var(--ink);display:flex;gap:12px;align-items:flex-start}
+.legend div:last-child{border-right:none}
+.sw{width:18px;height:18px;flex:none;margin-top:3px;border:1.5px solid var(--ink)}
+.legend p{font-size:13px;line-height:1.45;color:var(--slate)}
+.legend b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--ink);text-transform:uppercase}
+/* ---------- sections ---------- */
+section{padding:58px 0 30px;border-bottom:1.5px solid var(--line)}
+.sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:8px}
+.sec-num{font-family:var(--disp);font-weight:700;font-size:50px;color:transparent;-webkit-text-stroke:1.6px var(--ink);line-height:1}
+h2{font-family:var(--disp);font-weight:700;font-size:clamp(28px,4vw,40px);text-transform:uppercase;line-height:1.02}
+.sec-intro{max-width:760px;color:var(--slate);font-size:15.5px;margin-bottom:30px}
+h3{font-family:var(--disp);font-weight:600;font-size:23px;text-transform:uppercase;letter-spacing:.02em;margin:38px 0 12px}
+h4{font-family:var(--mono);font-size:12.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;margin:24px 0 10px;color:var(--ink)}
+p{margin-bottom:12px}
+.note{font-size:13.5px;color:var(--slate)}
+/* ownership chips */
+.chip{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border:1.5px solid;vertical-align:2px}
+.chip.o{color:var(--owned);border-color:var(--owned);background:var(--owned-bg)}
+.chip.r{color:var(--rented);border-color:var(--rented);background:var(--rented-bg)}
+.chip.h{color:var(--human);border-color:var(--human);background:var(--human-bg)}
+/* ---------- pipeline diagram ---------- */
+.pipe{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin:18px 0 6px}
+.pnode{background:var(--card);border:2px solid var(--ink);padding:12px 14px;min-width:138px;flex:1;position:relative}
+.pnode .pl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
+.pnode .pn{font-family:var(--disp);font-size:19px;font-weight:600;text-transform:uppercase;line-height:1.1;margin:2px 0}
+.pnode .pd{font-size:12px;color:var(--slate);line-height:1.4}
+.pnode.own{border-color:var(--owned);background:var(--owned-bg)}
+.pnode.rent{border-color:var(--rented);background:var(--rented-bg)}
+.pnode.hum{border-color:var(--human);background:var(--human-bg)}
+.parrow{display:flex;align-items:center;padding:0 4px;font-family:var(--mono);color:var(--ink);font-weight:600}
+.ms{display:block;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);padding:1px 6px;margin-top:8px;width:max-content}
+.pipecap{font-family:var(--mono);font-size:12px;color:var(--slate);margin-bottom:24px}
+/* ---------- ladder ---------- */
+.ladder{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin:16px 0 8px;align-items:end}
+.rung{border:2px solid var(--ink);background:var(--card);padding:16px}
+.rung:nth-child(1){min-height:150px}
+.rung:nth-child(2){min-height:200px}
+.rung:nth-child(3){min-height:250px;border-color:var(--owned);background:var(--owned-bg)}
+.rung .rl{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate)}
+.rung h5{font-family:var(--disp);font-size:24px;font-weight:700;text-transform:uppercase;margin:4px 0 6px}
+.rung p{font-size:13px;color:var(--slate);margin:0;line-height:1.45}
+/* ---------- funnel ---------- */
+.funnel{margin:14px 0 8px}
+.fbar{display:flex;align-items:center;margin-bottom:10px;gap:14px}
+.ffill{height:46px;border:2px solid var(--ink);display:flex;align-items:center;padding:0 14px;font-family:var(--disp);font-weight:600;text-transform:uppercase;font-size:17px;color:#fff}
+.fa .ffill{width:56%;background:var(--owned);border-color:var(--owned)}
+.fb .ffill{width:26%;background:#7BA892;border-color:#56806B;color:var(--ink)}
+.fc .ffill{width:18%;background:var(--human);border-color:var(--human)}
+.fbar p{font-size:13px;color:var(--slate);margin:0;flex:1;line-height:1.4}
+/* ---------- option cards ---------- */
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;margin-top:8px}
+.opt{border:2px solid var(--ink);background:var(--card);padding:18px;position:relative}
+.opt .stamp{position:absolute;top:14px;right:14px;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.12em;padding:3px 8px;border:2px solid var(--human);color:var(--human);transform:rotate(3deg)}
+.opt.sel{border-color:var(--owned);background:var(--owned-bg)}
+.opt.sel .stamp{border-color:var(--owned);color:var(--owned);transform:rotate(-2deg)}
+.opt h5{font-family:var(--disp);font-size:21px;font-weight:700;text-transform:uppercase;margin-bottom:6px;padding-right:86px}
+.opt p{font-size:13.5px;color:var(--slate);margin-bottom:8px}
+.opt .why{font-size:13px;border-top:1.5px solid var(--line);padding-top:8px;margin:0}
+.opt .why b{color:var(--ink)}
+/* ---------- build steps ---------- */
+.steps{counter-reset:step;border-left:2.5px solid var(--ink);margin:14px 0 8px}
+.step{position:relative;padding:16px 18px 14px 58px;border-bottom:1.5px solid var(--line);background:var(--card)}
+.step:last-child{border-bottom:none}
+.step::before{counter-increment:step;content:counter(step,decimal-leading-zero);position:absolute;left:12px;top:16px;font-family:var(--disp);font-weight:700;font-size:24px;color:transparent;-webkit-text-stroke:1.3px var(--ink)}
+.step h5{font-family:var(--disp);font-size:19px;font-weight:600;text-transform:uppercase;margin-bottom:4px}
+.step h5 .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--slate);font-weight:500;margin-left:8px;text-transform:uppercase}
+.step p{font-size:14px;margin-bottom:6px}
+.step .done{font-family:var(--mono);font-size:12px;color:var(--owned);font-weight:600;margin:0}
+.step .done::before{content:"✓ DONE WHEN — ";letter-spacing:.06em}
+.step .why-order{font-size:13px;color:var(--slate);margin-bottom:6px}
+.step .why-order b{color:var(--ink);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+/* gate */
+.gate{border:2.5px solid var(--ink);background:repeating-linear-gradient(135deg,var(--paper),var(--paper) 12px,#E5E9E2 12px,#E5E9E2 24px);padding:18px 20px;margin:22px 0 8px}
+.gate h5{font-family:var(--disp);font-size:21px;font-weight:700;text-transform:uppercase;margin-bottom:8px}
+.gate ul{list-style:none}
+.gate li{font-family:var(--mono);font-size:13px;padding:4px 0 4px 26px;position:relative}
+.gate li::before{content:"☐";position:absolute;left:0;font-size:16px;color:var(--owned)}
+.gate .warn{font-size:13px;color:var(--human);font-weight:600;margin:10px 0 0;font-family:var(--mono)}
+/* ---------- decision blocks ---------- */
+.dec{border:2px solid var(--ink);background:var(--card);margin:14px 0;padding:16px 18px}
+.dec h5{font-family:var(--disp);font-size:20px;font-weight:700;text-transform:uppercase;margin-bottom:6px}
+.dec .row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+.dec .yes,.dec .no{font-size:13.5px;line-height:1.5}
+.dec .yes b{color:var(--owned);font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+.dec .no b{color:var(--human);font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+/* ---------- tables ---------- */
+table{width:100%;border-collapse:collapse;margin:14px 0;background:var(--card);font-size:13.5px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-align:left;background:var(--ink);color:var(--paper);padding:9px 12px;font-weight:500}
+td{padding:9px 12px;border:1.5px solid var(--line);vertical-align:top}
+td.k{font-family:var(--mono);font-size:12.5px;font-weight:600;white-space:nowrap}
+.tscroll{overflow-x:auto}
+/* ---------- security ---------- */
+.seclayer{border:2px solid var(--ink);border-left:8px solid var(--human);background:var(--card);margin:14px 0;padding:16px 20px}
+.seclayer h5{font-family:var(--disp);font-size:20px;font-weight:700;text-transform:uppercase;margin-bottom:8px}
+.seclayer h5 span{font-family:var(--mono);font-size:11px;color:var(--slate);font-weight:500;letter-spacing:.1em;margin-left:10px}
+.seclayer ul{list-style:none}
+.seclayer li{font-size:14px;padding:5px 0 5px 22px;position:relative;border-bottom:1px solid var(--line)}
+.seclayer li:last-child{border-bottom:none}
+.seclayer li::before{content:"▸";position:absolute;left:2px;color:var(--human);font-weight:700}
+.seclayer li b{font-family:var(--mono);font-size:12px;letter-spacing:.04em}
+.nonneg{border:2.5px solid var(--human);background:var(--human-bg);padding:18px 20px;margin:24px 0 8px}
+.nonneg h5{font-family:var(--disp);font-size:22px;font-weight:700;text-transform:uppercase;color:var(--human);margin-bottom:8px}
+.nonneg li{font-size:14px;font-weight:500}
+.nonneg li::before{content:"✕";color:var(--human)}
+/* callout */
+.callout{border:2px solid var(--owned);background:var(--owned-bg);padding:16px 20px;margin:18px 0;font-size:14.5px}
+.callout b{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--owned);display:block;margin-bottom:4px}
+.callout.amber{border-color:var(--rented);background:var(--rented-bg)}
+.callout.amber b{color:var(--rented)}
+/* footer */
+footer{padding:50px 0 70px}
+.finale{border:2.5px solid var(--ink);background:var(--card);padding:28px 30px;font-size:15.5px;line-height:1.7}
+.finale h5{font-family:var(--disp);font-size:24px;text-transform:uppercase;font-weight:700;margin-bottom:10px}
+.sig{font-family:var(--mono);font-size:11.5px;color:var(--slate);margin-top:26px;letter-spacing:.08em}
+@media(max-width:760px){
+  .titleblock{grid-template-columns:1fr}
+  .tb-main{border-right:none;border-bottom:2.5px solid var(--ink)}
+  .ladder{grid-template-columns:1fr}
+  .rung{min-height:auto!important}
+  .dec .row{grid-template-columns:1fr}
+  .fa .ffill{width:80%}.fb .ffill{width:45%}.fc .ffill{width:32%}
+  .parrow{width:100%;justify-content:center;padding:2px 0;transform:rotate(90deg);height:22px}
+}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+<a href="#s1">01 Mental model</a><a href="#s2">02 Selection</a><a href="#s3">03 Build Tier 1</a><a href="#s4">04 Build Tier 2</a><a href="#s5">05 Build Tier 3</a><a href="#s6">06 Zero third-party</a><a href="#s7">07 Security</a><a href="#s8">08 Execution</a>
+</div></nav>
+
+<header><div class="wrap">
+  <div class="titleblock">
+    <div class="tb-main">
+      <div class="tb-eyebrow">Build dossier · Rev 1.0 · Voice AI Platform</div>
+      <h1>Call Center<br>Automation — <span class="bn">বাংলা</span> Voice Platform</h1>
+      <p class="tb-sub">A block-by-block build plan: rent the platform, then own the brain, then own the ground — until every byte of caller data is processed on your own server. Three tiers, one brain, zero foreign dependencies at the end.</p>
+    </div>
+    <div class="tb-meta">
+      <div><b>Engineer / Owner</b>Shihab — full-stack (MERN/PERN, Docker, CI/CD)</div>
+      <div><b>Client 0</b>BD e-commerce · 10K users/day · ~1.5–2K calls/day</div>
+      <div><b>Target</b>≥75% automation · &lt;2s response · &lt;$0.02/call</div>
+      <div><b>End state</b>White-label multi-tenant platform, self-hosted on KVM2 VPS</div>
+    </div>
+  </div>
+  <div class="legend">
+    <div><span class="sw" style="background:var(--owned)"></span><p><b>Green = Owned</b>Runs on your server, your code, your data. Nothing leaves.</p></div>
+    <div><span class="sw" style="background:var(--rented)"></span><p><b>Copper = Rented</b>A third-party service. Every copper block is scheduled for elimination.</p></div>
+    <div><span class="sw" style="background:var(--human)"></span><p><b>Red = Human / Alert</b>Escalation paths and security rules. Red is never automated away.</p></div>
+  </div>
+</div></header>
+
+<!-- ============ 01 MENTAL MODEL ============ -->
+<section id="s1"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">01</span><h2>The Mental Model</h2></div>
+  <p class="sec-intro">Four pictures govern every decision in this document. If a choice ever feels confusing, return here — one of these four models resolves it.</p>
+
+  <h3>1.1 — A call is a streaming pipeline. Latency is the product.</h3>
+  <p>Strip everything away and the system is one duplex loop. A caller expects a reply within ~2 seconds of finishing a sentence; slower than that, they say "hello? hello?", the transcript corrupts, and the call fails. So the latency budget below <em>is</em> the spec — any component that breaks it is disqualified no matter how cheap, accurate, or sovereign it is.</p>
+  <div class="pipe">
+    <div class="pnode"><span class="pl">Stage A</span><div class="pn">Caller / PSTN</div><div class="pd">Bengali + English, noisy 8kHz line</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode"><span class="pl">Stage B</span><div class="pn">Telephony</div><div class="pd">SIP signaling + media stream</div><span class="ms">~300–500ms overhead total</span></div>
+    <div class="parrow">→</div>
+    <div class="pnode"><span class="pl">Stage C</span><div class="pn">STT</div><div class="pd">Streaming speech-to-text</div><span class="ms">&lt;300ms final transcript</span></div>
+    <div class="parrow">→</div>
+    <div class="pnode"><span class="pl">Stage D</span><div class="pn">Brain</div><div class="pd">Intent → tools → response</div><span class="ms">&lt;500ms first token</span></div>
+    <div class="parrow">→</div>
+    <div class="pnode"><span class="pl">Stage E</span><div class="pn">TTS</div><div class="pd">Streaming voice out</div><span class="ms">&lt;200ms first audio</span></div>
+  </div>
+  <p class="pipecap">TOTAL BUDGET: caller hears the first word of a reply in &lt;1.2s, full perceived response &lt;2s. Every stage must STREAM — batch anything and the budget dies.</p>
+
+  <h3>1.2 — The ownership ladder: each rung de-risks the next</h3>
+  <div class="ladder">
+    <div class="rung"><span class="rl">Tier 1 · Weeks 1–6</span><h5>Tenant</h5><p>Rent everything (~$0.15/min). You are paying a premium to buy the one thing money can't otherwise buy fast: <strong>real caller data</strong> and a validated automation rate.</p></div>
+    <div class="rung"><span class="rl">Tier 2 · Months 2–4</span><h5>Homeowner</h5><p>Own the brain — orchestrator, prompts, intents, integrations, state. Rent the commodities as APIs (~$0.05/min). This brain is permanent: it survives into Tier 3 unchanged.</p></div>
+    <div class="rung"><span class="rl">Tier 3 · Months 5–8</span><h5>Landlord</h5><p>Own the ground. Telephony, STT, TTS, and eventually the LLM run on your VPS (&lt;$0.02/call). No foreign data processor touches a single byte. White-label margin becomes real.</p></div>
+  </div>
+  <div class="callout"><b>The one rule that makes this possible</b>The brain never talks to vendors directly. It talks to five interfaces <strong>you</strong> define — <span style="font-family:var(--mono);font-size:13px">TelephonyAdapter · STTAdapter · LLMAdapter · TTSAdapter · ActionAdapters</span>. Tier 2 plugs rented services behind them; Tier 3 plugs your own services behind them. Migration = swapping adapters, never rewriting logic. This "adapter spine" is the single most important architectural decision in the entire project.</div>
+
+  <h3>1.3 — The automation funnel: route, don't be a hero</h3>
+  <div class="funnel">
+    <div class="fbar fa"><div class="ffill">Tier A · ~55%</div><p><strong>Fully deterministic.</strong> Order status, tracking, FAQ, OTP-gated reads. AI resolves end-to-end, every time.</p></div>
+    <div class="fbar fb"><div class="ffill">Tier B · ~25%</div><p><strong>Conditionally automatable.</strong> Cancellations, returns, address change, refund status. AI resolves when policy conditions hold; escalates cleanly when they don't.</p></div>
+    <div class="fbar fc"><div class="ffill">Tier C · ~20%</div><p><strong>Never automated.</strong> Fraud, legal threats, extreme distress, VIPs, repeated failure. The AI's only job: detect fast, hand off warm, with full context. <span class="chip h">Human</span></p></div>
+  </div>
+  <p class="note">75% automation = all of A + most of B. But your <em>reputation</em> is made in C: one badly handled fraud call costs more trust than a thousand smooth tracking lookups earn. Escalation is a first-class feature, not a failure mode.</p>
+
+  <h3>1.4 — Product, not project: the second-tenant test</h3>
+  <p>Every design decision passes one question: <strong>"Would this work for tenant #2 without code changes?"</strong> Persona name, courier list, business hours, escalation thresholds, policies — all of it lives in per-tenant configuration from Tier 2 day one. You're allowed exactly one tenant in the database for six months. But the column must exist.</p>
+</div></section>
+
+<!-- ============ 02 SELECTION ============ -->
+<section id="s2"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">02</span><h2>Ideation → Selection</h2></div>
+  <p class="sec-intro">Five credible strategies were on the table. Four are rejected for specific, structural reasons — not preference. Knowing <em>why not</em> is what keeps you from second-guessing mid-build.</p>
+  <div class="opts">
+    <div class="opt"><span class="stamp">REJECTED</span><h5>A — Straight to self-hosted</h5><p>FreeSWITCH + self-hosted Whisper from day one. Maximum sovereignty immediately.</p><p class="why"><b>Why not:</b> 4–6 months dark with no revenue, no caller data, no baseline — while fighting three hard problems at once (real-time telephony, Bengali ASR on noisy 8kHz audio, TTS naturalness). The VPS may not even have the GPU this needs. Right destination, wrong starting point.</p></div>
+    <div class="opt"><span class="stamp">REJECTED</span><h5>B — Straight to Tier 2</h5><p>Skip the SaaS phase; build the orchestrator on rented APIs immediately. Saves 6 weeks of premium fees.</p><p class="why"><b>Why not:</b> The orchestrator is the easy 30%. The hard 70% is knowing <em>what it should do</em> — real intents, real phrasings, real failure points. Without Tier 1 data you build that from imagination and rebuild it in production. Tier 1's ~$300–500 premium is the cheapest research you'll ever buy.</p></div>
+    <div class="opt"><span class="stamp">REJECTED</span><h5>C — SaaS forever</h5><p>Stay on Retell permanently; focus on prompts and selling.</p><p class="why"><b>Why not:</b> Three ceilings. Margin: ~$13K+/yr per client leaks to the platform, forever, ×every tenant. Market: data transiting US servers closes the door on banks and telecom (your highest-value verticals). Defensibility: an agency reselling Retell can be displaced by anyone with a Retell account.</p></div>
+    <div class="opt"><span class="stamp">REJECTED</span><h5>D — Chat-first</h5><p>WhatsApp/Messenger AI first; voice later. 10× easier technically.</p><p class="why"><b>Why not:</b> The stated pain is the <em>call center</em>, and BD customers who call are disproportionately the ones who don't self-serve in chat. Chat deflects maybe 15–25% of call volume; the client needs 75%. Build chat later — the Tier 2 brain is channel-agnostic, so chat becomes a thin new transport, nearly free.</p></div>
+    <div class="opt sel"><span class="stamp">SELECTED</span><h5>E — The three-tier ladder</h5><p>Live in week 1 on rented SaaS → permanent brain on rented APIs → owned ground, with parallel-run cutovers between each.</p><p class="why"><b>Why:</b> The only path that is simultaneously live immediately, informed by real data before the big build, economically viable at scale, regulator-compatible at the end, and free of any full-rebuild step. The sequence is the strategy.</p></div>
+  </div>
+</div></section>
+
+<!-- ============ 03 TIER 1 BUILD ============ -->
+<section id="s3"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">03</span><h2>Build Tier 1 — The Tenant</h2></div>
+  <p class="sec-intro">Weeks 0–6. You are renting a furnished apartment to learn how callers actually behave. Nearly everything is copper — and that is the point. The deliverable is not a product; it is a <strong>dataset</strong>: 500+ real calls, a measured automation rate, and the top-5 failure patterns that become Tier 2's requirements document.</p>
+
+  <h4>Architecture at this tier — read the colors</h4>
+  <div class="pipe">
+    <div class="pnode own"><span class="pl">Procured by you</span><div class="pn">BD DID + SIP Trunk</div><div class="pd">Local IPTSP number — yours, carried through all 3 tiers</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode rent"><span class="pl">Rented platform</span><div class="pn">Retell AI</div><div class="pd">Telephony + STT + LLM + TTS + barge-in, all bundled</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode own"><span class="pl">Your code</span><div class="pn">Webhook Handlers</div><div class="pd">Order status + tracking lookups — written orchestrator-style so they port to Tier 2</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode own"><span class="pl">Your database</span><div class="pn">Call Log Mirror</div><div class="pd">Postgres — every call, transcript, outcome lands in YOUR db from call #1</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode hum"><span class="pl">Escalation</span><div class="pn">Forward to Agent</div><div class="pd">Simple forward to a human's mobile — warm transfer comes in Tier 2</div></div>
+  </div>
+  <p class="pipecap">ONE COPPER BLOCK CARRIES THE WHOLE TIER. Retell is chosen over Vapi (more assembly friction) and Bland (weaker bilingual + custom-tool combo). Scope is reads-only by design — mutations need OTP, and OTP bolted onto a SaaS webhook is throwaway work.</p>
+
+  <h4>Build sequence — do these in this exact order</h4>
+  <div class="steps">
+    <div class="step"><h5>Order the BD number <span class="t">Day 0 · longest lead time in the project</span></h5>
+      <p>Shortlist licensed BD IPTSP / SIP-trunk providers. Confirm four things before paying: DID + concurrent-channel pricing, ability to terminate to an external SIP endpoint, BTRC compliance posture, and porting terms. Pursue two providers in parallel.</p>
+      <p class="why-order"><b>Why first</b> — regulatory lead time is the one schedule item you cannot compress with effort. Everything else can slip a day; this can stall the project for weeks.</p>
+      <p class="done">trunk ordered, test DID confirmed, SIP credentials in hand.</p></div>
+    <div class="step"><h5>Mine the intent taxonomy from humans <span class="t">Day 1–2</span></h5>
+      <p>Sit with 2 of the client's current agents for half a day. Extract the 20-intent taxonomy v1 with 5 example phrasings each — Bengali, English, and mixed. Get the client to sign off on the list.</p>
+      <p class="why-order"><b>Why now</b> — the agents' memory is the only real-caller data that exists before launch. The taxonomy shapes the Retell prompt and the Postgres schema.</p>
+      <p class="done">20 intents documented with examples, client-approved.</p></div>
+    <div class="step"><h5>Integration inventory + credentials <span class="t">Day 1–3 · parallel</span></h5>
+      <p>For the OMS, each courier (Pathao, Steadfast, Redx, Sundarban), SSLCommerz/bKash/Nagad, and the SMS gateway: confirm endpoint, auth method, sandbox availability, rate limits — and a <em>named person</em> at the client who unblocks access. Tier 1 only needs OMS + couriers; inventory everything anyway.</p>
+      <p class="why-order"><b>Why now</b> — unconfirmed credentials are the #2 schedule killer after the trunk. Discovering in week 8 that bKash needs a 3-week approval is a self-inflicted wound.</p>
+      <p class="done">order-status API credentials working in a test script; unblocker named for every other API.</p></div>
+    <div class="step"><h5>Stand up YOUR logging substrate <span class="t">Day 3–4</span></h5>
+      <p>Postgres schema for calls / turns / intents / outcomes / failures, plus a basic alert hook. Even though Retell keeps its own logs, mirror everything into your database via webhooks.</p>
+      <p class="why-order"><b>Why before launch</b> — the dataset is the deliverable of this tier. It must live in <em>your</em> database from call #1, in the schema Tier 2 will inherit.</p>
+      <p class="done">a test call appears as rows in your Postgres within seconds of ending.</p></div>
+    <div class="step"><h5>Configure the agent + go live on a slice <span class="t">Week 1</span></h5>
+      <p>Bilingual system prompt, persona (measured-formal Bengali with natural code-switching), order-status + tracking webhooks wired, escalate-everything-else rule, DID connected. The client routes 10–20% of inbound traffic to the AI number first — not 100%.</p>
+      <p class="why-order"><b>Why a slice</b> — week-1 failures are guaranteed; a slice makes them cheap lessons instead of a client crisis. Expand to 100% by week 3–4 only if quality holds.</p>
+      <p class="done">a stranger calls the number, asks "আমার অর্ডার কোথায়?", and hears their real order status.</p></div>
+    <div class="step"><h5>Run the weekly ritual + the failure log <span class="t">Weeks 2–6 · ~2 hrs/week</span></h5>
+      <p>Every week: listen to 10 full calls (5 random, 5 from failures). Tag every wrong/unhelpful response by cause — STT error / wrong intent / missing intent / bad data / policy gap. Update prompt and intents from evidence. Send the client a one-page weekly report (calls handled, automation rate, fixes shipped).</p>
+      <p class="why-order"><b>Why religiously</b> — this log IS the Tier 2 requirements document, and the weekly report is your future sales collateral in disguise.</p>
+      <p class="done">failure log has ≥50 tagged entries; automation rate is measured weekly.</p></div>
+    <div class="step"><h5>Harvest bake-off material + pre-build Tier 2 <span class="t">Weeks 3–6 · parallel</span></h5>
+      <p>Export ~50 real call recordings for the STT bake-off and 20 real code-switched sentences for the TTS bake-off. In your real engineering hours, build the Tier 2 skeleton: the five adapter interfaces, the call state machine, the agent-dashboard shell.</p>
+      <p class="why-order"><b>Why parallel</b> — Tier 1 needs almost no engineering after week 1; your hands are free. Phase 2 starts warm instead of cold.</p>
+      <p class="done">adapter interfaces compile; recordings exported; bake-offs scheduled.</p></div>
+  </div>
+
+  <div class="gate"><h5>⛩ Gate 1 → 2 — do not start Tier 2 spend until every box checks</h5>
+    <ul>
+      <li>≥500 real calls logged in your Postgres</li>
+      <li>Automation rate measured (even 40% is fine — it's a baseline, not a verdict)</li>
+      <li>Top-5 failure patterns documented with example transcripts</li>
+      <li>STT bake-off audio exported · TTS bake-off scheduled</li>
+      <li>Client confirms they're seeing value and staying</li>
+    </ul>
+    <p class="warn">⚠ If the gate fails, fix Tier 1 first. Building Tier 2 on top of an unvalidated Tier 1 just builds a bigger version of the same mistakes.</p>
+  </div>
+</div></section>
+
+<!-- ============ 04 TIER 2 BUILD ============ -->
+<section id="s4"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">04</span><h2>Build Tier 2 — The Homeowner</h2></div>
+  <p class="sec-intro">Weeks 7–14. You now own the brain and rent the commodities. This is the production system that carries the full 10K-users/day load — and the brain you build here is permanent. Watch the diagram: the center of the pipeline has turned green.</p>
+
+  <h4>Architecture at this tier</h4>
+  <div class="pipe">
+    <div class="pnode own"><span class="pl">Carried over</span><div class="pn">BD Trunk</div><div class="pd">Same number, same provider</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode rent"><span class="pl">Rented</span><div class="pn">Telnyx</div><div class="pd">SIP bridge + media stream over WebSocket</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode rent"><span class="pl">Rented</span><div class="pn">Deepgram STT</div><div class="pd">Streaming Bengali, &lt;300ms, interim results for barge-in</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode own"><span class="pl">YOURS · permanent</span><div class="pn">Orchestrator</div><div class="pd">Node/TS monolith — state machine, intents, tools, escalation, the five adapters</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode rent"><span class="pl">Rented</span><div class="pn">Claude API</div><div class="pd">Streaming, tool-calling, native code-switching</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode rent"><span class="pl">Rented · bake-off</span><div class="pn">TTS</div><div class="pd">ElevenLabs vs Azure vs Google — decided by blind test</div></div>
+  </div>
+  <div class="pipe">
+    <div class="pnode own"><span class="pl">Yours</span><div class="pn">Redis</div><div class="pd">Per-turn state snapshots, TTL</div></div>
+    <div class="parrow">+</div>
+    <div class="pnode own"><span class="pl">Yours</span><div class="pn">PostgreSQL</div><div class="pd">Every event, append-only, PII-redacted</div></div>
+    <div class="parrow">+</div>
+    <div class="pnode own"><span class="pl">Yours</span><div class="pn">Agent Dashboard</div><div class="pd">Escalation queue + context packets</div></div>
+    <div class="parrow">+</div>
+    <div class="pnode own"><span class="pl">Yours</span><div class="pn">Action Adapters</div><div class="pd">OMS · Pathao · Steadfast · Redx · Sundarban · SSLCommerz · bKash · Nagad · SMS</div></div>
+    <div class="parrow">+</div>
+    <div class="pnode hum"><span class="pl">Red path</span><div class="pn">Warm Transfer</div><div class="pd">Conference bridge: brief the agent privately, then join the caller</div></div>
+  </div>
+
+  <h4>The decisions, with why / why not</h4>
+  <div class="dec"><h5>Topology: one stateful monolith <span class="chip o">Owned</span></h5>
+    <div class="row">
+      <p class="yes"><b>WHY —</b> a call is a long-lived, latency-critical, stateful session. One Node process holds the media WebSockets, the per-call state machine, tool execution, and escalation. 50 concurrent calls ≈ 50 WebSocket pairs — one decent VM. Scale later by running N instances with calls pinned per instance; no architectural change needed.</p>
+      <p class="no"><b>WHY NOT microservices —</b> splitting STT-handling / dialog / tools into services inserts network hops <em>inside</em> the 2-second budget and forces externalizing per-utterance state. Why not serverless: cold starts and execution limits are fatal for persistent duplex streams. The only things split out: the outbound-campaign worker (BullMQ) and the dashboard backend — different load profiles, no real-time audio.</p>
+    </div></div>
+  <div class="dec"><h5>State: memory → Redis → Postgres</h5>
+    <div class="row">
+      <p class="yes"><b>WHY —</b> live state in process memory (fastest hot path), snapshot to Redis after each turn (lets the escalation context packet survive a hiccup, feeds post-mortems), append every event to Postgres asynchronously (the durable truth your analytics and tenant billing run on).</p>
+      <p class="no"><b>WHY NOT Redis-only —</b> serializing on every token taxes the hot path to enable a "crash recovery" that doesn't really exist for phone calls — if the orchestrator dies mid-call, the honest behavior is the call drops and the caller redials. Why not Mongo: your analytics are relational (intents × outcomes × tenants × time) and Postgres row-level security is the multi-tenant substrate later.</p>
+    </div></div>
+  <div class="dec"><h5>STT: Deepgram <span class="chip r">Rented — eliminated in Tier 3</span></h5>
+    <div class="row">
+      <p class="yes"><b>WHY —</b> purpose-built streaming with sub-300ms finalization, telephony-audio models, Bengali support, interim results that make barge-in responsive.</p>
+      <p class="no"><b>WHY NOT Whisper API —</b> no true streaming; disqualified by the latency table regardless of accuracy. Why not Google/Azure STT: credible — they enter the bake-off — but Deepgram's latency profile makes it the default. <strong>Non-negotiable:</strong> the vendor is picked by a measured WER comparison on YOUR 50 real recordings, not by any benchmark on clean audio.</p>
+    </div></div>
+  <div class="dec"><h5>LLM: Claude (streaming + tools) <span class="chip r">Rented — last to be eliminated</span></h5>
+    <div class="row">
+      <p class="yes"><b>WHY —</b> this system is mostly tool orchestration with a voice; an LLM that hallucinates tool arguments corrupts order mutations. Tool-calling discipline + native Bengali-English code-switching + first-token latency inside the 500ms budget. Run first-utterance intent classification as a separate cheap, constrained call so routing never waits on the dialog model.</p>
+      <p class="no"><b>WHY NOT self-hosted yet —</b> GPU procurement, serving ops, and open-weight models' weaker Bengali + tool discipline would have you debugging model quality during the phase whose job is validating the business. The self-host path exists (Section 06) — it's sequenced last on purpose.</p>
+    </div></div>
+  <div class="dec"><h5>TTS: decided by blind bake-off, not by brand <span class="chip r">Rented — eliminated last among media</span></h5>
+    <div class="row">
+      <p class="yes"><b>WHY a bake-off —</b> the voice is the product's face; a mispronouncing voice destroys trust in 5 seconds. Azure ships actual Bengali (bn-BD) neural voices and is cheap; ElevenLabs is the naturalness leader but thin on Bengali; Google sits between. Test 20 real code-switched sentences ("আপনার order টা shipped হয়ে গেছে") blind with 5 native speakers.</p>
+      <p class="no"><b>WHY NOT default to ElevenLabs —</b> code-switched Bengali is exactly its weak case. Decision deadline: end of build week 2, before flows are voiced.</p>
+    </div></div>
+  <div class="dec"><h5>Escalation: conference-bridge warm transfer <span class="chip h">Human</span></h5>
+    <div class="row">
+      <p class="yes"><b>WHY —</b> push the context packet (summary, intent, CRM record, sentiment, suggested resolution) to the dashboard → dial the agent → brief them on a private leg → join the caller → drop the AI leg. You control timing and recording continuity. This is the feature clients demo to their bosses — over-invest here.</p>
+      <p class="no"><b>WHY NOT blind transfer (SIP REFER) —</b> the caller repeats everything from scratch, which is precisely the experience this product exists to kill.</p>
+    </div></div>
+
+  <h4>Build sequence</h4>
+  <div class="steps">
+    <div class="step"><h5>One intent, end-to-end, on a real call <span class="t">Weeks 7–8</span></h5>
+      <p>Telnyx media stream in → Deepgram stream up → Claude streaming with one tool (order status) → TTS streaming out → barge-in → silence detection. Depth before breadth: a single working real call proves the entire latency budget.</p>
+      <p class="why-order"><b>Why this order</b> — every risk in Tier 2 lives in the real-time loop, not in business logic. Prove the loop first or you're decorating a system that may not work.</p>
+      <p class="done">you call the test number, interrupt the AI mid-sentence, and it stops, listens, and answers your order-status question in &lt;2s.</p></div>
+    <div class="step"><h5>Run the TTS bake-off · commit to a voice <span class="t">Week 8</span></h5>
+      <p>Blind test as specified above. Commit and don't relitigate.</p>
+      <p class="done">one voice scored highest by native speakers; decision recorded.</p></div>
+    <div class="step"><h5>Breadth: all Tier A intents <span class="t">Week 9</span></h5>
+      <p>Status, tracking (all four couriers), FAQ stub, business hours, callback scheduling. Rebuild every prompt and flow from Tier 1 <em>data</em> — real phrasings from the failure log, never the Tier 1 prompts copy-pasted.</p>
+      <p class="done">Tier A intents pass a 20-call scripted test in both languages.</p></div>
+    <div class="step"><h5>OTP verification flow — the mutation gate <span class="t">Week 10</span></h5>
+      <p>SMS gateway adapter, OTP issue/verify, 3-strike fraud-flag escalation, and the hard rule: no mutation tool (cancel, address change, return) is even <em>exposed</em> to the LLM until the session is verified.</p>
+      <p class="why-order"><b>Why before Tier B</b> — every Tier B flow depends on it; building it once, properly, beats retrofitting it into four flows.</p>
+      <p class="done">an unverified session cannot trigger any mutation, even if the LLM tries; 3 failed OTPs escalates with fraud flag.</p></div>
+    <div class="step"><h5>Tier B flows <span class="t">Weeks 10–11</span></h5>
+      <p>Cancellation (auto if pre-dispatch; policy explanation + escalate path if shipped), return initiation (eligibility check, label via SMS), refund status (SSLCommerz/bKash/Nagad), address change (OTP + dispatch-window check), payment-failure resolution (gateway error code → retry link via SMS).</p>
+      <p class="done">each flow demonstrates both its happy path AND its clean escalation path.</p></div>
+    <div class="step"><h5>Agent dashboard + warm transfer <span class="t">Weeks 11–12</span></h5>
+      <p>Escalation queue with priority (angry &gt; VIP &gt; routine), context packet view, conference-bridge flow with private briefing leg. Analytics dashboard v1 alongside (automation rate, intent frequency, latency p95).</p>
+      <p class="done">a test escalation reaches a human who never has to ask the caller to repeat anything.</p></div>
+    <div class="step"><h5>Security hardening pass <span class="t">Week 13</span></h5>
+      <p>Apply Section 07 in full: PII redaction pipeline, audit log, rate limits, injection stripping, least-privilege DB roles, retention jobs. Then load test: 50 concurrent synthetic SIP calls with recorded utterances; measure p95 of every pipeline stage.</p>
+      <p class="done">50 concurrent calls with p95 end-to-end &lt;2s; zero raw PII found in a stored-transcript audit.</p></div>
+    <div class="step"><h5>Parallel run → cutover → decommission Tier 1 <span class="t">Week 14</span></h5>
+      <p>Split live traffic 80/20 → 50/50 → 0/100 across the week. Compare automation rate and failure rate per cohort. Kill Tier 1 only when Tier 2 wins on both.</p>
+      <p class="why-order"><b>Why parallel</b> — a cutover you can reverse in 60 seconds is a deploy; one you can't is a gamble with a live client's phone line.</p>
+      <p class="done">Tier 2 at 100% of traffic for 5 consecutive days with metrics ≥ Tier 1.</p></div>
+  </div>
+
+  <div class="gate"><h5>⛩ Gate 2 → 3</h5>
+    <ul>
+      <li>Tier 2 at 100% of traffic · p95 end-to-end &lt;2s</li>
+      <li>Automation rate ≥ Tier 1 baseline and trending up</li>
+      <li>Zero PII in stored transcripts (audited, not assumed)</li>
+      <li>Cost per minute ≤ $0.06 measured</li>
+      <li>Weeks 15–20 completed: outbound engine live (COD confirmation first — highest ROI in BD e-commerce), RAG knowledge base grounded, sentiment-driven escalation, ≥75% automation sustained 2 weeks, client testimonial secured</li>
+      <li><strong>KVM2 spec audit done + GPU decision made</strong> — this gates the entire Tier 3 STT plan</li>
+    </ul>
+  </div>
+</div></section>
+
+<!-- ============ 05 TIER 3 BUILD ============ -->
+<section id="s5"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">05</span><h2>Build Tier 3 — The Landlord</h2></div>
+  <p class="sec-intro">Months 5–8. The copper comes out of the walls. Telephony, STT, and TTS move onto hardware you control; the orchestrator doesn't change a line of business logic — only adapters are swapped. Tier 2 keeps serving production the entire time; Tier 3 is built beside it and proven before any cutover.</p>
+
+  <h4>Architecture at this tier — almost all green</h4>
+  <div class="pipe">
+    <div class="pnode own"><span class="pl">Direct now</span><div class="pn">BD Trunk → You</div><div class="pd">Same trunk, now pointed at YOUR server — Telnyx bridge eliminated</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode own"><span class="pl">Self-hosted</span><div class="pn">FreeSWITCH</div><div class="pd">ESL outbound mode + mod_audio_fork — media threads isolated from AI latency</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode own"><span class="pl">Self-hosted</span><div class="pn">faster-whisper</div><div class="pd">GPU-served streaming Bengali STT</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode own"><span class="pl">Unchanged</span><div class="pn">Orchestrator</div><div class="pd">Same brain — only the adapters behind it changed</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode rent"><span class="pl">Last rented organ</span><div class="pn">Claude API</div><div class="pd">Kept by default · vLLM contingency ready (Section 06)</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode own"><span class="pl">Self-hosted</span><div class="pn">Piper TTS</div><div class="pd">Trained Bengali voice — cut over only when it wins blind tests</div></div>
+  </div>
+  <p class="pipecap">MULTI-TENANT FROM HERE: DID → tenant ID → config loaded at call setup. One codebase, one FreeSWITCH, Postgres row-level security per tenant, per-tenant recording keys. New tenant = config + DID + knowledge base, zero code.</p>
+
+  <h4>The decisions, with why / why not</h4>
+  <div class="dec"><h5>Telephony: FreeSWITCH — but spike Jambonz first</h5>
+    <div class="row">
+      <p class="yes"><b>WHY FreeSWITCH —</b> thousands of concurrent calls per 8-core box, a threading model built for media, and ESL outbound + mod_audio_fork, which forks call audio to your orchestrator over WebSocket while keeping media threads isolated — one slow LLM response can never jitter audio on fifty other calls. <b>THE SHORTCUT:</b> Jambonz is an open-source, self-hostable CPaaS built on FreeSWITCH that speaks exactly the media-over-WebSocket interface your Tier 2 adapter already uses. One week, hard timebox, to decide. If it fits, months of raw ESL work disappear.</p>
+      <p class="no"><b>WHY NOT Asterisk —</b> friendlier to learn, but a lower concurrency ceiling and a dialplan-centric model that fights you at white-label scale. Why not Kamailio alone: it's a SIP proxy (signaling only, no media) — relevant later as a load-balancing front to multiple FreeSWITCH boxes, not as the engine.</p>
+    </div></div>
+  <div class="dec"><h5>STT: faster-whisper on a GPU — be honest about the hardware</h5>
+    <div class="row">
+      <p class="yes"><b>WHY —</b> Whisper Large-v3 via faster-whisper on a single rented RTX-class GPU (~$100–200/mo) serves dozens of concurrent streams in real time — far cheaper than Deepgram at your volume, and audio never leaves your control.</p>
+      <p class="no"><b>WHY NOT CPU Whisper —</b> Large-v3 on CPU is &gt;2s/segment — disqualified by the latency table. Fallbacks in order: Distil-Whisper / faster-whisper-medium on CPU (viable latency, but MEASURE Bengali WER degradation first), or deliberately keep Deepgram one more quarter. Keeping a rented organ an extra quarter is a feature of the adapter spine, not a failure.</p>
+    </div></div>
+  <div class="dec"><h5>TTS: Piper with a trained Bengali voice — and a licensing landmine</h5>
+    <div class="row">
+      <p class="yes"><b>WHY Piper —</b> fast, CPU-viable, genuinely real-time, permissively licensed. No production Bengali voice exists off the shelf, so you train one: collect/license ~5–10 hours of clean Bengali speech, fine-tune. Run it as a background workstream; cut over only when it beats the cloud voice in blind tests with native speakers.</p>
+      <p class="no"><b>WHY NOT Coqui XTTS —</b> the company shut down and the XTTS weights carry the CPML <em>non-commercial</em> license — poison for a white-label commercial product. Banned by policy. TTS may legitimately be the last rented organ replaced: a half-good self-hosted voice damages the brand more than a rented one costs.</p>
+    </div></div>
+
+  <h4>Build sequence</h4>
+  <div class="steps">
+    <div class="step"><h5>Hardware reality check <span class="t">Month 5, week 1</span></h5>
+      <p>Act on the Phase-3 spec audit: if the KVM2 lacks the cores/RAM for FreeSWITCH + orchestrator, or there's no GPU path for STT, rent the dedicated box / GPU server NOW and cost it into the white-label price. Decide from measurements, never hope.</p>
+      <p class="done">target hardware provisioned, benchmarked, and costed.</p></div>
+    <div class="step"><h5>Jambonz vs raw FreeSWITCH spike <span class="t">Month 5, week 1 · 1-week hard timebox</span></h5>
+      <p>Deploy Jambonz; try to route a test call through your existing orchestrator adapter. If it works cleanly → Jambonz. If it fights you → raw FreeSWITCH with ESL. Either way, the decision is made in 5 days, not relitigated for a month.</p>
+      <p class="done">decision recorded with the evidence; chosen engine running on the server.</p></div>
+    <div class="step"><h5>Telephony on a TEST DID only <span class="t">Month 5–6</span></h5>
+      <p>Point the BD trunk's test DID (never production) at your server. Implement the TelephonyAdapter for ESL/Jambonz. Replicate the complete Tier 2 call flow — barge-in, silence detection, warm transfer — then soak test for a week of synthetic load.</p>
+      <p class="why-order"><b>Why test DID</b> — production traffic stays on Tier 2 until the new ground is proven. You are never without a working system.</p>
+      <p class="done">full call flow on the test DID is indistinguishable from Tier 2 in a blind comparison.</p></div>
+    <div class="step"><h5>STT migration per the GPU decision <span class="t">Month 6–7</span></h5>
+      <p>Stand up faster-whisper serving behind the STTAdapter. Run shadow mode first: transcribe live calls in parallel with Deepgram and diff the transcripts for two weeks. Cut over when WER on your real audio is equal or better.</p>
+      <p class="done">two weeks of shadow data; self-hosted WER ≤ Deepgram WER on Bengali telephony audio.</p></div>
+    <div class="step"><h5>Bengali Piper voice — background workstream <span class="t">Month 6–8, non-blocking</span></h5>
+      <p>Collect/license speech data, train, iterate. Blind-test against the cloud voice monthly. This never gates the migration.</p>
+      <p class="done">trained voice wins the blind test; only then does the TTSAdapter switch.</p></div>
+    <div class="step"><h5>Multi-tenant substrate <span class="t">Month 7</span></h5>
+      <p>Tenant config tables (persona, intents, tool endpoints, escalation tree, thresholds, business hours), DID→tenant routing, Postgres row-level security, per-tenant dashboards and recording keys. Then the dress rehearsal: onboard client 0 as tenant #1 through the official onboarding flow, and time it — that timing is your "48-hour onboarding" marketing claim, proven on yourself first.</p>
+      <p class="done">client 0 runs as tenant #1 via pure config; onboarding time measured and documented.</p></div>
+    <div class="step"><h5>Production cutover + the data-flow audit <span class="t">Month 8</span></h5>
+      <p>Parallel run again (traffic shift 20% → 50% → 100%), then the audit that becomes a sales asset: document exactly which bytes leave the VPS (answer: transcript text to Claude's API, OTP SMS to the local gateway — nothing else), and measure cost per call.</p>
+      <p class="done">100% production on owned ground · cost/call &lt;$0.02 ex-LLM · signed data-flow map · ready to sell tenant #2.</p></div>
+  </div>
+</div></section>
+
+<!-- ============ 06 ZERO THIRD-PARTY ============ -->
+<section id="s6"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">06</span><h2>The Zero Third-Party Endgame</h2></div>
+  <p class="sec-intro">Every copper block in this dossier has a scheduled death. This board is the elimination plan: what replaces each third party, what the replacement costs, and when it happens. Read the last column honestly — it's what you'll show a bank's compliance officer.</p>
+
+  <div class="tscroll"><table>
+    <tr><th>Component</th><th>Tier 1 (rented)</th><th>Tier 2 (rented)</th><th>Tier 3 replacement (owned)</th><th>What elimination takes</th></tr>
+    <tr><td class="k">Voice platform</td><td>Retell AI</td><td><span class="chip o">eliminated</span> — your orchestrator</td><td>Your orchestrator</td><td>Done at Tier 2 cutover. Never rented again.</td></tr>
+    <tr><td class="k">Telephony / media</td><td>via Retell</td><td>Telnyx bridge</td><td>FreeSWITCH (or Jambonz) on your VPS, BD trunk pointed directly at you</td><td>Jambonz spike → ESL adapter → soak test → cutover. Month 5–6.</td></tr>
+    <tr><td class="k">STT</td><td>via Retell</td><td>Deepgram</td><td>faster-whisper (Large-v3) on a GPU you control</td><td>GPU box (~$100–200/mo) + 2-week shadow-mode WER validation. Month 6–7.</td></tr>
+    <tr><td class="k">TTS</td><td>via Retell</td><td>Cloud TTS (bake-off winner)</td><td>Piper with a trained Bengali voice</td><td>5–10h licensed Bengali speech + training + monthly blind tests. Cuts over only on a blind-test win. Never Coqui XTTS (non-commercial license).</td></tr>
+    <tr><td class="k">LLM</td><td>via Retell</td><td>Claude API</td><td>vLLM serving an open-weight model on GPU — the "full sovereignty" tier</td><td>The deliberate last step. Default: keep Claude (highest value per dollar of any rented organ; only transcript <em>text</em> leaves). Trigger to self-host: a regulated client (bank/telecom) demands it — then it's a per-tenant LLMAdapter flag, priced as a premium SKU that funds the GPU. Test open-weight Bengali + tool-calling quality BEFORE signing that client.</td></tr>
+    <tr><td class="k">Vector / RAG store</td><td>—</td><td>pgvector in your Postgres</td><td>Same — already owned</td><td>Never rent a vector DB; pgvector covers this scale.</td></tr>
+    <tr><td class="k">State / queue / analytics</td><td>Retell logs (mirrored to you)</td><td>Redis · Postgres · BullMQ — yours</td><td>Same — already owned</td><td>Owned from Tier 2 day one by design.</td></tr>
+  </table></div>
+
+  <div class="callout amber"><b>The honest residue — what can never be eliminated</b>
+  Two parties are irreducible because they are regulated utilities, not software: the <strong>licensed BD carrier/IPTSP</strong> (PSTN access legally requires one — there is no self-hosting the phone network) and the <strong>SMS gateway</strong> for OTP delivery (same reason; choose a BD-domiciled aggregator). So state the end goal precisely, because precision is what compliance officers buy: <strong>"Zero foreign data processors. Every byte of call audio, every transcript, every record is processed and stored on infrastructure we control inside Bangladesh — the only external parties are licensed Bangladeshi telecom utilities."</strong> With the vLLM tier active, that sentence is true with no asterisks at all.</div>
+</div></section>
+
+<!-- ============ 07 SECURITY ============ -->
+<section id="s7"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">07</span><h2>Security Guidelines</h2></div>
+  <p class="sec-intro">Six layers, outside-in. These are not Tier-3 luxuries — every rule below is implemented in the Tier 2 hardening pass (build week 13) and carried forward. A voice agent that can mutate orders is a fraud target from day one; design for the attacker who phones in, not just the one who hacks in.</p>
+
+  <div class="seclayer"><h5>Layer 1 — Transport <span>everything in motion is encrypted</span></h5><ul>
+    <li><b>TLS 1.3</b> for all API traffic — orchestrator ↔ STT/LLM/TTS/OMS/couriers/gateways. No exceptions, no downgrade.</li>
+    <li><b>SIP-TLS</b> for signaling and <b>SRTP</b> for voice media wherever the trunk supports it; make SRTP support a selection criterion when choosing the IPTSP.</li>
+    <li><b>Private networking</b> between orchestrator, Redis, Postgres, and (Tier 3) FreeSWITCH — never exposed on public interfaces; SSH key-only access; firewall default-deny.</li>
+  </ul></div>
+
+  <div class="seclayer"><h5>Layer 2 — Identity <span>the caller is unverified until proven otherwise</span></h5><ul>
+    <li><b>Never trust caller ID.</b> The calling number selects the likely account for convenience; it never authorizes anything — caller ID is spoofable.</li>
+    <li><b>OTP gates every mutation.</b> Cancel, return, address change, payment action: OTP to the registered mobile first. Reads of non-sensitive status may proceed unverified; mutations never.</li>
+    <li><b>Three strikes → fraud flag.</b> 3 failed OTPs ends automated handling and escalates to a human with a fraud flag on the context packet.</li>
+    <li><b>Rate limiting:</b> max 5 calls per calling number per hour; automated blocking of suspicious dial patterns (sequential numbers, burst dialing).</li>
+  </ul></div>
+
+  <div class="seclayer"><h5>Layer 3 — Data <span>minimize, redact, encrypt, expire</span></h5><ul>
+    <li><b>PII redaction BEFORE storage.</b> The async logging pipeline masks phone numbers, NID numbers, and card numbers before any transcript touches disk. Audit this with a real scan — never assume it.</li>
+    <li><b>AES-256 at rest</b> for call recordings; per-tenant encryption keys from the multi-tenant phase onward.</li>
+    <li><b>Retention enforced by jobs, not policy documents:</b> recordings auto-deleted at 90 days, transcripts at 1 year, by a scheduled cleanup job that is itself monitored.</li>
+    <li><b>Postgres row-level security</b> by tenant ID — isolation is enforced by the database, not by remembering a WHERE clause.</li>
+    <li><b>Data residency:</b> from Tier 2 onward, store all call data in-country where feasible; Tier 3 makes this absolute. Bangladesh Bank / BTRC expectations for finance and telecom clients assume it.</li>
+  </ul></div>
+
+  <div class="seclayer"><h5>Layer 4 — The LLM boundary <span>caller speech is data, never instructions</span></h5><ul>
+    <li><b>Structural separation:</b> transcribed caller speech enters the prompt only inside a clearly delimited data field; system instructions are never concatenated with it as peers.</li>
+    <li><b>Injection stripping:</b> sanitize transcripts for patterns resembling system instructions ("ignore previous…", role-play framing, tool-syntax fragments) before the LLM sees them.</li>
+    <li><b>Tool allowlist per state:</b> the LLM can only call tools exposed for the current session state — mutation tools are not merely "refused" pre-OTP, they are <em>absent from the tool list</em>. The model cannot call what it cannot see.</li>
+    <li><b>Constrained outputs:</b> tool arguments validated against strict schemas server-side; the orchestrator — never the model — is the final authority on whether an action executes.</li>
+    <li><b>Policy comes from RAG, never improvisation:</b> the AI quotes the knowledge base for refund/return policy; if retrieval finds nothing, it escalates rather than guesses.</li>
+  </ul></div>
+
+  <div class="seclayer"><h5>Layer 5 — Infrastructure privilege <span>the bot is the least-trusted employee</span></h5><ul>
+    <li><b>Read-only by default:</b> the orchestrator's DB credentials read orders; they cannot write to them.</li>
+    <li><b>Mutations via dedicated service endpoints only</b> — narrow, audited APIs (cancel-order, update-address) that themselves re-check OTP status and policy windows server-side. Even a fully compromised LLM cannot exceed these endpoints' power.</li>
+    <li><b>Secrets in environment/secret-store, never in code or prompts;</b> rotated on any personnel or vendor change.</li>
+    <li><b>Audit log for every action:</b> lookup, cancel, return, transfer — each with timestamp, hashed caller number, session ID, and outcome. Append-only.</li>
+  </ul></div>
+
+  <div class="seclayer"><h5>Layer 6 — Operations <span>degraded, never dead — and watched</span></h5><ul>
+    <li><b>Failure mode is human, not silence:</b> if the AI stack is down or latency breaches threshold, inbound calls forward straight to human agents automatically. The phone line never goes dead because your server did.</li>
+    <li><b>Alerting on:</b> latency p95 breach, OTP-failure spikes (fraud signal), escalation-rate spikes (quality signal), disk/queue saturation, cleanup-job failure.</li>
+    <li><b>Anomaly review weekly</b> alongside the call-quality ritual; pen test (or structured self-assessment) before Phase 3 exit and before each new vertical (especially finance).</li>
+    <li><b>Outbound compliance:</b> calling-hour windows, opt-out honored permanently, retry caps — enforced in the campaign engine, not left to configuration discipline.</li>
+  </ul></div>
+
+  <div class="nonneg"><h5>Non-negotiables — never, under any tier or deadline</h5><ul>
+    <li>Never execute a mutation without a verified OTP in the current session.</li>
+    <li>Never authenticate by caller ID alone.</li>
+    <li>Never store an unredacted transcript or an unencrypted recording.</li>
+    <li>Never expose mutation tools to an unverified LLM session.</li>
+    <li>Never let the AI improvise policy it cannot cite from the knowledge base.</li>
+    <li>Never ship Coqui-XTTS-derived voices in the commercial product.</li>
+    <li>Never let the phone line die when the AI dies — fail to humans, always.</li>
+  </ul></div>
+</div></section>
+
+<!-- ============ 08 EXECUTION ============ -->
+<section id="s8"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">08</span><h2>Execution — How It Runs Week to Week</h2></div>
+  <p class="sec-intro">Plans don't ship; cadences do. Three loops — daily, weekly, per-gate — plus the numbers that decide everything and the risks watched by name.</p>
+
+  <h4>The cadence</h4>
+  <div class="tscroll"><table>
+    <tr><th>Loop</th><th>Time</th><th>What happens</th></tr>
+    <tr><td class="k">Daily</td><td>10 min</td><td>Glance at yesterday's failure log + latency p95. A bad pattern caught on day 1 is one call; caught on day 7 it's a hundred angry callers.</td></tr>
+    <tr><td class="k">Weekly</td><td>~2 hrs</td><td>Listen to 10 full calls (5 random, 5 failures). Update intents, prompts, escalation tree from evidence. Publish the one-page client report — calls handled, automation rate, top failures, fixes shipped. That report is also your sales collateral in disguise.</td></tr>
+    <tr><td class="k">Per-gate</td><td>½ day</td><td>Review the gate checklist literally. If a box doesn't check, the next phase's spend waits. No "fix it in flight."</td></tr>
+  </table></div>
+
+  <h4>The metrics that decide everything</h4>
+  <div class="tscroll"><table>
+    <tr><th>Metric</th><th>Target</th><th>Why it's the one that matters</th></tr>
+    <tr><td class="k">Automation rate</td><td>≥75% by Phase 3</td><td>The headline the client buys.</td></tr>
+    <tr><td class="k">First-call resolution</td><td>&gt;80%</td><td>Automation that causes callbacks is fake automation.</td></tr>
+    <tr><td class="k">p95 end-to-end response</td><td>&lt;2s</td><td>Below this callers behave; above it transcripts corrupt.</td></tr>
+    <tr><td class="k">Escalation context quality</td><td>Agent never asks the caller to repeat</td><td>The demo moment; measure via agent feedback.</td></tr>
+    <tr><td class="k">Cost per minute</td><td>$0.15 → $0.05 → &lt;$0.02</td><td>The white-label margin story, tier by tier.</td></tr>
+    <tr><td class="k">Sentiment trend</td><td>Flat or improving</td><td>Early warning for silent product decay.</td></tr>
+  </table></div>
+
+  <h4>Risk register — the honest one</h4>
+  <div class="tscroll"><table>
+    <tr><th>Risk</th><th>Odds</th><th>Mitigation</th></tr>
+    <tr><td class="k">BD SIP trunk procurement stalls</td><td>High</td><td>Start day 0; two providers in parallel; Telnyx-bridged fallback for Tier 1.</td></tr>
+    <tr><td class="k">Bengali STT poor on real telephony audio</td><td>Medium</td><td>Vendor picked by measured bake-off on YOUR recordings, never benchmarks.</td></tr>
+    <tr><td class="k">No acceptable Bengali TTS</td><td>Medium</td><td>Three-way blind bake-off before Tier 2 voicing; Piper training as background project; TTS stays rented longest if needed.</td></tr>
+    <tr><td class="k">KVM2 can't host self-hosted STT</td><td>Med-high</td><td>Spec audit at Gate 2→3; rented GPU server as a costed fallback, priced into white-label.</td></tr>
+    <tr><td class="k">Coqui license contaminates the product</td><td>Certain if used</td><td>Banned by policy. Piper or cloud only.</td></tr>
+    <tr><td class="k">Client credential delays (OMS/couriers/MFS)</td><td>High</td><td>Named unblocker per API in Phase 0; sandbox-first development.</td></tr>
+    <tr><td class="k">Prompt injection / social-engineered mutations</td><td>Low-med</td><td>Section 07 Layer 4 + 5: state-gated tool exposure, OTP, server-side validation, audit log.</td></tr>
+    <tr><td class="k">Single-founder bus factor in 24/7 production</td><td>Certain</td><td>Alerting + automatic fail-to-human mode: degraded, never dead.</td></tr>
+    <tr><td class="k">Regulated tenant demands full LLM sovereignty</td><td>Medium</td><td>vLLM contingency tested BEFORE signing; sold as premium tier that funds the GPU.</td></tr>
+  </table></div>
+
+  <h4>The white-label runway (quiet parallel track from Phase 3)</h4>
+  <div class="tscroll"><table>
+    <tr><th>#</th><th>Move</th><th>Detail</th></tr>
+    <tr><td class="k">1</td><td>Asset extraction</td><td>Weekly client report → anonymized case study with hard numbers (automation %, cost saved, AHT).</td></tr>
+    <tr><td class="k">2</td><td>Tenant-zero dress rehearsal</td><td>Onboard client 0 through the official flow; the measured time becomes the marketing claim.</td></tr>
+    <tr><td class="k">3</td><td>Vertical sequencing</td><td>E-commerce → e-commerce → e-commerce. Banks/telecom only AFTER three references, the data-flow audit document, and the sovereignty tier exist. Hospitals/diagnostics are the sleeper vertical: Tier-A-heavy, low policy complexity, underserved.</td></tr>
+    <tr><td class="k">4</td><td>Pricing posture</td><td>Per-resolved-call or per-minute + platform fee — anchored against the cost of a human agent seat in BD (the real competitor), never against US SaaS pricing.</td></tr>
+    <tr><td class="k">5</td><td>Product boundary</td><td>Sell outcomes — automation rate, the dashboard, the warm handoff. Nobody buys FreeSWITCH; they buy "your call center stops drowning."</td></tr>
+  </table></div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="finale">
+    <h5>The whole dossier in one paragraph</h5>
+    <p>Rent a voice platform this week and put a real Bengali-speaking AI on a real BD number within days — not to ship a product, but to harvest the only requirements document that matters: real calls. While it runs, build the brain you'll own forever — one stateful orchestrator behind five adapter interfaces — and rebuild every flow from evidence, cutting over by parallel run. Then swap the rented body parts out from under the unchanged brain: FreeSWITCH for the phone network, GPU-served Whisper when shadow-mode proves it, a trained Piper voice when it wins blind tests, vLLM when a regulated client pays for full sovereignty. Gate every phase on measured numbers, fail to humans instead of to silence, treat escalation and the dashboard as the product's face — and sell tenant #2 with tenant #1's weekly report. The sequence is the strategy.</p>
+  </div>
+  <p class="sig">DWG NO. CCA-2026-001 · REV 1.0 · SHEET 1 OF 1 · OWNER: SHIHAB · COLOR CODE: GREEN=OWNED / COPPER=RENTED (SCHEDULED FOR ELIMINATION) / RED=HUMAN</p>
+</div></footer>
+
+</body>
+</html>

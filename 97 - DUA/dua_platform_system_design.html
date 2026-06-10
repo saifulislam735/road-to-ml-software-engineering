@@ -1,0 +1,1355 @@
+<style>
+  :root {
+    --font-sans: "Manrope", "Plus Jakarta Sans", "Avenir Next", "Segoe UI", sans-serif;
+    --font-mono: "JetBrains Mono", "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+
+    --color-text-primary: #122033;
+    --color-text-secondary: #33475d;
+    --color-text-tertiary: #5f748b;
+
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f6f9fd;
+    --color-background-info: #eaf2ff;
+    --color-background-success: #e9f8ef;
+    --color-background-warning: #fff5e6;
+    --color-background-danger: #ffecec;
+
+    --color-text-info: #1d4ed8;
+    --color-text-success: #0f7a3d;
+    --color-text-warning: #9a5a00;
+    --color-text-danger: #b42318;
+
+    --color-border-secondary: #ccd8e6;
+    --color-border-tertiary: #dbe4ef;
+
+    --border-radius-md: 10px;
+    --border-radius-lg: 14px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size: clamp(15px, 0.42vw + 14px, 18px);
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    background:
+      radial-gradient(circle at 0% 0%, #f0f7ff 0%, rgba(240, 247, 255, 0) 36%),
+      radial-gradient(circle at 100% 0%, #fff7e9 0%, rgba(255, 247, 233, 0) 34%),
+      #eef3f9;
+    padding: 18px;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    padding: 1rem 1.25rem 0;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+  }
+  .tab {
+    padding: 8px 14px;
+    font-size: clamp(14px, 0.3vw + 13px, 16px);
+    font-weight: 500;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .tab.active {
+    color: var(--color-text-primary);
+    border-bottom: 2px solid var(--color-text-primary);
+    background: var(--color-background-primary);
+  }
+  .tab:hover:not(.active) {
+    color: var(--color-text-primary);
+    background: var(--color-background-primary);
+  }
+  .panel {
+    display: none;
+    padding: 1.25rem;
+  }
+  .panel.active {
+    display: block;
+  }
+  .section-title {
+    font-size: clamp(13px, 0.24vw + 12px, 15px);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 1.25rem 0 0.6rem;
+  }
+  .section-title:first-child {
+    margin-top: 0;
+  }
+  .card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .card-title {
+    font-size: clamp(15px, 0.36vw + 14px, 18px);
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+  }
+  .card-sub {
+    font-size: clamp(14px, 0.28vw + 13px, 16px);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+  .grid2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .grid3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 4px;
+    margin-bottom: 3px;
+  }
+  .badge-purple {
+    background: var(--color-background-info);
+    color: var(--color-text-info);
+  }
+  .badge-green {
+    background: var(--color-background-success);
+    color: var(--color-text-success);
+  }
+  .badge-orange {
+    background: var(--color-background-warning);
+    color: var(--color-text-warning);
+  }
+  .badge-red {
+    background: var(--color-background-danger);
+    color: var(--color-text-danger);
+  }
+  .badge-gray {
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    padding: 3px 10px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 20px;
+    margin: 2px;
+    color: var(--color-text-secondary);
+  }
+  .step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 0.6rem 0;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+  }
+  .step:last-child {
+    border-bottom: none;
+  }
+  .step-num {
+    min-width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(11px, 0.16vw + 10px, 12px);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-top: 1px;
+  }
+  .step-body {
+    flex: 1;
+  }
+  .step-title {
+    font-size: clamp(14px, 0.3vw + 13px, 16px);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .step-desc {
+    font-size: clamp(13px, 0.28vw + 12px, 15px);
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+  }
+  .flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0.6rem 0;
+  }
+  .flow-box {
+    font-size: clamp(12px, 0.24vw + 11px, 14px);
+    padding: 5px 12px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 6px;
+    background: var(--color-background-secondary);
+    white-space: nowrap;
+  }
+  .flow-box.hi {
+    background: var(--color-background-info);
+    color: var(--color-text-info);
+    border-color: var(--color-border-tertiary);
+  }
+  .flow-box.success {
+    background: var(--color-background-success);
+    color: var(--color-text-success);
+    border-color: var(--color-border-tertiary);
+  }
+  .flow-box.warn {
+    background: var(--color-background-warning);
+    color: var(--color-text-warning);
+    border-color: var(--color-border-tertiary);
+  }
+  .arrow {
+    color: var(--color-text-tertiary);
+    font-size: clamp(13px, 0.2vw + 12px, 15px);
+  }
+  .mono {
+    font-family: var(--font-mono);
+    font-size: clamp(12px, 0.2vw + 11px, 14px);
+    background: #ecf2fa;
+    color: #17314f;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .tree {
+    font-family: var(--font-mono);
+    font-size: clamp(12px, 0.2vw + 11px, 14px);
+    line-height: 1.75;
+    color: #24405b;
+    background: #edf3fb;
+    padding: 1rem;
+    border-radius: var(--border-radius-md);
+    border: 0.5px solid #cfdceb;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .tree .dir {
+    color: #0f2742;
+    font-weight: 500;
+  }
+  .tree .comment {
+    color: #607a97;
+  }
+  .divider {
+    height: 0.5px;
+    background: var(--color-border-tertiary);
+    margin: 1rem 0;
+  }
+  .phase {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 0.75rem;
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    margin-bottom: 0.5rem;
+  }
+  .phase-label {
+    min-width: 70px;
+    font-size: clamp(11px, 0.16vw + 10px, 12px);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    padding-top: 2px;
+  }
+  .phase-content {
+    flex: 1;
+    font-size: clamp(13px, 0.28vw + 12px, 15px);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+  }
+  .phase-content strong {
+    font-weight: 500;
+  }
+  .infra-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+  .infra-box {
+    flex: 1;
+    min-width: 140px;
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 0.75rem;
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+  .infra-label {
+    font-size: clamp(11px, 0.16vw + 10px, 12px);
+    color: var(--color-text-tertiary);
+    margin-bottom: 4px;
+  }
+  .infra-val {
+    font-size: clamp(13px, 0.24vw + 12px, 15px);
+    font-weight: 500;
+  }
+  .warning-box {
+    background: var(--color-background-warning);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 0.75rem 1rem;
+    font-size: clamp(13px, 0.28vw + 12px, 15px);
+    color: var(--color-text-warning);
+    margin-bottom: 0.75rem;
+  }
+  .info-box {
+    background: var(--color-background-info);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 0.75rem 1rem;
+    font-size: clamp(13px, 0.28vw + 12px, 15px);
+    color: var(--color-text-info);
+    margin-bottom: 0.75rem;
+  }
+</style>
+<h2
+  class="sr-only"
+  style="
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  "
+>
+  Dua platform system design, folder structure, CI/CD, Docker, and monitoring
+  plan
+</h2>
+
+<div
+  style="
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-lg);
+    border: 0.5px solid var(--color-border-tertiary);
+  "
+>
+  <div class="tabs">
+    <button class="tab active" onclick="show('overview')">Overview</button>
+    <button class="tab" onclick="show('pages')">Pages & UX</button>
+    <button class="tab" onclick="show('structure')">File Structure</button>
+    <button class="tab" onclick="show('api')">API Design</button>
+    <button class="tab" onclick="show('cicd')">CI/CD</button>
+    <button class="tab" onclick="show('docker')">Docker</button>
+    <button class="tab" onclick="show('monitor')">Monitoring</button>
+    <button class="tab" onclick="show('phases')">Phases</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="panel-overview" class="panel active">
+    <div class="info-box">
+      <strong>Core loop:</strong> User creates a profile → shares their link →
+      friends send anonymous duas → user reads & saves them.
+    </div>
+
+    <p class="section-title">Tech stack</p>
+    <div class="grid3">
+      <div class="card">
+        <div class="card-title">Frontend</div>
+        <div class="card-sub">
+          React + Vite<br />React Router DOM<br />TailwindCSS
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Backend</div>
+        <div class="card-sub">
+          Node.js + Express<br />REST API<br />JWT auth
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Database</div>
+        <div class="card-sub">
+          PostgreSQL (primary)<br />Redis (rate-limit / cache)<br />Prisma ORM
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Infra</div>
+        <div class="card-sub">
+          VPS KVM2<br />Docker + Compose<br />Nginx reverse proxy
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">CI/CD</div>
+        <div class="card-sub">
+          GitHub Actions<br />Push → test → build → deploy
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Monitoring</div>
+        <div class="card-sub">
+          Uptime Kuma<br />Prometheus + Grafana<br />Docker logs
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">System flow</p>
+    <div class="flow">
+      <div class="flow-box hi">User registers</div>
+      <span class="arrow">→</span>
+      <div class="flow-box">Gets dua.me/username</div>
+      <span class="arrow">→</span>
+      <div class="flow-box">Shares link on Stories</div>
+      <span class="arrow">→</span>
+      <div class="flow-box hi">Friend visits link</div>
+      <span class="arrow">→</span>
+      <div class="flow-box">Types a dua anonymously</div>
+      <span class="arrow">→</span>
+      <div class="flow-box success">Owner reads inbox</div>
+    </div>
+
+    <p class="section-title">Domain plan</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Primary domain</div>
+        <div class="card-sub">
+          <span class="mono">yourdomain.com</span> — landing page<br /><span
+            class="mono"
+            >yourdomain.com/u/username</span
+          >
+          — public profile<br /><span class="mono">app.yourdomain.com</span> —
+          React SPA<br /><span class="mono">api.yourdomain.com</span> — Express
+          API
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Why no subdomains per user?</div>
+        <div class="card-sub">
+          Shared hosting & KVM2 SSL makes per-user subdomain complex to start.
+          Use path-based routing: <span class="mono">/u/username</span>. Add
+          custom domains as a Phase 3 feature.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGES & UX -->
+  <div id="panel-pages" class="panel">
+    <p class="section-title">Public pages (no login needed)</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title"><span class="mono">/</span> — Landing</div>
+        <div class="card-sub">
+          Hero, CTA to register, how-it-works section. Simple, fast.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span class="mono">/u/:username</span> — Public profile
+        </div>
+        <div class="card-sub">
+          Name, bio, avatar. Anonymous dua input form. Submit button. No login
+          required for sender.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span class="mono">/login</span> & <span class="mono">/register</span>
+        </div>
+        <div class="card-sub">
+          Minimal auth forms. Email + password to start. OTP via email optional
+          Phase 2.
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">Auth pages (logged-in user)</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">
+          <span class="mono">/inbox</span> — Duas received
+        </div>
+        <div class="card-sub">
+          List of all anonymous duas. Mark as read. Copy / share to stories.
+          Delete.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span class="mono">/settings</span> — Profile
+        </div>
+        <div class="card-sub">
+          Edit name, bio, avatar, username. Copy profile link. Toggle: pause
+          receiving duas.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span class="mono">/share</span> — Share kit
+        </div>
+        <div class="card-sub">
+          Pre-made image for Instagram Story / Messenger. One tap copy link.
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">Share link mechanic (critical UX)</p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">User copies their link</div>
+        <div class="step-desc">
+          yourdomain.com/u/rafi — one click from /settings or /share
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Posts to Instagram Story or Messenger Day</div>
+        <div class="step-desc">
+          Link sticker on IG Story. Platform opens in-app browser on tap.
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Friend sees the public profile page</div>
+        <div class="step-desc">
+          No login needed. Simple form: "Send a dua to Rafi anonymously"
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Owner gets notification</div>
+        <div class="step-desc">
+          Phase 1: check inbox manually. Phase 2: email/push notification.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE STRUCTURE -->
+  <div id="panel-structure" class="panel">
+    <p class="section-title">Monorepo root</p>
+    <pre class="tree"><span class="dir">dua-platform/</span>
+├── <span class="dir">apps/</span>
+│   ├── <span class="dir">web/</span> <span class="comment"># React + Vite frontend</span>
+│   └── <span class="dir">api/</span> <span class="comment"># Express backend</span>
+├── <span class="dir">packages/</span>
+│   └── <span class="dir">shared/</span> <span class="comment"># Shared types, utils, validators</span>
+├── <span class="dir">infra/</span>
+│   ├── <span class="dir">docker/</span> <span class="comment"># Dockerfiles</span>
+│   ├── <span class="dir">nginx/</span> <span class="comment"># nginx.conf, sites-enabled/</span>
+│   └── <span class="dir">monitoring/</span> <span class="comment"># Prometheus, Grafana configs</span>
+├── <span class="dir">.github/</span>
+│   └── <span class="dir">workflows/</span> <span class="comment"># CI/CD YAML</span>
+├── docker-compose.yml
+├── docker-compose.prod.yml
+└── package.json <span class="comment"># npm workspaces</span></pre>
+
+    <p class="section-title">Frontend: apps/web/</p>
+    <pre class="tree"><span class="dir">web/</span>
+├── <span class="dir">src/</span>
+│   ├── <span class="dir">pages/</span>
+│   │   ├── Landing.jsx
+│   │   ├── Login.jsx
+│   │   ├── Register.jsx
+│   │   ├── PublicProfile.jsx <span class="comment"># /u/:username</span>
+│   │   ├── Inbox.jsx
+│   │   ├── Settings.jsx
+│   │   └── Share.jsx
+│   ├── <span class="dir">components/</span>
+│   │   ├── <span class="dir">ui/</span> <span class="comment"># Button, Input, Modal, Toast...</span>
+│   │   ├── DuaCard.jsx
+│   │   ├── DuaForm.jsx
+│   │   └── Navbar.jsx
+│   ├── <span class="dir">hooks/</span>
+│   │   ├── useAuth.js
+│   │   └── useDuas.js
+│   ├── <span class="dir">services/</span>
+│   │   └── api.js <span class="comment"># axios instance, all API calls</span>
+│   ├── <span class="dir">store/</span>
+│   │   └── authStore.js <span class="comment"># Zustand store for auth state</span>
+│   ├── <span class="dir">utils/</span>
+│   │   └── helpers.js
+│   ├── App.jsx
+│   └── main.jsx
+├── .env.example
+└── vite.config.js</pre>
+
+    <p class="section-title">Backend: apps/api/</p>
+    <pre class="tree"><span class="dir">api/</span>
+├── <span class="dir">src/</span>
+│   ├── <span class="dir">routes/</span>
+│   │   ├── auth.routes.js
+│   │   ├── dua.routes.js
+│   │   └── user.routes.js
+│   ├── <span class="dir">controllers/</span>
+│   │   ├── auth.controller.js
+│   │   ├── dua.controller.js
+│   │   └── user.controller.js
+│   ├── <span class="dir">services/</span>
+│   │   ├── auth.service.js
+│   │   ├── dua.service.js
+│   │   └── user.service.js
+│   ├── <span class="dir">repositories/</span> <span class="comment"># DB queries only (Prisma)</span>
+│   │   ├── dua.repo.js
+│   │   └── user.repo.js
+│   ├── <span class="dir">middleware/</span>
+│   │   ├── auth.middleware.js <span class="comment"># JWT verify</span>
+│   │   ├── rateLimit.middleware.js
+│   │   └── validate.middleware.js
+│   ├── <span class="dir">prisma/</span>
+│   │   ├── schema.prisma
+│   │   └── migrations/
+│   ├── <span class="dir">config/</span>
+│   │   ├── db.js
+│   │   └── env.js
+│   └── app.js
+├── .env.example
+└── package.json</pre>
+
+    <div class="info-box" style="margin-top: 0.75rem">
+      Route → Controller → Service → Repository pattern. Controllers handle HTTP
+      in/out, Services hold business logic, Repositories only talk to the DB.
+      Easy to test, easy to scale.
+    </div>
+  </div>
+
+  <!-- API DESIGN -->
+  <div id="panel-api" class="panel">
+    <p class="section-title">Auth endpoints</p>
+    <div class="card">
+      <div class="step">
+        <div
+          class="step-num"
+          style="
+            border-radius: 4px;
+            width: auto;
+            padding: 0 6px;
+            font-size: 11px;
+            background: var(--color-background-success);
+            color: var(--color-text-success);
+            border: none;
+          "
+        >
+          POST
+        </div>
+        <div class="step-body">
+          <div class="step-title">
+            <span class="mono">/api/auth/register</span>
+          </div>
+          <div class="step-desc">
+            email, password, username → returns JWT + user
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div
+          class="step-num"
+          style="
+            border-radius: 4px;
+            width: auto;
+            padding: 0 6px;
+            font-size: 11px;
+            background: var(--color-background-success);
+            color: var(--color-text-success);
+            border: none;
+          "
+        >
+          POST
+        </div>
+        <div class="step-body">
+          <div class="step-title">
+            <span class="mono">/api/auth/login</span>
+          </div>
+          <div class="step-desc">email, password → JWT</div>
+        </div>
+      </div>
+      <div class="step">
+        <div
+          class="step-num"
+          style="
+            border-radius: 4px;
+            width: auto;
+            padding: 0 6px;
+            font-size: 11px;
+            background: var(--color-background-success);
+            color: var(--color-text-success);
+            border: none;
+          "
+        >
+          POST
+        </div>
+        <div class="step-body">
+          <div class="step-title">
+            <span class="mono">/api/auth/logout</span>
+          </div>
+          <div class="step-desc">Invalidate refresh token (if used)</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">User & profile endpoints</p>
+    <div class="card">
+      <div class="step">
+        <div
+          class="step-num"
+          style="
+            border-radius: 4px;
+            width: auto;
+            padding: 0 6px;
+            font-size: 11px;
+            background: var(--color-background-info);
+            color: var(--color-text-info);
+            border: none;
+          "
+        >
+          GET
+        </div>
+        <div class="step-body">
+          <div class="step-title">
+            <span class="mono">/api/users/:username</span>
+          </div>
+          <div class="step-desc">
+            Public profile — name, bio, avatar. No auth needed.
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div
+          class="step-num"
+          style="
+            border-radius: 4px;
+            width: auto;
+            padding: 0 6px;
+            font-size: 11px;
+            background: var(--color-background-warning);
+            color: var(--color-text-warning);
+            border: none;
+          "
+        >
+          PATCH
+        </div>
+        <div class="step-body">
+          <div class="step-title"><span class="mono">/api/users/me</span></div>
+          <div class="step-desc">
+            Update own profile. Requires JWT. Multipart for avatar.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">Dua endpoints</p>
+    <div class="card">
+      <div class="step">
+        <div
+          class="step-num"
+          style="
+            border-radius: 4px;
+            width: auto;
+            padding: 0 6px;
+            font-size: 11px;
+            background: var(--color-background-success);
+            color: var(--color-text-success);
+            border: none;
+          "
+        >
+          POST
+        </div>
+        <div class="step-body">
+          <div class="step-title">
+            <span class="mono">/api/duas/send/:username</span>
+          </div>
+          <div class="step-desc">
+            Anonymous POST. Rate-limited by IP. Body: message text. Returns 201.
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div
+          class="step-num"
+          style="
+            border-radius: 4px;
+            width: auto;
+            padding: 0 6px;
+            font-size: 11px;
+            background: var(--color-background-info);
+            color: var(--color-text-info);
+            border: none;
+          "
+        >
+          GET
+        </div>
+        <div class="step-body">
+          <div class="step-title">
+            <span class="mono">/api/duas/inbox</span>
+          </div>
+          <div class="step-desc">
+            Requires JWT. Returns paginated duas for the logged-in user.
+            ?page=&limit=
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div
+          class="step-num"
+          style="
+            border-radius: 4px;
+            width: auto;
+            padding: 0 6px;
+            font-size: 11px;
+            background: var(--color-background-danger);
+            color: var(--color-text-danger);
+            border: none;
+          "
+        >
+          DEL
+        </div>
+        <div class="step-body">
+          <div class="step-title"><span class="mono">/api/duas/:id</span></div>
+          <div class="step-desc">
+            Delete own dua. Requires JWT. Owner-check in service layer.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">Database schema (Prisma)</p>
+    <pre class="tree">model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  name      String?
+  bio       String?
+  avatarUrl String?
+  isPaused  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  duas      Dua[]
+}
+
+model Dua {
+  id        String   @id @default(uuid())
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id])
+}</pre>
+  </div>
+
+  <!-- CI/CD -->
+  <div id="panel-cicd" class="panel">
+    <p class="section-title">Branch strategy</p>
+    <div class="grid3">
+      <div class="card">
+        <div class="card-title">
+          <span class="badge badge-purple">main</span>
+        </div>
+        <div class="card-sub">
+          Production-ready only. Protected branch. Merges trigger auto-deploy to
+          KVM2.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span class="badge badge-orange">develop</span>
+        </div>
+        <div class="card-sub">
+          Integration branch. All features merge here first. Triggers test
+          pipeline.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span class="badge badge-gray">feature/*</span>
+        </div>
+        <div class="card-sub">
+          One branch per feature or fix. PR to develop. Short-lived. Delete
+          after merge.
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">Workflow: push to develop</p>
+    <div class="flow">
+      <div class="flow-box">Push / PR to develop</div>
+      <span class="arrow">→</span>
+      <div class="flow-box">Lint + unit tests</div>
+      <span class="arrow">→</span>
+      <div class="flow-box">Build Docker images</div>
+      <span class="arrow">→</span>
+      <div class="flow-box success">✓ Ready to merge</div>
+    </div>
+
+    <p class="section-title">Workflow: push to main (deploy)</p>
+    <div class="flow">
+      <div class="flow-box hi">Merge to main</div>
+      <span class="arrow">→</span>
+      <div class="flow-box">Run tests</div>
+      <span class="arrow">→</span>
+      <div class="flow-box">Build & push images to GHCR</div>
+      <span class="arrow">→</span>
+      <div class="flow-box">SSH into KVM2</div>
+      <span class="arrow">→</span>
+      <div class="flow-box">docker compose pull + up -d</div>
+      <span class="arrow">→</span>
+      <div class="flow-box success">Live</div>
+    </div>
+
+    <p class="section-title">GitHub Actions files</p>
+    <div class="card">
+      <div class="card-title">
+        <span class="mono">.github/workflows/ci.yml</span> — runs on push to
+        develop
+      </div>
+      <div class="card-sub" style="margin-top: 0.5rem">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Checkout + install deps</div>
+            <div class="step-desc">npm ci in both apps/web and apps/api</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Lint</div>
+            <div class="step-desc">ESLint across both apps. Fail fast.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Unit tests</div>
+            <div class="step-desc">
+              Jest for API services and controllers (mock DB). Vitest for
+              frontend.
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">Docker build test</div>
+            <div class="step-desc">
+              Build both images to catch Dockerfile errors early. Don't push.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 0.5rem">
+      <div class="card-title">
+        <span class="mono">.github/workflows/deploy.yml</span> — runs on push to
+        main
+      </div>
+      <div class="card-sub" style="margin-top: 0.5rem">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">All CI steps first</div>
+            <div class="step-desc">Tests must pass before deploy begins</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Build & push to GHCR</div>
+            <div class="step-desc">
+              ghcr.io/yourusername/dua-api:latest and dua-web:latest
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">SSH to KVM2</div>
+            <div class="step-desc">
+              Use appleboy/ssh-action. Secrets: VPS_HOST, VPS_USER, VPS_KEY
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">Pull & restart</div>
+            <div class="step-desc">
+              docker compose -f docker-compose.prod.yml pull && docker compose
+              up -d
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-title">Health check</div>
+            <div class="step-desc">
+              curl https://api.yourdomain.com/health — fail workflow if 200 not
+              returned
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">GitHub Secrets to set</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-sub">
+          <span class="mono">VPS_HOST</span> — KVM2 IP<br /><span class="mono"
+            >VPS_USER</span
+          >
+          — deploy user<br /><span class="mono">VPS_KEY</span> — SSH private
+          key<br /><span class="mono">VPS_PORT</span> — SSH port (22)
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-sub">
+          <span class="mono">GHCR_TOKEN</span> — GitHub PAT (packages:write)<br /><span
+            class="mono"
+            >POSTGRES_URL</span
+          >
+          — prod DB connection<br /><span class="mono">JWT_SECRET</span> — prod
+          secret<br /><span class="mono">REDIS_URL</span> — prod Redis
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCKER -->
+  <div id="panel-docker" class="panel">
+    <p class="section-title">Services on KVM2</p>
+    <div class="grid3">
+      <div class="card">
+        <div class="card-title">nginx</div>
+        <div class="card-sub">
+          Reverse proxy. Port 80→443. Routes <span class="mono">api.*</span> to
+          Express, <span class="mono">app.*</span> to React static. SSL
+          termination via Certbot.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">api</div>
+        <div class="card-sub">
+          Express app. Port 5000 internal. Depends on postgres + redis. Env
+          injected from .env.prod
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">web</div>
+        <div class="card-sub">
+          Nginx serving built React SPA. Port 3000 internal. Static files only.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">postgres</div>
+        <div class="card-sub">
+          PostgreSQL 16. Volume: pg_data. Never exposed to public. Only api can
+          reach it.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">redis</div>
+        <div class="card-sub">
+          Redis 7. Rate limit + session cache. Volume: redis_data. Internal
+          only.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">uptime-kuma</div>
+        <div class="card-sub">
+          Self-hosted uptime monitor. Port 3001. Check API health every 60s.
+          Alert via Telegram.
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">docker-compose.prod.yml structure</p>
+    <pre class="tree">services:
+  nginx:
+    image: nginx:alpine
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./infra/nginx:/etc/nginx/conf.d
+      - certbot_certs:/etc/letsencrypt
+    depends_on: [api, web]
+
+  api:
+    image: ghcr.io/yourusername/dua-api:latest
+    env_file: .env.prod
+    depends_on: [postgres, redis]
+    restart: unless-stopped
+
+  web:
+    image: ghcr.io/yourusername/dua-web:latest
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    env_file: .env.prod
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    volumes:
+      - kuma_data:/app/data
+    ports: ["3001:3001"]
+    restart: unless-stopped
+
+volumes:
+  pg_data:
+  redis_data:
+  kuma_data:
+  certbot_certs:</pre>
+
+    <p class="section-title">Dockerfile pattern (API)</p>
+    <pre class="tree">FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npx prisma generate
+EXPOSE 5000
+CMD ["node", "src/app.js"]</pre>
+
+    <div class="warning-box">
+      Never commit .env.prod to git. Store on KVM2 only. Use GitHub Secrets for
+      CI variables. Set a non-root user in Dockerfiles for production.
+    </div>
+  </div>
+
+  <!-- MONITORING -->
+  <div id="panel-monitor" class="panel">
+    <p class="section-title">Monitoring stack (all self-hosted on KVM2)</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">
+          Uptime Kuma <span class="badge badge-green">start here</span>
+        </div>
+        <div class="card-sub">
+          Simple self-hosted uptime monitor. Checks:<br />• API /health endpoint
+          every 60s<br />• Frontend URL every 60s<br />• Postgres connection via
+          TCP<br />Alerts: Telegram bot (free & instant).
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          Prometheus + Grafana <span class="badge badge-gray">Phase 2</span>
+        </div>
+        <div class="card-sub">
+          Add prom-client to Express. Expose /metrics. Prometheus scrapes it.
+          Grafana dashboards for req/s, latency, error rate, DB pool usage.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Docker logs</div>
+        <div class="card-sub">
+          <span class="mono">docker compose logs -f api</span> for live
+          debugging. Add
+          <span class="mono">logging: driver: "json-file"</span> with max-size
+          10m, max-file 3 to prevent disk fill.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">PostgreSQL monitoring</div>
+        <div class="card-sub">
+          Add postgres_exporter sidecar. Track: active connections, slow queries
+          (pg_stat_statements), DB size over time. Alert if DB > 80% disk.
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">Alerts to set up on Day 1</p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">API down (Uptime Kuma → Telegram)</div>
+        <div class="step-desc">
+          If /health returns non-200 for 2 consecutive checks → instant Telegram
+          alert
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Disk space (VPS cron)</div>
+        <div class="step-desc">
+          Add cron on KVM2: df -h alert if root partition > 80% full. Docker
+          volumes can grow silently.
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Rate limit hits (Express middleware log)</div>
+        <div class="step-desc">
+          Log when rate limit is triggered. High frequency = someone trying to
+          spam the dua form.
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">SSL cert expiry (Uptime Kuma)</div>
+        <div class="step-desc">
+          Uptime Kuma checks SSL cert expiry automatically. Alert 14 days before
+          expiry.
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">Backup strategy</p>
+    <div class="card">
+      <div class="card-sub">
+        <div class="step">
+          <div class="step-num">D</div>
+          <div class="step-body">
+            <div class="step-title">Daily Postgres dump</div>
+            <div class="step-desc">
+              Cron job on KVM2:
+              <span class="mono"
+                >pg_dump | gzip → /backups/db_YYYY-MM-DD.sql.gz</span
+              >. Keep last 7 days. Upload to Hostinger file manager or
+              S3-compatible storage.
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">W</div>
+          <div class="step-body">
+            <div class="step-title">Weekly full backup</div>
+            <div class="step-desc">
+              Docker volumes snapshot + .env.prod (encrypted). Store offsite.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASES -->
+  <div id="panel-phases" class="panel">
+    <div class="info-box">
+      Ship Phase 1 in 2–3 weeks. Don't add Phase 2 features until real users are
+      using Phase 1.
+    </div>
+
+    <p class="section-title">Phase 1 — Launch MVP</p>
+    <div class="phase">
+      <div class="phase-label">Goal</div>
+      <div class="phase-content">
+        Working product live on your domain. People can actually send and
+        receive duas.
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-label">Features</div>
+      <div class="phase-content">
+        Register / Login • Public profile page • Anonymous dua form • Inbox to
+        read duas • Copy profile link • Rate limiting on dua form • Basic spam
+        filter (max length, profanity optional)
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-label">Infra</div>
+      <div class="phase-content">
+        KVM2 + Docker Compose + Nginx + SSL + GitHub Actions deploy + Uptime
+        Kuma
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-label">Skip</div>
+      <div class="phase-content">
+        Notifications, image sharing kit, custom domains, reactions — all Phase
+        2+
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <p class="section-title">Phase 2 — Retention</p>
+    <div class="phase">
+      <div class="phase-label">Features</div>
+      <div class="phase-content">
+        Email notifications for new duas • Push notifications (PWA) • Share kit:
+        pre-made IG Story image with your link • Reaction emojis on duas (like
+        ❤️ ameen) • Pause receiving duas toggle
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-label">Infra</div>
+      <div class="phase-content">
+        Add email service (Resend or Brevo free tier) • Prometheus + Grafana •
+        Postgres backups automated
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <p class="section-title">Phase 3 — Scale</p>
+    <div class="phase">
+      <div class="phase-label">Features</div>
+      <div class="phase-content">
+        Custom domains • Dua categories / tags • Public duas feed (opt-in) •
+        Verified badge • Mobile app (React Native) • Analytics dashboard for
+        users
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-label">Infra</div>
+      <div class="phase-content">
+        CDN for static assets • Redis cluster • DB read replicas • Move to
+        managed Postgres if needed
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function show(id) {
+    document
+      .querySelectorAll(".panel")
+      .forEach((p) => p.classList.remove("active"));
+    document
+      .querySelectorAll(".tab")
+      .forEach((t) => t.classList.remove("active"));
+    document.getElementById("panel-" + id).classList.add("active");
+    event.target.classList.add("active");
+  }
+</script>

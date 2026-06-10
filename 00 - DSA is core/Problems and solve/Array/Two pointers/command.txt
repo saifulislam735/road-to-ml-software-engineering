@@ -1,0 +1,17 @@
+For C++, the closest simple one-liner is:
+
+```powershell
+
+g++ test.cpp -o test.exe; .\test.exe
+
+```
+
+If you want it to stop when compilation fails, use:
+
+```powershell
+
+g++ test.cpp -o test.exe; if ($LASTEXITCODE -eq 0) { .\test.exe }
+
+```
+
+If you want the easiest VS Code workflow, I can also help you set up a one-key build/run shortcut.

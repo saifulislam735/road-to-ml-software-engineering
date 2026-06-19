@@ -1,0 +1,4651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clustering — From Zero to Production</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1628;
+    --bg3: #141c35;
+    --panel: #1a2240;
+    --border: #1f2d52;
+    --accent: #4f8ef7;
+    --accent2: #7c6af5;
+    --green: #22d3a5;
+    --red: #f7566a;
+    --yellow: #f7c948;
+    --orange: #f7874f;
+    --text: #e2e8f8;
+    --muted: #7b8ab8;
+    --dim: #3a4a78;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'Inter', sans-serif;
+    --display: 'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    display: flex;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: 260px;
+    min-width: 260px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    scrollbar-width: thin;
+    scrollbar-color: var(--dim) transparent;
+  }
+
+  .sidebar-brand {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-brand .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-brand h2 {
+    font-family: var(--display);
+    font-size: 18px;
+    color: var(--text);
+  }
+
+  .sidebar-progress {
+    padding: 8px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    width: 0%;
+    transition: width 0.3s;
+    border-radius: 2px;
+  }
+  .progress-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: var(--mono);
+  }
+
+  .nav-section {
+    padding: 4px 12px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-top: 12px;
+    margin-bottom: 4px;
+  }
+
+  #sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 20px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    position: relative;
+  }
+
+  #sidebar a:hover { color: var(--text); background: rgba(79,142,247,0.06); }
+  #sidebar a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(79,142,247,0.08);
+  }
+
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--dim);
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  #sidebar a.active .nav-dot { background: var(--accent); }
+  #sidebar a:hover .nav-dot { background: var(--muted); }
+
+  /* ── MAIN ── */
+  #main {
+    flex: 1;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
+
+  section {
+    min-height: 100vh;
+    padding: 80px 60px 80px 64px;
+    border-bottom: 1px solid var(--border);
+    max-width: 960px;
+  }
+
+  section:last-of-type { border-bottom: none; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: radial-gradient(ellipse 70% 60% at 60% 40%, rgba(79,142,247,0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 20% 80%, rgba(124,106,245,0.05) 0%, transparent 60%);
+    padding: 80px 60px;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-title {
+    font-family: var(--display);
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #e2e8f8 30%, #4f8ef7 70%, #7c6af5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .meta-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .meta-chip span { color: var(--accent); }
+
+  /* ── CANVAS ── */
+  canvas {
+    display: block;
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .sec-eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    margin-bottom: 14px;
+    line-height: 1.15;
+    color: var(--text);
+  }
+
+  .sec-lead {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 640px;
+    margin-bottom: 48px;
+    line-height: 1.7;
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  h4 {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  p { margin-bottom: 16px; color: var(--muted); }
+  p strong { color: var(--text); font-weight: 600; }
+
+  /* ── FEYNMAN BOX ── */
+  .feynman {
+    background: linear-gradient(135deg, rgba(79,142,247,0.08) 0%, rgba(124,106,245,0.05) 100%);
+    border: 1px solid rgba(79,142,247,0.25);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 28px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feynman::before {
+    content: '💡 Feynman Explains';
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .feynman::after {
+    content: '"';
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    font-size: 120px;
+    color: rgba(79,142,247,0.06);
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+
+  .feynman p {
+    color: var(--text);
+    font-size: 15px;
+    margin: 0;
+  }
+
+  /* ── GRID CARDS ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 28px 0; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin: 28px 0; }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .card h3 { font-size: 17px; margin-bottom: 8px; }
+  .card p { font-size: 13px; margin: 0; line-height: 1.6; }
+
+  .card.green { border-color: rgba(34,211,165,0.2); }
+  .card.green:hover { border-color: var(--green); }
+  .card.green .card-icon-bg { background: rgba(34,211,165,0.1); }
+
+  .card.red { border-color: rgba(247,86,106,0.2); }
+  .card.red:hover { border-color: var(--red); }
+
+  .card.yellow { border-color: rgba(247,201,72,0.15); }
+  .card.yellow:hover { border-color: var(--yellow); }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+
+  .tag.green { background: rgba(34,211,165,0.12); color: var(--green); }
+  .tag.red { background: rgba(247,86,106,0.12); color: var(--red); }
+  .tag.blue { background: rgba(79,142,247,0.12); color: var(--accent); }
+  .tag.yellow { background: rgba(247,201,72,0.12); color: var(--yellow); }
+  .tag.purple { background: rgba(124,106,245,0.12); color: var(--accent2); }
+  .tag.orange { background: rgba(247,135,79,0.12); color: var(--orange); }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 28px 0;
+    overflow: hidden;
+  }
+
+  .flow-box canvas {
+    border-radius: 8px;
+    background: var(--bg3);
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 20px 0;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .code-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .code-dots span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  .code-dots span:nth-child(1) { background: #f7566a; }
+  .code-dots span:nth-child(2) { background: var(--yellow); }
+  .code-dots span:nth-child(3) { background: var(--green); }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: #a8c0f0;
+  }
+
+  .kw { color: #c792ea; }
+  .str { color: #c3e88d; }
+  .cm { color: #546e7a; font-style: italic; }
+  .fn { color: #82aaff; }
+  .nm { color: #f78c6c; }
+  .op { color: var(--accent); }
+
+  /* ── COMPARISON TABLE ── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 13px;
+  }
+
+  .compare-table th {
+    background: var(--bg3);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    vertical-align: top;
+  }
+
+  .compare-table tr:hover td { background: rgba(79,142,247,0.04); }
+  .compare-table td:first-child { color: var(--text); font-weight: 500; }
+
+  /* ── STEP LIST ── */
+  .steps { margin: 24px 0; }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .step::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 44px;
+    bottom: -20px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .step:last-child::before { display: none; }
+
+  .step-num {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .step-body { flex: 1; padding-top: 8px; }
+  .step-body h4 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .step-body p { font-size: 13px; margin: 0; line-height: 1.6; }
+
+  /* ── TABS ── */
+  .tab-group { margin: 28px 0; }
+
+  .tab-bar {
+    display: flex;
+    gap: 2px;
+    background: var(--bg3);
+    padding: 4px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    padding: 8px 18px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .tab-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .tab-btn:hover:not(.active) { color: var(--text); background: var(--border); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── QUIZ ── */
+  .quiz-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .quiz-q {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+
+  .quiz-opt {
+    padding: 10px 16px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--muted);
+    transition: all 0.15s;
+    text-align: left;
+  }
+
+  .quiz-opt:hover { border-color: var(--accent); color: var(--text); }
+  .quiz-opt.correct { border-color: var(--green); background: rgba(34,211,165,0.1); color: var(--green); }
+  .quiz-opt.wrong { border-color: var(--red); background: rgba(247,86,106,0.1); color: var(--red); }
+
+  .quiz-explain {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: rgba(79,142,247,0.08);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    color: var(--muted);
+    display: none;
+  }
+
+  .quiz-explain.show { display: block; }
+
+  /* ── WARNING / NOTE ── */
+  .warning {
+    display: flex;
+    gap: 16px;
+    background: rgba(247,201,72,0.07);
+    border: 1px solid rgba(247,201,72,0.25);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+
+  .warning-icon { font-size: 22px; flex-shrink: 0; }
+  .warning-body h4 { color: var(--yellow); font-size: 13px; margin-bottom: 6px; }
+  .warning-body p { margin: 0; font-size: 13px; }
+
+  .note {
+    display: flex;
+    gap: 16px;
+    background: rgba(34,211,165,0.06);
+    border: 1px solid rgba(34,211,165,0.2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+
+  .note-icon { font-size: 22px; flex-shrink: 0; }
+  .note-body h4 { color: var(--green); font-size: 13px; margin-bottom: 6px; }
+  .note-body p { margin: 0; font-size: 13px; }
+
+  /* ── TRADEOFF ── */
+  .tradeoff {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .tradeoff-col {
+    background: var(--panel);
+    border-radius: 8px;
+    padding: 18px;
+  }
+
+  .tradeoff-col.pros { border-top: 3px solid var(--green); }
+  .tradeoff-col.cons { border-top: 3px solid var(--red); }
+
+  .tradeoff-col h4 {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+
+  .tradeoff-col.pros h4 { color: var(--green); }
+  .tradeoff-col.cons h4 { color: var(--red); }
+
+  .tradeoff-col ul { list-style: none; padding: 0; }
+  .tradeoff-col ul li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 5px 0;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .tradeoff-col ul li::before {
+    content: '✓';
+    color: var(--green);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .tradeoff-col.cons ul li::before { content: '✗'; color: var(--red); }
+
+  /* ── INTERACTIVE NODE ── */
+  .viz-container {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  .viz-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .viz-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .viz-btn {
+    padding: 6px 14px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .viz-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .viz-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .viz-log {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--green);
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    min-height: 36px;
+    margin-top: 12px;
+    transition: all 0.2s;
+  }
+
+  /* ── SEPARATOR ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 40px 0;
+  }
+
+  /* ── SCROLLBAR ── */
+  #main::-webkit-scrollbar { width: 6px; }
+  #main::-webkit-scrollbar-track { background: transparent; }
+  #main::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 3px; }
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--dim); }
+
+  /* ── TOOLTIP ── */
+  [data-tip] { position: relative; cursor: help; border-bottom: 1px dashed var(--dim); }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    z-index: 999;
+    font-family: var(--sans);
+    border-bottom: none;
+  }
+
+  /* ── SUMMARY BOX ── */
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 28px 0; }
+
+  .stat-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-family: var(--mono);
+  }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 32px;
+  }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -28px;
+    top: 5px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  .tl-time {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .tl-item h4 { color: var(--text); margin-bottom: 6px; font-size: 15px; }
+  .tl-item p { margin: 0; font-size: 13px; line-height: 1.6; }
+
+  /* ── REQUIREMENT CARDS ── */
+  .req-grid { display: flex; flex-direction: column; gap: 12px; margin: 32px 0; }
+
+  .req-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .req-card:hover { border-color: var(--accent); }
+  .req-card.open { border-color: var(--accent); background: rgba(79,142,247,0.05); }
+
+  .req-num {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--dim);
+    min-width: 44px;
+    line-height: 1;
+    padding-top: 4px;
+    transition: color 0.2s;
+  }
+
+  .req-card.open .req-num { color: var(--accent); }
+  .req-card:hover .req-num { color: var(--muted); }
+
+  .req-body { flex: 1; }
+  .req-body h3 { font-size: 17px; margin-bottom: 4px; color: var(--text); }
+  .req-short { font-size: 13px; color: var(--muted); margin: 0; }
+
+  .req-detail {
+    display: none;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .req-card.open .req-detail { display: block; }
+  .req-detail p { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .req-detail p:last-child { margin-bottom: 0; }
+
+  .req-arrow {
+    font-size: 16px;
+    color: var(--dim);
+    transition: transform 0.2s, color 0.2s;
+    padding-top: 4px;
+    flex-shrink: 0;
+  }
+  .req-card.open .req-arrow { transform: rotate(180deg); color: var(--accent); }
+
+  .req-example {
+    background: var(--bg3);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-top: 12px;
+  }
+
+  .req-ex-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .req-example code {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--green);
+  }
+
+  /* topology inside card */
+  .topo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+
+  .topo-box {
+    background: var(--bg3);
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .topo-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .topo-box canvas {
+    width: 140px !important;
+    height: 110px !important;
+    border-radius: 4px;
+    background: var(--bg2);
+  }
+
+  /* purpose chips */
+  .purpose-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+
+  .p-chip {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .p-chip.blue   { background: rgba(79,142,247,.12);  color: var(--accent); }
+  .p-chip.purple { background: rgba(124,106,245,.12); color: var(--accent2); }
+  .p-chip.green  { background: rgba(34,211,165,.1);   color: var(--green); }
+  .p-chip.orange { background: rgba(247,135,79,.1);   color: var(--orange); }
+  .p-chip.yellow { background: rgba(247,201,72,.1);   color: var(--yellow); }
+
+  /* coordination examples */
+  .coord-examples { display: flex; flex-direction: column; gap: 10px; margin: 14px 0; }
+
+  .coord-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* resource sharing */
+  .share-grid { display: flex; flex-direction: column; gap: 12px; margin: 14px 0; }
+
+  .share-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--bg3);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+
+  .share-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  /* ── NOT REQUIRED section ── */
+  .misconception-list { display: flex; flex-direction: column; gap: 0; margin: 32px 0; }
+
+  .mc-row {
+    display: flex;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .mc-row:last-child { border-bottom: none; }
+
+  .mc-badge {
+    font-size: 22px;
+    flex-shrink: 0;
+    width: 40px;
+    text-align: center;
+    padding-top: 4px;
+  }
+
+  .mc-content { flex: 1; }
+  .mc-content h3 { font-size: 17px; margin-bottom: 10px; color: var(--text); font-family: var(--display); }
+  .mc-content > p { font-size: 14px; color: var(--muted); margin-bottom: 14px; }
+
+  .mc-example {
+    background: var(--bg3);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    margin-top: 12px;
+  }
+
+  .mc-ex-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  /* topology compare inside not-required */
+  .topo-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .topo-half {
+    background: var(--bg3);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .topo-valid {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--green);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .ascii-art {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+    background: var(--bg2);
+    border-radius: 4px;
+    padding: 10px 14px;
+  }
+
+  /* responsive */
+  @media (max-width: 900px) {
+    #sidebar { display: none; }
+    section { padding: 60px 24px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .tradeoff { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+    .topo-grid { grid-template-columns: 1fr; }
+    .topo-compare { grid-template-columns: 1fr; }
+    .coord-row { flex-direction: column; gap: 6px; }
+    .mc-row { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-brand">
+    <div class="label">System Design</div>
+    <h2>Clustering</h2>
+  </div>
+
+  <div class="sidebar-progress">
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <div class="progress-label" id="progress-label">0% complete</div>
+  </div>
+
+  <div class="nav-section">Foundations</div>
+  <a href="#hero"><span class="nav-dot"></span>Introduction</a>
+  <a href="#feynman"><span class="nav-dot"></span>Feynman Definition</a>
+  <a href="#fundamentals"><span class="nav-dot"></span>6 Fundamental Requirements</a>
+  <a href="#not-required"><span class="nav-dot"></span>What Is NOT Required</a>
+  <a href="#why"><span class="nav-dot"></span>Why Clustering?</a>
+
+  <div class="nav-section">Core Concepts</div>
+  <a href="#anatomy"><span class="nav-dot"></span>Anatomy of a Cluster</a>
+  <a href="#types"><span class="nav-dot"></span>Active-Passive vs Active-Active</a>
+  <a href="#heartbeat"><span class="nav-dot"></span>Heartbeat & Failure Detection</a>
+  <a href="#splitbrain"><span class="nav-dot"></span>Split-Brain Problem</a>
+  <a href="#quorum"><span class="nav-dot"></span>Quorum & Voting</a>
+
+  <div class="nav-section">Implementation</div>
+  <a href="#setup"><span class="nav-dot"></span>Step-by-Step Setup</a>
+  <a href="#db-cluster"><span class="nav-dot"></span>Database Clustering</a>
+  <a href="#kubernetes"><span class="nav-dot"></span>Kubernetes Cluster</a>
+  <a href="#tradeoffs"><span class="nav-dot"></span>Tradeoffs & When to Use</a>
+
+  <div class="nav-section">Advanced</div>
+  <a href="#patterns"><span class="nav-dot"></span>Production Patterns</a>
+  <a href="#realworld"><span class="nav-dot"></span>Real-World Examples</a>
+  <a href="#mistakes"><span class="nav-dot"></span>Common Mistakes</a>
+  <a href="#quiz"><span class="nav-dot"></span>Quiz (10 questions)</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div id="main">
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<section id="hero">
+  <div class="hero-eyebrow">Clustering Masterclass · Zero to Production</div>
+  <h1 class="hero-title">Many Servers,<br>One Unstoppable<br>System</h1>
+  <p class="hero-sub">
+    A complete guide to clustering — from the core idea explained simply,
+    to real implementation steps, database clustering, Kubernetes, and the tradeoffs
+    every engineer must know.
+  </p>
+  <div class="hero-meta">
+    <div class="meta-chip">📚 <span>Beginner → Advanced</span></div>
+    <div class="meta-chip">⏱️ <span>~30 min read</span></div>
+    <div class="meta-chip">🧩 <span>Interactive Visuals</span></div>
+    <div class="meta-chip">🎯 <span>10 Quiz Questions</span></div>
+  </div>
+
+  <!-- Live cluster animation -->
+  <div class="viz-container" style="margin-top:48px;">
+    <div class="viz-label">Live Cluster Simulation — click nodes to fail them</div>
+    <canvas id="hero-canvas" height="220"></canvas>
+    <div class="viz-log" id="hero-log">▶ Cluster running — all nodes healthy</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FEYNMAN ═══════════════════════════ -->
+<section id="feynman">
+  <div class="sec-eyebrow">Feynman Technique</div>
+  <h2>Explain it like I'm five</h2>
+  <p class="sec-lead">
+    Before any config, architecture, or code — understand the idea so well you can explain it to anyone.
+    That's the Feynman test.
+  </p>
+
+  <div class="feynman">
+    <p>
+      Imagine a restaurant with <strong>one chef</strong>. If that chef gets sick, the restaurant closes. Now imagine the
+      same restaurant but with <strong>five chefs</strong>. If one chef is sick, the other four keep cooking.
+      Customers never know anything went wrong. That's a <strong>cluster</strong>. Multiple servers (chefs)
+      working together so that no single failure shuts the whole system down.
+    </p>
+  </div>
+
+  <div class="feynman" style="background: linear-gradient(135deg,rgba(124,106,245,.08),rgba(34,211,165,.05)); border-color: rgba(124,106,245,.3);">
+    <p>
+      Now go one level deeper. In a regular restaurant, each chef works <em>independently</em>.
+      In a cluster, all chefs <strong>communicate constantly</strong> — "I'm okay," "Order #47 done,"
+      "I'm overloaded, can you take order #52?" That constant communication is the <strong>heartbeat</strong>.
+      If a chef stops responding, the others notice and redistribute the work immediately.
+    </p>
+  </div>
+
+  <div class="summary-grid">
+    <div class="stat-card">
+      <span class="stat-val">99.99%</span>
+      <div class="stat-label">uptime possible</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-val">&lt;1s</span>
+      <div class="stat-label">typical failover</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-val">N-1</span>
+      <div class="stat-label">fault tolerance</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-val">∞</span>
+      <div class="stat-label">horizontal scale</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FUNDAMENTALS ═══════════════════════════ -->
+<section id="fundamentals">
+  <div class="sec-eyebrow">Validated Definition</div>
+  <h2>6 Fundamental Requirements of a Cluster</h2>
+  <p class="sec-lead">
+    Before going deeper, let's lock down exactly what makes a cluster a cluster.
+    These six properties are the checklist — if something satisfies all six, it's a cluster.
+    <strong>Important correction:</strong> nodes do <em>not</em> have to be directly connected to every other node.
+  </p>
+
+  <!-- CORRECTION CALLOUT -->
+  <div class="note" style="margin-bottom:32px; border-color:rgba(34,211,165,.35)">
+    <span class="note-icon">✅</span>
+    <div class="note-body">
+      <h4>Validated & Corrected</h4>
+      <p>A common misconception: "every server must connect to every other server." <strong>This is false.</strong>
+      Nodes only need <em>enough connectivity to cooperate</em>. A load balancer sitting in front is sufficient coordination — nodes behind it never have to talk to each other directly at all.</p>
+    </div>
+  </div>
+
+  <!-- 6 requirements interactive -->
+  <div class="req-grid" id="req-grid">
+
+    <!-- 1 -->
+    <div class="req-card" onclick="toggleReq(this, 0)">
+      <div class="req-num">01</div>
+      <div class="req-body">
+        <h3>Multiple Nodes</h3>
+        <p class="req-short">Two or more computers working together — physical or virtual.</p>
+        <div class="req-detail">
+          <p>Each machine in a cluster is called a <strong>node</strong>. A single machine cannot be a cluster regardless of how powerful it is. The minimum is 2 nodes — but 2 is dangerous for quorum (covered later). Nodes can be VMs, bare-metal servers, or containers.</p>
+          <div class="req-example">
+            <div class="req-ex-label">EXAMPLE</div>
+            <code>VPS1 · VPS2 · VPS3</code>
+            <div style="color:var(--muted);font-size:12px;margin-top:6px">Three VPS nodes = a valid multi-node cluster foundation</div>
+          </div>
+        </div>
+      </div>
+      <div class="req-arrow">▾</div>
+    </div>
+
+    <!-- 2 -->
+    <div class="req-card" onclick="toggleReq(this, 1)">
+      <div class="req-num">02</div>
+      <div class="req-body">
+        <h3>Communication</h3>
+        <p class="req-short">Nodes exchange information — directly or through a coordinator.</p>
+        <div class="req-detail">
+          <p>Nodes must be able to talk. But <strong>not every node must talk to every other node directly</strong>. Two valid topologies:</p>
+          <div class="topo-grid">
+            <div class="topo-box">
+              <div class="topo-label">MESH (direct)</div>
+              <canvas id="topo-mesh" width="140" height="110"></canvas>
+              <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px">Each node connects to all others. Full visibility, more complexity.</div>
+            </div>
+            <div class="topo-box">
+              <div class="topo-label">HUB (via coordinator)</div>
+              <canvas id="topo-hub" width="140" height="110"></canvas>
+              <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px">Nodes connect to LB only. No direct node-to-node needed.</div>
+            </div>
+          </div>
+          <div class="req-example">
+            <div class="req-ex-label">KEY INSIGHT</div>
+            <span style="color:var(--green);font-size:13px">They only need enough connectivity to cooperate — nothing more.</span>
+          </div>
+        </div>
+      </div>
+      <div class="req-arrow">▾</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="req-card" onclick="toggleReq(this, 2)">
+      <div class="req-num">03</div>
+      <div class="req-body">
+        <h3>Common Purpose</h3>
+        <p class="req-short">All nodes work toward one shared goal.</p>
+        <div class="req-detail">
+          <p>Without a common goal, you just have several unrelated computers. A cluster has <strong>one job</strong> that the nodes collectively accomplish together.</p>
+          <div class="purpose-chips">
+            <span class="p-chip blue">🌐 Serving one website</span>
+            <span class="p-chip purple">🗄️ Running one database</span>
+            <span class="p-chip green">📁 Storing files together</span>
+            <span class="p-chip orange">🎬 Processing videos</span>
+            <span class="p-chip yellow">🤖 Training ML models</span>
+          </div>
+          <div class="req-example">
+            <div class="req-ex-label">FEYNMAN CHECK</div>
+            <span style="color:var(--muted);font-size:13px">If you can't say what the cluster <em>does</em> as one sentence, it's not a cluster — it's just several computers.</span>
+          </div>
+        </div>
+      </div>
+      <div class="req-arrow">▾</div>
+    </div>
+
+    <!-- 4 -->
+    <div class="req-card" onclick="toggleReq(this, 3)">
+      <div class="req-num">04</div>
+      <div class="req-body">
+        <h3>Coordination</h3>
+        <p class="req-short">A mechanism that organizes the work between nodes.</p>
+        <div class="req-detail">
+          <p>Nodes must <strong>cooperate</strong>, not just coexist. Coordination is the organizational layer — it decides who does what, when, and what happens when something fails.</p>
+          <div class="coord-examples">
+            <div class="coord-row"><span class="tag blue" style="margin:0;width:120px;text-align:center">Load Balancer</span><span>Routes incoming requests to available nodes</span></div>
+            <div class="coord-row"><span class="tag purple" style="margin:0;width:120px;text-align:center">Kubernetes</span><span>Schedules, heals, and scales container workloads</span></div>
+            <div class="coord-row"><span class="tag green" style="margin:0;width:120px;text-align:center">DB Replication</span><span>Keeps data synchronized across primary and replicas</span></div>
+            <div class="coord-row"><span class="tag yellow" style="margin:0;width:120px;text-align:center">Message Queue</span><span>Distributes tasks from producers to worker nodes</span></div>
+            <div class="coord-row"><span class="tag orange" style="margin:0;width:120px;text-align:center">Consensus</span><span>Raft/Paxos — nodes vote on who leads, what's committed</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="req-arrow">▾</div>
+    </div>
+
+    <!-- 5 -->
+    <div class="req-card" onclick="toggleReq(this, 4)">
+      <div class="req-num">05</div>
+      <div class="req-body">
+        <h3>Resource Sharing</h3>
+        <p class="req-short">Nodes share workload, data, or responsibilities.</p>
+        <div class="req-detail">
+          <p>A cluster isn't just nodes communicating — they must actively <strong>share the burden</strong>. This is what distinguishes a cluster from a monitoring setup where nodes just watch each other.</p>
+          <div class="share-grid">
+            <div class="share-item">
+              <div class="share-icon">⚡</div>
+              <div>
+                <strong style="color:var(--text);font-size:13px">Requests distributed</strong>
+                <div style="font-size:12px;color:var(--muted)">Web server cluster → each node handles a slice of traffic</div>
+              </div>
+            </div>
+            <div class="share-item">
+              <div class="share-icon">🔄</div>
+              <div>
+                <strong style="color:var(--text);font-size:13px">Data synchronized</strong>
+                <div style="font-size:12px;color:var(--muted)">DB replicas → each node has the same data, writes propagate</div>
+              </div>
+            </div>
+            <div class="share-item">
+              <div class="share-icon">💾</div>
+              <div>
+                <strong style="color:var(--text);font-size:13px">Storage distributed</strong>
+                <div style="font-size:12px;color:var(--muted)">HDFS / Ceph → file chunks spread across storage nodes</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="req-arrow">▾</div>
+    </div>
+
+    <!-- 6 -->
+    <div class="req-card" onclick="toggleReq(this, 5)">
+      <div class="req-num">06</div>
+      <div class="req-body">
+        <h3>Single System View</h3>
+        <p class="req-short">From the user's perspective, it looks like one system.</p>
+        <div class="req-detail">
+          <p>The user — whether human or another service — must not need to know <em>how many nodes</em> exist or <em>which node</em> handles their request. The cluster presents one unified interface.</p>
+          <div class="req-example" style="text-align:center">
+            <div class="req-ex-label">FROM THE OUTSIDE</div>
+            <div style="font-size:22px;margin:12px 0">👤 → <span style="color:var(--accent);font-family:var(--mono)">https://example.com</span></div>
+            <div style="font-size:13px;color:var(--muted)">The user visits one URL. Behind it: 3 servers? 300 servers? 3,000?</div>
+            <div style="font-size:13px;color:var(--green);margin-top:6px;font-weight:600">They will never know. That's the point.</div>
+          </div>
+          <div class="feynman" style="margin-top:20px">
+            <p>Think of a call center. You dial one number. Any available agent answers. You don't know how many agents exist or which one you got. The call center is the cluster; the phone number is the VIP; the agents are the nodes.</p>
+          </div>
+        </div>
+      </div>
+      <div class="req-arrow">▾</div>
+    </div>
+
+  </div><!-- /req-grid -->
+
+  <!-- Interactive diagram: click a req to see it visualized -->
+  <div class="viz-container" style="margin-top:40px">
+    <div class="viz-label">Requirements in action — click any card above to highlight</div>
+    <canvas id="req-viz" height="220"></canvas>
+    <div class="viz-log" id="req-viz-log">Click a requirement card above to see it visualized</div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════ NOT REQUIRED ═══════════════════════════ -->
+<section id="not-required">
+  <div class="sec-eyebrow">Common Misconceptions</div>
+  <h2>What a Cluster Does <em>NOT</em> Require</h2>
+  <p class="sec-lead">
+    These are the things most people get wrong about clustering. Each misconception leads
+    to over-engineering, wrong decisions, or rejecting valid cluster architectures.
+  </p>
+
+  <div class="misconception-list">
+
+    <div class="mc-row">
+      <div class="mc-badge">❌</div>
+      <div class="mc-content">
+        <h3>All nodes do not have to run the same application</h3>
+        <p>A Kubernetes cluster runs a database node, a web server node, a job worker node, and a monitoring node — all in the same cluster. Different containers, different roles, same cluster.</p>
+        <div class="mc-example">
+          <div class="mc-ex-label">REAL EXAMPLE</div>
+          <p style="margin:0;font-size:13px">A Hadoop cluster: NameNode (metadata), DataNodes (storage), ResourceManager (scheduling), NodeManagers (execution) — four different roles, one cluster.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mc-row">
+      <div class="mc-badge">❌</div>
+      <div class="mc-content">
+        <h3>All nodes do not have to communicate directly with all other nodes</h3>
+        <p>This is the most important correction. A load balancer in front of three web servers is a cluster — the three web servers never talk to each other. Coordination happens through the LB.</p>
+        <div class="topo-compare">
+          <div class="topo-half">
+            <div class="topo-valid">✓ VALID CLUSTER TOPOLOGY</div>
+            <div class="ascii-art">
+Users<br>
+&nbsp;&nbsp;↓<br>
+Load Balancer<br>
+↓&nbsp;&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+N1 &nbsp; N2 &nbsp; N3
+            </div>
+            <div style="font-size:12px;color:var(--green);margin-top:8px">N1, N2, N3 never talk to each other directly — still a valid cluster.</div>
+          </div>
+          <div class="topo-half">
+            <div class="topo-valid" style="color:var(--muted)">✓ ALSO VALID</div>
+            <div class="ascii-art">
+N1 ←→ N2<br>
+&nbsp;&nbsp;\&nbsp;&nbsp;&nbsp;&nbsp;/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;N3
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-top:8px">Mesh topology — nodes talk directly. Also valid. Not the only option.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mc-row">
+      <div class="mc-badge">❌</div>
+      <div class="mc-content">
+        <h3>All nodes do not have to belong to one company</h3>
+        <p>Content Delivery Networks (CDNs) are clusters of servers owned and operated by Cloudflare (or Akamai, etc.) — third-party machines serving your content as one system. Federated clusters in Kubernetes can span multiple organizations.</p>
+      </div>
+    </div>
+
+    <div class="mc-row">
+      <div class="mc-badge">❌</div>
+      <div class="mc-content">
+        <h3>All nodes do not have to have identical hardware</h3>
+        <p>In <strong>heterogeneous clusters</strong>, nodes have different CPUs, RAM, or storage. Kubernetes handles this via resource requests and limits — a Pod asking for 2 CPUs gets scheduled on whatever node has 2 CPUs free, regardless of total node capacity.</p>
+        <div class="mc-example">
+          <div class="mc-ex-label">KUBERNETES EXAMPLE</div>
+          <p style="margin:0;font-size:13px">Node A: 4 vCPU, 8GB RAM. Node B: 8 vCPU, 32GB RAM. Node C: 2 vCPU, 4GB RAM. <br>The scheduler places workloads where they fit. Different hardware, same cluster.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Feynman definition box — the validated one -->
+  <div class="feynman" style="margin-top:48px; background:linear-gradient(135deg,rgba(34,211,165,.06),rgba(79,142,247,.06)); border-color:rgba(34,211,165,.3); font-size:16px;">
+    <p style="font-size:16px;line-height:1.8">
+      <strong style="color:var(--green)">Feynman Definition (Validated):</strong><br><br>
+      A cluster is a collection of computers that can <strong>communicate</strong> and <strong>cooperate</strong>
+      to accomplish a <strong>common task</strong> while appearing as <strong>one larger system</strong>.
+    </p>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════ WHY ═══════════════════════════ -->
+<section id="why">
+  <div class="sec-eyebrow">Motivation</div>
+  <h2>Why Clustering?</h2>
+  <p class="sec-lead">
+    Single servers fail. Clustering is the engineering answer to that fact.
+    But it solves four distinct problems — confusing them leads to over-engineering.
+  </p>
+
+  <div class="grid-2">
+    <div class="card green">
+      <span class="card-icon">🛡️</span>
+      <span class="tag green">HIGH AVAILABILITY</span>
+      <h3>Survive node failures</h3>
+      <p>When one server dies, others take over. Users experience zero downtime. Critical for anything that must run 24/7: banking, healthcare, e-commerce.</p>
+    </div>
+    <div class="card" style="border-color:rgba(79,142,247,.25)">
+      <span class="card-icon">📈</span>
+      <span class="tag blue">SCALABILITY</span>
+      <h3>Grow without rewrite</h3>
+      <p>Hit the ceiling? Add another node to the cluster. Traffic doubles, add two more nodes. No code changes. Scale horizontally, not just vertically.</p>
+    </div>
+    <div class="card" style="border-color:rgba(124,106,245,.25)">
+      <span class="card-icon">⚡</span>
+      <span class="tag purple">PERFORMANCE</span>
+      <h3>Distribute the load</h3>
+      <p>Multiple nodes process requests in parallel. What one server can't handle in time, five servers handle trivially. Latency drops, throughput rises.</p>
+    </div>
+    <div class="card yellow">
+      <span class="card-icon">🔧</span>
+      <span class="tag yellow">FAULT TOLERANCE</span>
+      <h3>Hardware doesn't matter</h3>
+      <p>SSDs fail, memory corrupts, network cards die. Clustering makes the physical layer irrelevant — the software cluster absorbs those failures silently.</p>
+    </div>
+  </div>
+
+  <div class="warning">
+    <span class="warning-icon">⚠️</span>
+    <div class="warning-body">
+      <h4>Clustering ≠ Load Balancing</h4>
+      <p>A load balancer only <strong>routes</strong> traffic. A cluster does failover, shared storage, distributed processing, state synchronization. Load balancing is often <em>one component inside</em> a cluster, not the same thing.</p>
+    </div>
+  </div>
+
+  <!-- Comparison: Single server vs Cluster -->
+  <div class="flow-box">
+    <div class="viz-label">Single Server vs Cluster — failure scenario</div>
+    <canvas id="compare-canvas" height="200"></canvas>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ ANATOMY ═══════════════════════════ -->
+<section id="anatomy">
+  <div class="sec-eyebrow">Architecture</div>
+  <h2>Anatomy of a Cluster</h2>
+  <p class="sec-lead">
+    Every cluster has the same five building blocks. Understand each one and you understand any cluster —
+    Kubernetes, MySQL HA, Redis Sentinel, or a bare-metal Pacemaker setup.
+  </p>
+
+  <div class="viz-container">
+    <div class="viz-label">Cluster components — click to learn more</div>
+    <canvas id="anatomy-canvas" height="300"></canvas>
+    <div class="viz-log" id="anatomy-log">Click any component above to see details</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="grid-2" style="margin-top:0">
+    <div class="card">
+      <span class="card-icon">🖥️</span>
+      <span class="tag blue">NODES</span>
+      <h3>The servers themselves</h3>
+      <p>Each physical or virtual machine in the cluster is a node. Nodes can be identical (homogeneous) or have different specs (heterogeneous). Best practice: same OS, same config — less operational surprise.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🧠</span>
+      <span class="tag purple">CLUSTER MANAGER</span>
+      <h3>The brain</h3>
+      <p>Monitors all nodes, makes failover decisions, reschedules work. Examples: Kubernetes, Pacemaker, ZooKeeper. Without this, nodes can't coordinate — you just have multiple servers, not a cluster.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">💓</span>
+      <span class="tag green">HEARTBEAT</span>
+      <h3>Are you alive?</h3>
+      <p>Nodes send tiny "I'm alive" pings every few hundred milliseconds. Missed heartbeats trigger failure detection. It's the simplest thing in a cluster and also the most critical.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">💾</span>
+      <span class="tag orange">SHARED STORAGE</span>
+      <h3>One truth, accessible by all</h3>
+      <p>SAN, NAS, or distributed file systems (Ceph, GlusterFS) let all nodes read/write the same data. Without this, each node has its own view of the data — which creates inconsistency.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🌐</span>
+      <span class="tag yellow">VIRTUAL IP (VIP)</span>
+      <h3>The cluster's public face</h3>
+      <p>One floating IP address that always points to the active/healthy node. When failover happens, the VIP moves to the new active node. Clients always connect to the same IP — they never know which node they're hitting.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📡</span>
+      <span class="tag blue">PRIVATE NETWORK</span>
+      <h3>Nodes talk to each other</h3>
+      <p>A dedicated internal network (separate from public traffic) for heartbeats, replication, and coordination. Keeps cluster chatter off the public network — both for security and to avoid bandwidth contention.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ TYPES ═══════════════════════════ -->
+<section id="types">
+  <div class="sec-eyebrow">Cluster Modes</div>
+  <h2>Active-Passive vs Active-Active</h2>
+  <p class="sec-lead">
+    The most fundamental decision in any cluster design. Both are valid — they solve different constraints.
+  </p>
+
+  <div class="tab-group">
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('ap', this)">Active-Passive</button>
+      <button class="tab-btn" onclick="switchTab('aa', this)">Active-Active</button>
+      <button class="tab-btn" onclick="switchTab('compare', this)">Side-by-Side</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-ap">
+      <div class="grid-2">
+        <div>
+          <span class="tag green">ACTIVE-PASSIVE (HA FAILOVER)</span>
+          <h3 style="margin-top:12px">One worker, one backup</h3>
+          <p>Only the <strong>active node</strong> handles traffic. The <strong>passive node</strong> is on standby — synchronized, warmed up, watching. The moment the active node misses heartbeats, the passive node takes over and acquires the Virtual IP.</p>
+
+          <div class="feynman" style="margin-top:20px">
+            <p>Like a pilot and co-pilot. The pilot flies the plane. The co-pilot does nothing except watch, be ready, and take over instantly if the pilot has a heart attack. The plane never stops flying.</p>
+          </div>
+
+          <h4 style="margin-top:24px">When to use it</h4>
+          <p>Databases where write consistency matters. Any system where two nodes accidentally both being "active" would cause corruption (split-brain). Simpler to configure and reason about.</p>
+        </div>
+        <div>
+          <div class="viz-container">
+            <div class="viz-label">Active-Passive — simulate failure</div>
+            <canvas id="ap-canvas" height="240"></canvas>
+            <div class="viz-controls">
+              <button class="viz-btn" onclick="apSimulate()">💥 Kill Active Node</button>
+              <button class="viz-btn" onclick="apReset()">↺ Reset</button>
+            </div>
+            <div class="viz-log" id="ap-log">Active node handling all traffic</div>
+          </div>
+          <div class="tradeoff">
+            <div class="tradeoff-col pros">
+              <h4>✓ Pros</h4>
+              <ul>
+                <li>Simple to configure</li>
+                <li>No split-brain risk</li>
+                <li>Consistent behavior</li>
+                <li>Cheaper (passive uses no compute)</li>
+              </ul>
+            </div>
+            <div class="tradeoff-col cons">
+              <h4>✗ Cons</h4>
+              <ul>
+                <li>50% resource waste</li>
+                <li>Brief downtime on failover</li>
+                <li>Passive node idle</li>
+                <li>Doesn't scale traffic</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-aa">
+      <div class="grid-2">
+        <div>
+          <span class="tag blue">ACTIVE-ACTIVE (LOAD SHARING)</span>
+          <h3 style="margin-top:12px">Everyone works, all the time</h3>
+          <p>All nodes handle traffic simultaneously. A <strong>load balancer</strong> distributes incoming requests across all nodes. If one node fails, traffic redistributes to the surviving nodes — no idle standby needed.</p>
+
+          <div class="feynman" style="margin-top:20px">
+            <p>Like a team of cashiers at a supermarket. All lanes are open, all cashiers are serving. One cashier goes home sick — the remaining cashiers handle more customers. Maybe there's a short queue, but nothing stops.</p>
+          </div>
+
+          <h4 style="margin-top:24px">When to use it</h4>
+          <p>Web servers, API gateways, stateless services. Any system where reads are the majority of work. Sessions must be stored externally (Redis, DB) — not in-process.</p>
+        </div>
+        <div>
+          <div class="viz-container">
+            <div class="viz-label">Active-Active — click to kill a node</div>
+            <canvas id="aa-canvas" height="240"></canvas>
+            <div class="viz-controls">
+              <button class="viz-btn" onclick="aaSimulate()">💥 Kill Node 2</button>
+              <button class="viz-btn" onclick="aaReset()">↺ Reset</button>
+            </div>
+            <div class="viz-log" id="aa-log">3 nodes active — load balanced</div>
+          </div>
+          <div class="tradeoff">
+            <div class="tradeoff-col pros">
+              <h4>✓ Pros</h4>
+              <ul>
+                <li>Zero downtime on failure</li>
+                <li>Full resource utilization</li>
+                <li>Scales traffic linearly</li>
+                <li>Higher throughput</li>
+              </ul>
+            </div>
+            <div class="tradeoff-col cons">
+              <h4>✗ Cons</h4>
+              <ul>
+                <li>Complex state management</li>
+                <li>Requires external sessions</li>
+                <li>Data consistency harder</li>
+                <li>More expensive to set up</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-compare">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Active-Passive</th>
+            <th>Active-Active</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Traffic handling</td><td>One node at a time</td><td>All nodes simultaneously</td></tr>
+          <tr><td>Failover downtime</td><td>~5-30 seconds typical</td><td>Near-zero (request retry)</td></tr>
+          <tr><td>Resource efficiency</td><td>50% (passive idle)</td><td>100% utilized</td></tr>
+          <tr><td>Configuration complexity</td><td>Low</td><td>Medium to High</td></tr>
+          <tr><td>Session state</td><td>Replicated to passive</td><td>Must be external (Redis, DB)</td></tr>
+          <tr><td>Split-brain risk</td><td>Low (VIP ensures one active)</td><td>Higher — needs careful design</td></tr>
+          <tr><td>Best for</td><td>Databases, stateful services</td><td>Web servers, APIs, stateless</td></tr>
+          <tr><td>Scaling benefit</td><td>None (just redundancy)</td><td>Yes — adds throughput</td></tr>
+          <tr><td>Typical examples</td><td>PostgreSQL Patroni, MySQL MHA</td><td>NGINX cluster, Redis Cluster</td></tr>
+          <tr><td>Minimum nodes</td><td>2</td><td>2 (prefer 3+)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ HEARTBEAT ═══════════════════════════ -->
+<section id="heartbeat">
+  <div class="sec-eyebrow">Health Detection</div>
+  <h2>Heartbeat & Failure Detection</h2>
+  <p class="sec-lead">
+    The heartbeat is the simplest mechanism in clustering and also the most consequential.
+    Get it wrong and you either miss real failures or trigger false failovers.
+  </p>
+
+  <div class="viz-container">
+    <div class="viz-label">Heartbeat simulation — watch the pulses</div>
+    <canvas id="hb-canvas" height="160"></canvas>
+    <div class="viz-controls">
+      <button class="viz-btn active" onclick="hbControl('normal')">Normal</button>
+      <button class="viz-btn" onclick="hbControl('slow')">Slow / Degraded</button>
+      <button class="viz-btn" onclick="hbControl('dead')">Node Dead</button>
+    </div>
+    <div class="viz-log" id="hb-log">💓 Heartbeat healthy — interval: 200ms</div>
+  </div>
+
+  <div class="grid-2" style="margin-top:32px">
+    <div>
+      <h3>How it works</h3>
+      <p>Each node sends a heartbeat signal (usually a tiny UDP or TCP packet) to other nodes on a fixed interval — typically every 200ms to 1 second.</p>
+      <p>The cluster manager tracks missed heartbeats. After N consecutive misses (configurable, commonly 3–5), the node is declared <strong>dead</strong> and failover begins.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-lang">KEEPALIVED CONFIG</div>
+        </div>
+        <pre><span class="cm"># /etc/keepalived/keepalived.conf</span>
+<span class="kw">vrrp_instance</span> VI_1 {
+    state MASTER
+    interface eth0
+    virtual_router_id 51
+    priority 100
+    
+    <span class="cm"># heartbeat interval (seconds)</span>
+    advert_int <span class="nm">1</span>
+    
+    <span class="cm"># how many missed = dead</span>
+    dead_interval <span class="nm">3</span>
+    
+    virtual_ipaddress {
+        <span class="nm">192.168.1.100</span>
+    }
+}</pre>
+      </div>
+    </div>
+
+    <div>
+      <h3>Failure detection timeline</h3>
+      <div class="timeline" style="margin-top:16px">
+        <div class="tl-item">
+          <div class="tl-time">T+0ms</div>
+          <h4>Node goes down</h4>
+          <p>Hardware fails, OOM killer, network partition — node stops sending heartbeats.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">T+200ms</div>
+          <h4>First missed heartbeat</h4>
+          <p>Cluster manager notices silence. Starts counting missed intervals.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">T+600ms</div>
+          <h4>3rd miss — node declared dead</h4>
+          <p>Cluster manager initiates failover. VIP is being transferred.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">T+800ms</div>
+          <h4>Failover complete</h4>
+          <p>Passive node acquires VIP, becomes active. Clients retry and hit the new active node.</p>
+        </div>
+        <div class="tl-item" style="margin-bottom:0">
+          <div class="tl-time">T+1000ms</div>
+          <h4>System healthy again</h4>
+          <p>Monitoring alerts fire. Ops team investigates. N-1 redundancy until fixed.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warning">
+    <span class="warning-icon">⚠️</span>
+    <div class="warning-body">
+      <h4>Network blip vs real failure</h4>
+      <p>A too-aggressive heartbeat threshold causes false failovers on network hiccups. A too-lenient threshold means longer downtime on real failures. Typical production sweet spot: heartbeat every 1s, declare dead after 3 misses = ~3s detection time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ SPLIT BRAIN ═══════════════════════════ -->
+<section id="splitbrain">
+  <div class="sec-eyebrow">Classic Problem</div>
+  <h2>Split-Brain Problem</h2>
+  <p class="sec-lead">
+    The most dangerous failure mode in clustering. Understanding it explains why clusters
+    have odd numbers of nodes, why Quorum exists, and why "availability" has limits.
+  </p>
+
+  <div class="feynman">
+    <p>
+      You and your colleague are both on-call. The office phone rings. The line is crackly and you lose connection with your colleague.
+      You think they're dead — so you pick up all calls. Your colleague thinks <em>you're</em> dead — so they pick up all calls too.
+      Now <strong>both of you are handling the same calls</strong>, making conflicting decisions, with neither knowing about the other.
+      That's split-brain. Two nodes both believe they're the active leader, and they both write data independently.
+      The result? Corrupted, conflicting data that's nearly impossible to reconcile.
+    </p>
+  </div>
+
+  <div class="viz-container">
+    <div class="viz-label">Split-brain scenario — network partition</div>
+    <canvas id="sb-canvas" height="240"></canvas>
+    <div class="viz-controls">
+      <button class="viz-btn" onclick="sbSimulate()">🔌 Trigger Network Partition</button>
+      <button class="viz-btn" onclick="sbReset()">↺ Restore Network</button>
+    </div>
+    <div class="viz-log" id="sb-log">Network intact — nodes communicating</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h3>Why it happens</h3>
+  <p>
+    In an Active-Passive cluster, the passive node watches heartbeats to decide "is the active node dead?"
+    If the <strong>network link between nodes</strong> goes down (but both servers are fine),
+    the passive node sees: "No heartbeats = active is dead" → promotes itself to active.
+    Meanwhile the actual active node is still running, still serving traffic, still writing data.
+    Now you have <strong>two active nodes</strong> with diverging state.
+  </p>
+
+  <div class="grid-2" style="margin-top:24px">
+    <div class="card red">
+      <span class="card-icon">🧠</span>
+      <span class="tag red">SYMPTOM</span>
+      <h3>Two writers, one database</h3>
+      <p>Both nodes accept writes. Row 42 gets updated differently on each node. When the network heals, which version wins? There's no clean answer — data is corrupt.</p>
+    </div>
+    <div class="card green">
+      <span class="card-icon">🗳️</span>
+      <span class="tag green">SOLUTION</span>
+      <h3>STONITH — Shoot The Other Node In The Head</h3>
+      <p>Before promoting itself, the passive node sends a hardware-level power-off command to the other node via IPMI/iDRAC. Now only one node is definitely running. Brutal but effective.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ QUORUM ═══════════════════════════ -->
+<section id="quorum">
+  <div class="sec-eyebrow">The Fix for Split-Brain</div>
+  <h2>Quorum & Voting</h2>
+  <p class="sec-lead">
+    Quorum is democracy applied to distributed systems. A node can only become active
+    if it has the vote of the majority. Majority requires more than half — which is why
+    you always use odd numbers of nodes.
+  </p>
+
+  <div class="feynman">
+    <p>
+      Three judges must reach a majority verdict. Even if two judges lose contact with the third,
+      the two <em>know</em> they're the majority (2 out of 3). They can safely proceed.
+      The lone judge, even if they think the other two are dead, knows they are <strong>not</strong> the majority (1 out of 3)
+      and must step down. No two groups can both claim majority simultaneously. Split-brain solved.
+    </p>
+  </div>
+
+  <div class="viz-container">
+    <div class="viz-label">Quorum voting — 5-node cluster</div>
+    <canvas id="quorum-canvas" height="260"></canvas>
+    <div class="viz-controls">
+      <button class="viz-btn" onclick="quorumKill(1)">Kill Node 1</button>
+      <button class="viz-btn" onclick="quorumKill(2)">Kill Node 2</button>
+      <button class="viz-btn" onclick="quorumKill(3)">Kill Node 3</button>
+      <button class="viz-btn" onclick="quorumReset()">↺ Reset</button>
+    </div>
+    <div class="viz-log" id="quorum-log">5 nodes alive — quorum: 3/5 required</div>
+  </div>
+
+  <div class="grid-2" style="margin-top:32px">
+    <div>
+      <h3>The math</h3>
+      <p>Quorum = ⌊N/2⌋ + 1 — you need more than half.</p>
+      <table class="compare-table" style="margin-top:12px">
+        <thead>
+          <tr><th>Nodes (N)</th><th>Quorum needed</th><th>Can lose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2</td><td>2/2</td><td>0 nodes ⚠️</td></tr>
+          <tr><td>3</td><td>2/3</td><td>1 node</td></tr>
+          <tr><td>5</td><td>3/5</td><td>2 nodes</td></tr>
+          <tr><td>7</td><td>4/7</td><td>3 nodes</td></tr>
+          <tr><td>9</td><td>5/9</td><td>4 nodes</td></tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        <span class="note-icon">💡</span>
+        <div class="note-body">
+          <h4>2-node clusters are dangerous</h4>
+          <p>With 2 nodes, losing even 1 means you've lost quorum (1 &lt; 2/2+1=2). Add a third "witness" node — a cheap VM that only votes, doesn't serve traffic.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3>Witness / Tiebreaker node</h3>
+      <p>A cheap, lightweight node that participates in voting but doesn't serve application traffic. It exists solely to prevent 50/50 ties in even-numbered clusters.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-lang">PATRONI CONFIG (PostgreSQL HA)</div>
+        </div>
+        <pre><span class="cm"># patroni.yml</span>
+<span class="kw">bootstrap</span>:
+  dcs:
+    ttl: <span class="nm">30</span>
+    loop_wait: <span class="nm">10</span>
+    retry_timeout: <span class="nm">10</span>
+    
+    <span class="cm"># majority required to elect leader</span>
+    maximum_lag_on_failover: <span class="nm">1048576</span>
+    
+<span class="kw">etcd</span>:
+  <span class="cm"># etcd is our quorum store (3 nodes)</span>
+  hosts:
+    - etcd1:<span class="nm">2380</span>
+    - etcd2:<span class="nm">2380</span>
+    - etcd3:<span class="nm">2380</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ SETUP ═══════════════════════════ -->
+<section id="setup">
+  <div class="sec-eyebrow">Implementation</div>
+  <h2>Step-by-Step: Build a Real Cluster</h2>
+  <p class="sec-lead">
+    We'll build a 3-node Active-Passive HA cluster using Keepalived + HAProxy on Ubuntu 24.
+    Every step explained — not just what to run, but <em>why</em> you're running it.
+  </p>
+
+  <div class="tab-group">
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab2('s1', this)">1. Plan</button>
+      <button class="tab-btn" onclick="switchTab2('s2', this)">2. Network</button>
+      <button class="tab-btn" onclick="switchTab2('s3', this)">3. Install</button>
+      <button class="tab-btn" onclick="switchTab2('s4', this)">4. Configure</button>
+      <button class="tab-btn" onclick="switchTab2('s5', this)">5. Test</button>
+      <button class="tab-btn" onclick="switchTab2('s6', this)">6. Monitor</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-s1">
+      <h3>Step 1: Plan before you touch anything</h3>
+      <p>Most cluster failures come from poor planning, not bad code. Decide these before installing anything:</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Choose cluster mode</h4>
+            <p>Is this a database? → Active-Passive. Is this a web server? → Active-Active. Pick now and stick with it. Changing later means rebuilding.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Decide node count</h4>
+            <p>Always odd numbers: 3, 5, or 7. 3 nodes is the sweet spot for most systems — tolerates 1 failure, affordable, not overengineered.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Plan your IP addresses</h4>
+            <p>You need: one IP per node (private), one Virtual IP (VIP) for clients, one network for heartbeat (separate NIC preferred).</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Plan your failover SLA</h4>
+            <p>What's acceptable downtime? 30 seconds? 5 seconds? This drives your heartbeat interval, timeout settings, and whether you need STONITH.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-lang">CLUSTER TOPOLOGY PLAN</div>
+        </div>
+        <pre><span class="cm"># Our 3-node HA cluster design</span>
+<span class="cm"># ─────────────────────────────────────</span>
+Node 1 (Master)  IP: <span class="nm">10.0.1.10</span>  role: ACTIVE
+Node 2 (Backup)  IP: <span class="nm">10.0.1.11</span>  role: PASSIVE
+Node 3 (Witness) IP: <span class="nm">10.0.1.12</span>  role: QUORUM-ONLY
+
+Virtual IP (VIP): <span class="nm">10.0.1.100</span>   <span class="cm"># clients connect here</span>
+Heartbeat net:    <span class="nm">192.168.100.x</span> <span class="cm"># private NIC, cluster-only</span>
+
+Failover target:  &lt;<span class="nm">30s</span>
+Heartbeat:        every <span class="nm">1s</span>
+Dead threshold:   <span class="nm">3</span> missed = dead</pre>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-s2">
+      <h3>Step 2: Set up the network</h3>
+      <p>The network is where clusters fail in production. Get this right first.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Static IPs — never DHCP for cluster nodes</h4>
+            <p>Dynamic IPs mean a reboot could give a node a different IP. The cluster manager loses track. All cluster nodes must have static, predictable addresses.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Add all nodes to /etc/hosts on each node</h4>
+            <p>DNS can fail. Your cluster communication must not depend on DNS. Hard-code every node's hostname → IP mapping in /etc/hosts.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Verify node-to-node connectivity</h4>
+            <p>Before installing anything, ping each node from every other node. Confirm firewall rules allow heartbeat ports and replication traffic.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-lang">BASH — NETWORK SETUP (RUN ON ALL NODES)</div>
+        </div>
+        <pre><span class="cm"># 1. Set static IP via Netplan (Ubuntu 24)</span>
+<span class="fn">sudo</span> nano /etc/netplan/<span class="nm">01-netcfg.yaml</span>
+
+<span class="cm"># Netplan config:</span>
+network:
+  version: <span class="nm">2</span>
+  ethernets:
+    eth0:
+      addresses: [<span class="str">10.0.1.10/24</span>]
+      gateway4: <span class="str">10.0.1.1</span>
+      nameservers:
+        addresses: [<span class="nm">8.8.8.8</span>, <span class="nm">1.1.1.1</span>]
+
+<span class="fn">sudo</span> netplan apply
+
+<span class="cm"># 2. Add all nodes to /etc/hosts</span>
+<span class="fn">echo</span> <span class="str">"10.0.1.10 node1"</span> | <span class="fn">sudo</span> tee -a /etc/hosts
+<span class="fn">echo</span> <span class="str">"10.0.1.11 node2"</span> | <span class="fn">sudo</span> tee -a /etc/hosts
+<span class="fn">echo</span> <span class="str">"10.0.1.12 node3"</span> | <span class="fn">sudo</span> tee -a /etc/hosts
+
+<span class="cm"># 3. Allow VIP failover (VRRP protocol)</span>
+<span class="fn">sudo</span> ufw allow <span class="nm">112</span>/any  <span class="cm"># VRRP</span>
+<span class="fn">sudo</span> ufw allow <span class="nm">3306</span>/tcp  <span class="cm"># MySQL (if DB cluster)</span>
+
+<span class="cm"># 4. Test connectivity between nodes</span>
+<span class="fn">ping</span> -c 3 node2
+<span class="fn">ping</span> -c 3 node3</pre>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-s3">
+      <h3>Step 3: Install Keepalived + HAProxy</h3>
+      <p><strong>Keepalived</strong> manages the Virtual IP and heartbeat (VRRP protocol). <strong>HAProxy</strong> is the load balancer that distributes traffic. Together they give you a production-grade HA layer.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-lang">BASH — INSTALL ON ALL NODES</div>
+        </div>
+        <pre><span class="cm"># Update first — always</span>
+<span class="fn">sudo</span> apt update && <span class="fn">sudo</span> apt upgrade -y
+
+<span class="cm"># Install keepalived (VIP + heartbeat)</span>
+<span class="fn">sudo</span> apt install -y keepalived
+
+<span class="cm"># Install haproxy (load balancer)</span>
+<span class="fn">sudo</span> apt install -y haproxy
+
+<span class="cm"># Allow kernel to bind to non-local IPs</span>
+<span class="cm"># (needed for VIP to work)</span>
+<span class="fn">echo</span> <span class="str">"net.ipv4.ip_nonlocal_bind=1"</span> | \
+  <span class="fn">sudo</span> tee /etc/sysctl.d/<span class="nm">99</span>-haproxy.conf
+<span class="fn">sudo</span> sysctl --system
+
+<span class="cm"># Verify installed</span>
+keepalived --version
+haproxy -v</pre>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-s4">
+      <h3>Step 4: Configure Keepalived</h3>
+      <p>The MASTER node has higher priority. When the master fails, the backup (lower priority) takes over the VIP automatically via VRRP.</p>
+
+      <div class="grid-2">
+        <div>
+          <h4>NODE 1 — MASTER config</h4>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <div class="code-lang">/etc/keepalived/keepalived.conf (node1)</div>
+            </div>
+            <pre><span class="kw">vrrp_script</span> chk_haproxy {
+    <span class="cm"># check if HAProxy is running</span>
+    script <span class="str">"killall -0 haproxy"</span>
+    interval <span class="nm">2</span>   <span class="cm"># check every 2s</span>
+    weight  <span class="nm">-20</span> <span class="cm"># drop priority if fail</span>
+}
+
+<span class="kw">vrrp_instance</span> VI_1 {
+    state <span class="op">MASTER</span>
+    interface eth0
+    virtual_router_id <span class="nm">51</span>
+    priority <span class="nm">100</span>   <span class="cm"># MASTER has highest</span>
+    advert_int <span class="nm">1</span>  <span class="cm"># heartbeat 1/s</span>
+    
+    authentication {
+        auth_type PASS
+        auth_pass <span class="str">cluster_secret</span>
+    }
+    
+    virtual_ipaddress {
+        <span class="nm">10.0.1.100</span>   <span class="cm"># the VIP</span>
+    }
+    
+    track_script { chk_haproxy }
+}</pre>
+          </div>
+        </div>
+        <div>
+          <h4>NODE 2 — BACKUP config</h4>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <div class="code-lang">/etc/keepalived/keepalived.conf (node2)</div>
+            </div>
+            <pre><span class="kw">vrrp_script</span> chk_haproxy {
+    script <span class="str">"killall -0 haproxy"</span>
+    interval <span class="nm">2</span>
+    weight  <span class="nm">-20</span>
+}
+
+<span class="kw">vrrp_instance</span> VI_1 {
+    state <span class="op">BACKUP</span>      <span class="cm"># not MASTER</span>
+    interface eth0
+    virtual_router_id <span class="nm">51</span>
+    priority <span class="nm">90</span>   <span class="cm"># lower than master</span>
+    advert_int <span class="nm">1</span>
+    
+    authentication {
+        auth_type PASS
+        auth_pass <span class="str">cluster_secret</span>
+    }
+    
+    virtual_ipaddress {
+        <span class="nm">10.0.1.100</span>   <span class="cm"># same VIP</span>
+    }
+    
+    track_script { chk_haproxy }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block" style="margin-top:24px">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-lang">HAPROXY CONFIG — /etc/haproxy/haproxy.cfg</div>
+        </div>
+        <pre><span class="kw">frontend</span> http_front
+    bind *:<span class="nm">80</span>
+    default_backend http_back
+
+<span class="kw">backend</span> http_back
+    balance roundrobin
+    <span class="cm"># health check: every 5s, fail after 3 bad, recover after 2 good</span>
+    option httpchk GET /health
+    server app1 <span class="nm">10.0.1.20:3000</span> check inter 5s fall 3 rise 2
+    server app2 <span class="nm">10.0.1.21:3000</span> check inter 5s fall 3 rise 2
+
+<span class="kw">listen</span> stats
+    bind *:<span class="nm">8080</span>
+    stats enable
+    stats uri /haproxy-stats
+    stats auth admin:password</pre>
+      </div>
+
+      <div class="code-block" style="margin-top:16px">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-lang">START + ENABLE SERVICES</div>
+        </div>
+        <pre><span class="fn">sudo</span> systemctl enable --now keepalived
+<span class="fn">sudo</span> systemctl enable --now haproxy
+
+<span class="cm"># Verify VIP is on node1</span>
+ip addr show eth0 | grep <span class="str">"10.0.1.100"</span></pre>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-s5">
+      <h3>Step 5: Test your cluster</h3>
+      <p>Never trust a cluster you haven't deliberately broken. Testing failover is not optional — it's the job.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Confirm VIP is on the master</h4>
+            <p>On node1: <code style="background:var(--bg3);padding:2px 6px;border-radius:3px;font-family:var(--mono);font-size:12px">ip addr show | grep 10.0.1.100</code> — you should see the VIP bound to node1's interface.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Simulate master failure — stop keepalived</h4>
+            <p><code style="background:var(--bg3);padding:2px 6px;border-radius:3px;font-family:var(--mono);font-size:12px">sudo systemctl stop keepalived</code> on node1. Within 3 seconds, node2 should acquire the VIP.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Confirm VIP moved to node2</h4>
+            <p>On node2: <code style="background:var(--bg3);padding:2px 6px;border-radius:3px;font-family:var(--mono);font-size:12px">ip addr show | grep 10.0.1.100</code> — VIP should now be here.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Restore and confirm failback</h4>
+            <p>Start keepalived on node1 again. Since node1 has higher priority, it should re-acquire the VIP (preemption). Verify with <code style="background:var(--bg3);padding:2px 6px;border-radius:3px;font-family:var(--mono);font-size:12px">ip addr</code>.</p>
+          </div>
+        </div>
+        <div class="step" style="margin-bottom:0">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Watch HAProxy stats</h4>
+            <p>Visit <code style="background:var(--bg3);padding:2px 6px;border-radius:3px;font-family:var(--mono);font-size:12px">http://10.0.1.100:8080/haproxy-stats</code> — see backend health, connection counts, response times in real-time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-s6">
+      <h3>Step 6: Monitor your cluster</h3>
+      <p>A cluster without monitoring is a cluster that will fail silently and surprise you. Set up observability from day one.</p>
+
+      <div class="grid-2">
+        <div>
+          <h4>Key metrics to watch</h4>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <div class="code-lang">PROMETHEUS METRICS TO TRACK</div>
+            </div>
+            <pre><span class="cm"># Cluster-level</span>
+haproxy_backend_up          <span class="cm"># backend alive</span>
+keepalived_vrrp_state       <span class="cm"># 1=MASTER, 0=BACKUP</span>
+node_cpu_seconds_total      <span class="cm"># node load</span>
+
+<span class="cm"># Alert rules (Prometheus)</span>
+<span class="kw">- alert</span>: BackendDown
+  expr: haproxy_backend_up == <span class="nm">0</span>
+  for: <span class="nm">10s</span>
+  labels:
+    severity: critical
+    
+<span class="kw">- alert</span>: ClusterNodeLost
+  expr: up{job=<span class="str">"cluster"</span>} == <span class="nm">0</span>
+  for: <span class="nm">30s</span></pre>
+          </div>
+        </div>
+        <div>
+          <h4>HAProxy health endpoint</h4>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <div class="code-lang">QUICK HEALTH CHECKS</div>
+            </div>
+            <pre><span class="cm"># Check keepalived status</span>
+<span class="fn">sudo</span> systemctl status keepalived
+<span class="fn">sudo</span> journalctl -u keepalived -f
+
+<span class="cm"># Who has the VIP right now?</span>
+<span class="kw">for</span> node in node1 node2 node3; <span class="kw">do</span>
+  echo <span class="str">"--- $node ---"</span>
+  ssh $node <span class="str">"ip addr | grep 10.0.1.100"</span>
+<span class="kw">done</span>
+
+<span class="cm"># HAProxy socket stats</span>
+<span class="fn">echo</span> <span class="str">"show stat"</span> | \
+  nc -U /var/run/haproxy/admin.sock</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ DB CLUSTER ═══════════════════════════ -->
+<section id="db-cluster">
+  <div class="sec-eyebrow">Database Clustering</div>
+  <h2>Database High Availability</h2>
+  <p class="sec-lead">
+    Databases need clustering more than anything else — data loss is catastrophic.
+    But databases have state, which makes clustering them much harder than stateless web servers.
+  </p>
+
+  <div class="tab-group">
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab3('pg', this)">PostgreSQL (Patroni)</button>
+      <button class="tab-btn" onclick="switchTab3('mysql', this)">MySQL (Group Replication)</button>
+      <button class="tab-btn" onclick="switchTab3('mongo', this)">MongoDB (Replica Set)</button>
+      <button class="tab-btn" onclick="switchTab3('redis', this)">Redis (Sentinel)</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-pg">
+      <div class="grid-2">
+        <div>
+          <span class="tag purple">PATRONI — POSTGRESQL HA</span>
+          <h3 style="margin-top:12px">Industry standard Postgres HA</h3>
+          <p>Patroni uses etcd (or Consul/ZooKeeper) as a distributed configuration store and quorum arbitrator. One PostgreSQL is primary (reads + writes), others are hot standbys (read-only replicas). Patroni promotes a replica automatically on primary failure.</p>
+
+          <div class="feynman">
+            <p>Patroni is like a manager watching three employees. The manager's notebook (etcd) records who's in charge. If the team leader (primary) goes silent, the manager updates the notebook and promotes someone else — and the notebook ensures only one promotion can happen at a time.</p>
+          </div>
+
+          <table class="compare-table" style="margin-top:20px">
+            <thead><tr><th>Role</th><th>Reads</th><th>Writes</th><th>Count</th></tr></thead>
+            <tbody>
+              <tr><td>Primary</td><td>✓</td><td>✓</td><td>1</td></tr>
+              <tr><td>Standby (sync)</td><td>✓</td><td>✗</td><td>1+</td></tr>
+              <tr><td>Standby (async)</td><td>✓</td><td>✗</td><td>many</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <div class="code-lang">PATRONI SETUP (patroni.yml)</div>
+            </div>
+            <pre><span class="kw">scope</span>: postgres-cluster
+<span class="kw">namespace</span>: /service/
+<span class="kw">name</span>: node1
+
+<span class="kw">restapi</span>:
+  listen: <span class="nm">0.0.0.0:8008</span>
+  connect_address: <span class="nm">10.0.1.10:8008</span>
+
+<span class="kw">etcd</span>:
+  hosts: node1:<span class="nm">2379</span>,node2:<span class="nm">2379</span>,node3:<span class="nm">2379</span>
+
+<span class="kw">postgresql</span>:
+  listen: <span class="nm">0.0.0.0:5432</span>
+  connect_address: <span class="nm">10.0.1.10:5432</span>
+  
+  parameters:
+    max_connections: <span class="nm">200</span>
+    wal_level: replica
+    max_wal_senders: <span class="nm">5</span>
+    wal_keep_size: <span class="nm">1GB</span>
+    
+  <span class="cm"># Sync replica prevents data loss</span>
+  synchronous_mode: <span class="kw">true</span>
+
+<span class="kw">bootstrap</span>:
+  dcs:
+    ttl: <span class="nm">30</span>
+    loop_wait: <span class="nm">10</span>
+    retry_timeout: <span class="nm">10</span>
+    maximum_lag_on_failover: <span class="nm">1048576</span></pre>
+          </div>
+          <div class="code-block" style="margin-top:12px">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <div class="code-lang">PATRONICTL COMMANDS</div>
+            </div>
+            <pre><span class="cm"># View cluster state</span>
+<span class="fn">patronictl</span> -c patroni.yml list
+
+<span class="cm"># Manual failover</span>
+<span class="fn">patronictl</span> -c patroni.yml failover postgres-cluster
+
+<span class="cm"># Switchover (graceful)</span>
+<span class="fn">patronictl</span> -c patroni.yml switchover</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-mysql">
+      <div class="grid-2">
+        <div>
+          <span class="tag blue">MYSQL GROUP REPLICATION</span>
+          <h3 style="margin-top:12px">Built-in MySQL clustering</h3>
+          <p>MySQL Group Replication provides synchronous replication with automatic failover built directly into MySQL — no external tools needed. All writes go through a consensus protocol (Paxos-based). Minimum 3 nodes for quorum.</p>
+
+          <div class="warning">
+            <span class="warning-icon">⚠️</span>
+            <div class="warning-body">
+              <h4>Network latency matters</h4>
+              <p>Group Replication requires all members to acknowledge every transaction. High latency between nodes = slow writes. Keep nodes in the same AZ or use async replication for cross-region.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <div class="code-lang">MYSQL — GROUP REPLICATION SETUP</div>
+            </div>
+            <pre><span class="cm">-- my.cnf additions (all nodes)</span>
+[mysqld]
+server_id = <span class="nm">1</span>  <span class="cm">-- unique per node!</span>
+log_bin = binlog
+binlog_format = ROW
+
+plugin_load_add = <span class="str">'group_replication.so'</span>
+group_replication_group_name = <span class="str">"aaaaaaaa-1111-..."</span>
+group_replication_start_on_boot = off
+group_replication_local_address = <span class="str">"node1:33061"</span>
+group_replication_group_seeds = <span class="str">"node1:33061,node2:33061,node3:33061"</span>
+group_replication_bootstrap_group = off
+
+<span class="cm">-- Start the group (on primary first)</span>
+<span class="kw">SET</span> GLOBAL group_replication_bootstrap_group=<span class="op">ON</span>;
+<span class="kw">START</span> GROUP_REPLICATION;
+<span class="kw">SET</span> GLOBAL group_replication_bootstrap_group=<span class="op">OFF</span>;</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-mongo">
+      <div class="grid-2">
+        <div>
+          <span class="tag green">MONGODB REPLICA SET</span>
+          <h3 style="margin-top:12px">Primary + secondaries + arbiter</h3>
+          <p>MongoDB's native clustering uses a Replica Set: one Primary accepts all writes and replicates to Secondaries. An Arbiter (lightweight node) participates in elections but holds no data — exactly the witness/quorum concept.</p>
+
+          <div class="note">
+            <span class="note-icon">💡</span>
+            <div class="note-body">
+              <h4>Oplog is the heartbeat of replication</h4>
+              <p>MongoDB uses an "oplog" (operations log) — a rolling window of all write operations. Secondaries tail this log to stay synchronized. The oplog size determines how far behind a secondary can fall before needing a full resync.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <div class="code-lang">MONGODB REPLICA SET INIT</div>
+            </div>
+            <pre><span class="cm">// mongosh on node1</span>
+rs.initiate({
+  _id: <span class="str">"rs0"</span>,
+  members: [
+    { _id: <span class="nm">0</span>, host: <span class="str">"node1:27017"</span>, priority: <span class="nm">2</span> },
+    { _id: <span class="nm">1</span>, host: <span class="str">"node2:27017"</span>, priority: <span class="nm">1</span> },
+    { _id: <span class="nm">2</span>, host: <span class="str">"node3:27017"</span>, 
+      arbiterOnly: <span class="kw">true</span> }  <span class="cm">// quorum only</span>
+  ]
+})
+
+<span class="cm">// Check status</span>
+rs.status()
+
+<span class="cm">// Read from secondaries (for scale)</span>
+db.getMongo().setReadPref(<span class="str">"secondaryPreferred"</span>)</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-redis">
+      <div class="grid-2">
+        <div>
+          <span class="tag red">REDIS SENTINEL</span>
+          <h3 style="margin-top:12px">HA for in-memory cache</h3>
+          <p>Redis Sentinel is a separate process that monitors Redis masters and replicas. If the master dies, Sentinels vote, elect a new master, reconfigure replicas to point to it, and notify clients. Minimum 3 Sentinels for quorum.</p>
+
+          <div class="feynman">
+            <p>Sentinels are security guards watching the Redis master. If the master goes silent, the guards hold an election among themselves. Once the majority agrees "master is dead," they promote one replica and update everyone's paperwork.</p>
+          </div>
+        </div>
+        <div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <div class="code-lang">REDIS SENTINEL CONFIG</div>
+            </div>
+            <pre><span class="cm"># sentinel.conf</span>
+port <span class="nm">26379</span>
+
+<span class="cm"># watch the master</span>
+sentinel monitor mymaster <span class="nm">10.0.1.10 6379 2</span>
+<span class="cm"># ↑ quorum: 2 sentinels must agree</span>
+
+<span class="cm"># declare dead after 5s silence</span>
+sentinel down-after-milliseconds mymaster <span class="nm">5000</span>
+
+<span class="cm"># wait 10s before next failover attempt</span>
+sentinel failover-timeout mymaster <span class="nm">10000</span>
+
+<span class="cm"># Node.js client with Sentinel</span>
+<span class="kw">const</span> Redis = require(<span class="str">'ioredis'</span>)
+<span class="kw">const</span> redis = <span class="kw">new</span> Redis({
+  sentinels: [
+    { host: <span class="str">'node1'</span>, port: <span class="nm">26379</span> },
+    { host: <span class="str">'node2'</span>, port: <span class="nm">26379</span> },
+    { host: <span class="str">'node3'</span>, port: <span class="nm">26379</span> },
+  ],
+  name: <span class="str">'mymaster'</span>
+})</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ KUBERNETES ═══════════════════════════ -->
+<section id="kubernetes">
+  <div class="sec-eyebrow">Container Orchestration</div>
+  <h2>Kubernetes Cluster</h2>
+  <p class="sec-lead">
+    Kubernetes is the modern standard for running clustered applications in containers.
+    It handles scheduling, healing, scaling, and networking automatically.
+  </p>
+
+  <div class="feynman">
+    <p>
+      If a traditional cluster is a football team with players (nodes) and a coach (manager),
+      Kubernetes is an <strong>entire football league organization</strong>. It manages multiple teams,
+      transfers players, decides formations, fires underperforming players and hires replacements
+      automatically, and can spin up an entirely new team from scratch based on a rulebook (YAML manifests).
+    </p>
+  </div>
+
+  <div class="viz-container">
+    <div class="viz-label">Kubernetes cluster architecture</div>
+    <canvas id="k8s-canvas" height="320"></canvas>
+    <div class="viz-log" id="k8s-log">Click any component to learn what it does</div>
+  </div>
+
+  <div class="grid-2" style="margin-top:32px">
+    <div class="card">
+      <span class="card-icon">🎛️</span>
+      <span class="tag blue">CONTROL PLANE (MASTER)</span>
+      <h3>API Server</h3>
+      <p>The front door to Kubernetes. Everything talks to the API Server — kubectl, workers, controllers. It validates and persists state to etcd. Think of it as the cluster's single source of truth gateway.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📅</span>
+      <span class="tag blue">CONTROL PLANE</span>
+      <h3>Scheduler</h3>
+      <p>Decides which worker node a Pod runs on. Considers CPU, RAM, affinity rules, taints, and tolerations. If a node is overloaded, the scheduler sends new Pods elsewhere.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔁</span>
+      <span class="tag blue">CONTROL PLANE</span>
+      <h3>Controller Manager</h3>
+      <p>Runs reconciliation loops — constantly comparing "desired state" (your YAML) against "actual state" (running cluster). Pod crashed? Controller sees 2 running, desired 3, creates a new one.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🗃️</span>
+      <span class="tag purple">CONTROL PLANE</span>
+      <h3>etcd</h3>
+      <p>Distributed key-value store holding all cluster state. If etcd dies, Kubernetes is blind — it can still run existing Pods but can't change anything. etcd itself needs 3+ nodes for HA.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">👷</span>
+      <span class="tag green">WORKER NODE</span>
+      <h3>Kubelet</h3>
+      <p>The agent on every worker node. Receives Pod specifications from the API Server and ensures the right containers are running. Reports node health back to the control plane.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🌐</span>
+      <span class="tag green">WORKER NODE</span>
+      <h3>kube-proxy</h3>
+      <p>Manages network rules on each node. Routes traffic to the correct Pod for any given Service. Implements the cluster's virtual network layer using iptables or eBPF.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h3>Key Kubernetes HA patterns</h3>
+
+  <div class="code-block" style="margin-top:16px">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-lang">KUBERNETES — PRODUCTION HA DEPLOYMENT</div>
+    </div>
+    <pre><span class="kw">apiVersion</span>: apps/v1
+<span class="kw">kind</span>: Deployment
+<span class="kw">metadata</span>:
+  name: api-server
+<span class="kw">spec</span>:
+  replicas: <span class="nm">3</span>  <span class="cm"># 3 Pods = tolerate 1 failure</span>
+  
+  <span class="kw">strategy</span>:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: <span class="nm">1</span>         <span class="cm"># max extra pods during update</span>
+      maxUnavailable: <span class="nm">0</span>   <span class="cm"># never kill before new is ready</span>
+  
+  <span class="kw">template</span>:
+    <span class="kw">spec</span>:
+      <span class="cm"># Spread across nodes — no single point of failure</span>
+      <span class="kw">topologySpreadConstraints</span>:
+        - maxSkew: <span class="nm">1</span>
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+      
+      <span class="cm"># Pod disruption budget — keep at least 2 running</span>
+      <span class="kw">containers</span>:
+        - name: api
+          image: myapp:<span class="nm">v1.2.3</span>
+          
+          <span class="cm"># Health checks — K8s restarts if these fail</span>
+          <span class="kw">livenessProbe</span>:
+            httpGet:
+              path: /health
+              port: <span class="nm">3000</span>
+            initialDelaySeconds: <span class="nm">10</span>
+            periodSeconds: <span class="nm">5</span>
+          
+          <span class="kw">readinessProbe</span>:
+            httpGet:
+              path: /ready
+              port: <span class="nm">3000</span>
+            initialDelaySeconds: <span class="nm">5</span>
+            
+          <span class="cm"># Resource limits = prevent one pod killing the node</span>
+          <span class="kw">resources</span>:
+            requests:
+              cpu: <span class="str">"100m"</span>
+              memory: <span class="str">"256Mi"</span>
+            limits:
+              cpu: <span class="str">"500m"</span>
+              memory: <span class="str">"512Mi"</span>
+
+---
+<span class="cm"># PodDisruptionBudget — ensures upgrade never kills quorum</span>
+<span class="kw">apiVersion</span>: policy/v1
+<span class="kw">kind</span>: PodDisruptionBudget
+<span class="kw">metadata</span>:
+  name: api-pdb
+<span class="kw">spec</span>:
+  minAvailable: <span class="nm">2</span>  <span class="cm"># always keep 2 running</span>
+  selector:
+    matchLabels:
+      app: api-server</pre>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ TRADEOFFS ═══════════════════════════ -->
+<section id="tradeoffs">
+  <div class="sec-eyebrow">Decision Framework</div>
+  <h2>Tradeoffs & When to Use What</h2>
+  <p class="sec-lead">
+    Clustering adds complexity. That complexity must be justified by the problem you're solving.
+    Here's a clear decision framework.
+  </p>
+
+  <div class="viz-container">
+    <div class="viz-label">Decision tree — should I cluster this?</div>
+    <canvas id="decision-canvas" height="280"></canvas>
+  </div>
+
+  <div class="divider"></div>
+
+  <h3>Tool selection guide</h3>
+
+  <table class="compare-table" style="margin-top:16px">
+    <thead>
+      <tr>
+        <th>If you need...</th>
+        <th>Use this</th>
+        <th>Why</th>
+        <th>Don't use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>PostgreSQL HA</td>
+        <td><span class="tag purple" style="margin:0">Patroni + etcd</span></td>
+        <td>Industry standard, battle-tested, automatic failover, sync replication</td>
+        <td>Corosync/Pacemaker (too complex for just Postgres)</td>
+      </tr>
+      <tr>
+        <td>MySQL HA</td>
+        <td><span class="tag blue" style="margin:0">Group Replication or MHA</span></td>
+        <td>Group Replication is native, MHA is simpler for small teams</td>
+        <td>Manual replication (too risky, no auto-failover)</td>
+      </tr>
+      <tr>
+        <td>Web server HA</td>
+        <td><span class="tag green" style="margin:0">Keepalived + HAProxy</span></td>
+        <td>Lightweight, proven, VIP-based, no external dependencies</td>
+        <td>Kubernetes (overkill if you have 2 NGINX nodes)</td>
+      </tr>
+      <tr>
+        <td>Container workloads</td>
+        <td><span class="tag blue" style="margin:0">Kubernetes</span></td>
+        <td>Self-healing, auto-scaling, rolling updates, ecosystem</td>
+        <td>Bare-metal clusters (unless specific hardware needs)</td>
+      </tr>
+      <tr>
+        <td>Redis HA</td>
+        <td><span class="tag red" style="margin:0">Redis Sentinel (HA) or Redis Cluster (scale)</span></td>
+        <td>Sentinel for HA-only, Cluster for sharding + HA combined</td>
+        <td>No HA (a crashed Redis cache shouldn't cause app outage)</td>
+      </tr>
+      <tr>
+        <td>Coordination / locks</td>
+        <td><span class="tag yellow" style="margin:0">etcd or ZooKeeper</span></td>
+        <td>Built for distributed consensus, battle-hardened</td>
+        <td>Redis (not designed for strong consistency coordination)</td>
+      </tr>
+      <tr>
+        <td>Bangladesh e-commerce HA</td>
+        <td><span class="tag orange" style="margin:0">Patroni (DB) + Keepalived (web)</span></td>
+        <td>Cost-effective, VPS-compatible, no cloud lock-in</td>
+        <td>Kubernetes (too much overhead for small-medium scale)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+
+  <h3>The CAP theorem for cluster choices</h3>
+  <p>Every distributed cluster must make a tradeoff between three properties. You can only guarantee two.</p>
+
+  <div class="grid-3">
+    <div class="card">
+      <span class="card-icon">✅</span>
+      <span class="tag green">CONSISTENCY</span>
+      <h3>Every read gets the latest write</h3>
+      <p>All nodes see the same data at the same time. PostgreSQL with synchronous replication. Slow, but safe.</p>
+    </div>
+    <div class="card" style="border-color:rgba(79,142,247,.25)">
+      <span class="card-icon">🟢</span>
+      <span class="tag blue">AVAILABILITY</span>
+      <h3>Every request gets a response</h3>
+      <p>System never returns an error — always responds, even if the data might be slightly stale. Cassandra, DynamoDB.</p>
+    </div>
+    <div class="card" style="border-color:rgba(247,201,72,.2)">
+      <span class="card-icon">🌐</span>
+      <span class="tag yellow">PARTITION TOLERANCE</span>
+      <h3>Works despite network splits</h3>
+      <p>Cluster keeps working even if nodes can't talk to each other. This one is basically non-negotiable in distributed systems.</p>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:24px">
+    <span class="note-icon">💡</span>
+    <div class="note-body">
+      <h4>Practical interpretation</h4>
+      <p>Network partitions happen in the real world — so you must tolerate them (P). That means you choose between Consistency and Availability during a partition. PostgreSQL Patroni chooses C (stops writes until quorum). Cassandra chooses A (keeps accepting writes, reconciles later).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ PATTERNS ═══════════════════════════ -->
+<section id="patterns">
+  <div class="sec-eyebrow">Production Engineering</div>
+  <h2>Production Patterns</h2>
+  <p class="sec-lead">
+    The gap between "cluster that works in a demo" and "cluster that survives production" 
+    comes down to these patterns. Every senior engineer knows them. 
+  </p>
+
+  <div class="grid-2">
+    <div class="card">
+      <span class="card-icon">🎯</span>
+      <span class="tag green">ODD NODES</span>
+      <h3>Always 3, 5, or 7</h3>
+      <p>Even numbers can deadlock: 2 nodes that disagree have no tiebreaker. Odd numbers always produce a clear majority. 3 nodes is the minimum viable HA cluster — tolerates 1 failure.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🌍</span>
+      <span class="tag blue">MULTI-AZ</span>
+      <h3>Different availability zones</h3>
+      <p>Spread nodes across data center zones or physical racks. An entire AZ going down (power, cooling failure) shouldn't kill your cluster. One node per AZ is the rule.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔥</span>
+      <span class="tag red">CHAOS ENGINEERING</span>
+      <h3>Break it before users do</h3>
+      <p>Monthly failover drills. Kill a random node. Does the cluster heal? Measure the actual downtime. Netflix Chaos Monkey made this famous — most clusters that "should work" don't.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📊</span>
+      <span class="tag yellow">RESOURCE LIMITS</span>
+      <h3>One node can't starve others</h3>
+      <p>In Kubernetes: always set resource requests and limits. In bare-metal: use cgroups or nice values. One runaway process consuming all RAM will crash the node, triggering unnecessary failover.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔄</span>
+      <span class="tag purple">ROLLING UPDATES</span>
+      <h3>Zero-downtime deploys</h3>
+      <p>Update one node at a time. Wait for health checks to pass. Never update all nodes simultaneously — that's a full cluster outage disguised as a deployment. Kubernetes handles this natively.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">⏰</span>
+      <span class="tag orange">GRACEFUL SHUTDOWN</span>
+      <h3>Drain before you stop</h3>
+      <p>Before stopping a node, tell the cluster: "I'm leaving." The node stops accepting new requests, finishes in-flight ones, then shuts down. No lost requests, no abrupt connection resets.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h3>Backup is not clustering</h3>
+  <div class="warning">
+    <span class="warning-icon">⚠️</span>
+    <div class="warning-body">
+      <h4>Critical distinction — beginners always miss this</h4>
+      <p>A replica set is not a backup. If you run <code style="background:var(--bg3);padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:12px">DELETE FROM orders</code> accidentally, that DELETE replicates instantly to all replicas. Your cluster has zero data now. Backups (pg_dump, WAL archiving, point-in-time recovery) are a separate concern. Run both.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ REAL WORLD ═══════════════════════════ -->
+<section id="realworld">
+  <div class="sec-eyebrow">Case Studies</div>
+  <h2>How Real Companies Do It</h2>
+  <p class="sec-lead">Scale these patterns mentally from 2 servers to 10,000.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <span class="card-icon">🎬</span>
+      <span class="tag red">NETFLIX</span>
+      <h3>Multi-region active-active</h3>
+      <p>Netflix runs active-active across 3 AWS regions. Any region can fail completely. They invented Chaos Monkey to test this. Cassandra (AP database) chosen specifically because it continues accepting writes during partitions. They sacrificed consistency for availability.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔍</span>
+      <span class="tag blue">GOOGLE</span>
+      <h3>Borg → Kubernetes</h3>
+      <p>Google's internal cluster scheduler (Borg) ran for 15+ years before inspiring Kubernetes. Borg runs across continents — millions of jobs scheduled on hundreds of thousands of machines. Everything at Google is a cluster of something.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📘</span>
+      <span class="tag purple">FACEBOOK / META</span>
+      <h3>ZooKeeper for coordination</h3>
+      <p>Facebook uses Apache ZooKeeper for distributed coordination across their infrastructure — leader election, configuration management, service discovery. The same quorum-based system you'd use with 3 nodes, scaled to handle billions of users.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🛒</span>
+      <span class="tag orange">E-COMMERCE (YOUR USE CASE)</span>
+      <h3>Practical 3-node setup</h3>
+      <p>For a Bangladeshi e-commerce platform: 3 VPS nodes — 1 PostgreSQL primary (Patroni), 1 hot standby, 1 witness + read replica. Keepalived + HAProxy for web layer. Redis Sentinel for session store. Under 100USD/month, 99.95% uptime achievable.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ MISTAKES ═══════════════════════════ -->
+<section id="mistakes">
+  <div class="sec-eyebrow">Lessons Learned</div>
+  <h2>Common Mistakes (and How to Avoid Them)</h2>
+  <p class="sec-lead">
+    Every mistake here has caused a real production outage. Learn them for free by reading this.
+    Or learn them expensively by experiencing them.
+  </p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">✗</div>
+      <div class="step-body">
+        <h4>2-node cluster without a witness</h4>
+        <p>With only 2 nodes and no witness, losing 1 node means losing quorum (1 out of 2 ≠ majority). Your cluster freezes. Fix: always add a 3rd node, even a tiny $5 VM just for voting.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">✗</div>
+      <div class="step-body">
+        <h4>Not testing failover until production fails</h4>
+        <p>A failover that's never been tested is a failover that won't work. The cluster manager, DNS TTL, app reconnect logic, session handling — all must be verified. Do a drill monthly.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">✗</div>
+      <div class="step-body">
+        <h4>Treating the cluster as a backup</h4>
+        <p>Replication is not backup. A corrupted write replicates to all nodes in milliseconds. Take real backups: pg_basebackup, WAL archiving, mongodump — tested and restorable.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">✗</div>
+      <div class="step-body">
+        <h4>All nodes in the same physical location</h4>
+        <p>A power outage, cooling failure, or fire in one data center kills all nodes simultaneously. The cluster was fault-tolerant against software failures but not infrastructure failures. Use different AZs or at minimum different physical racks.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">✗</div>
+      <div class="step-body">
+        <h4>Aggressive heartbeat = false failovers</h4>
+        <p>Setting heartbeat too aggressive (e.g., 100ms interval, 2 misses = dead) causes failovers on network hiccups. A failover causes its own brief outage. Tune carefully: start with 1s interval, 3-5 missed = dead.</p>
+      </div>
+    </div>
+    <div class="step" style="margin-bottom:0">
+      <div class="step-num">✗</div>
+      <div class="step-body">
+        <h4>Skipping the PodDisruptionBudget in Kubernetes</h4>
+        <p>Without a PDB, a kubectl drain or node upgrade can evict all replicas of a service simultaneously. Your 3-replica "highly available" deployment goes to 0 during maintenance. Always set minAvailable: 1 or maxUnavailable: 1.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ QUIZ ═══════════════════════════ -->
+<section id="quiz">
+  <div class="sec-eyebrow">Test Your Knowledge</div>
+  <h2>Quiz — 10 Questions</h2>
+  <p class="sec-lead">Each question is one thing a senior engineer would expect you to know about clustering. No tricks.</p>
+
+  <div id="quiz-container"></div>
+  <div id="quiz-score" style="display:none; margin-top:32px; padding:24px; background:var(--panel); border:1px solid var(--border); border-radius:10px; text-align:center;">
+    <div style="font-family:var(--display); font-size:42px; font-weight:800; color:var(--accent);" id="score-val"></div>
+    <div style="color:var(--muted); margin-top:8px;" id="score-msg"></div>
+  </div>
+</section>
+
+</div><!-- #main -->
+
+<script>
+// ══════════════════════════════════════════════════════════
+// COLORS — declared first so every block below can use C
+// ══════════════════════════════════════════════════════════
+const C = {
+  bg: '#0a0e1a', bg2: '#0f1628', bg3: '#141c35',
+  panel: '#1a2240', border: '#1f2d52',
+  accent: '#4f8ef7', accent2: '#7c6af5',
+  green: '#22d3a5', red: '#f7566a',
+  yellow: '#f7c948', orange: '#f7874f',
+  text: '#e2e8f8', muted: '#7b8ab8', dim: '#3a4a78'
+};
+
+function dpr() { return window.devicePixelRatio || 1; }
+
+function setupCanvas(id, h) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return null;
+  const parent = canvas.parentElement;
+  const w = parent.clientWidth - 40;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  canvas.width = w * dpr();
+  canvas.height = h * dpr();
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr(), dpr());
+  return { ctx, w, h };
+}
+
+// ══════════════════════════════════════════════════════════
+// SCROLL PROGRESS + ACTIVE NAV
+// ══════════════════════════════════════════════════════════
+const mainEl = document.getElementById('main');
+const sections = document.querySelectorAll('section');
+const navLinks = document.querySelectorAll('#sidebar a');
+
+mainEl.addEventListener('scroll', () => {
+  const scrollTop = mainEl.scrollTop;
+  const scrollHeight = mainEl.scrollHeight - mainEl.clientHeight;
+  const pct = Math.round((scrollTop / scrollHeight) * 100);
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = pct + '% complete';
+
+  let current = '';
+  sections.forEach(sec => {
+    if (scrollTop >= sec.offsetTop - 120) current = sec.id;
+  });
+
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// ══════════════════════════════════════════════════════════
+// REQUIREMENT CARDS — accordion + viz highlight
+// ══════════════════════════════════════════════════════════
+const reqLabels = [
+  'Multiple Nodes',
+  'Communication',
+  'Common Purpose',
+  'Coordination',
+  'Resource Sharing',
+  'Single System View',
+];
+
+const reqColors = [
+  C.accent, C.green, C.accent2, C.yellow, C.orange, C.red
+];
+
+const reqVizDescriptions = [
+  'Three distinct machines: VPS1, VPS2, VPS3. Each is a node. Two or more = a cluster can exist.',
+  'Nodes exchange data via a coordinator or directly. Not all-to-all — just enough to cooperate.',
+  'All nodes serve one website together. One shared goal. Remove it and they are just computers.',
+  'Load balancer coordinates traffic — decides which node handles each request.',
+  'Requests split across all nodes. Each node shares the load — no single node does everything.',
+  'From outside: one URL, one system. Three nodes are invisible. That is the cluster abstraction.',
+];
+
+let activeReq = -1;
+
+function toggleReq(card, idx) {
+  const cards = document.querySelectorAll('.req-card');
+  if (activeReq === idx) {
+    card.classList.remove('open');
+    activeReq = -1;
+    drawReqViz(-1);
+    document.getElementById('req-viz-log').textContent = 'Click a requirement card above to see it visualized';
+    document.getElementById('req-viz-log').style.color = C.muted;
+  } else {
+    cards.forEach(c => c.classList.remove('open'));
+    card.classList.add('open');
+    activeReq = idx;
+    drawReqViz(idx);
+    document.getElementById('req-viz-log').textContent = `[${(idx+1).toString().padStart(2,'0')}] ${reqVizDescriptions[idx]}`;
+    document.getElementById('req-viz-log').style.color = reqColors[idx];
+    // draw topology canvases when card 1 opens
+    if (idx === 1) {
+      setTimeout(() => { drawMesh(); drawHub(); }, 50);
+    }
+  }
+}
+
+// ── Topology mini-canvases ──────────────────────────────
+function drawMesh() {
+  const canvas = document.getElementById('topo-mesh');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = 140, h = 110;
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#0f1628';
+  ctx.fillRect(0, 0, w, h);
+
+  const nodes = [
+    { x: 70, y: 20 },
+    { x: 20, y: 85 },
+    { x: 120, y: 85 },
+  ];
+
+  // all-to-all lines
+  for (let i = 0; i < 3; i++) {
+    for (let j = i + 1; j < 3; j++) {
+      ctx.beginPath();
+      ctx.moveTo(nodes[i].x, nodes[i].y);
+      ctx.lineTo(nodes[j].x, nodes[j].y);
+      ctx.strokeStyle = C.green + '66';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  }
+
+  // nodes
+  nodes.forEach((n, i) => {
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, 16, 0, Math.PI * 2);
+    ctx.fillStyle = '#1a2a4a';
+    ctx.fill();
+    ctx.strokeStyle = C.green;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = C.text;
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`N${i + 1}`, n.x, n.y + 4);
+  });
+}
+
+function drawHub() {
+  const canvas = document.getElementById('topo-hub');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = 140, h = 110;
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#0f1628';
+  ctx.fillRect(0, 0, w, h);
+
+  const lb = { x: 70, y: 22 };
+  const nodes = [
+    { x: 20, y: 88 },
+    { x: 70, y: 88 },
+    { x: 120, y: 88 },
+  ];
+
+  // lines from lb to each node
+  nodes.forEach(n => {
+    ctx.beginPath();
+    ctx.moveTo(lb.x, lb.y + 14);
+    ctx.lineTo(n.x, n.y - 14);
+    ctx.strokeStyle = C.accent + '66';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+
+  // LB
+  ctx.beginPath();
+  ctx.roundRect(lb.x - 32, lb.y - 12, 64, 24, 4);
+  ctx.fillStyle = '#1a1a3a';
+  ctx.fill();
+  ctx.strokeStyle = C.accent2;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.fillStyle = C.accent2;
+  ctx.font = 'bold 10px IBM Plex Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('LB / VIP', lb.x, lb.y + 4);
+
+  // nodes — no direct connections between them
+  nodes.forEach((n, i) => {
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, 14, 0, Math.PI * 2);
+    ctx.fillStyle = '#1a2a4a';
+    ctx.fill();
+    ctx.strokeStyle = C.accent;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = C.text;
+    ctx.font = 'bold 10px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`N${i + 1}`, n.x, n.y + 4);
+  });
+
+  // "no direct link" indicator
+  ctx.fillStyle = C.dim;
+  ctx.font = '9px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('no direct links needed', 70, 106);
+}
+
+// ── Requirement Visualizer canvas ──────────────────────
+(function initReqViz() {
+  const canvas = document.getElementById('req-viz');
+  if (!canvas) return;
+  const parent = canvas.parentElement;
+  const W = parent.clientWidth - 40;
+  const H = 220;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  canvas.width = W * dpr();
+  canvas.height = H * dpr();
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr(), dpr());
+
+  const nodePositions = [
+    { x: W * 0.18, y: H * 0.5 },
+    { x: W * 0.5,  y: H * 0.5 },
+    { x: W * 0.82, y: H * 0.5 },
+  ];
+
+  const lb = { x: W * 0.5, y: H * 0.15 };
+
+  let frame = 0;
+  const pkts = [];
+
+  function spawnPkt(from, to, col) {
+    pkts.push({ x: from.x, y: from.y, tx: to.x, ty: to.y, t: 0, col: col || C.accent });
+  }
+
+  function drawReqViz(idx) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = C.bg3;
+    ctx.roundRect(0, 0, W, H, 8);
+    ctx.fill();
+
+    const baseCol = idx >= 0 ? reqColors[idx] : C.dim;
+
+    if (idx === -1) {
+      // idle state — grey cluster
+      nodePositions.forEach((n, i) => {
+        ctx.beginPath(); ctx.arc(n.x, n.y, 28, 0, Math.PI * 2);
+        ctx.fillStyle = C.panel; ctx.fill();
+        ctx.strokeStyle = C.dim; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.fillStyle = C.muted; ctx.font = 'bold 12px Inter'; ctx.textAlign = 'center';
+        ctx.fillText(`Node ${i+1}`, n.x, n.y + 4);
+      });
+      ctx.fillStyle = C.dim; ctx.font = '12px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('Select a requirement card above', W/2, H - 16);
+      return;
+    }
+
+    if (idx === 0) {
+      // Multiple nodes — highlight 3 distinct nodes
+      nodePositions.forEach((n, i) => {
+        const grd = ctx.createRadialGradient(n.x, n.y, 4, n.x, n.y, 30);
+        grd.addColorStop(0, baseCol + '33');
+        grd.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(n.x, n.y, 30, 0, Math.PI * 2);
+        ctx.fillStyle = grd; ctx.fill();
+
+        ctx.beginPath(); ctx.arc(n.x, n.y, 24, 0, Math.PI * 2);
+        ctx.fillStyle = C.panel; ctx.fill();
+        ctx.strokeStyle = baseCol; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = C.text; ctx.font = 'bold 12px Inter'; ctx.textAlign = 'center';
+        ctx.fillText(`VPS${i+1}`, n.x, n.y - 2);
+        ctx.fillStyle = baseCol; ctx.font = '9px IBM Plex Mono'; ctx.fillText('NODE', n.x, n.y + 10);
+      });
+      ctx.fillStyle = baseCol; ctx.font = 'bold 12px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('3 distinct nodes = cluster can form', W/2, H - 16);
+    }
+
+    if (idx === 1) {
+      // Communication — show two topologies
+      // Left: mesh
+      const meshNodes = [
+        { x: W*0.15, y: H*0.35 }, { x: W*0.08, y: H*0.7 }, { x: W*0.25, y: H*0.7 }
+      ];
+      for (let i = 0; i < 3; i++) for (let j = i+1; j < 3; j++) {
+        ctx.beginPath(); ctx.moveTo(meshNodes[i].x, meshNodes[i].y);
+        ctx.lineTo(meshNodes[j].x, meshNodes[j].y);
+        ctx.strokeStyle = C.green + '88'; ctx.lineWidth = 1.5; ctx.stroke();
+      }
+      meshNodes.forEach((n, i) => {
+        ctx.beginPath(); ctx.arc(n.x, n.y, 18, 0, Math.PI*2);
+        ctx.fillStyle = C.panel; ctx.fill();
+        ctx.strokeStyle = C.green; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.fillStyle = C.text; ctx.font = 'bold 10px Inter'; ctx.textAlign = 'center';
+        ctx.fillText(`N${i+1}`, n.x, n.y+4);
+      });
+      ctx.fillStyle = C.green; ctx.font = '10px IBM Plex Mono'; ctx.textAlign = 'center';
+      ctx.fillText('MESH', W*0.165, H - 16);
+      ctx.fillStyle = C.muted; ctx.font = '10px Inter'; ctx.fillText('direct', W*0.165, H - 4);
+
+      // divider
+      ctx.beginPath(); ctx.moveTo(W*0.38, H*0.1); ctx.lineTo(W*0.38, H*0.9);
+      ctx.strokeStyle = C.border; ctx.lineWidth = 1; ctx.setLineDash([4,4]); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = C.dim; ctx.font = '11px Inter'; ctx.textAlign = 'center'; ctx.fillText('OR', W*0.38, H/2+4);
+
+      // Right: hub via LB
+      const hubLB = { x: W*0.65, y: H*0.3 };
+      const hubNodes = [{ x: W*0.52, y: H*0.75 }, { x: W*0.65, y: H*0.75 }, { x: W*0.78, y: H*0.75 }];
+      hubNodes.forEach((n, i) => {
+        ctx.beginPath(); ctx.moveTo(hubLB.x, hubLB.y+14); ctx.lineTo(n.x, n.y-14);
+        ctx.strokeStyle = baseCol+'66'; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.beginPath(); ctx.arc(n.x, n.y, 16, 0, Math.PI*2);
+        ctx.fillStyle = C.panel; ctx.fill(); ctx.strokeStyle = baseCol; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.fillStyle = C.text; ctx.font = 'bold 9px Inter'; ctx.textAlign = 'center';
+        ctx.fillText(`N${i+1}`, n.x, n.y+3);
+      });
+      // LB box
+      ctx.beginPath(); ctx.roundRect(hubLB.x-36, hubLB.y-14, 72, 28, 4);
+      ctx.fillStyle = '#1a1a3a'; ctx.fill(); ctx.strokeStyle = C.accent2; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = C.accent2; ctx.font = 'bold 10px IBM Plex Mono'; ctx.textAlign = 'center';
+      ctx.fillText('LB/VIP', hubLB.x, hubLB.y+4);
+      ctx.fillStyle = baseCol; ctx.font = '10px IBM Plex Mono'; ctx.textAlign = 'center';
+      ctx.fillText('HUB', W*0.65, H - 16);
+      ctx.fillStyle = C.muted; ctx.font = '10px Inter'; ctx.fillText('via coordinator', W*0.65, H - 4);
+
+      ctx.fillStyle = C.green; ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('Both are valid cluster topologies', W/2, H*0.08);
+    }
+
+    if (idx === 2) {
+      // Common purpose — all nodes point at one goal
+      const goal = { x: W/2, y: H*0.22 };
+      ctx.beginPath(); ctx.roundRect(goal.x-70, goal.y-18, 140, 36, 8);
+      ctx.fillStyle = baseCol+'15'; ctx.fill(); ctx.strokeStyle = baseCol; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = baseCol; ctx.font = 'bold 12px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('🌐 example.com', goal.x, goal.y+4);
+
+      nodePositions.forEach((n, i) => {
+        ctx.beginPath(); ctx.moveTo(n.x, n.y - 28);
+        ctx.lineTo(goal.x + (n.x - goal.x)*0.4, goal.y + 18);
+        ctx.strokeStyle = baseCol + '66'; ctx.lineWidth = 1.5;
+        ctx.setLineDash([4,3]); ctx.stroke(); ctx.setLineDash([]);
+        ctx.beginPath(); ctx.arc(n.x, n.y, 26, 0, Math.PI*2);
+        ctx.fillStyle = C.panel; ctx.fill(); ctx.strokeStyle = baseCol; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = C.text; ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+        ctx.fillText(`Node ${i+1}`, n.x, n.y+4);
+      });
+      ctx.fillStyle = C.muted; ctx.font = '12px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('All three nodes serve one website → common purpose', W/2, H-16);
+    }
+
+    if (idx === 3) {
+      // Coordination — LB routing to nodes
+      ctx.beginPath(); ctx.roundRect(W/2-45, lb.y-14, 90, 28, 5);
+      ctx.fillStyle = '#1a1a3a'; ctx.fill(); ctx.strokeStyle = C.accent2; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = C.accent2; ctx.font = 'bold 11px IBM Plex Mono'; ctx.textAlign = 'center';
+      ctx.fillText('COORDINATOR', lb.x, lb.y+4);
+
+      // user arrow in
+      ctx.beginPath(); ctx.moveTo(W/2, 8); ctx.lineTo(W/2, lb.y-14);
+      ctx.strokeStyle = baseCol; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = C.muted; ctx.font = '11px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('📡 requests', W/2, 7);
+
+      // lines to nodes + route packet animation
+      nodePositions.forEach((n, i) => {
+        const isActive = Math.floor(frame / 60) % 3 === i;
+        ctx.beginPath(); ctx.moveTo(lb.x, lb.y+14); ctx.lineTo(n.x, n.y-28);
+        ctx.strokeStyle = isActive ? baseCol : C.dim; ctx.lineWidth = isActive ? 2 : 1; ctx.stroke();
+        ctx.beginPath(); ctx.arc(n.x, n.y, 26, 0, Math.PI*2);
+        ctx.fillStyle = isActive ? baseCol+'22' : C.panel; ctx.fill();
+        ctx.strokeStyle = isActive ? baseCol : C.dim; ctx.lineWidth = isActive ? 2 : 1; ctx.stroke();
+        ctx.fillStyle = isActive ? C.text : C.muted; ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+        ctx.fillText(`Node ${i+1}`, n.x, n.y+4);
+      });
+      ctx.fillStyle = baseCol; ctx.font = '11px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('Coordinator routes each request → nodes cooperate, don\'t compete', W/2, H-16);
+    }
+
+    if (idx === 4) {
+      // Resource sharing — requests splitting
+      const reqColors2 = [C.accent, C.green, C.accent2, C.orange, C.yellow, C.red];
+      const sharedPkts = [];
+      nodePositions.forEach((n, i) => {
+        ctx.beginPath(); ctx.arc(n.x, n.y, 26, 0, Math.PI*2);
+        ctx.fillStyle = C.panel; ctx.fill(); ctx.strokeStyle = baseCol; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = C.text; ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+        ctx.fillText(`Node ${i+1}`, n.x, n.y-3);
+        // load indicator
+        const load = [0.7, 0.5, 0.6][i];
+        const bw = 36;
+        ctx.fillStyle = C.dim;
+        ctx.beginPath(); ctx.roundRect(n.x-bw/2, n.y+10, bw, 5, 2); ctx.fill();
+        ctx.fillStyle = baseCol;
+        ctx.beginPath(); ctx.roundRect(n.x-bw/2, n.y+10, bw*load, 5, 2); ctx.fill();
+      });
+
+      // animated request packets from top
+      if (frame % 25 === 0) {
+        const ti = Math.floor(Math.random() * 3);
+        pkts.push({
+          x: W/2, y: 20,
+          tx: nodePositions[ti].x, ty: nodePositions[ti].y - 30,
+          t: 0, col: reqColors2[Math.floor(Math.random() * 6)]
+        });
+      }
+
+      ctx.beginPath(); ctx.moveTo(W/2-60, 20); ctx.lineTo(W/2+60, 20);
+      ctx.strokeStyle = C.dim; ctx.lineWidth = 1; ctx.stroke();
+      ctx.fillStyle = C.muted; ctx.font = '10px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('incoming requests', W/2, 14);
+      ctx.fillStyle = baseCol; ctx.font = '11px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('Work distributed — no single node carries all the load', W/2, H-16);
+    }
+
+    if (idx === 5) {
+      // Single system view — user sees one thing
+      const userY = H * 0.15;
+      ctx.fillStyle = C.muted; ctx.font = '28px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('👤', W/2, userY + 10);
+      ctx.fillStyle = C.text; ctx.font = '12px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('User', W/2, userY + 26);
+
+      // one URL box
+      ctx.beginPath(); ctx.roundRect(W/2-80, userY+34, 160, 28, 6);
+      ctx.fillStyle = baseCol+'22'; ctx.fill(); ctx.strokeStyle = baseCol; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = baseCol; ctx.font = 'bold 11px IBM Plex Mono'; ctx.textAlign = 'center';
+      ctx.fillText('https://example.com', W/2, userY+52);
+
+      // dashed mystery box
+      ctx.beginPath(); ctx.roundRect(W*0.1, H*0.55, W*0.8, H*0.32, 8);
+      ctx.strokeStyle = C.dim; ctx.lineWidth = 1.5; ctx.setLineDash([6,4]); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = C.dim; ctx.font = '10px IBM Plex Mono'; ctx.textAlign = 'center';
+      ctx.fillText('HIDDEN FROM USER', W/2, H*0.58);
+
+      nodePositions.forEach((n, i) => {
+        const ny2 = H * 0.72;
+        ctx.beginPath(); ctx.arc(W*[0.25,0.5,0.75][i], ny2, 22, 0, Math.PI*2);
+        ctx.fillStyle = C.panel; ctx.fill(); ctx.strokeStyle = C.dim; ctx.lineWidth = 1; ctx.stroke();
+        ctx.fillStyle = C.muted; ctx.font = '10px Inter'; ctx.textAlign = 'center';
+        ctx.fillText(`Node ${i+1}`, W*[0.25,0.5,0.75][i], ny2+4);
+      });
+
+      ctx.beginPath(); ctx.moveTo(W/2, userY+62); ctx.lineTo(W/2, H*0.55);
+      ctx.strokeStyle = baseCol + '88'; ctx.lineWidth = 2; ctx.stroke();
+
+      ctx.fillStyle = C.green; ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('User sees 1 system. Cluster handles the rest invisibly.', W/2, H-16);
+    }
+
+    // draw live packets
+    pkts.forEach((p, pi) => {
+      p.t += 0.04;
+      p.x = p.x + (p.tx - p.x) * 0.04;
+      p.y = p.y + (p.ty - p.y) * 0.04;
+      ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
+      ctx.fillStyle = p.col; ctx.fill();
+    });
+    for (let i = pkts.length-1; i>=0; i--) { if (pkts[i].t > 0.95) pkts.splice(i,1); }
+
+    frame++;
+  }
+
+  window.drawReqViz = drawReqViz;
+
+  (function loop() {
+    if (activeReq >= 0) drawReqViz(activeReq);
+    requestAnimationFrame(loop);
+  })();
+
+  // draw initial idle state
+  drawReqViz(-1);
+})();
+
+// ══════════════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════════════
+function switchTab(id, btn) {
+  ['ap','aa','compare'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===id);
+  });
+  btn.closest('.tab-bar').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function switchTab2(id, btn) {
+  ['s1','s2','s3','s4','s5','s6'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if (el) el.classList.toggle('active', t===id);
+  });
+  btn.closest('.tab-bar').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function switchTab3(id, btn) {
+  ['pg','mysql','mongo','redis'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if (el) el.classList.toggle('active', t===id);
+  });
+  btn.closest('.tab-bar').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// (C, dpr, setupCanvas declared at top of script)
+
+// ══════════════════════════════════════════════════════════
+// HERO CANVAS — live cluster animation
+// ══════════════════════════════════════════════════════════
+(function() {
+  const s = setupCanvas('hero-canvas', 220);
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const nodes = [
+    { x: w*0.2, y: h*0.35, label: 'Node 1', role: 'primary', alive: true, load: 0.6 },
+    { x: w*0.5, y: h*0.35, label: 'Node 2', role: 'secondary', alive: true, load: 0.4 },
+    { x: w*0.8, y: h*0.35, label: 'Node 3', role: 'secondary', alive: true, load: 0.5 },
+  ];
+
+  const lb = { x: w*0.5, y: h*0.12, label: 'Load Balancer / VIP' };
+
+  const packets = [];
+  let frame = 0;
+
+  function spawnPacket() {
+    const aliveNodes = nodes.filter(n => n.alive);
+    if (aliveNodes.length === 0) return;
+    const target = aliveNodes[Math.floor(Math.random() * aliveNodes.length)];
+    packets.push({ x: lb.x, y: lb.y, tx: target.x, ty: target.y, t: 0, color: C.accent });
+  }
+
+  function drawNode(n) {
+    const r = 30;
+    const grd = ctx.createRadialGradient(n.x, n.y, 5, n.x, n.y, r);
+    if (n.alive) {
+      grd.addColorStop(0, n.role === 'primary' ? '#2a4a8f' : '#1a3a6f');
+      grd.addColorStop(1, 'rgba(26,34,64,0.4)');
+    } else {
+      grd.addColorStop(0, '#3a1a1a');
+      grd.addColorStop(1, 'rgba(58,26,26,0.3)');
+    }
+
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, r, 0, Math.PI*2);
+    ctx.fillStyle = grd;
+    ctx.fill();
+    ctx.strokeStyle = n.alive ? (n.role === 'primary' ? C.accent : C.green) : C.red;
+    ctx.lineWidth = n.alive ? 2 : 1.5;
+    ctx.setLineDash(n.alive ? [] : [4,4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = n.alive ? C.text : C.red;
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(n.label, n.x, n.y - 5);
+
+    ctx.font = '9px IBM Plex Mono, monospace';
+    ctx.fillStyle = n.alive ? (n.role === 'primary' ? C.accent : C.green) : C.red;
+    ctx.fillText(n.alive ? (n.role === 'primary' ? 'PRIMARY' : 'ACTIVE') : 'FAILED', n.x, n.y + 9);
+
+    if (n.alive) {
+      // load bar
+      const bw = 40, bh = 4;
+      ctx.fillStyle = C.dim;
+      ctx.beginPath();
+      ctx.roundRect(n.x - bw/2, n.y + 16, bw, bh, 2);
+      ctx.fill();
+      ctx.fillStyle = n.load > 0.8 ? C.red : C.green;
+      ctx.beginPath();
+      ctx.roundRect(n.x - bw/2, n.y + 16, bw * n.load, bh, 2);
+      ctx.fill();
+    }
+  }
+
+  function drawLB() {
+    ctx.fillStyle = C.panel;
+    const bw = 160, bh = 28;
+    ctx.beginPath();
+    ctx.roundRect(lb.x - bw/2, lb.y - bh/2, bw, bh, 6);
+    ctx.fill();
+    ctx.strokeStyle = C.accent2;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = C.text;
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(lb.label, lb.x, lb.y + 4);
+  }
+
+  function drawLine(x1, y1, x2, y2, color, dashed) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.setLineDash(dashed ? [4, 4] : []);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function drawHB() {
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i+1; j < nodes.length; j++) {
+        if (nodes[i].alive && nodes[j].alive) {
+          const pulse = Math.sin(frame * 0.08 + i) > 0 ? C.green : C.dim;
+          drawLine(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y, pulse, true);
+        }
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = C.bg3;
+    ctx.beginPath();
+    ctx.roundRect(0, 0, w, h, 8);
+    ctx.fill();
+
+    drawHB();
+
+    // lines from lb to nodes
+    nodes.forEach(n => {
+      drawLine(lb.x, lb.y + 14, n.x, n.y - 30, n.alive ? C.dim : '#3a1a1a', false);
+    });
+
+    drawLB();
+    nodes.forEach(n => drawNode(n));
+
+    // packets
+    if (frame % 30 === 0) spawnPacket();
+    packets.forEach((p, i) => {
+      p.t += 0.04;
+      p.x = lb.x + (p.tx - lb.x) * p.t;
+      p.y = lb.y + 14 + (p.ty - 30 - lb.y - 14) * p.t;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 3, 0, Math.PI*2);
+      ctx.fillStyle = C.accent;
+      ctx.fill();
+    });
+
+    for (let i = packets.length - 1; i >= 0; i--) {
+      if (packets[i].t >= 1) packets.splice(i, 1);
+    }
+
+    // update loads
+    nodes.forEach(n => {
+      if (n.alive) {
+        n.load += (Math.random() - 0.5) * 0.05;
+        n.load = Math.max(0.1, Math.min(0.95, n.load));
+      }
+    });
+
+    frame++;
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  document.getElementById('hero-canvas').addEventListener('click', (e) => {
+    const rect = e.target.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * (w / rect.width);
+    const my = (e.clientY - rect.top) * (220 / rect.height);
+
+    nodes.forEach(n => {
+      const dx = mx - n.x, dy = my - n.y;
+      if (Math.sqrt(dx*dx + dy*dy) < 35) {
+        n.alive = !n.alive;
+        const alive = nodes.filter(x => x.alive).length;
+        const log = document.getElementById('hero-log');
+        if (!n.alive) {
+          if (alive === 0) {
+            log.textContent = '🔴 All nodes failed — cluster down!';
+            log.style.color = C.red;
+          } else {
+            log.textContent = `⚠️ ${n.label} failed — ${alive} node(s) remaining`;
+            log.style.color = C.yellow;
+          }
+        } else {
+          log.textContent = `✅ ${n.label} recovered — ${alive}/3 nodes active`;
+          log.style.color = C.green;
+        }
+      }
+    });
+  });
+})();
+
+// ══════════════════════════════════════════════════════════
+// COMPARE CANVAS — single server vs cluster
+// ══════════════════════════════════════════════════════════
+(function() {
+  const s = setupCanvas('compare-canvas', 200);
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  let failPhase = 0;
+  let t = 0;
+
+  function drawServer(x, y, alive, label) {
+    ctx.fillStyle = alive ? C.panel : '#2a1010';
+    ctx.strokeStyle = alive ? C.accent : C.red;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(x-25, y-20, 50, 40, 6);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = alive ? C.text : C.red;
+    ctx.font = '10px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, x, y+4);
+    if (!alive) {
+      ctx.fillStyle = C.red;
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText('✗', x, y - 6);
+    }
+  }
+
+  function drawClient(x, y) {
+    ctx.fillStyle = C.muted;
+    ctx.font = '22px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('👤', x, y + 8);
+  }
+
+  function drawArrow(x1, y1, x2, y2, color) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    const angle = Math.atan2(y2-y1, x2-x1);
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - 8*Math.cos(angle-0.4), y2 - 8*Math.sin(angle-0.4));
+    ctx.lineTo(x2 - 8*Math.cos(angle+0.4), y2 - 8*Math.sin(angle+0.4));
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = C.bg3;
+    ctx.roundRect(0, 0, w, h, 8);
+    ctx.fill();
+
+    const half = w / 2;
+
+    // LEFT: single server
+    ctx.fillStyle = C.muted;
+    ctx.font = 'bold 11px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText('SINGLE SERVER', half * 0.5, 22);
+
+    const singleAlive = failPhase < 60;
+    drawClient(half * 0.5, 50);
+    drawArrow(half * 0.5, 72, half * 0.5, 110, singleAlive ? C.accent : C.red);
+    drawServer(half * 0.5, 140, singleAlive, singleAlive ? 'Server' : 'DEAD');
+
+    if (!singleAlive) {
+      ctx.fillStyle = C.red;
+      ctx.font = 'bold 12px Inter';
+      ctx.textAlign = 'center';
+      ctx.fillText('💥 SYSTEM DOWN', half * 0.5, 185);
+    }
+
+    // divider
+    ctx.beginPath();
+    ctx.moveTo(half, 10); ctx.lineTo(half, h-10);
+    ctx.strokeStyle = C.border; ctx.lineWidth = 1;
+    ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
+
+    // RIGHT: cluster
+    ctx.fillStyle = C.muted;
+    ctx.font = 'bold 11px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText('CLUSTER (3 NODES)', half + half*0.5, 22);
+
+    const cx = half + half*0.5;
+    drawClient(cx, 50);
+
+    // VIP
+    ctx.fillStyle = C.panel;
+    ctx.strokeStyle = C.accent2;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(cx - 35, 72, 70, 22, 4); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = C.accent2; ctx.font = '10px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText('VIP', cx, 87);
+
+    drawArrow(cx, 69, cx, 74, C.accent);
+
+    const nodeX = [cx - 55, cx, cx + 55];
+    const nodeAlive = [failPhase < 60, true, true];
+    nodeX.forEach((nx, i) => {
+      drawArrow(cx, 94, nx, 115, nodeAlive[i] ? C.accent : C.dim);
+      drawServer(nx, 145, nodeAlive[i], nodeAlive[i] ? `N${i+1}` : 'FAIL');
+    });
+
+    if (failPhase >= 60) {
+      ctx.fillStyle = C.green;
+      ctx.font = 'bold 11px Inter';
+      ctx.textAlign = 'center';
+      ctx.fillText('✅ Still serving traffic', cx, 190);
+    }
+  }
+
+  function loop() {
+    t++;
+    if (t % 180 === 0) failPhase = 0;
+    else if (t % 180 === 60) failPhase = 60;
+    render();
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+// ══════════════════════════════════════════════════════════
+// ANATOMY CANVAS
+// ══════════════════════════════════════════════════════════
+(function() {
+  const s = setupCanvas('anatomy-canvas', 300);
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const comps = [
+    { x: w*0.5, y: 50, label: 'Virtual IP', sublabel: '10.0.1.100', color: C.accent2, info: 'VIP — the cluster\'s public face. Clients always connect here. Moves to the active node automatically.' },
+    { x: w*0.5, y: 120, label: 'Cluster Manager', sublabel: 'Kubernetes / Pacemaker', color: C.accent, info: 'Brain of the cluster. Monitors nodes, makes failover decisions, manages configuration.' },
+    { x: w*0.18, y: 210, label: 'Node 1', sublabel: 'ACTIVE', color: C.green, info: 'Active node — currently serving traffic. Sends heartbeats. Holds the VIP.' },
+    { x: w*0.5, y: 210, label: 'Node 2', sublabel: 'PASSIVE', color: C.yellow, info: 'Passive standby — synchronized with primary. Watches heartbeats. Ready to take over.' },
+    { x: w*0.82, y: 210, label: 'Node 3', sublabel: 'WITNESS', color: C.orange, info: 'Witness/arbiter — participates in quorum voting. Doesn\'t serve traffic. Breaks ties.' },
+    { x: w*0.34, y: 280, label: 'Shared Storage', sublabel: 'SAN / NFS / Ceph', color: C.muted, info: 'Shared storage — all nodes can read/write the same data. Essential for stateful clusters.' },
+  ];
+
+  const links = [[0,1],[1,2],[1,3],[1,4],[2,5],[3,5]];
+  let hovered = -1;
+
+  function drawComp(c, i) {
+    const r = 28;
+    const isH = hovered === i;
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, r, 0, Math.PI*2);
+    ctx.fillStyle = isH ? c.color + '33' : C.panel;
+    ctx.fill();
+    ctx.strokeStyle = c.color;
+    ctx.lineWidth = isH ? 2.5 : 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = c.color;
+    ctx.font = `bold ${isH?12:11}px Inter`;
+    ctx.textAlign = 'center';
+    ctx.fillText(c.label, c.x, c.y - 3);
+    ctx.font = '9px IBM Plex Mono';
+    ctx.fillStyle = C.muted;
+    ctx.fillText(c.sublabel, c.x, c.y + 10);
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = C.bg3; ctx.roundRect(0,0,w,h,8); ctx.fill();
+
+    links.forEach(([a, b]) => {
+      ctx.beginPath();
+      ctx.moveTo(comps[a].x, comps[a].y);
+      ctx.lineTo(comps[b].x, comps[b].y);
+      ctx.strokeStyle = C.border; ctx.lineWidth = 1; ctx.stroke();
+    });
+
+    // heartbeat line between nodes
+    ctx.beginPath();
+    ctx.moveTo(comps[2].x + 28, comps[2].y);
+    ctx.lineTo(comps[3].x - 28, comps[3].y);
+    ctx.strokeStyle = C.green + '66'; ctx.lineWidth = 1;
+    ctx.setLineDash([4,3]); ctx.stroke(); ctx.setLineDash([]);
+
+    ctx.beginPath();
+    ctx.moveTo(comps[3].x + 28, comps[3].y);
+    ctx.lineTo(comps[4].x - 28, comps[4].y);
+    ctx.strokeStyle = C.green + '66'; ctx.lineWidth = 1;
+    ctx.setLineDash([4,3]); ctx.stroke(); ctx.setLineDash([]);
+
+    ctx.fillStyle = C.green + '88'; ctx.font = '9px Inter'; ctx.textAlign = 'center';
+    ctx.fillText('💓 heartbeat', w*0.5, 225);
+
+    comps.forEach((c, i) => drawComp(c, i));
+  }
+
+  render();
+
+  document.getElementById('anatomy-canvas').addEventListener('mousemove', (e) => {
+    const rect = e.target.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * (w / rect.width);
+    const my = (e.clientY - rect.top) * (300 / rect.height);
+    let h2 = -1;
+    comps.forEach((c, i) => {
+      if (Math.sqrt((mx-c.x)**2 + (my-c.y)**2) < 30) h2 = i;
+    });
+    if (h2 !== hovered) {
+      hovered = h2;
+      render();
+      const log = document.getElementById('anatomy-log');
+      if (h2 >= 0) {
+        log.textContent = '📌 ' + comps[h2].info;
+        log.style.color = comps[h2].color;
+      } else {
+        log.textContent = 'Hover any component above to see details';
+        log.style.color = C.muted;
+      }
+    }
+  });
+})();
+
+// ══════════════════════════════════════════════════════════
+// ACTIVE-PASSIVE SIMULATION
+// ══════════════════════════════════════════════════════════
+let apState = { activeAlive: true, phase: 'normal', t: 0 };
+
+function apDraw() {
+  const s = setupCanvas('ap-canvas', 240);
+  if (!s) return s;
+  return s;
+}
+
+(function() {
+  const s = setupCanvas('ap-canvas', 240);
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  function render() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = C.bg3; ctx.roundRect(0,0,w,h,8); ctx.fill();
+
+    const n1x = w*0.3, n2x = w*0.7, ny = h*0.55;
+
+    // VIP
+    const vipX = apState.activeAlive ? n1x : n2x;
+    ctx.beginPath(); ctx.arc(vipX, ny - 80, 18, 0, Math.PI*2);
+    ctx.fillStyle = C.accent + '22'; ctx.fill();
+    ctx.strokeStyle = C.accent; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = C.accent; ctx.font = 'bold 10px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText('VIP', vipX, ny - 75);
+
+    // line from VIP
+    ctx.beginPath(); ctx.moveTo(vipX, ny-62); ctx.lineTo(vipX, ny-35);
+    ctx.strokeStyle = C.accent; ctx.lineWidth = 1.5; ctx.stroke();
+
+    // Node 1
+    const n1alive = apState.activeAlive;
+    ctx.beginPath(); ctx.arc(n1x, ny, 35, 0, Math.PI*2);
+    ctx.fillStyle = n1alive ? '#1a2a4a' : '#2a1010';
+    ctx.fill();
+    ctx.strokeStyle = n1alive ? C.accent : C.red;
+    ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = n1alive ? C.text : C.red;
+    ctx.font = 'bold 12px Inter'; ctx.textAlign = 'center';
+    ctx.fillText('Node 1', n1x, ny - 3);
+    ctx.font = '10px IBM Plex Mono';
+    ctx.fillStyle = n1alive ? C.accent : C.red;
+    ctx.fillText(n1alive ? 'ACTIVE' : 'FAILED', n1x, ny + 12);
+
+    // Node 2
+    ctx.beginPath(); ctx.arc(n2x, ny, 35, 0, Math.PI*2);
+    ctx.fillStyle = !n1alive ? '#1a2a4a' : '#141c35';
+    ctx.fill();
+    ctx.strokeStyle = !n1alive ? C.green : C.dim;
+    ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = !n1alive ? C.text : C.muted;
+    ctx.font = 'bold 12px Inter';
+    ctx.fillText('Node 2', n2x, ny - 3);
+    ctx.font = '10px IBM Plex Mono';
+    ctx.fillStyle = !n1alive ? C.green : C.muted;
+    ctx.fillText(!n1alive ? 'NOW ACTIVE' : 'STANDBY', n2x, ny + 12);
+
+    // heartbeat between nodes
+    if (apState.t % 40 < 20) {
+      ctx.beginPath();
+      ctx.moveTo(n1x+35, ny); ctx.lineTo(n2x-35, ny);
+      ctx.strokeStyle = n1alive ? C.green + '88' : C.red + '44';
+      ctx.lineWidth = 1; ctx.setLineDash([3,3]); ctx.stroke(); ctx.setLineDash([]);
+    }
+
+    // storage at bottom
+    ctx.fillStyle = C.panel; ctx.strokeStyle = C.dim; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(w*0.3, ny+55, w*0.4, 28, 5); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = C.muted; ctx.font = '10px Inter'; ctx.textAlign = 'center';
+    ctx.fillText('Shared Storage', w*0.5, ny+73);
+
+    // lines to storage
+    [n1x, n2x].forEach(nx => {
+      ctx.beginPath(); ctx.moveTo(nx, ny+35); ctx.lineTo(nx, ny+55);
+      ctx.strokeStyle = C.dim; ctx.lineWidth = 1; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(nx, ny+55); ctx.lineTo(w*0.5 - (nx===n1x ? -0 : 0), ny+55);
+      // just a dot
+    });
+
+    apState.t++;
+  }
+
+  (function loop() { render(); requestAnimationFrame(loop); })();
+})();
+
+function apSimulate() {
+  if (!apState.activeAlive) return;
+  apState.activeAlive = false;
+  document.getElementById('ap-log').textContent = '💥 Node 1 failed → VIP migrating to Node 2...';
+  document.getElementById('ap-log').style.color = C.yellow;
+  setTimeout(() => {
+    document.getElementById('ap-log').textContent = '✅ Failover complete — Node 2 now active';
+    document.getElementById('ap-log').style.color = C.green;
+  }, 1500);
+}
+
+function apReset() {
+  apState.activeAlive = true;
+  document.getElementById('ap-log').textContent = 'Active node handling all traffic';
+  document.getElementById('ap-log').style.color = C.green;
+}
+
+// ══════════════════════════════════════════════════════════
+// ACTIVE-ACTIVE SIMULATION
+// ══════════════════════════════════════════════════════════
+let aaState = { nodes: [true, true, true] };
+
+(function() {
+  const s = setupCanvas('aa-canvas', 240);
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const nx = [w*0.2, w*0.5, w*0.8];
+  const ny = h*0.6;
+  const lbY = h*0.18;
+  const pkts = [];
+  let frame = 0;
+
+  (function loop() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = C.bg3; ctx.roundRect(0,0,w,h,8); ctx.fill();
+
+    // LB box
+    ctx.fillStyle = C.panel; ctx.strokeStyle = C.accent2; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(w*0.25, lbY-16, w*0.5, 32, 6); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = C.text; ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+    ctx.fillText('Load Balancer', w*0.5, lbY+4);
+
+    // client arrows into LB
+    ctx.beginPath(); ctx.moveTo(w*0.5, 10); ctx.lineTo(w*0.5, lbY-16);
+    ctx.strokeStyle = C.accent; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = C.muted; ctx.font = '10px Inter'; ctx.fillText('Traffic', w*0.5, 8);
+
+    nx.forEach((x, i) => {
+      const alive = aaState.nodes[i];
+      ctx.beginPath(); ctx.moveTo(w*0.5, lbY+16); ctx.lineTo(x, ny-35);
+      ctx.strokeStyle = alive ? C.dim : C.red+'33'; ctx.lineWidth = 1; ctx.stroke();
+
+      ctx.beginPath(); ctx.arc(x, ny, 32, 0, Math.PI*2);
+      ctx.fillStyle = alive ? '#1a2a4a' : '#2a1010'; ctx.fill();
+      ctx.strokeStyle = alive ? C.green : C.red; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = alive ? C.text : C.red;
+      ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+      ctx.fillText(`Node ${i+1}`, x, ny-4);
+      ctx.font = '9px IBM Plex Mono';
+      ctx.fillStyle = alive ? C.green : C.red;
+      ctx.fillText(alive ? 'ACTIVE' : 'FAILED', x, ny+10);
+    });
+
+    // spawn packets
+    if (frame % 20 === 0) {
+      const alive = aaState.nodes.map((a,i) => a ? i : -1).filter(i => i >= 0);
+      if (alive.length > 0) {
+        const ti = alive[frame/20 % alive.length | 0];
+        pkts.push({ x: w*0.5, y: lbY+16, tx: nx[ti], ty: ny-35, t: 0 });
+      }
+    }
+
+    pkts.forEach(p => {
+      p.t += 0.05;
+      p.x = w*0.5 + (p.tx - w*0.5) * p.t;
+      p.y = lbY+16 + (p.ty - lbY-16) * p.t;
+      ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI*2);
+      ctx.fillStyle = C.accent; ctx.fill();
+    });
+    for (let i = pkts.length-1; i>=0; i--) { if (pkts[i].t >= 1) pkts.splice(i, 1); }
+
+    const alive = aaState.nodes.filter(Boolean).length;
+    ctx.fillStyle = alive > 0 ? C.green : C.red;
+    ctx.font = '11px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText(`${alive}/3 nodes active`, w*0.5, h-8);
+
+    frame++;
+    requestAnimationFrame(loop);
+  })();
+})();
+
+function aaSimulate() {
+  aaState.nodes[1] = false;
+  document.getElementById('aa-log').textContent = '⚡ Node 2 failed — traffic redistributed to Node 1 & 3';
+  document.getElementById('aa-log').style.color = C.yellow;
+}
+function aaReset() {
+  aaState.nodes = [true, true, true];
+  document.getElementById('aa-log').textContent = '3 nodes active — load balanced';
+  document.getElementById('aa-log').style.color = C.green;
+}
+
+// ══════════════════════════════════════════════════════════
+// HEARTBEAT CANVAS
+// ══════════════════════════════════════════════════════════
+let hbMode = 'normal';
+let hbFrame = 0;
+
+function hbControl(mode) {
+  hbMode = mode;
+  document.querySelectorAll('.viz-btn').forEach(b => {
+    if (b.onclick && b.onclick.toString().includes(mode)) b.classList.add('active');
+    else if (b.onclick && b.onclick.toString().includes('hbControl')) b.classList.remove('active');
+  });
+  const log = document.getElementById('hb-log');
+  const colors = { normal: C.green, slow: C.yellow, dead: C.red };
+  const msgs = {
+    normal: '💓 Heartbeat healthy — interval: 200ms',
+    slow: '⚠️ Heartbeat slow/degraded — possible failure',
+    dead: '🔴 No heartbeat — node declared DEAD — failover initiated'
+  };
+  log.textContent = msgs[mode];
+  log.style.color = colors[mode];
+}
+
+(function() {
+  const s = setupCanvas('hb-canvas', 160);
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const history = [];
+  let lastBeat = 0;
+
+  (function loop() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = C.bg3; ctx.roundRect(0,0,w,h,8); ctx.fill();
+
+    // grid lines
+    for (let y = 0; y <= h; y += 30) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y);
+      ctx.strokeStyle = C.border + '55'; ctx.lineWidth = 0.5; ctx.stroke();
+    }
+
+    const interval = hbMode === 'normal' ? 25 : hbMode === 'slow' ? 80 : 999;
+    const beatNow = hbMode !== 'dead' && hbFrame - lastBeat > interval;
+    if (beatNow) { history.push({ x: w-10, v: 1 }); lastBeat = hbFrame; }
+    history.push({ x: w-10, v: 0 });
+    history.forEach(p => p.x -= 2);
+    while (history.length && history[0].x < 0) history.shift();
+
+    const midY = h / 2;
+    const ampY = 40;
+
+    const col = hbMode === 'normal' ? C.green : hbMode === 'slow' ? C.yellow : C.red;
+
+    ctx.beginPath();
+    ctx.moveTo(0, midY);
+    history.forEach(p => {
+      ctx.lineTo(p.x, midY - p.v * ampY);
+    });
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // glow on beat
+    if (beatNow) {
+      ctx.beginPath(); ctx.arc(w-10, midY-ampY, 6, 0, Math.PI*2);
+      ctx.fillStyle = col + 'aa'; ctx.fill();
+    }
+
+    // label
+    ctx.fillStyle = col; ctx.font = '12px IBM Plex Mono'; ctx.textAlign = 'left';
+    ctx.fillText(
+      hbMode === 'dead' ? '● FLATLINE' : `● ${hbMode === 'normal' ? 'HEALTHY' : 'DEGRADED'}`,
+      12, 24
+    );
+
+    hbFrame++;
+    requestAnimationFrame(loop);
+  })();
+})();
+
+// ══════════════════════════════════════════════════════════
+// SPLIT-BRAIN CANVAS
+// ══════════════════════════════════════════════════════════
+let sbPartitioned = false;
+
+(function() {
+  const s = setupCanvas('sb-canvas', 240);
+  if (!s) return;
+  const { ctx, w, h } = s;
+  let frame = 0;
+
+  (function loop() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = C.bg3; ctx.roundRect(0,0,w,h,8); ctx.fill();
+
+    const n1x = w*0.22, n2x = w*0.78, midY = h*0.45;
+
+    // network link
+    if (!sbPartitioned) {
+      ctx.beginPath(); ctx.moveTo(n1x+40, midY); ctx.lineTo(n2x-40, midY);
+      ctx.strokeStyle = frame%40<20 ? C.green : C.dim;
+      ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = C.green; ctx.font = '11px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('Network OK', w*0.5, midY-12);
+    } else {
+      // broken line
+      const midX = w*0.5;
+      ctx.beginPath(); ctx.moveTo(n1x+40, midY); ctx.lineTo(midX-25, midY);
+      ctx.strokeStyle = C.red+'88'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(midX+25, midY); ctx.lineTo(n2x-40, midY);
+      ctx.strokeStyle = C.red+'88'; ctx.lineWidth = 2; ctx.stroke();
+
+      ctx.fillStyle = C.red; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('✂', midX, midY+5);
+      ctx.fillStyle = C.red; ctx.font = '11px Inter';
+      ctx.fillText('PARTITION', midX, midY-12);
+    }
+
+    // Node 1
+    const n1label = sbPartitioned ? 'THINKS IT\'S MASTER' : 'MASTER (ACTIVE)';
+    const n1color = sbPartitioned ? C.red : C.green;
+    ctx.beginPath(); ctx.arc(n1x, midY, 38, 0, Math.PI*2);
+    ctx.fillStyle = sbPartitioned ? '#2a1515' : '#0f2a1a'; ctx.fill();
+    ctx.strokeStyle = n1color; ctx.lineWidth = sbPartitioned ? 2.5 : 2; ctx.stroke();
+    ctx.fillStyle = n1color; ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+    ctx.fillText('Node 1', n1x, midY-10);
+    ctx.font = '8.5px Inter';
+    ctx.fillText(n1label, n1x, midY+4);
+
+    // Node 2
+    const n2label = sbPartitioned ? 'ALSO THINKS IT\'S MASTER' : 'PASSIVE (STANDBY)';
+    const n2color = sbPartitioned ? C.red : C.muted;
+    ctx.beginPath(); ctx.arc(n2x, midY, 38, 0, Math.PI*2);
+    ctx.fillStyle = sbPartitioned ? '#2a1515' : '#141c35'; ctx.fill();
+    ctx.strokeStyle = n2color; ctx.lineWidth = sbPartitioned ? 2.5 : 1.5; ctx.stroke();
+    ctx.fillStyle = n2color; ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+    ctx.fillText('Node 2', n2x, midY-10);
+    ctx.font = '8.5px Inter';
+    ctx.fillText(n2label, n2x, midY+4);
+
+    // Storage
+    const dbY = h*0.82;
+    ctx.fillStyle = C.panel; ctx.strokeStyle = C.dim; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(w*0.3, dbY-18, w*0.4, 36, 6); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = C.muted; ctx.font = '11px Inter'; ctx.textAlign = 'center';
+    ctx.fillText('Shared Database', w*0.5, dbY);
+
+    ctx.beginPath(); ctx.moveTo(n1x, midY+38); ctx.lineTo(n1x, dbY-18);
+    ctx.strokeStyle = sbPartitioned ? C.red : C.dim; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(n2x, midY+38); ctx.lineTo(n2x, dbY-18);
+    ctx.strokeStyle = sbPartitioned ? C.red : C.dim; ctx.lineWidth = 1.5; ctx.stroke();
+
+    if (sbPartitioned && frame % 30 < 15) {
+      ctx.fillStyle = C.red; ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+      ctx.fillText('⚡ BOTH WRITING — DATA CORRUPT!', w*0.5, h-10);
+    }
+
+    frame++;
+    requestAnimationFrame(loop);
+  })();
+})();
+
+function sbSimulate() {
+  sbPartitioned = true;
+  document.getElementById('sb-log').textContent = '⚡ SPLIT-BRAIN: Both nodes believe they are the master!';
+  document.getElementById('sb-log').style.color = C.red;
+}
+function sbReset() {
+  sbPartitioned = false;
+  document.getElementById('sb-log').textContent = 'Network intact — nodes communicating';
+  document.getElementById('sb-log').style.color = C.green;
+}
+
+// ══════════════════════════════════════════════════════════
+// QUORUM CANVAS
+// ══════════════════════════════════════════════════════════
+let qState = { alive: [true, true, true, true, true] };
+
+(function() {
+  const s = setupCanvas('quorum-canvas', 260);
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  function render() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = C.bg3; ctx.roundRect(0,0,w,h,8); ctx.fill();
+
+    const cx = w/2, cy = h/2 - 10;
+    const R = Math.min(w, h) * 0.32;
+
+    const positions = [0,1,2,3,4].map(i => {
+      const angle = (i / 5) * Math.PI*2 - Math.PI/2;
+      return { x: cx + R*Math.cos(angle), y: cy + R*Math.sin(angle) };
+    });
+
+    const aliveCount = qState.alive.filter(Boolean).length;
+    const quorum = Math.floor(5/2) + 1;
+    const hasQuorum = aliveCount >= quorum;
+
+    // draw links
+    for (let i = 0; i < 5; i++) for (let j = i+1; j < 5; j++) {
+      const a = positions[i], b = positions[j];
+      const connected = qState.alive[i] && qState.alive[j];
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = connected ? (hasQuorum ? C.green+'44' : C.yellow+'44') : C.border+'33';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // nodes
+    positions.forEach((p, i) => {
+      const alive = qState.alive[i];
+      ctx.beginPath(); ctx.arc(p.x, p.y, 24, 0, Math.PI*2);
+      ctx.fillStyle = alive ? (hasQuorum ? '#0f2a1a' : '#2a1f00') : '#2a1010';
+      ctx.fill();
+      ctx.strokeStyle = alive ? (hasQuorum ? C.green : C.yellow) : C.red;
+      ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = alive ? C.text : C.red;
+      ctx.font = 'bold 12px Inter'; ctx.textAlign = 'center';
+      ctx.fillText(`N${i+1}`, p.x, p.y + 4);
+    });
+
+    // center quorum indicator
+    ctx.beginPath(); ctx.arc(cx, cy, 42, 0, Math.PI*2);
+    ctx.fillStyle = hasQuorum ? 'rgba(34,211,165,0.08)' : 'rgba(247,201,72,0.08)';
+    ctx.fill();
+    ctx.strokeStyle = hasQuorum ? C.green : C.yellow;
+    ctx.lineWidth = 1.5; ctx.stroke();
+
+    ctx.fillStyle = hasQuorum ? C.green : C.yellow;
+    ctx.font = 'bold 16px Syne'; ctx.textAlign = 'center';
+    ctx.fillText(`${aliveCount}/${5}`, cx, cy);
+    ctx.font = '10px IBM Plex Mono';
+    ctx.fillText(hasQuorum ? 'QUORUM' : 'NO QUORUM', cx, cy+16);
+
+    // label
+    ctx.fillStyle = hasQuorum ? C.green : C.red;
+    ctx.font = '12px Inter'; ctx.textAlign = 'center';
+    ctx.fillText(hasQuorum ? `✓ Cluster operational (need ${quorum}, have ${aliveCount})` : `✗ Cluster HALTED — below quorum (need ${quorum}, have ${aliveCount})`, cx, h-12);
+  }
+
+  (function loop() { render(); requestAnimationFrame(loop); })();
+})();
+
+let qKillCount = 0;
+function quorumKill(n) {
+  qState.alive[n-1] = false;
+  const alive = qState.alive.filter(Boolean).length;
+  const q = 3;
+  document.getElementById('quorum-log').textContent =
+    `Node ${n} killed — ${alive}/5 alive — quorum requires ${q} — ${alive >= q ? 'OPERATIONAL' : 'HALTED'}`;
+  document.getElementById('quorum-log').style.color = alive >= q ? C.green : C.red;
+}
+function quorumReset() {
+  qState.alive = [true,true,true,true,true];
+  document.getElementById('quorum-log').textContent = '5 nodes alive — quorum: 3/5 required';
+  document.getElementById('quorum-log').style.color = C.green;
+}
+
+// ══════════════════════════════════════════════════════════
+// KUBERNETES CANVAS
+// ══════════════════════════════════════════════════════════
+(function() {
+  const s = setupCanvas('k8s-canvas', 320);
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const comps = [
+    { x: w*0.5, y: 40, label: 'Control Plane', w: 200, h: 28, color: C.accent2, isBox: true },
+    { x: w*0.22, y: 95, label: 'API Server', color: C.accent, r: 28 },
+    { x: w*0.5, y: 95, label: 'Scheduler', color: C.accent, r: 28 },
+    { x: w*0.78, y: 95, label: 'etcd', color: C.accent2, r: 28 },
+    { x: w*0.5, y: 170, label: 'Controller Mgr', color: C.accent, r: 28 },
+
+    { x: w*0.2, y: 255, label: 'Worker 1', w: 110, h: 80, color: C.green, isBox: true },
+    { x: w*0.5, y: 255, label: 'Worker 2', w: 110, h: 80, color: C.green, isBox: true },
+    { x: w*0.8, y: 255, label: 'Worker 3', w: 110, h: 80, color: C.green, isBox: true },
+  ];
+
+  let hovered = -1;
+  const tips = [
+    null,
+    'API Server — single entry point for all cluster operations. kubectl talks here.',
+    'Scheduler — picks which worker node runs each Pod based on resources and constraints.',
+    'etcd — distributed key-value store. All cluster state lives here. If etcd dies, K8s is blind.',
+    'Controller Manager — runs reconciliation loops. Notices when reality ≠ desired state and fixes it.',
+    'Worker 1 — runs Kubelet (agent) + kube-proxy (network) + your Pods.',
+    'Worker 2 — another worker node. Pods can move here if Worker 1 fails.',
+    'Worker 3 — with 3+ workers, one failure doesn\'t take down your app.',
+  ];
+
+  function render() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = C.bg3; ctx.roundRect(0,0,w,h,8); ctx.fill();
+
+    // control plane boundary
+    ctx.beginPath();
+    ctx.roundRect(w*0.05, 15, w*0.9, 195, 10);
+    ctx.strokeStyle = C.accent2+'44'; ctx.lineWidth = 1.5; ctx.setLineDash([6,4]); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = C.accent2+'08'; ctx.fill();
+
+    ctx.fillStyle = C.accent2; ctx.font = '10px IBM Plex Mono'; ctx.textAlign = 'left';
+    ctx.fillText('CONTROL PLANE', w*0.07, 12);
+
+    // worker boundary
+    ctx.beginPath();
+    ctx.roundRect(w*0.05, 215, w*0.9, 100, 10);
+    ctx.strokeStyle = C.green+'33'; ctx.lineWidth = 1.5; ctx.setLineDash([6,4]); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = C.green+'06'; ctx.fill();
+    ctx.fillStyle = C.green; ctx.font = '10px IBM Plex Mono'; ctx.textAlign = 'left';
+    ctx.fillText('WORKER NODES', w*0.07, 212);
+
+    // connections
+    const links = [[1,4],[2,4],[1,2],[1,3],[4,5],[4,6],[4,7]];
+    links.forEach(([a,b]) => {
+      const ca = comps[a], cb = comps[b];
+      ctx.beginPath(); ctx.moveTo(ca.x, ca.y); ctx.lineTo(cb.x, cb.y);
+      ctx.strokeStyle = C.border; ctx.lineWidth = 1; ctx.stroke();
+    });
+
+    // draw circles
+    [1,2,3,4].forEach(i => {
+      const c = comps[i];
+      const isH = hovered === i;
+      ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, Math.PI*2);
+      ctx.fillStyle = isH ? c.color+'22' : C.panel; ctx.fill();
+      ctx.strokeStyle = c.color; ctx.lineWidth = isH ? 2.5 : 1.5; ctx.stroke();
+      ctx.fillStyle = c.color; ctx.font = 'bold 10px Inter'; ctx.textAlign = 'center';
+      ctx.fillText(c.label, c.x, c.y+4);
+    });
+
+    // draw worker boxes
+    [5,6,7].forEach(i => {
+      const c = comps[i];
+      const isH = hovered === i;
+      const bw = c.w, bh = c.h;
+      ctx.beginPath(); ctx.roundRect(c.x - bw/2, c.y - bh/2, bw, bh, 6);
+      ctx.fillStyle = isH ? C.green+'15' : C.panel; ctx.fill();
+      ctx.strokeStyle = C.green; ctx.lineWidth = isH ? 2 : 1; ctx.stroke();
+      ctx.fillStyle = C.green; ctx.font = 'bold 10px Inter'; ctx.textAlign = 'center';
+      ctx.fillText(c.label, c.x, c.y - 20);
+      ctx.fillStyle = C.muted; ctx.font = '9px Inter';
+      ctx.fillText('Kubelet', c.x, c.y-5);
+      ctx.fillText('kube-proxy', c.x, c.y+8);
+      ctx.fillStyle = C.accent+'88'; ctx.font = '9px Inter';
+      ctx.fillText('Pods 🟢🟢🟢', c.x, c.y+22);
+    });
+  }
+
+  (function loop() { render(); requestAnimationFrame(loop); })();
+
+  document.getElementById('k8s-canvas').addEventListener('mousemove', e => {
+    const rect = e.target.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * (w/rect.width);
+    const my = (e.clientY - rect.top) * (320/rect.height);
+    let h2 = -1;
+    comps.forEach((c, i) => {
+      if (i >= 1 && i <= 4) {
+        if (Math.sqrt((mx-c.x)**2+(my-c.y)**2) < c.r+5) h2 = i;
+      } else if (i >= 5) {
+        if (mx > c.x-c.w/2 && mx < c.x+c.w/2 && my > c.y-c.h/2 && my < c.y+c.h/2) h2 = i;
+      }
+    });
+    if (h2 !== hovered) {
+      hovered = h2;
+      render();
+      const log = document.getElementById('k8s-log');
+      if (h2 >= 0 && tips[h2]) {
+        log.textContent = '📌 ' + tips[h2];
+        log.style.color = comps[h2].color;
+      } else {
+        log.textContent = 'Click any component to learn what it does';
+        log.style.color = C.muted;
+      }
+    }
+  });
+})();
+
+// ══════════════════════════════════════════════════════════
+// DECISION CANVAS
+// ══════════════════════════════════════════════════════════
+(function() {
+  const s = setupCanvas('decision-canvas', 280);
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  function box(x, y, label, sub, color) {
+    const bw = 130, bh = 36;
+    ctx.fillStyle = C.panel;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(x-bw/2, y-bh/2, bw, bh, 6); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = color; ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+    ctx.fillText(label, x, y-2);
+    if (sub) { ctx.font = '9px IBM Plex Mono'; ctx.fillStyle = C.muted; ctx.fillText(sub, x, y+12); }
+  }
+
+  function arrow(x1, y1, x2, y2, label) {
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+    ctx.strokeStyle = C.dim; ctx.lineWidth = 1; ctx.stroke();
+    if (label) {
+      const mx = (x1+x2)/2, my = (y1+y2)/2;
+      ctx.fillStyle = C.muted; ctx.font = '9px Inter'; ctx.textAlign = 'center';
+      ctx.fillText(label, mx+8, my);
+    }
+  }
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = C.bg3; ctx.roundRect(0,0,w,h,8); ctx.fill();
+
+  box(w/2, 35, 'Need HA/Scale?', null, C.accent);
+  arrow(w/2, 53, w/2, 78, '');
+  box(w/2, 97, 'Stateful or Stateless?', null, C.accent2);
+
+  arrow(w*0.25, 97, w*0.18, 130, 'Stateful');
+  arrow(w*0.75, 97, w*0.82, 130, 'Stateless');
+
+  box(w*0.18, 155, 'Database?', null, C.yellow);
+  box(w*0.82, 155, 'Web / API?', null, C.green);
+
+  arrow(w*0.1, 173, w*0.1, 198, 'Yes');
+  arrow(w*0.26, 173, w*0.26, 198, 'No');
+
+  box(w*0.1, 218, 'Patroni/Sentinel', 'Active-Passive', C.accent);
+  box(w*0.3, 218, 'Pacemaker', 'A-P w/ STONITH', C.orange);
+  box(w*0.63, 218, 'Keepalived+HAProxy', 'Active-Active', C.green);
+  box(w*0.88, 218, 'Kubernetes', 'Container cluster', C.accent2);
+
+  arrow(w*0.63, 97, w*0.63, 130, '');
+  box(w*0.63, 150, 'Containerized?', null, C.muted);
+  arrow(w*0.55, 168, w*0.55, 198, 'No');
+  arrow(w*0.72, 168, w*0.88, 198, 'Yes');
+
+  ctx.fillStyle = C.muted; ctx.font = '10px IBM Plex Mono'; ctx.textAlign = 'center';
+  ctx.fillText('* Simplified — always evaluate your specific constraints', w/2, h-8);
+})();
+
+// ══════════════════════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════════════════════
+const questions = [
+  {
+    q: "What is the minimum number of nodes for a properly fault-tolerant cluster with quorum protection?",
+    opts: ["1 node", "2 nodes", "3 nodes", "4 nodes"],
+    correct: 2,
+    explain: "3 nodes is minimum. 2 nodes can't form quorum after 1 failure (1/2 is not majority). 3 nodes allow 1 failure: 2/3 = majority. Always use odd numbers."
+  },
+  {
+    q: "In Active-Passive clustering, the passive node is idle. What is the main advantage of this design?",
+    opts: [
+      "It uses 100% of resources",
+      "There is no split-brain risk — only one node can be active",
+      "It automatically scales traffic",
+      "It has faster failover than Active-Active"
+    ],
+    correct: 1,
+    explain: "Active-Passive's key advantage is simplicity and safety. Only one node can hold the VIP at a time, so split-brain is prevented by design. The idle passive node is the cost you pay for this safety."
+  },
+  {
+    q: "What is split-brain in a cluster?",
+    opts: [
+      "When nodes run out of memory",
+      "When two nodes both believe they are the active master simultaneously",
+      "When the load balancer sends traffic to the wrong node",
+      "When the heartbeat interval is too short"
+    ],
+    correct: 1,
+    explain: "Split-brain happens during network partitions. Each isolated node thinks the other is dead and promotes itself to master. Result: two masters writing to the same storage, causing data corruption."
+  },
+  {
+    q: "You have 5 nodes. 3 fail simultaneously. Can the cluster continue operating?",
+    opts: [
+      "Yes — 2 surviving nodes can still serve",
+      "No — quorum requires at least 3 of 5 nodes (majority)",
+      "Yes — any 1 surviving node can lead",
+      "It depends on which nodes failed"
+    ],
+    correct: 1,
+    explain: "Quorum for 5 nodes = ⌊5/2⌋+1 = 3. With only 2 surviving nodes, quorum is lost. The cluster halts to prevent split-brain. This is intentional — a cluster that can't form quorum must not write data."
+  },
+  {
+    q: "What is a Virtual IP (VIP) in a cluster, and why is it essential?",
+    opts: [
+      "An IP used only for heartbeats between nodes",
+      "A floating IP that always points to the active node — clients use this single address",
+      "A static IP assigned to the load balancer",
+      "An IP allocated by DHCP to new cluster nodes"
+    ],
+    correct: 1,
+    explain: "The VIP is the cluster's public face. It floats — when a failover happens, the VIP moves to the new active node. Clients connect to the VIP and never need to know which physical node is active."
+  },
+  {
+    q: "What does Patroni use to prevent split-brain in PostgreSQL clusters?",
+    opts: [
+      "STONITH hardware fencing",
+      "etcd (or ZooKeeper) as a distributed consensus store",
+      "Network isolation rules",
+      "A manual operator approval step"
+    ],
+    correct: 1,
+    explain: "Patroni uses etcd (or Consul/ZooKeeper) as its DCS (Distributed Configuration Store). The DCS holds the leader lock. A PostgreSQL node can only become primary if it can acquire this lock — which requires quorum from the etcd cluster. This prevents two nodes from both believing they're primary."
+  },
+  {
+    q: "In Kubernetes, what happens when a Pod crashes?",
+    opts: [
+      "The node it was on also crashes",
+      "Nothing — the pod is gone permanently",
+      "The Controller Manager detects the mismatch and creates a new Pod to restore desired state",
+      "The Scheduler sends an alert to the operator"
+    ],
+    correct: 2,
+    explain: "The Controller Manager runs constant reconciliation loops: desired state (3 replicas) vs actual state. If a Pod crashes, actual=2, desired=3. The Controller creates a new Pod immediately. This is Kubernetes' self-healing at work."
+  },
+  {
+    q: "A company runs a replica set with 3 database nodes. A junior dev runs DELETE FROM orders. What happens?",
+    opts: [
+      "The deletion is rejected because replicas prevent destructive writes",
+      "The DELETE replicates to all 3 nodes — all data is gone",
+      "Only the primary loses the data",
+      "The cluster automatically rolls back the operation"
+    ],
+    correct: 1,
+    explain: "Replication is NOT a safety net against bad writes. A DELETE replicates to all replicas within milliseconds. This is why backups (pg_dump, WAL archiving, point-in-time recovery) are essential and separate from replication."
+  },
+  {
+    q: "What is the PRIMARY purpose of the etcd cluster in Kubernetes?",
+    opts: [
+      "Running containers",
+      "Load balancing between pods",
+      "Storing all cluster state — the single source of truth",
+      "Monitoring node health with heartbeats"
+    ],
+    correct: 2,
+    explain: "etcd stores everything: Pod specs, ConfigMaps, Secrets, Service definitions, RBAC rules. If etcd dies, Kubernetes can't make any changes (but existing Pods keep running). etcd itself should run as 3 or 5 nodes for HA."
+  },
+  {
+    q: "You're setting up HA for a PostgreSQL database on 3 cheap VPS nodes. Which tool stack is the industry-standard choice?",
+    opts: [
+      "MySQL Group Replication",
+      "Patroni + etcd + HAProxy",
+      "Redis Sentinel",
+      "Kubernetes with StatefulSets (only)"
+    ],
+    correct: 1,
+    explain: "Patroni is the industry standard for PostgreSQL HA. It uses etcd for leader election and consensus, manages automatic failover, and works excellently on bare VPS nodes without requiring cloud infrastructure. HAProxy sits in front to route connections to the current primary."
+  }
+];
+
+let score = 0;
+let answered = new Set();
+
+function renderQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = questions.map((q, qi) => `
+    <div class="quiz-card">
+      <div class="quiz-q">${qi+1}. ${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((opt, oi) => `
+          <button class="quiz-opt" data-q="${qi}" data-o="${oi}" onclick="answerQuiz(${qi},${oi})">${opt}</button>
+        `).join('')}
+      </div>
+      <div class="quiz-explain" id="explain-${qi}"></div>
+    </div>
+  `).join('');
+}
+
+function answerQuiz(qi, oi) {
+  if (answered.has(qi)) return;
+  answered.add(qi);
+
+  const q = questions[qi];
+  const opts = document.querySelectorAll(`[data-q="${qi}"]`);
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === oi) btn.classList.add('wrong');
+  });
+
+  const explain = document.getElementById(`explain-${qi}`);
+  explain.textContent = '💡 ' + q.explain;
+  explain.classList.add('show');
+
+  if (oi === q.correct) score++;
+
+  if (answered.size === questions.length) {
+    const scoreDiv = document.getElementById('quiz-score');
+    scoreDiv.style.display = 'block';
+    document.getElementById('score-val').textContent = `${score} / ${questions.length}`;
+    const pct = score / questions.length;
+    const msg = pct === 1 ? "Perfect! You can explain clustering to anyone." :
+                pct >= 0.8 ? "Excellent! Strong understanding of clustering." :
+                pct >= 0.6 ? "Good foundation — review the sections you missed." :
+                "Re-read the sections and try again — clustering takes time to internalize.";
+    document.getElementById('score-msg').textContent = msg;
+  }
+}
+
+renderQuiz();
+
+</script>
+</body>
+</html>

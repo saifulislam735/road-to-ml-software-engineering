@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Engineering Mastery 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700;900&display=swap');
+:root{--bg:#080c14;--surface:#0d1421;--surface2:#111827;--border:#1e2d45;--border2:#253550;--text:#e2e8f0;--muted:#64748b;--cyan:#00d9ff;--cyan-dim:#0891b2;--purple:#a78bfa;--green:#34d399;--orange:#fb923c;--red:#f87171;--yellow:#fbbf24;--pink:#f472b6;--code-bg:#060a10;--sw:280px;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.7;display:flex;min-height:100vh;}
+#sb{width:var(--sw);min-width:var(--sw);background:var(--surface);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;}
+#sb::-webkit-scrollbar{width:4px;}#sb::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.logo{padding:20px 20px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);}
+.logo span{display:block;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-top:2px;font-size:11px;}
+#sbox{margin:12px;position:relative;}
+#si{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:9px 12px 9px 36px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+#si:focus{border-color:var(--cyan);}#si::placeholder{color:var(--muted);}
+.sic{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none;}
+.sclr{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted);cursor:pointer;font-size:16px;display:none;background:none;border:none;}
+#scnt{font-size:11px;color:var(--muted);padding:4px 20px;border-bottom:1px solid var(--border);display:none;}
+.ns{padding:8px 0;}.nsl{padding:6px 20px 3px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.nl{display:flex;align-items:center;gap:8px;padding:7px 20px;color:var(--muted);text-decoration:none;font-size:13px;border-left:2px solid transparent;transition:all .15s;}
+.nl:hover{color:var(--text);background:rgba(255,255,255,.03);}.nl.on{color:var(--cyan);border-left-color:var(--cyan);background:rgba(0,217,255,.05);}
+.bx{margin-left:auto;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600;}
+.bb{background:rgba(52,211,153,.15);color:var(--green);}.bm{background:rgba(251,146,60,.15);color:var(--orange);}.ba{background:rgba(244,114,182,.15);color:var(--pink);}.bp{background:rgba(167,139,250,.15);color:var(--purple);}
+#main{margin-left:var(--sw);flex:1;max-width:1100px;padding:0 48px 80px;}
+#tb{position:sticky;top:0;z-index:50;background:rgba(8,12,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:12px 48px;margin:0 -48px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.fb{padding:5px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;font-weight:500;}
+.fb:hover{color:var(--text);border-color:var(--text);}.fb.on{background:var(--cyan);color:var(--bg);border-color:var(--cyan);}
+.tbr{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.pp{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.pbar{width:100px;height:4px;background:var(--border2);border-radius:2px;}
+.pfill{height:100%;background:var(--cyan);border-radius:2px;transition:width .3s;}
+#hero{padding:60px 0 48px;border-bottom:1px solid var(--border);}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--cyan-dim),transparent);}
+h1{font-size:clamp(28px,4vw,44px);font-weight:900;line-height:1.15;letter-spacing:-.02em;margin-bottom:16px;}
+.grad{background:linear-gradient(135deg,var(--cyan) 0%,var(--purple) 50%,var(--pink) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hsub{font-size:16px;color:var(--muted);max-width:600px;margin-bottom:32px;}
+.hstats{display:flex;gap:32px;flex-wrap:wrap;}.hstat{display:flex;flex-direction:column;}
+.hsv{font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.hsl{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em;}
+.sec{padding:56px 0 0;border-bottom:1px solid var(--border);}
+.seh{margin-bottom:32px;}.see{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+h2{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px;display:flex;align-items:center;gap:12px;}
+.si2{font-size:22px;}.sed{color:var(--muted);max-width:640px;}
+h3{font-size:17px;font-weight:700;margin:28px 0 12px;color:var(--text);display:flex;align-items:center;gap:8px;}
+h3::before{content:'';width:3px;height:18px;background:var(--cyan);border-radius:2px;flex-shrink:0;}
+h4{font-size:14px;font-weight:700;color:var(--cyan);margin:20px 0 8px;text-transform:uppercase;letter-spacing:.06em;}
+p{margin-bottom:14px;color:var(--text);}p:last-child{margin-bottom:0;}
+strong{color:var(--cyan);font-weight:600;}em{color:var(--orange);font-style:normal;font-weight:500;}
+mark{background:rgba(0,217,255,.15);color:var(--cyan);padding:1px 4px;border-radius:3px;}
+.cb{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;margin:16px 0;overflow:hidden;}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);}
+.cl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);}
+.ct{font-size:12px;color:var(--muted);}
+.cpb{font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+.cpb:hover{color:var(--cyan);border-color:var(--cyan);}.cpb.ok{color:var(--green);border-color:var(--green);}
+pre{padding:20px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;}
+pre::-webkit-scrollbar{height:4px;}pre::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.kw{color:#c792ea;}.fn{color:#82aaff;}.str{color:#c3e88d;}.nu{color:#f78c6c;}.cm{color:#546e7a;font-style:italic;}.cx{color:#ffcb6b;}.dc{color:var(--orange);}
+.ca{border-radius:10px;padding:16px 20px;margin:16px 0;display:flex;gap:14px;border-left:3px solid;}
+.cai{font-size:18px;flex-shrink:0;margin-top:1px;}.cac{flex:1;}.cac p{margin-bottom:6px;}.cac p:last-child{margin-bottom:0;}
+.cat{font-weight:700;font-size:13px;margin-bottom:6px;}
+.ca.info{background:rgba(0,217,255,.05);border-color:var(--cyan);}.ca.info .cat{color:var(--cyan);}
+.ca.warn{background:rgba(251,146,60,.07);border-color:var(--orange);}.ca.warn .cat{color:var(--orange);}
+.ca.ok{background:rgba(52,211,153,.06);border-color:var(--green);}.ca.ok .cat{color:var(--green);}
+.ca.danger{background:rgba(248,113,113,.06);border-color:var(--red);}.ca.danger .cat{color:var(--red);}
+.ca.pur{background:rgba(167,139,250,.06);border-color:var(--purple);}.ca.pur .cat{color:var(--purple);}
+.steps{counter-reset:s;display:flex;flex-direction:column;margin:16px 0;position:relative;}
+.steps::before{content:'';position:absolute;left:20px;top:40px;bottom:40px;width:1px;background:var(--border);}
+.step{display:flex;gap:16px;padding:16px 0;}
+.sn{counter-increment:s;width:40px;height:40px;border-radius:50%;background:var(--surface2);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--cyan);flex-shrink:0;z-index:1;}
+.sn::after{content:counter(s);}.sb{flex:1;padding-top:9px;}.st{font-weight:700;font-size:15px;margin-bottom:8px;color:var(--text);}
+.tw{overflow-x:auto;margin:16px 0;border-radius:10px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}thead tr{background:var(--surface2);}
+th{padding:12px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:11px 16px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tbody tr:last-child td{border-bottom:none;}tbody tr:hover td{background:rgba(255,255,255,.02);}
+td code,p code,li code,span code{font-family:'JetBrains Mono',monospace;font-size:12px;background:rgba(0,217,255,.08);color:var(--cyan);padding:2px 6px;border-radius:4px;border:1px solid rgba(0,217,255,.15);}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin:16px 0;}
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:20px;transition:border-color .2s,transform .2s;}
+.card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.ci{font-size:24px;margin-bottom:12px;}.ctit{font-size:14px;font-weight:700;margin-bottom:6px;}.cds{font-size:13px;color:var(--muted);}
+.ql{display:flex;flex-direction:column;gap:8px;margin:16px 0;}
+.qi{background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s;}
+.qi:hover{border-color:var(--border2);}
+.qq{display:flex;align-items:flex-start;gap:12px;padding:16px 20px;cursor:pointer;user-select:none;font-weight:600;font-size:14px;}
+.qb{background:rgba(0,217,255,.15);color:var(--cyan);font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px;font-family:'JetBrains Mono',monospace;}
+.qt{margin-left:auto;color:var(--muted);font-size:18px;flex-shrink:0;transition:transform .2s;}
+.qi.open .qt{transform:rotate(45deg);}
+.qa{display:none;padding:16px 20px 20px;color:var(--muted);font-size:14px;border-top:1px solid var(--border);}
+.qi.open .qa{display:block;}.qa p{color:var(--muted);margin-bottom:10px;}.qa p:last-child{margin-bottom:0;}.qa p strong{color:var(--cyan);}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:10px;overflow:hidden;margin:16px 0;}
+.dc2{background:var(--code-bg);padding:20px;}.dct{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+.do .dct{color:var(--green);}.dn .dct{color:var(--red);}
+.dc2 ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.dc2 ul li{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;}
+.dc2 ul li::before{flex-shrink:0;margin-top:2px;}
+.do ul li::before{content:'✓';color:var(--green);font-weight:700;}.dn ul li::before{content:'✗';color:var(--red);font-weight:700;}
+.chk{list-style:none;display:flex;flex-direction:column;gap:6px;margin:12px 0;}
+.chk li{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;cursor:pointer;}
+.chk li input[type="checkbox"]{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:2px solid var(--border2);border-radius:4px;background:transparent;cursor:pointer;flex-shrink:0;margin-top:2px;transition:all .15s;position:relative;}
+.chk li input[type="checkbox"]:checked{background:var(--cyan);border-color:var(--cyan);}
+.chk li input[type="checkbox"]:checked::after{content:'✓';position:absolute;color:var(--bg);font-size:10px;font-weight:900;top:-2px;left:1px;}
+.chk li.done span{text-decoration:line-through;color:var(--muted);}
+.pl{padding:4px 11px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid;display:inline-block;}
+.pc{background:rgba(0,217,255,.08);border-color:rgba(0,217,255,.3);color:var(--cyan);}
+.pp2{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.3);color:var(--purple);}
+.pg{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.3);color:var(--green);}
+.po{background:rgba(251,146,60,.08);border-color:rgba(251,146,60,.3);color:var(--orange);}
+.ppk{background:rgba(244,114,182,.08);border-color:rgba(244,114,182,.3);color:var(--pink);}
+.arch{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:24px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.9;overflow-x:auto;white-space:pre;color:var(--text);margin:16px 0;}
+.ac{color:var(--cyan);}.ag{color:var(--green);}.apx{color:var(--purple);}.ao{color:var(--orange);}.ay{color:var(--yellow);}.apk{color:var(--pink);}.am{color:var(--muted);}
+.hide{display:none!important;}
+#btt{position:fixed;bottom:28px;right:28px;width:40px;height:40px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;opacity:0;pointer-events:none;transition:all .2s;z-index:200;}
+#btt.show{opacity:1;pointer-events:all;}#btt:hover{color:var(--cyan);border-color:var(--cyan);}
+ul.li{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0 16px;}
+ul.li li{display:flex;gap:10px;font-size:14px;color:var(--muted);align-items:flex-start;}
+ul.li li::before{content:'→';color:var(--cyan);flex-shrink:0;font-weight:700;}
+.tc{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0;}
+.tcb{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:20px;}
+.tcb h4{margin-top:0;}
+.pg2{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px;margin:16px 0;}
+.ph{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;border-top:3px solid;}
+.ph:nth-child(1){border-top-color:var(--green);}.ph:nth-child(2){border-top-color:var(--cyan);}
+.ph:nth-child(3){border-top-color:var(--purple);}.ph:nth-child(4){border-top-color:var(--orange);}
+.ph:nth-child(5){border-top-color:var(--pink);}
+.phl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.pht{font-size:15px;font-weight:700;margin-bottom:10px;}
+.phi{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.phi li{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:flex-start;}
+.phi li::before{content:'▸';color:var(--cyan);flex-shrink:0;}
+@media(max-width:768px){#sb{transform:translateX(-100%);}#main{margin-left:0;padding:0 20px 60px;}#tb{padding:12px 20px;margin:0 -20px 0;}.tc{grid-template-columns:1fr;}.dg{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav id="sb">
+  <div class="logo">AI Engineering Mastery<span>Complete 2026 Guide — Beginner to Pro</span></div>
+  <div id="sbox"><span class="sic">🔍</span><input type="text" id="si" placeholder="Search topics… (/)"><button class="sclr" id="sclr">×</button></div>
+  <div id="scnt"></div>
+  <div class="ns"><div class="nsl">Overview</div>
+    <a class="nl on" href="#hero">🗺️ Introduction</a>
+    <a class="nl" href="#ecosystem">🌐 AI Ecosystem Map</a>
+    <a class="nl" href="#prereqs">📋 Prerequisites</a>
+    <a class="nl" href="#infra">🖥️ Hardware &amp; Infrastructure</a>
+  </div>
+  <div class="ns"><div class="nsl">Core Topics</div>
+    <a class="nl" href="#llm">🧠 LLM Fundamentals <span class="bx bb">Beginner</span></a>
+    <a class="nl" href="#langchain">⛓️ LangChain &amp; LCEL <span class="bx bm">Mid</span></a>
+    <a class="nl" href="#rag">🔍 RAG Systems <span class="bx bm">Mid</span></a>
+    <a class="nl" href="#vectordb">🗄️ Vector Databases <span class="bx bm">Mid</span></a>
+    <a class="nl" href="#langgraph">🕸️ LangGraph &amp; Agents <span class="bx ba">Adv</span></a>
+    <a class="nl" href="#mcp">🔌 MCP Protocol <span class="bx ba">Adv</span></a>
+    <a class="nl" href="#composio">🔧 Composio <span class="bx ba">Adv</span></a>
+    <a class="nl" href="#langsmith">📊 LangSmith <span class="bx bm">Mid</span></a>
+    <a class="nl" href="#bedrock">☁️ AWS Bedrock <span class="bx bp">Pro</span></a>
+    <a class="nl" href="#sagemaker">🚀 AWS SageMaker <span class="bx bp">Pro</span></a>
+  </div>
+  <div class="ns"><div class="nsl">Advanced</div>
+    <a class="nl" href="#production">🏭 Production Deployment</a>
+    <a class="nl" href="#sysdesign">🏛️ System Design</a>
+    <a class="nl" href="#interview">🎯 Interview Q&amp;A (80+)</a>
+    <a class="nl" href="#roadmap">🗓️ 90-Day Roadmap</a>
+  </div>
+</nav>
+
+<main id="main">
+<div id="tb">
+  <button class="fb on" data-f="all">All</button>
+  <button class="fb" data-f="beginner">Beginner</button>
+  <button class="fb" data-f="intermediate">Intermediate</button>
+  <button class="fb" data-f="advanced">Advanced</button>
+  <button class="fb" data-f="code">Code</button>
+  <button class="fb" data-f="interview">Interview</button>
+  <div class="tbr"><div class="pp"><span id="plbl">0 tasks done</span><div class="pbar"><div class="pfill" id="pfil" style="width:0%"></div></div></div></div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="eyebrow">2026 AI Engineering Guide — From Zero to Production</div>
+  <h1>Become an <span class="grad">AI Engineer</span> from Scratch</h1>
+  <p class="hsub">Complete step-by-step notes covering every tool you need: LangChain, RAG, Vector DBs, LangGraph, MCP, Composio, AWS Bedrock, SageMaker, and LangSmith — from beginner concepts to production-ready systems with full code implementations.</p>
+  <div class="hstats">
+    <div class="hstat"><div class="hsv">10</div><div class="hsl">Major Tools</div></div>
+    <div class="hstat"><div class="hsv">80+</div><div class="hsl">Interview Q&As</div></div>
+    <div class="hstat"><div class="hsv">40+</div><div class="hsl">Code Examples</div></div>
+    <div class="hstat"><div class="hsv">$200k+</div><div class="hsl">Avg Salary (US)</div></div>
+  </div>
+</section>
+
+<!-- ECOSYSTEM -->
+<section id="ecosystem" class="sec" data-level="beginner">
+  <div class="seh">
+    <div class="see">Chapter 01 — Overview</div>
+    <h2><span class="si2">🌐</span> The Complete AI Engineering Ecosystem</h2>
+    <p class="sed">Understand where every tool fits before writing a single line of code. This mental model is what separates AI engineers from people who just call OpenAI APIs.</p>
+  </div>
+  <h3>What is AI Engineering? (The Simple Explanation)</h3>
+  <p>Think of building a restaurant. <strong>OpenAI/Claude/Gemini</strong> is the chef (the LLM). <strong>LangChain</strong> is the kitchen management system. <strong>RAG + Vector DB</strong> is the pantry with all ingredients. <strong>LangGraph</strong> is the workflow that runs the whole operation. <strong>AWS Bedrock</strong> is renting a cloud kitchen. <strong>LangSmith</strong> is the quality inspector watching every dish. You are the <strong>head architect</strong> — you design how everything works together.</p>
+  <div class="ca info"><div class="cai">💡</div><div class="cac">
+    <div class="cat">Key Insight — AI Engineering ≠ ML Engineering</div>
+    <p>You are NOT training models. You are <strong>building products ON TOP of already-trained LLMs</strong>. This is much more like backend/full-stack development than data science. You do not need a PhD or advanced math. You need good software engineering skills and knowledge of these tools. A software engineer can become an AI engineer in 3 months with focused practice.</p>
+  </div></div>
+  <h3>The Full AI Stack — Every Layer Explained</h3>
+  <div class="arch"><span class="ac">┌──────────────────────────────────────────────────────────┐
+│              USER / CLIENT LAYER                         │
+│   Web App · Mobile App · API Client · Chatbot UI         │
+└──────────────────────┬───────────────────────────────────┘</span>
+                       │ HTTP Request / WebSocket
+<span class="apx">┌──────────────────────▼───────────────────────────────────┐
+│            ORCHESTRATION LAYER                           │
+│  LangChain  — chains, prompts, memory, output parsing    │
+│  LangGraph  — stateful agents, loops, multi-agent flows  │
+└──────┬───────────────────────┬──────────────┬────────────┘</span>
+       │                       │              │
+<span class="ag">┌──────▼──────┐   ┌────────────▼────────┐  ┌──▼──────────────┐
+│ TOOL LAYER  │   │  KNOWLEDGE LAYER    │  │  MEMORY LAYER   │
+│  MCP tools  │   │  RAG System         │  │  Short-term:    │
+│  Composio   │   │  Vector DB          │  │  ChatHistory    │
+│  250+ APIs  │   │  Pinecone / Qdrant  │  │  Long-term:     │
+│  Gmail      │   │  ChromaDB / pgvec   │  │  Redis/Postgres │
+│  GitHub     │   │  Chunk + Embed      │  │  LangGraph state│
+│  Slack      │   │  BM25 + rerank      │  └─────────────────┘
+└──────┬──────┘   └────────────┬────────┘</span>
+       │                       │
+<span class="ao">┌──────▼───────────────────────▼──────────────────────────┐
+│                 LLM / MODEL LAYER                        │
+│  OpenAI GPT-4o · Claude 3.5 Sonnet · Gemini 1.5 Pro     │
+│  AWS Bedrock (managed: Claude, Llama 3 70B, Titan)       │
+│  SageMaker (custom fine-tuned, HuggingFace models)       │
+│  Ollama (local: Llama3 8B, Mistral 7B — no API cost)     │
+└──────────────────────────────────────────────────────────┘</span>
+<span class="ay">┌──────────────────────────────────────────────────────────┐
+│         OBSERVABILITY / EVALUATION LAYER                 │
+│  LangSmith — traces, evals, cost tracking, datasets      │
+│  RAGAS — faithfulness, relevancy, precision, recall      │
+└──────────────────────────────────────────────────────────┘</span></div>
+
+  <h3>Tool-by-Tool Breakdown: What Does Each Tool Actually Do?</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Tool</th><th>What It Does (Plain English)</th><th>When You Need It</th><th>Level</th></tr></thead>
+    <tbody>
+      <tr><td><strong>LangChain</strong></td><td>The glue. Connects LLMs with prompts, tools, memory, output parsers. The backbone of most AI apps.</td><td>Any LLM-powered application</td><td><span class="pl pg">Beginner</span></td></tr>
+      <tr><td><strong>RAG</strong></td><td>Makes LLMs answer from YOUR documents instead of just their training data. Upload PDFs → AI knows them.</td><td>Chatbots with custom knowledge base</td><td><span class="pl pg">Beginner</span></td></tr>
+      <tr><td><strong>Vector DB</strong></td><td>Stores text as numbers (embeddings). Finds similar text by mathematical distance instead of keyword matching.</td><td>Every RAG system requires one</td><td><span class="pl pc">Medium</span></td></tr>
+      <tr><td><strong>LangGraph</strong></td><td>Builds complex agent workflows. Think flowcharts for AI — nodes (actions) + edges (decisions) + loops.</td><td>Multi-step agents that make decisions</td><td><span class="pl po">Advanced</span></td></tr>
+      <tr><td><strong>MCP Protocol</strong></td><td>Standard for AI tool integration. Like USB-C — one standard, works everywhere. Claude, GPT, Cursor all support it.</td><td>Building reusable AI tool integrations</td><td><span class="pl po">Advanced</span></td></tr>
+      <tr><td><strong>Composio</strong></td><td>250+ pre-built MCP servers. Gmail, Slack, GitHub, Notion, Calendar, Jira — all ready to use in 5 minutes.</td><td>Agents that need real-world actions</td><td><span class="pl po">Advanced</span></td></tr>
+      <tr><td><strong>LangSmith</strong></td><td>Debug and observe every LLM call. See full traces, token costs, latency. Evaluate quality with test sets.</td><td>From day one — essential for debugging</td><td><span class="pl pc">Medium</span></td></tr>
+      <tr><td><strong>AWS Bedrock</strong></td><td>AWS-managed API for Claude, Llama, Titan. Enterprise-grade security, compliance, no server management.</td><td>Enterprise / production AWS deployment</td><td><span class="pl ppk">Pro</span></td></tr>
+      <tr><td><strong>AWS SageMaker</strong></td><td>Full ML platform. Fine-tune models on your data. Deploy HuggingFace models. Build entire ML pipelines.</td><td>When you need custom models, not just APIs</td><td><span class="pl ppk">Pro</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>AI Engineer vs ML Engineer vs Data Scientist</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Role</th><th>Primary Focus</th><th>Key Tools</th><th>What They Build</th><th>Needs GPU?</th></tr></thead>
+    <tbody>
+      <tr><td><strong>AI Engineer</strong></td><td>Build products ON pre-trained LLMs. API integration + system design.</td><td>LangChain, RAG, FastAPI, Docker</td><td>Chatbots, agents, RAG systems, AI features in apps</td><td>❌ Rarely needed</td></tr>
+      <tr><td><strong>ML Engineer</strong></td><td>Train, deploy, optimize ML models from scratch or fine-tune.</td><td>PyTorch, CUDA, Kubernetes, MLflow</td><td>Custom models, inference servers, training pipelines</td><td>✅ Always</td></tr>
+      <tr><td><strong>Data Scientist</strong></td><td>Analyze data, build predictive models, derive business insights.</td><td>pandas, sklearn, Jupyter, SQL, R</td><td>Reports, dashboards, recommendation systems, forecasting</td><td>⚠️ Sometimes</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- PREREQUISITES -->
+<section id="prereqs" class="sec" data-level="beginner">
+  <div class="seh">
+    <div class="see">Chapter 02 — Foundation</div>
+    <h2><span class="si2">📋</span> Prerequisites — What You Need Before Starting</h2>
+    <p class="sed">Be honest with yourself. Here is exactly what you need before jumping into AI Engineering — and what you can learn as you go.</p>
+  </div>
+  <div class="tc">
+    <div class="tcb">
+      <h4>✅ Must Have (Non-Negotiable)</h4>
+      <ul class="li">
+        <li><strong>Python basics</strong> — variables, functions, classes, loops, file I/O</li>
+        <li><strong>pip / virtual environments</strong> — installing packages, using .env files</li>
+        <li><strong>REST APIs</strong> — what they are, how to call them with the requests library</li>
+        <li><strong>JSON</strong> — reading and writing JSON data in Python</li>
+        <li><strong>Async Python</strong> — async/await, asyncio basics (LangChain uses this heavily)</li>
+      </ul>
+    </div>
+    <div class="tcb">
+      <h4>🟡 Nice to Have (Learn As You Go)</h4>
+      <ul class="li">
+        <li><strong>Docker basics</strong> — running containers, docker-compose files</li>
+        <li><strong>PostgreSQL / SQL</strong> — basic queries, table design (for pgvector)</li>
+        <li><strong>FastAPI</strong> — building REST APIs in Python</li>
+        <li><strong>AWS basics</strong> — IAM roles, S3 concepts (needed for Bedrock/SageMaker)</li>
+        <li><strong>Git / GitHub</strong> — version control and portfolio</li>
+      </ul>
+    </div>
+  </div>
+  <h3>Python Essentials Code — Master These Patterns First</h3>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">python_essentials.py — Critical patterns for AI engineering</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="cm"># ── 1. Environment Variables — NEVER hardcode API keys ──</span>
+<span class="kw">import</span> os
+<span class="kw">from</span> dotenv <span class="kw">import</span> load_dotenv
+
+load_dotenv()  <span class="cm"># automatically reads .env file in current directory</span>
+api_key = os.getenv(<span class="str">"OPENAI_API_KEY"</span>)  <span class="cm"># safely read the key</span>
+<span class="cm"># If .env has:  OPENAI_API_KEY=sk-abc123
+# os.getenv() returns "sk-abc123" — never expose this in code!</span>
+
+<span class="cm"># ── 2. Pydantic — Structured data validation (LangChain uses this everywhere) ──</span>
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field
+<span class="kw">from</span> typing <span class="kw">import</span> Optional, List
+
+<span class="kw">class</span> <span class="cx">Document</span>(BaseModel):
+    id: str
+    content: str
+    source: str
+    metadata: Optional[dict] = {}  <span class="cm"># Optional with default value</span>
+    score: Optional[float] = None
+
+doc = <span class="cx">Document</span>(id=<span class="str">"1"</span>, content=<span class="str">"hello world"</span>, source=<span class="str">"handbook.pdf"</span>)
+<span class="fn">print</span>(doc.model_dump())   <span class="cm"># → {'id': '1', 'content': 'hello world', ...}</span>
+<span class="fn">print</span>(doc.model_json())   <span class="cm"># → JSON string</span>
+
+<span class="cm"># ── 3. Async/Await — Essential for LLM calls (they are slow network calls!) ──</span>
+<span class="kw">import</span> asyncio
+
+<span class="kw">async def</span> <span class="fn">call_llm</span>(prompt: str) -> str:
+    <span class="cm"># async means: while waiting for LLM response, do other things</span>
+    <span class="kw">await</span> asyncio.sleep(<span class="nu">0.1</span>)  <span class="cm"># simulating network wait</span>
+    <span class="kw">return</span> <span class="str">f"Response to: {prompt}"</span>
+
+<span class="kw">async def</span> <span class="fn">process_batch</span>(prompts: List[str]) -> List[str]:
+    <span class="cm"># KEY: Run multiple LLM calls in PARALLEL — 5x faster than sequential!</span>
+    results = <span class="kw">await</span> asyncio.gather(*[call_llm(p) <span class="kw">for</span> p <span class="kw">in</span> prompts])
+    <span class="kw">return</span> results
+
+<span class="cm"># Sequential: 10 LLM calls × 2 seconds each = 20 seconds total
+# Parallel:   10 LLM calls with asyncio.gather = ~2 seconds total!</span>
+asyncio.run(process_batch([<span class="str">"Q1"</span>, <span class="str">"Q2"</span>, <span class="str">"Q3"</span>]))
+
+<span class="cm"># ── 4. Retry with Exponential Backoff — LLM APIs fail sometimes ──</span>
+<span class="kw">import</span> time, random
+
+<span class="kw">def</span> <span class="fn">call_with_retry</span>(func, max_retries: int = <span class="nu">3</span>):
+    <span class="kw">for</span> attempt <span class="kw">in</span> <span class="fn">range</span>(max_retries):
+        <span class="kw">try</span>:
+            <span class="kw">return</span> func()
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            <span class="kw">if</span> attempt == max_retries - <span class="nu">1</span>:
+                <span class="kw">raise</span>  <span class="cm"># last attempt — raise the error</span>
+            wait = (<span class="nu">2</span> ** attempt) + random.random()  <span class="cm"># 1s, 2s, 4s + jitter</span>
+            <span class="fn">print</span>(<span class="str">f"Attempt {attempt+1} failed: {e}. Retrying in {wait:.1f}s"</span>)
+            time.sleep(wait)
+
+<span class="cm"># ── 5. TypedDict for LangGraph State ──</span>
+<span class="kw">from</span> typing <span class="kw">import</span> TypedDict, Annotated
+<span class="kw">import</span> operator
+
+<span class="kw">class</span> <span class="cx">AgentState</span>(TypedDict):
+    messages: Annotated[List, operator.add]  <span class="cm"># messages accumulate</span>
+    user_id: str
+    context: Optional[str]
+    step_count: int  <span class="cm"># track iterations to prevent infinite loops</span></pre></div>
+
+  <h3>Your .env File — Copy This Template</h3>
+  <div class="cb"><div class="ch"><span class="cl">ENV</span><span class="ct">.env — fill in your API keys</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="cm"># OpenAI — https://platform.openai.com/api-keys</span>
+OPENAI_API_KEY=sk-...
+
+<span class="cm"># Anthropic — https://console.anthropic.com</span>
+ANTHROPIC_API_KEY=sk-ant-...
+
+<span class="cm"># Pinecone — https://app.pinecone.io</span>
+PINECONE_API_KEY=...
+PINECONE_ENVIRONMENT=us-east-1
+
+<span class="cm"># LangSmith (free!) — https://smith.langchain.com</span>
+LANGCHAIN_API_KEY=ls__...
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_PROJECT=my-ai-project
+
+<span class="cm"># Cohere (for reranking) — https://dashboard.cohere.com</span>
+COHERE_API_KEY=...
+
+<span class="cm"># AWS (for Bedrock / SageMaker)</span>
+AWS_ACCESS_KEY_ID=AKIA...
+AWS_SECRET_ACCESS_KEY=...
+AWS_DEFAULT_REGION=us-east-1</pre></div>
+
+  <h3>Installation — Every Package You Need</h3>
+  <div class="cb"><div class="ch"><span class="cl">Bash</span><span class="ct">setup.sh — Run this first</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="cm"># Step 1: Create virtual environment (always do this!)</span>
+python -m venv venv
+source venv/bin/activate      <span class="cm"># Linux/Mac</span>
+venv\Scripts\activate         <span class="cm"># Windows</span>
+
+<span class="cm"># Step 2: Core AI Engineering packages</span>
+pip install langchain langchain-openai langchain-community langchain-core
+pip install langgraph langsmith langchain-aws
+
+<span class="cm"># Step 3: Vector databases</span>
+pip install chromadb pinecone-client qdrant-client pgvector
+
+<span class="cm"># Step 4: LLM providers</span>
+pip install anthropic openai tiktoken
+
+<span class="cm"># Step 5: Tool integrations</span>
+pip install composio-langchain fastmcp
+
+<span class="cm"># Step 6: AWS</span>
+pip install boto3 sagemaker
+
+<span class="cm"># Step 7: Production stack</span>
+pip install python-dotenv pydantic fastapi uvicorn redis
+
+<span class="cm"># Step 8: Evaluation + document processing</span>
+pip install ragas sentence-transformers pypdf unstructured[all-docs]</pre></div>
+</section>
+
+<!-- HARDWARE -->
+<section id="infra" class="sec" data-level="beginner">
+  <div class="seh">
+    <div class="see">Chapter 03 — Infrastructure</div>
+    <h2><span class="si2">🖥️</span> Hardware, Servers &amp; Infrastructure</h2>
+    <p class="sed">What hardware do you actually need? The honest breakdown for every scenario.</p>
+  </div>
+  <div class="ca info"><div class="cai">🎯</div><div class="cac">
+    <div class="cat">The Big Secret — You Don't Need a GPU for Most AI Engineering</div>
+    <p>When using OpenAI, Claude, or AWS Bedrock APIs, <strong>all computation happens on their servers</strong>. You only need powerful hardware if you're running models locally or fine-tuning. Start with API-based development — it's faster, cheaper, and what 90% of companies use in production.</p>
+  </div></div>
+  <h3>Local Development Requirements</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Scenario</th><th>Minimum Specs</th><th>Why</th><th>Cost</th></tr></thead>
+    <tbody>
+      <tr><td>API-only (OpenAI, Claude, Bedrock)</td><td>Any laptop with 8GB RAM + internet</td><td>Computation happens in the cloud</td><td>Just API costs (~$5-50/mo to start)</td></tr>
+      <tr><td>RAG with ChromaDB (local)</td><td>16GB RAM, SSD storage</td><td>ChromaDB loads vectors into RAM</td><td>Free (your existing laptop)</td></tr>
+      <tr><td>Local LLM 7B (Ollama + Llama 3 8B)</td><td>16GB RAM, no GPU</td><td>Runs on CPU but is slow (~5 tok/sec)</td><td>Free — good for privacy-first dev</td></tr>
+      <tr><td>Local LLM 7B with GPU acceleration</td><td>8GB VRAM (RTX 3060/4060)</td><td>GPU inference is 20-50x faster</td><td>$300-500 GPU</td></tr>
+      <tr><td>Local LLM 70B (Llama 3 70B)</td><td>48GB+ RAM or 2×24GB VRAM</td><td>Large model needs massive memory</td><td>$1000-2000 GPU setup</td></tr>
+      <tr><td>Fine-tuning with QLoRA</td><td>1×24GB GPU (RTX 3090/4090)</td><td>Backpropagation needs GPU VRAM</td><td>$800-1200 GPU</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>GPU VRAM Guide — Running Models Locally</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Model Size</th><th>Examples</th><th>Full Precision VRAM</th><th>4-bit Quant VRAM</th><th>Speed (GPU)</th></tr></thead>
+    <tbody>
+      <tr><td>7B params</td><td>Mistral 7B, Llama 3.1 8B</td><td>14 GB</td><td>4–5 GB</td><td>~60 tok/sec (RTX 4090)</td></tr>
+      <tr><td>13B params</td><td>Llama 2 13B</td><td>26 GB</td><td>8–9 GB</td><td>~35 tok/sec (RTX 4090)</td></tr>
+      <tr><td>34B params</td><td>CodeLlama 34B</td><td>68 GB</td><td>20 GB</td><td>~15 tok/sec (A100)</td></tr>
+      <tr><td>70B params</td><td>Llama 3 70B</td><td>140 GB</td><td>40 GB</td><td>~8 tok/sec (2×A100)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Cloud Options — When Your Laptop Isn't Enough</h3>
+  <div class="cg">
+    <div class="card"><div class="ci">☁️</div><div class="ctit">AWS EC2 g4dn.xlarge</div><div class="cds">1× T4 GPU (16GB VRAM). ~$0.53/hr. Run 7-13B models. Use Spot Instances to cut cost by 70%.</div></div>
+    <div class="card"><div class="ci">🚀</div><div class="ctit">RunPod / Lambda Labs</div><div class="cds">RTX 4090 from $0.44/hr. Best value for experiments. Spin up, run, spin down.</div></div>
+    <div class="card"><div class="ci">🤗</div><div class="ctit">Hugging Face Spaces</div><div class="cds">Free T4 GPU tier. Great for demos and sharing. Limited compute hours/month.</div></div>
+    <div class="card"><div class="ci">🔵</div><div class="ctit">Google Colab Pro</div><div class="cds">$10/mo for T4/V100. Good for learning experiments, notebooks, and quick tests.</div></div>
+  </div>
+</section>
+<!-- LLM FUNDAMENTALS -->
+<section id="llm" class="sec" data-level="beginner">
+  <div class="seh">
+    <div class="see">Chapter 04 — Core Concepts</div>
+    <h2><span class="si2">🧠</span> LLM Fundamentals — The Building Blocks</h2>
+    <p class="sed">Before using LangChain or RAG, understand how LLMs work internally. These concepts appear in every interview.</p>
+  </div>
+  <h3>Concept 1: Tokens — How LLMs Read Text</h3>
+  <p>LLMs don't read words or characters. They read <strong>tokens</strong> — chunks that can be parts of words, whole words, or punctuation. "tokenization" becomes ["token", "iz", "ation"] — 3 tokens.</p>
+  <div class="ca info"><div class="cai">📏</div><div class="cac"><div class="cat">Token Rule of Thumb</div>
+    <p>1 token ≈ 4 characters ≈ 0.75 words. "Hello world" = 2 tokens. A full page = ~500 tokens. GPT-4o context = 128,000 tokens = ~100,000 words. API pricing is per 1 million tokens.</p>
+  </div></div>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">tokens.py — Count tokens and estimate cost</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">import</span> tiktoken
+<span class="kw">from</span> typing <span class="kw">import</span> List
+
+<span class="kw">def</span> <span class="fn">count_tokens</span>(text: str, model: str = <span class="str">"gpt-4o"</span>) -> int:
+    <span class="cm">"""Count tokens to estimate API cost BEFORE calling LLM"""</span>
+    enc = tiktoken.encoding_for_model(model)
+    <span class="kw">return</span> <span class="fn">len</span>(enc.encode(text))
+
+<span class="kw">def</span> <span class="fn">estimate_cost</span>(text: str, output_tokens: int = <span class="nu">1000</span>) -> dict:
+    <span class="cm">"""Estimate API cost for a prompt + expected output"""</span>
+    input_tokens = count_tokens(text)
+    <span class="cm"># GPT-4o pricing (2026): $5/1M input, $15/1M output</span>
+    input_cost  = (input_tokens  / <span class="nu">1_000_000</span>) * <span class="nu">5.0</span>
+    output_cost = (output_tokens / <span class="nu">1_000_000</span>) * <span class="nu">15.0</span>
+    <span class="kw">return</span> {
+        <span class="str">"input_tokens"</span>: input_tokens,
+        <span class="str">"total_cost_usd"</span>: <span class="fn">round</span>(input_cost + output_cost, <span class="nu">6</span>)
+    }
+
+text = <span class="str">"Explain transformers in machine learning."</span>
+<span class="fn">print</span>(count_tokens(text))   <span class="cm"># 7</span>
+<span class="fn">print</span>(estimate_cost(text))  <span class="cm"># ~$0.000045</span>
+
+<span class="cm"># Real-world impact: 5000-token RAG context x 10,000 daily queries
+# = 50M tokens/day = $250/day = $7,500/month.
+# Always measure BEFORE scaling!</span></pre></div>
+
+  <h3>Concept 2: Embeddings — Text as Meaning-Vectors</h3>
+  <p>An embedding converts text into a list of numbers (vector) representing its <strong>meaning</strong>. Similar meanings produce similar vectors. This is the foundation of all RAG and semantic search.</p>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">embeddings.py — Create and compare text embeddings</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+client = <span class="cx">OpenAI</span>()
+
+<span class="kw">def</span> <span class="fn">embed</span>(text: str) -> List[float]:
+    <span class="cm">"""Convert text to 1536-dimensional float vector"""</span>
+    res = client.embeddings.create(
+        model=<span class="str">"text-embedding-3-small"</span>,
+        input=text
+    )
+    <span class="kw">return</span> res.data[<span class="nu">0</span>].embedding
+
+<span class="kw">def</span> <span class="fn">cosine_similarity</span>(a, b) -> float:
+    <span class="cm">"""Similarity score: 0.0 = totally different, 1.0 = identical meaning"""</span>
+    va, vb = np.array(a), np.array(b)
+    <span class="kw">return</span> float(np.dot(va, vb) / (np.linalg.norm(va) * np.linalg.norm(vb)))
+
+e1 = embed(<span class="str">"How do I train a neural network?"</span>)
+e2 = embed(<span class="str">"Steps to build a deep learning model"</span>)
+e3 = embed(<span class="str">"What is the recipe for biryani?"</span>)
+
+<span class="fn">print</span>(cosine_similarity(e1, e2))  <span class="cm"># 0.93 — very similar despite different words!</span>
+<span class="fn">print</span>(cosine_similarity(e1, e3))  <span class="cm"># 0.41 — very different topics</span>
+
+<span class="cm"># This is WHY RAG works: "vacation days" and "annual leave entitlement"
+# have 0.91 similarity even though they share zero words.</span></pre></div>
+
+  <h3>Concept 3: Prompt Engineering — Talk to LLMs Effectively</h3>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">prompts.py — Four essential patterns</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> langchain_openai <span class="kw">import</span> ChatOpenAI
+<span class="kw">from</span> langchain_core.prompts <span class="kw">import</span> ChatPromptTemplate, FewShotChatMessagePromptTemplate
+<span class="kw">from</span> langchain_core.output_parsers <span class="kw">import</span> JsonOutputParser
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field
+
+llm = <span class="cx">ChatOpenAI</span>(model=<span class="str">"gpt-4o-mini"</span>, temperature=<span class="nu">0</span>)
+
+<span class="cm"># Pattern 1: System + Human (always better than a single message)</span>
+p1 = <span class="cx">ChatPromptTemplate</span>.from_messages([
+    (<span class="str">"system"</span>, <span class="str">"You are an expert Python developer. Give concise working code only."</span>),
+    (<span class="str">"human"</span>,  <span class="str">"{question}"</span>)
+])
+
+<span class="cm"># Pattern 2: Chain-of-Thought — forces step-by-step reasoning</span>
+p2 = <span class="cx">ChatPromptTemplate</span>.from_messages([
+    (<span class="str">"system"</span>, <span class="str">"""Think step by step.
+REASONING: [your thinking]
+ANSWER: [final answer only]"""</span>),
+    (<span class="str">"human"</span>, <span class="str">"{problem}"</span>)
+])
+
+<span class="cm"># Pattern 3: Structured JSON output — reliable data extraction</span>
+<span class="kw">class</span> <span class="cx">ProductInfo</span>(BaseModel):
+    name:     str         = <span class="cx">Field</span>(description=<span class="str">"Product name"</span>)
+    price:    float       = <span class="cx">Field</span>(description=<span class="str">"Price in USD"</span>)
+    features: List[str]  = <span class="cx">Field</span>(description=<span class="str">"List of key features"</span>)
+
+parser = <span class="cx">JsonOutputParser</span>(pydantic_object=<span class="cx">ProductInfo</span>)
+p3 = <span class="cx">ChatPromptTemplate</span>.from_messages([
+    (<span class="str">"system"</span>, <span class="str">"Extract product info. {format_instructions}"</span>),
+    (<span class="str">"human"</span>,  <span class="str">"{text}"</span>)
+]).partial(format_instructions=parser.get_format_instructions())
+
+chain3 = p3 | llm | parser
+result = chain3.invoke({<span class="str">"text"</span>: <span class="str">"iPhone 16 Pro costs $999, has A18 chip and 48MP camera"</span>})
+<span class="fn">print</span>(result)  <span class="cm"># {'name': 'iPhone 16 Pro', 'price': 999.0, 'features': [...]}</span>
+
+<span class="cm"># Pattern 4: Few-Shot — teach by example</span>
+examples = [
+    {<span class="str">"input"</span>: <span class="str">"I love this!"</span>,   <span class="str">"output"</span>: <span class="str">"positive"</span>},
+    {<span class="str">"input"</span>: <span class="str">"Worst ever"</span>,     <span class="str">"output"</span>: <span class="str">"negative"</span>},
+    {<span class="str">"input"</span>: <span class="str">"It is okay"</span>,     <span class="str">"output"</span>: <span class="str">"neutral"</span>},
+]
+ex_prompt = <span class="cx">ChatPromptTemplate</span>.from_messages([
+    (<span class="str">"human"</span>, <span class="str">"{input}"</span>), (<span class="str">"ai"</span>, <span class="str">"{output}"</span>)
+])
+few_shot = <span class="cx">FewShotChatMessagePromptTemplate</span>(examples=examples, example_prompt=ex_prompt)
+p4 = <span class="cx">ChatPromptTemplate</span>.from_messages([
+    (<span class="str">"system"</span>, <span class="str">"Classify sentiment: output only positive, negative, or neutral."</span>),
+    few_shot,
+    (<span class="str">"human"</span>, <span class="str">"{review}"</span>)
+])</pre></div>
+</section>
+
+<!-- LANGCHAIN -->
+<section id="langchain" class="sec" data-level="intermediate">
+  <div class="seh">
+    <div class="see">Chapter 05 — LangChain</div>
+    <h2><span class="si2">⛓️</span> LangChain &amp; LCEL — The AI Engineering Backbone</h2>
+    <p class="sed">LangChain is in almost every production AI app. Master it step by step, from simple chains to complex agents.</p>
+  </div>
+  <h3>Step 1 — The LCEL Pipe Operator</h3>
+  <p>LCEL uses the <code>|</code> pipe operator to chain components. Data flows left to right — each component receives the previous one's output.</p>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">lcel.py — Chain building, streaming, and batching</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> langchain_openai <span class="kw">import</span> ChatOpenAI
+<span class="kw">from</span> langchain_core.prompts <span class="kw">import</span> ChatPromptTemplate
+<span class="kw">from</span> langchain_core.output_parsers <span class="kw">import</span> StrOutputParser
+
+llm   = <span class="cx">ChatOpenAI</span>(model=<span class="str">"gpt-4o-mini"</span>, temperature=<span class="nu">0.7</span>)
+prompt = <span class="cx">ChatPromptTemplate</span>.from_messages([
+    (<span class="str">"system"</span>, <span class="str">"You are a helpful {role}."</span>),
+    (<span class="str">"human"</span>,  <span class="str">"{question}"</span>)
+])
+
+<span class="cm"># Build chain: prompt -> LLM -> parse output to string</span>
+chain = prompt | llm | <span class="cx">StrOutputParser</span>()
+
+<span class="cm"># Invoke: single synchronous call</span>
+r = chain.invoke({<span class="str">"role"</span>: <span class="str">"Python expert"</span>, <span class="str">"question"</span>: <span class="str">"What is a decorator?"</span>})
+
+<span class="cm"># Stream: print tokens as they arrive (better UX)</span>
+<span class="kw">for</span> chunk <span class="kw">in</span> chain.stream({<span class="str">"role"</span>: <span class="str">"tutor"</span>, <span class="str">"question"</span>: <span class="str">"Explain async/await"</span>}):
+    <span class="fn">print</span>(chunk, end=<span class="str">""</span>, flush=True)
+
+<span class="cm"># Batch: multiple inputs in parallel (much faster than sequential!)</span>
+inputs = [
+    {<span class="str">"role"</span>: <span class="str">"tutor"</span>, <span class="str">"question"</span>: <span class="str">"What is Python?"</span>},
+    {<span class="str">"role"</span>: <span class="str">"tutor"</span>, <span class="str">"question"</span>: <span class="str">"What is JavaScript?"</span>},
+]
+responses = chain.batch(inputs)  <span class="cm"># runs all in parallel!</span>
+
+<span class="cm"># Async: for FastAPI and other async web frameworks</span>
+<span class="kw">import</span> asyncio
+<span class="kw">async def</span> <span class="fn">main</span>():
+    r = <span class="kw">await</span> chain.ainvoke({<span class="str">"role"</span>: <span class="str">"expert"</span>, <span class="str">"question"</span>: <span class="str">"Hi"</span>})
+    <span class="kw">return</span> r</pre></div>
+
+  <h3>Step 2 — Conversation Memory</h3>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">memory.py — Multi-turn conversations with session history</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> langchain_openai <span class="kw">import</span> ChatOpenAI
+<span class="kw">from</span> langchain_core.prompts <span class="kw">import</span> ChatPromptTemplate, MessagesPlaceholder
+<span class="kw">from</span> langchain_core.output_parsers <span class="kw">import</span> StrOutputParser
+<span class="kw">from</span> langchain_core.runnables.history <span class="kw">import</span> RunnableWithMessageHistory
+<span class="kw">from</span> langchain_community.chat_message_histories <span class="kw">import</span> ChatMessageHistory
+
+store = {}  <span class="cm"># use Redis in production!</span>
+
+<span class="kw">def</span> <span class="fn">get_session</span>(session_id: str):
+    <span class="kw">if</span> session_id <span class="kw">not in</span> store:
+        store[session_id] = <span class="cx">ChatMessageHistory</span>()
+    <span class="kw">return</span> store[session_id]
+
+prompt = <span class="cx">ChatPromptTemplate</span>.from_messages([
+    (<span class="str">"system"</span>, <span class="str">"You are a helpful assistant. Remember what the user says."</span>),
+    <span class="cx">MessagesPlaceholder</span>(variable_name=<span class="str">"history"</span>),
+    (<span class="str">"human"</span>, <span class="str">"{input}"</span>)
+])
+
+chain = prompt | <span class="cx">ChatOpenAI</span>(model=<span class="str">"gpt-4o-mini"</span>) | <span class="cx">StrOutputParser</span>()
+
+with_memory = <span class="cx">RunnableWithMessageHistory</span>(
+    chain, get_session,
+    input_messages_key=<span class="str">"input"</span>,
+    history_messages_key=<span class="str">"history"</span>
+)
+
+cfg = {<span class="str">"configurable"</span>: {<span class="str">"session_id"</span>: <span class="str">"user_001"</span>}}
+with_memory.invoke({<span class="str">"input"</span>: <span class="str">"My name is Asif"</span>}, config=cfg)
+r = with_memory.invoke({<span class="str">"input"</span>: <span class="str">"What is my name?"</span>}, config=cfg)
+<span class="fn">print</span>(r)  <span class="cm"># "Your name is Asif."</span></pre></div>
+
+  <h3>Step 3 — Tool-Using Agent</h3>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">agent.py — Agent with custom tools</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> langchain_core.tools <span class="kw">import</span> tool
+<span class="kw">from</span> langchain_openai <span class="kw">import</span> ChatOpenAI
+<span class="kw">from</span> langchain.agents <span class="kw">import</span> AgentExecutor, create_tool_calling_agent
+<span class="kw">from</span> langchain_core.prompts <span class="kw">import</span> ChatPromptTemplate, MessagesPlaceholder
+
+<span class="dc">@tool</span>
+<span class="kw">def</span> <span class="fn">calculate</span>(expression: str) -> str:
+    <span class="cm">"""Evaluate math. Examples: '15% of 8500', '2**10', 'sqrt(144)'"""</span>
+    <span class="kw">import</span> math
+    <span class="kw">try</span>: <span class="kw">return</span> <span class="fn">str</span>(<span class="fn">eval</span>(expression, {<span class="str">"__builtins__"</span>: {}}, vars(math)))
+    <span class="kw">except</span> Exception <span class="kw">as</span> e: <span class="kw">return</span> <span class="str">f"Error: {e}"</span>
+
+<span class="dc">@tool</span>
+<span class="kw">def</span> <span class="fn">get_weather</span>(city: str) -> str:
+    <span class="cm">"""Get current weather for a city."""</span>
+    <span class="kw">return</span> <span class="str">f"{city}: 28°C, Sunny"</span>  <span class="cm"># call real API in production</span>
+
+tools = [calculate, get_weather]
+llm   = <span class="cx">ChatOpenAI</span>(model=<span class="str">"gpt-4o"</span>, temperature=<span class="nu">0</span>)
+
+prompt = <span class="cx">ChatPromptTemplate</span>.from_messages([
+    (<span class="str">"system"</span>, <span class="str">"You are a helpful assistant. Use tools for math and weather. Never guess."</span>),
+    <span class="cx">MessagesPlaceholder</span>(<span class="str">"chat_history"</span>, optional=True),
+    (<span class="str">"human"</span>, <span class="str">"{input}"</span>),
+    <span class="cx">MessagesPlaceholder</span>(<span class="str">"agent_scratchpad"</span>)
+])
+
+agent    = create_tool_calling_agent(llm, tools, prompt)
+executor = <span class="cx">AgentExecutor</span>(agent=agent, tools=tools, verbose=True, max_iterations=<span class="nu">5</span>)
+
+result = executor.invoke({<span class="str">"input"</span>: <span class="str">"What is 15% of 8500 and the weather in Dhaka?"</span>})
+<span class="fn">print</span>(result[<span class="str">"output"</span>])
+<span class="cm"># Agent: 1) calls calculate("8500*0.15") -> "1275.0"
+#        2) calls get_weather("Dhaka") -> "Dhaka: 28°C, Sunny"
+#        3) combines into natural response</span></pre></div>
+</section>
+<!-- RAG -->
+<section id="rag" class="sec" data-level="intermediate">
+  <div class="seh">
+    <div class="see">Chapter 06 — RAG</div>
+    <h2><span class="si2">🔍</span> RAG Systems — Retrieval-Augmented Generation</h2>
+    <p class="sed">RAG lets your LLM answer from YOUR documents. It is the number-one most commonly built AI system in industry. Master this completely — it appears in nearly every AI engineering interview.</p>
+  </div>
+  <h3>The RAG Pipeline — Every Step Explained</h3>
+  <div class="arch"><span class="ac">INDEXING PHASE (runs once when documents change)</span>
+
+  📄 Your documents (PDF, Word, Web, Database)
+       |
+       v
+  <span class="ag">[Text Extraction]</span>  -- PyPDF, Unstructured, BeautifulSoup
+       |
+       v
+  <span class="ao">[Chunking]</span>  -- Split into 500-1000 char pieces with 200-char overlap
+       |     WHY: LLMs have context limits. Smaller = more precise retrieval.
+       v
+  <span class="apx">[Embedding]</span>  -- Convert each chunk to a vector (list of numbers)
+       |          text-embedding-3-small: 1536 numbers per chunk
+       v
+  <span class="ay">[Vector DB Storage]</span>  -- ChromaDB / Pinecone / Qdrant
+                          Stores: (chunk_text, embedding_vector, metadata)
+
+<span class="ac">RETRIEVAL PHASE (runs for every user query)</span>
+
+  💬 User Question: "What is the vacation policy?"
+       |
+       v
+  <span class="ag">[Embed Question]</span>  -- Same model as indexing! Critical requirement.
+       |
+       v
+  <span class="ao">[Vector Search]</span>  -- Find top-K chunks most similar to question
+       |               Cosine similarity: which chunks are closest?
+       v
+  <span class="apx">[Reranking]</span>  -- (Optional but recommended) Re-score with better model
+       |          Cohere Rerank, BGE Reranker
+       v
+  <span class="ay">[LLM + Context]</span>  -- "Answer this using ONLY these chunks: {context}..."
+       |
+       v
+  <span class="ac">Final Answer (grounded in your documents, not hallucinated)</span></div>
+
+  <h3>Step-by-Step: Build Your First RAG System</h3>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">rag_basic.py — Complete working RAG system</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> langchain_community.document_loaders <span class="kw">import</span> PyPDFLoader
+<span class="kw">from</span> langchain.text_splitter <span class="kw">import</span> RecursiveCharacterTextSplitter
+<span class="kw">from</span> langchain_openai <span class="kw">import</span> OpenAIEmbeddings, ChatOpenAI
+<span class="kw">from</span> langchain_community.vectorstores <span class="kw">import</span> Chroma
+<span class="kw">from</span> langchain_core.prompts <span class="kw">import</span> ChatPromptTemplate
+<span class="kw">from</span> langchain_core.runnables <span class="kw">import</span> RunnablePassthrough
+<span class="kw">from</span> langchain_core.output_parsers <span class="kw">import</span> StrOutputParser
+
+<span class="cm"># STEP 1: Load document</span>
+loader = <span class="cx">PyPDFLoader</span>(<span class="str">"company_handbook.pdf"</span>)
+pages  = loader.load()
+<span class="fn">print</span>(<span class="str">f"Loaded {len(pages)} pages"</span>)
+
+<span class="cm"># STEP 2: Split into chunks</span>
+splitter = <span class="cx">RecursiveCharacterTextSplitter</span>(
+    chunk_size=<span class="nu">1000</span>,    <span class="cm"># ~250 tokens per chunk</span>
+    chunk_overlap=<span class="nu">200</span>,  <span class="cm"># 200 chars overlap to avoid losing context at edges</span>
+    separators=[<span class="str">"\n\n"</span>, <span class="str">"\n"</span>, <span class="str">". "</span>, <span class="str">" "</span>, <span class="str">""</span>]  <span class="cm"># tries splits in order</span>
+)
+chunks = splitter.split_documents(pages)
+<span class="fn">print</span>(<span class="str">f"Created {len(chunks)} chunks"</span>)
+
+<span class="cm"># STEP 3: Embed and store in vector DB</span>
+embeddings = <span class="cx">OpenAIEmbeddings</span>(model=<span class="str">"text-embedding-3-small"</span>)
+vectorstore = Chroma.from_documents(
+    documents=chunks,
+    embedding=embeddings,
+    persist_directory=<span class="str">"./chroma_db"</span>  <span class="cm"># saves to disk so you don't re-embed</span>
+)
+
+<span class="cm"># STEP 4: Create retriever (fetches top-K relevant chunks)</span>
+retriever = vectorstore.as_retriever(
+    search_type=<span class="str">"similarity"</span>,
+    search_kwargs={<span class="str">"k"</span>: <span class="nu">4</span>}  <span class="cm"># return 4 most similar chunks</span>
+)
+
+<span class="cm"># STEP 5: RAG prompt — CRITICAL to tell LLM to stay in context</span>
+rag_prompt = <span class="cx">ChatPromptTemplate</span>.from_template(<span class="str">"""
+You are a helpful assistant. Answer ONLY from the provided context.
+If the answer is not in the context, say "I cannot find this in the documents."
+Do not use your training knowledge — only use what is in the context below.
+
+CONTEXT:
+{context}
+
+QUESTION: {question}
+
+ANSWER:"""</span>)
+
+<span class="kw">def</span> <span class="fn">format_docs</span>(docs):
+    <span class="cm">"""Join retrieved chunks with separators so LLM sees them clearly"""</span>
+    <span class="kw">return</span> <span class="str">"\n\n---\n\n"</span>.join(
+        <span class="str">f"Source: {d.metadata.get('source','?')} Page: {d.metadata.get('page','?')}\n{d.page_content}"</span>
+        <span class="kw">for</span> d <span class="kw">in</span> docs
+    )
+
+<span class="cm"># STEP 6: Build RAG chain</span>
+llm = <span class="cx">ChatOpenAI</span>(model=<span class="str">"gpt-4o-mini"</span>, temperature=<span class="nu">0</span>)
+
+rag_chain = (
+    {<span class="str">"context"</span>: retriever | format_docs, <span class="str">"question"</span>: <span class="cx">RunnablePassthrough</span>()}
+    | rag_prompt
+    | llm
+    | <span class="cx">StrOutputParser</span>()
+)
+
+<span class="cm"># STEP 7: Query</span>
+answer = rag_chain.invoke(<span class="str">"What is the company vacation policy?"</span>)
+<span class="fn">print</span>(answer)</pre></div>
+
+  <h3>Chunking Strategies — Pick the Right One</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Strategy</th><th>How It Works</th><th>Best For</th><th>When to Avoid</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Fixed Size</strong></td><td>Split every N characters, simple</td><td>Fast prototyping</td><td>Breaks sentences mid-way — poor quality</td></tr>
+      <tr><td><strong>Recursive Character</strong> ⭐</td><td>Try \n\n, then \n, then ". ", then " " — natural boundaries</td><td>Most text — DEFAULT choice</td><td>Almost always works</td></tr>
+      <tr><td><strong>Semantic</strong></td><td>Use embedding similarity to find topic shift boundaries</td><td>Long docs with topic changes</td><td>Slow, expensive (needs extra embeddings)</td></tr>
+      <tr><td><strong>Hierarchical (Parent-Child)</strong></td><td>Small child chunks for retrieval, large parent chunk for context</td><td>Technical docs, code, legal</td><td>Complex to implement, 2x storage</td></tr>
+      <tr><td><strong>Sliding Window</strong></td><td>Fixed size with 50%+ overlap</td><td>Narratives with continuous context</td><td>More storage and retrieval candidates</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Advanced RAG: Hybrid Search + Reranking</h3>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">rag_advanced.py — Production-grade RAG pipeline</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> langchain.retrievers <span class="kw">import</span> BM25Retriever, EnsembleRetriever
+<span class="kw">from</span> langchain.retrievers <span class="kw">import</span> ContextualCompressionRetriever
+<span class="kw">from</span> langchain.retrievers.document_compressors <span class="kw">import</span> CohereRerank
+<span class="kw">from</span> langchain.retrievers.multi_query <span class="kw">import</span> MultiQueryRetriever
+
+<span class="cm"># ── Technique 1: Hybrid Search (BM25 keyword + Vector semantic) ──
+# Vector finds semantically similar text.
+# BM25 finds exact keyword matches.
+# Together: ~15% better recall than either alone.</span>
+
+bm25_retriever = <span class="cx">BM25Retriever</span>.from_documents(chunks)
+bm25_retriever.k = <span class="nu">4</span>
+vector_retriever = vectorstore.as_retriever(search_kwargs={<span class="str">"k"</span>: <span class="nu">4</span>})
+
+hybrid = <span class="cx">EnsembleRetriever</span>(
+    retrievers=[bm25_retriever, vector_retriever],
+    weights=[<span class="nu">0.5</span>, <span class="nu">0.5</span>]  <span class="cm"># equal weight; tune based on your domain</span>
+)
+
+<span class="cm"># ── Technique 2: Reranking ──
+# Initial retrieval is approximate. Reranker re-scores with a
+# slower but more accurate cross-encoder model.
+# Keeps top 3 from initial top 8.</span>
+
+compressor = <span class="cx">CohereRerank</span>(model=<span class="str">"rerank-english-v3.0"</span>, top_n=<span class="nu">3</span>)
+reranked = <span class="cx">ContextualCompressionRetriever</span>(
+    base_compressor=compressor,
+    base_retriever=hybrid
+)
+
+<span class="cm"># ── Technique 3: Multi-Query ──
+# Users phrase questions poorly. Generate 3 variants.
+# "What is refund policy?" also searches:
+#   "How do I get money back?"
+#   "Return policy terms"</span>
+
+multi_query = <span class="cx">MultiQueryRetriever</span>.from_llm(
+    retriever=vector_retriever,
+    llm=llm
+)
+
+<span class="cm"># Final production chain (best quality)</span>
+prod_chain = (
+    {<span class="str">"context"</span>: reranked | format_docs, <span class="str">"question"</span>: <span class="cx">RunnablePassthrough</span>()}
+    | rag_prompt | llm | <span class="cx">StrOutputParser</span>()
+)</pre></div>
+
+  <div class="ca ok"><div class="cai">🏆</div><div class="cac"><div class="cat">RAG Implementation Checklist</div>
+    <ul class="chk">
+      <li><label><input type="checkbox"> <span>Use RecursiveCharacterTextSplitter with 200-char overlap</span></label></li>
+      <li><label><input type="checkbox"> <span>Store source and page metadata with every chunk</span></label></li>
+      <li><label><input type="checkbox"> <span>Test retrieval separately before adding LLM</span></label></li>
+      <li><label><input type="checkbox"> <span>Include source citations in LLM answers</span></label></li>
+      <li><label><input type="checkbox"> <span>Tell LLM explicitly to say "I don't know" if info not in context</span></label></li>
+      <li><label><input type="checkbox"> <span>Add hybrid search (BM25 + vector) for production</span></label></li>
+      <li><label><input type="checkbox"> <span>Evaluate with RAGAS: faithfulness, relevancy, precision, recall</span></label></li>
+    </ul>
+  </div></div>
+</section>
+
+<!-- VECTOR DB -->
+<section id="vectordb" class="sec" data-level="intermediate">
+  <div class="seh">
+    <div class="see">Chapter 07 — Vector Databases</div>
+    <h2><span class="si2">🗄️</span> Vector Databases — Choose the Right One</h2>
+    <p class="sed">The storage layer of every RAG system. Different databases have different tradeoffs.</p>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Database</th><th>Type</th><th>Scale</th><th>Cost</th><th>Best For</th></tr></thead>
+    <tbody>
+      <tr><td><strong>ChromaDB</strong></td><td>In-process</td><td>Millions</td><td>Free</td><td>Dev, prototyping, POCs. Zero setup.</td></tr>
+      <tr><td><strong>Pinecone</strong></td><td>Managed cloud</td><td>Billions</td><td>$70+/mo</td><td>Production SaaS — zero ops overhead.</td></tr>
+      <tr><td><strong>Qdrant</strong> ⭐</td><td>Self-host/Cloud</td><td>Billions</td><td>Free/Pay</td><td>Best open-source. Docker + Cloud. Full control.</td></tr>
+      <tr><td><strong>pgvector</strong></td><td>PostgreSQL ext.</td><td>Millions</td><td>Same as Postgres</td><td>Already using PostgreSQL. No extra service.</td></tr>
+      <tr><td><strong>Weaviate</strong></td><td>Cloud/Self-host</td><td>Billions</td><td>Free/Pay</td><td>Built-in hybrid search. GraphQL API.</td></tr>
+      <tr><td><strong>Milvus</strong></td><td>Self-hosted</td><td>Billions+</td><td>Free</td><td>Massive enterprise ML platforms.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="ca info"><div class="cai">📊</div><div class="cac"><div class="cat">Recommendation Guide (2026)</div>
+    <p><strong>Learning / prototyping:</strong> ChromaDB — zero setup, runs locally in Python.</p>
+    <p><strong>Production (want managed):</strong> Qdrant Cloud or Pinecone — no server management.</p>
+    <p><strong>Production (already use Postgres):</strong> pgvector — least complexity, one database.</p>
+  </div></div>
+
+  <h3>ChromaDB — Complete Implementation</h3>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">chromadb_full.py</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">import</span> chromadb
+<span class="kw">from</span> chromadb.utils <span class="kw">import</span> embedding_functions
+<span class="kw">import</span> uuid
+
+client = chromadb.PersistentClient(path=<span class="str">"./chroma_data"</span>)
+
+openai_ef = embedding_functions.OpenAIEmbeddingFunction(
+    api_key=os.getenv(<span class="str">"OPENAI_API_KEY"</span>),
+    model_name=<span class="str">"text-embedding-3-small"</span>
+)
+
+collection = client.get_or_create_collection(
+    name=<span class="str">"company_docs"</span>,
+    embedding_function=openai_ef,
+    metadata={<span class="str">"hnsw:space"</span>: <span class="str">"cosine"</span>}
+)
+
+<span class="cm"># Insert documents with metadata</span>
+collection.add(
+    documents=[
+        <span class="str">"Employees get 20 days vacation per year."</span>,
+        <span class="str">"Health insurance covers dental and vision."</span>,
+        <span class="str">"Remote work is allowed 3 days per week."</span>
+    ],
+    ids=[<span class="fn">str</span>(uuid.uuid4()) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="nu">3</span>)],
+    metadatas=[
+        {<span class="str">"source"</span>: <span class="str">"handbook.pdf"</span>, <span class="str">"page"</span>: <span class="nu">12</span>, <span class="str">"dept"</span>: <span class="str">"HR"</span>},
+        {<span class="str">"source"</span>: <span class="str">"handbook.pdf"</span>, <span class="str">"page"</span>: <span class="nu">15</span>, <span class="str">"dept"</span>: <span class="str">"HR"</span>},
+        {<span class="str">"source"</span>: <span class="str">"policy.pdf"</span>,   <span class="str">"page"</span>: <span class="nu">3</span>,  <span class="str">"dept"</span>: <span class="str">"HR"</span>}
+    ]
+)
+
+<span class="cm"># Query with metadata filter</span>
+results = collection.query(
+    query_texts=[<span class="str">"How many vacation days do I get?"</span>],
+    n_results=<span class="nu">2</span>,
+    where={<span class="str">"source"</span>: <span class="str">"handbook.pdf"</span>}  <span class="cm"># only from this source</span>
+)
+<span class="fn">print</span>(results[<span class="str">"documents"</span>][<span class="nu">0</span>])   <span class="cm"># ["Employees get 20 days..."]</span>
+<span class="fn">print</span>(results[<span class="str">"distances"</span>][<span class="nu">0</span>])  <span class="cm"># [0.12, 0.45] — lower is more similar</span></pre></div>
+
+  <h3>Pinecone — Production Implementation</h3>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">pinecone_production.py</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> pinecone <span class="kw">import</span> Pinecone, ServerlessSpec
+<span class="kw">from</span> langchain_pinecone <span class="kw">import</span> PineconeVectorStore
+
+pc = <span class="cx">Pinecone</span>(api_key=os.getenv(<span class="str">"PINECONE_API_KEY"</span>))
+
+<span class="cm"># Create index once</span>
+<span class="kw">if</span> <span class="str">"company-docs"</span> <span class="kw">not in</span> [i.name <span class="kw">for</span> i <span class="kw">in</span> pc.list_indexes()]:
+    pc.create_index(
+        name=<span class="str">"company-docs"</span>,
+        dimension=<span class="nu">1536</span>,  <span class="cm"># must match embedding model</span>
+        metric=<span class="str">"cosine"</span>,
+        spec=<span class="cx">ServerlessSpec</span>(cloud=<span class="str">"aws"</span>, region=<span class="str">"us-east-1"</span>)
+    )
+
+<span class="cm"># Store via LangChain</span>
+vs = <span class="cx">PineconeVectorStore</span>.from_documents(
+    documents=chunks,
+    embedding=<span class="cx">OpenAIEmbeddings</span>(model=<span class="str">"text-embedding-3-small"</span>),
+    index_name=<span class="str">"company-docs"</span>
+)
+
+<span class="cm"># Metadata filtering query</span>
+index = pc.Index(<span class="str">"company-docs"</span>)
+results = index.query(
+    vector=query_embedding,
+    top_k=<span class="nu">5</span>,
+    filter={
+        <span class="str">"department"</span>: {<span class="str">"$eq"</span>: <span class="str">"HR"</span>},
+        <span class="str">"date"</span>: {<span class="str">"$gte"</span>: <span class="str">"2025-01-01"</span>}
+    },
+    include_metadata=True
+)</pre></div>
+</section>
+
+<!-- LANGGRAPH -->
+<section id="langgraph" class="sec" data-level="advanced">
+  <div class="seh">
+    <div class="see">Chapter 08 — LangGraph</div>
+    <h2><span class="si2">🕸️</span> LangGraph — Stateful Multi-Agent Systems</h2>
+    <p class="sed">LangGraph lets you build agents with loops, branches, persistence, parallel execution, and human-in-the-loop. The most important advanced tool in 2026.</p>
+  </div>
+  <h3>The Mental Model: State Machines as Flowcharts</h3>
+  <p>LangGraph = flowchart for AI. <strong>Nodes</strong> are functions (what to do). <strong>Edges</strong> are connections (where to go). <strong>State</strong> is a shared dictionary that persists through every step.</p>
+  <div class="arch"><span class="ac">LangGraph Core Concepts</span>
+
+  <span class="ag">State (TypedDict)</span>   -- shared dict, flows through every node
+       |
+  <span class="ao">[Node 1: process_input]</span>  -- reads state, does work, returns updated state
+       |
+  <span class="apx">[Node 2: call_llm]</span>       -- can call LLM, tools, external APIs
+       |
+  <span class="ay">[Conditional Edge]</span>       -- branch based on state value
+      /         \
+<span class="ag">[use_tools]</span>   <span class="ac">[END]</span>        -- route to tool node or finish
+
+  After tool node: edge goes BACK to call_llm -- creates the loop!</div>
+
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">langgraph_agent.py — Complete ReAct agent with state persistence</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> langgraph.graph <span class="kw">import</span> StateGraph, END
+<span class="kw">from</span> langgraph.prebuilt <span class="kw">import</span> ToolNode, tools_condition
+<span class="kw">from</span> langchain_core.messages <span class="kw">import</span> HumanMessage
+<span class="kw">from</span> langchain_openai <span class="kw">import</span> ChatOpenAI
+<span class="kw">from</span> langchain_core.tools <span class="kw">import</span> tool
+<span class="kw">from</span> typing <span class="kw">import</span> TypedDict, Annotated, List
+<span class="kw">import</span> operator
+
+<span class="cm"># STEP 1: Define State — the shared dictionary</span>
+<span class="kw">class</span> <span class="cx">AgentState</span>(TypedDict):
+    <span class="cm"># Annotated with operator.add means messages ACCUMULATE (not replaced)</span>
+    messages: Annotated[List, operator.add]
+    step_count: int  <span class="cm"># track steps to prevent infinite loops</span>
+
+<span class="cm"># STEP 2: Define tools</span>
+<span class="dc">@tool</span>
+<span class="kw">def</span> <span class="fn">search_web</span>(query: str) -> str:
+    <span class="cm">"""Search the web for current information."""</span>
+    <span class="kw">return</span> <span class="str">f"Search results for '{query}': [simulated recent news]"</span>
+
+<span class="dc">@tool</span>
+<span class="kw">def</span> <span class="fn">run_code</span>(code: str) -> str:
+    <span class="cm">"""Execute Python code and return the result."""</span>
+    <span class="kw">import</span> io, contextlib
+    output = io.StringIO()
+    <span class="kw">try</span>:
+        <span class="kw">with</span> contextlib.redirect_stdout(output):
+            <span class="fn">exec</span>(code, {<span class="str">"__builtins__"</span>: {<span class="str">"print"</span>: <span class="fn">print</span>, <span class="str">"range"</span>: <span class="fn">range</span>}})
+        <span class="kw">return</span> output.getvalue() or <span class="str">"Code ran with no output"</span>
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="kw">return</span> <span class="str">f"Error: {e}"</span>
+
+tools = [search_web, run_code]
+
+<span class="cm"># STEP 3: LLM with tools bound</span>
+llm = <span class="cx">ChatOpenAI</span>(model=<span class="str">"gpt-4o"</span>)
+llm_with_tools = llm.bind_tools(tools)
+
+<span class="cm"># STEP 4: Node functions</span>
+<span class="kw">def</span> <span class="fn">agent_node</span>(state: <span class="cx">AgentState</span>):
+    <span class="cm">"""Main agent: LLM decides next action"""</span>
+    response = llm_with_tools.invoke(state[<span class="str">"messages"</span>])
+    <span class="kw">return</span> {<span class="str">"messages"</span>: [response], <span class="str">"step_count"</span>: state.get(<span class="str">"step_count"</span>, <span class="nu">0</span>) + <span class="nu">1</span>}
+
+tool_node = <span class="cx">ToolNode</span>(tools=tools)  <span class="cm"># handles tool execution automatically</span>
+
+<span class="cm"># STEP 5: Build graph</span>
+graph = <span class="cx">StateGraph</span>(<span class="cx">AgentState</span>)
+graph.add_node(<span class="str">"agent"</span>, agent_node)
+graph.add_node(<span class="str">"tools"</span>, tool_node)
+graph.set_entry_point(<span class="str">"agent"</span>)
+
+<span class="cm"># Conditional edge: if agent wants tools -> tools node; else -> END</span>
+graph.add_conditional_edges(
+    <span class="str">"agent"</span>,
+    tools_condition,  <span class="cm"># built-in: checks if response has tool_calls</span>
+    {<span class="str">"tools"</span>: <span class="str">"tools"</span>, <span class="str">"__end__"</span>: END}
+)
+graph.add_edge(<span class="str">"tools"</span>, <span class="str">"agent"</span>)  <span class="cm"># after tool execution, back to agent</span>
+
+app = graph.compile()
+
+<span class="cm"># STEP 6: Run</span>
+result = app.invoke({
+    <span class="str">"messages"</span>: [<span class="cx">HumanMessage</span>(content=<span class="str">"Search for latest AI news and summarize it"</span>)],
+    <span class="str">"step_count"</span>: <span class="nu">0</span>
+})
+<span class="fn">print</span>(result[<span class="str">"messages"</span>][-<span class="nu">1</span>].content)</pre></div>
+
+  <h3>Add Persistence — Memory Across Conversations</h3>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">persistence.py — State survives restarts</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> langgraph.checkpoint.sqlite <span class="kw">import</span> SqliteSaver
+
+<span class="cm"># Development: SQLite</span>
+<span class="kw">with</span> <span class="cx">SqliteSaver</span>.from_conn_string(<span class="str">"checkpoints.db"</span>) <span class="kw">as</span> checkpointer:
+    app = graph.compile(checkpointer=checkpointer)
+    config = {<span class="str">"configurable"</span>: {<span class="str">"thread_id"</span>: <span class="str">"user_123"</span>}}
+
+    <span class="cm"># Session 1: agent learns something</span>
+    app.invoke({<span class="str">"messages"</span>: [<span class="cx">HumanMessage</span>(<span class="str">"My project is about climate AI"</span>)],
+                <span class="str">"step_count"</span>: <span class="nu">0</span>}, config=config)
+
+    <span class="cm"># Session 2 (could be hours later): agent still remembers!</span>
+    result = app.invoke({<span class="str">"messages"</span>: [<span class="cx">HumanMessage</span>(<span class="str">"What was my project about?"</span>)],
+                         <span class="str">"step_count"</span>: <span class="nu">0</span>}, config=config)
+    <span class="fn">print</span>(result[<span class="str">"messages"</span>][-<span class="nu">1</span>].content)  <span class="cm"># "Your project is about climate AI"</span>
+
+<span class="cm"># Production: PostgreSQL (use PostgresSaver from langgraph-checkpoint-postgres)</span></pre></div>
+</section>
+<!-- MCP -->
+<section id="mcp" class="sec" data-level="advanced">
+  <div class="seh">
+    <div class="see">Chapter 09 — MCP</div>
+    <h2><span class="si2">🔌</span> MCP — Model Context Protocol</h2>
+    <p class="sed">MCP is the USB standard for AI tools. Created by Anthropic, now adopted by OpenAI, Cursor, VS Code, and GitHub. Build one server, use it everywhere.</p>
+  </div>
+  <div class="arch"><span class="ac">BEFORE MCP (every team wrote custom integrations):</span>
+  Team A: custom Slack integration
+  Team B: different Slack integration (incompatible with Team A)
+  Team C: no Slack integration (ran out of time)
+
+<span class="ag">AFTER MCP (write once, use everywhere):</span>
+  +--------------------------------------------+
+  |         MCP HOST                           |
+  | (Claude, GPT-4, your LangGraph agent)      |
+  +---------------+----------------------------+
+                  | Standard JSON-RPC 2.0 protocol
+      +-----------+----------+
+      |                      |
+  +---v-----------+  +-------v-----------+
+  | MCP SERVER A  |  | MCP SERVER B      |
+  | (Slack tools) |  | (GitHub tools)    |
+  +---------------+  +-------------------+
+  
+  One server works with ANY host. Zero glue code between them.</div>
+
+  <h3>MCP Core Concepts</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Concept</th><th>What It Is</th><th>Example</th><th>Direction</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Tools</strong></td><td>Functions the AI can call (write actions)</td><td><code>send_email(to, body)</code>, <code>create_file(path, content)</code></td><td>AI executes</td></tr>
+      <tr><td><strong>Resources</strong></td><td>Data sources the AI can read</td><td>User calendar, database records, file contents</td><td>AI reads</td></tr>
+      <tr><td><strong>Prompts</strong></td><td>Reusable prompt templates</td><td>"Summarize this: {content}" registered as a prompt</td><td>AI uses</td></tr>
+      <tr><td><strong>stdio transport</strong></td><td>Local: host spawns server as subprocess</td><td>Server running on same machine</td><td>Local only</td></tr>
+      <tr><td><strong>HTTP+SSE transport</strong></td><td>Remote: server is an HTTP server</td><td>Server deployed to cloud URL</td><td>Remote / multi-user</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Build Your Own MCP Server (FastMCP)</h3>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">mcp_server.py — Custom MCP server with tools and resources</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> fastmcp <span class="kw">import</span> FastMCP
+<span class="kw">import</span> sqlite3, json, os
+
+mcp = <span class="cx">FastMCP</span>(<span class="str">"Company Database Server"</span>)
+
+<span class="cm"># TOOLS: AI can call these to take actions</span>
+<span class="dc">@mcp.tool</span>()
+<span class="kw">def</span> <span class="fn">get_employee</span>(employee_id: int) -> dict:
+    <span class="cm">"""Get employee details by ID. Returns name, role, department, email."""</span>
+    conn = sqlite3.connect(<span class="str">"company.db"</span>)
+    row = conn.execute(<span class="str">"SELECT id,name,role,dept,email FROM employees WHERE id=?"</span>,
+                       [employee_id]).fetchone()
+    conn.close()
+    <span class="kw">if not</span> row: <span class="kw">return</span> {<span class="str">"error"</span>: <span class="str">"Employee not found"</span>}
+    <span class="kw">return</span> {<span class="str">"id"</span>: row[<span class="nu">0</span>], <span class="str">"name"</span>: row[<span class="nu">1</span>], <span class="str">"role"</span>: row[<span class="nu">2</span>], <span class="str">"dept"</span>: row[<span class="nu">3</span>], <span class="str">"email"</span>: row[<span class="nu">4</span>]}
+
+<span class="dc">@mcp.tool</span>()
+<span class="kw">def</span> <span class="fn">create_task</span>(title: str, assignee_id: int, due_date: str, priority: str = <span class="str">"medium"</span>) -> str:
+    <span class="cm">"""Create a task and assign it to an employee. Priority: low/medium/high."""</span>
+    conn = sqlite3.connect(<span class="str">"company.db"</span>)
+    cursor = conn.execute(
+        <span class="str">"INSERT INTO tasks (title, assignee_id, due_date, priority) VALUES (?,?,?,?)"</span>,
+        [title, assignee_id, due_date, priority]
+    )
+    conn.commit()
+    task_id = cursor.lastrowid
+    conn.close()
+    <span class="kw">return</span> <span class="str">f"Task #{task_id} '{title}' created, assigned to employee {assignee_id}"</span>
+
+<span class="dc">@mcp.tool</span>()
+<span class="kw">def</span> <span class="fn">query_tasks</span>(status: str = <span class="str">"open"</span>, dept: str = <span class="str">""</span>) -> list:
+    <span class="cm">"""List tasks filtered by status and optionally department."""</span>
+    conn = sqlite3.connect(<span class="str">"company.db"</span>)
+    q = <span class="str">"SELECT t.id,t.title,e.name,t.due_date FROM tasks t JOIN employees e ON t.assignee_id=e.id WHERE t.status=?"</span>
+    params = [status]
+    <span class="kw">if</span> dept:
+        q += <span class="str">" AND e.dept=?"</span>; params.append(dept)
+    rows = conn.execute(q, params).fetchall()
+    conn.close()
+    <span class="kw">return</span> [{<span class="str">"id"</span>: r[<span class="nu">0</span>], <span class="str">"title"</span>: r[<span class="nu">1</span>], <span class="str">"assignee"</span>: r[<span class="nu">2</span>], <span class="str">"due"</span>: r[<span class="nu">3</span>]} <span class="kw">for</span> r <span class="kw">in</span> rows]
+
+<span class="cm"># RESOURCES: AI can read these (read-only data)</span>
+<span class="dc">@mcp.resource</span>(<span class="str">"company://stats/dashboard"</span>)
+<span class="kw">def</span> <span class="fn">company_stats</span>() -> str:
+    <span class="cm">"""Company dashboard statistics"""</span>
+    <span class="kw">return</span> json.dumps({
+        <span class="str">"total_employees"</span>: <span class="nu">47</span>, <span class="str">"open_tasks"</span>: <span class="nu">123</span>,
+        <span class="str">"revenue_ytd"</span>: <span class="str">"$2.4M"</span>, <span class="str">"departments"</span>: [<span class="str">"Engineering"</span>, <span class="str">"Sales"</span>, <span class="str">"HR"</span>]
+    })
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    mcp.run(transport=<span class="str">"stdio"</span>)   <span class="cm"># local development</span>
+    <span class="cm"># mcp.run(transport="http", host="0.0.0.0", port=8080)  # production</span></pre></div>
+
+  <h3>Use MCP Server in a LangGraph Agent</h3>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">langgraph_mcp.py — Agent connected to MCP servers</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> langchain_mcp_adapters.client <span class="kw">import</span> MultiServerMCPClient
+<span class="kw">from</span> langgraph.prebuilt <span class="kw">import</span> create_react_agent
+<span class="kw">import</span> asyncio
+
+<span class="kw">async def</span> <span class="fn">main</span>():
+    <span class="kw">async with</span> <span class="cx">MultiServerMCPClient</span>({
+        <span class="str">"company_db"</span>: {
+            <span class="str">"command"</span>: <span class="str">"python"</span>,
+            <span class="str">"args"</span>: [<span class="str">"mcp_server.py"</span>],
+            <span class="str">"transport"</span>: <span class="str">"stdio"</span>    <span class="cm"># local server</span>
+        },
+        <span class="str">"weather_api"</span>: {
+            <span class="str">"url"</span>: <span class="str">"https://weather-mcp.example.com/sse"</span>,
+            <span class="str">"transport"</span>: <span class="str">"sse"</span>     <span class="cm"># remote server</span>
+        }
+    }) <span class="kw">as</span> client:
+        tools = <span class="kw">await</span> client.get_tools()  <span class="cm"># auto-discovers all tools from both servers</span>
+        <span class="fn">print</span>(<span class="str">f"Loaded {len(tools)} tools: {[t.name for t in tools]}"</span>)
+
+        agent = create_react_agent(<span class="cx">ChatOpenAI</span>(model=<span class="str">"gpt-4o"</span>), tools)
+        result = <span class="kw">await</span> agent.ainvoke({
+            <span class="str">"messages"</span>: [{
+                <span class="str">"role"</span>: <span class="str">"user"</span>,
+                <span class="str">"content"</span>: <span class="str">"Create a task for employee 5 to review Q3 report, due next Friday"</span>
+            }]
+        })
+        <span class="fn">print</span>(result[<span class="str">"messages"</span>][-<span class="nu">1</span>].content)
+
+asyncio.run(main())</pre></div>
+</section>
+
+<!-- COMPOSIO -->
+<section id="composio" class="sec" data-level="advanced">
+  <div class="seh">
+    <div class="see">Chapter 10 — Composio</div>
+    <h2><span class="si2">🔧</span> Composio — 250+ Pre-Built Tool Integrations</h2>
+    <p class="sed">Instead of building OAuth, rate limiting, and API integration from scratch for every service, Composio gives you Gmail, Slack, GitHub, Notion, Jira, Calendar, and 240+ more — ready in 5 minutes.</p>
+  </div>
+  <div class="tc">
+    <div class="tcb">
+      <h4>Without Composio (weeks of work)</h4>
+      <ul class="li">
+        <li>OAuth flow for each service (complex, error-prone)</li>
+        <li>Handle token refresh, expiry, rate limits manually</li>
+        <li>Write custom API wrapper for each service</li>
+        <li>Test each integration separately</li>
+        <li>Maintain as APIs change</li>
+      </ul>
+    </div>
+    <div class="tcb">
+      <h4>With Composio (5 minutes)</h4>
+      <ul class="li">
+        <li>One SDK for 250+ services</li>
+        <li>Auth handled automatically</li>
+        <li>Works with LangChain, LangGraph, OpenAI natively</li>
+        <li>Per-user OAuth connections for multi-tenant apps</li>
+        <li>Composio maintains and updates integrations</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">composio_agent.py — AI agent with real-world tool actions</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> composio_langchain <span class="kw">import</span> ComposioToolSet, App, Action
+<span class="kw">from</span> langchain_openai <span class="kw">import</span> ChatOpenAI
+<span class="kw">from</span> langgraph.prebuilt <span class="kw">import</span> create_react_agent
+
+<span class="cm"># Initialize Composio (reads COMPOSIO_API_KEY from .env)</span>
+toolset = <span class="cx">ComposioToolSet</span>()
+
+<span class="cm"># Get specific tools (only include what you need — less confusion for LLM)</span>
+tools = toolset.get_tools(actions=[
+    Action.GMAIL_SEND_EMAIL,           <span class="cm"># send emails</span>
+    Action.GMAIL_FETCH_EMAILS,         <span class="cm"># read emails</span>
+    Action.GMAIL_LIST_THREADS,         <span class="cm"># list email threads</span>
+    Action.SLACK_SENDS_A_MESSAGE,      <span class="cm"># post to Slack channel</span>
+    Action.SLACK_LIST_CHANNELS,        <span class="cm"># list Slack channels</span>
+    Action.GITHUB_CREATE_ISSUE,        <span class="cm"># create GitHub issues</span>
+    Action.GITHUB_CREATE_A_PULL_REQUEST,
+    Action.GOOGLECALENDAR_CREATE_EVENT,  <span class="cm"># create calendar events</span>
+    Action.NOTION_CREATE_PAGE,         <span class="cm"># create Notion pages</span>
+    Action.JIRA_CREATE_ISSUE,          <span class="cm"># create Jira tickets</span>
+])
+
+<span class="cm"># Or get ALL tools from a specific app</span>
+all_github = toolset.get_tools(apps=[App.GITHUB])
+all_gmail  = toolset.get_tools(apps=[App.GMAIL])
+
+<span class="cm"># Create and run agent</span>
+llm   = <span class="cx">ChatOpenAI</span>(model=<span class="str">"gpt-4o"</span>)
+agent = create_react_agent(llm, tools)
+
+result = agent.invoke({
+    <span class="str">"messages"</span>: [{
+        <span class="str">"role"</span>: <span class="str">"user"</span>,
+        <span class="str">"content"</span>: <span class="str">"""Check my Gmail for urgent emails from clients,
+        create a Jira ticket for each issue mentioned,
+        and post a summary to the #engineering Slack channel."""</span>
+    }]
+})
+
+<span class="cm"># Multi-tenant: each user has their own account connections</span>
+user1_tools = <span class="cx">ComposioToolSet</span>(entity_id=<span class="str">"user_001"</span>).get_tools(apps=[App.GMAIL])
+user2_tools = <span class="cx">ComposioToolSet</span>(entity_id=<span class="str">"user_002"</span>).get_tools(apps=[App.GMAIL])
+
+<span class="cm"># Connect a new user's account (generates OAuth URL)</span>
+connection = toolset.initiate_connection(app=App.GITHUB, entity_id=<span class="str">"new_user_123"</span>)
+<span class="fn">print</span>(<span class="str">f"Send user to: {connection.redirectUrl}"</span>)  <span class="cm"># redirect user to authenticate</span></pre></div>
+</section>
+
+<!-- LANGSMITH -->
+<section id="langsmith" class="sec" data-level="intermediate">
+  <div class="seh">
+    <div class="see">Chapter 11 — LangSmith</div>
+    <h2><span class="si2">📊</span> LangSmith — Observe, Debug &amp; Evaluate</h2>
+    <p class="sed">LangSmith is your AI debugging dashboard. Without it you are flying blind. Use it from day one — it is free.</p>
+  </div>
+  <div class="cg">
+    <div class="card"><div class="ci">🔍</div><div class="ctit">Traces</div><div class="cds">See every LLM call — full input, output, latency, token count, and cost. Debug exactly what went wrong.</div></div>
+    <div class="card"><div class="ci">📋</div><div class="ctit">Datasets</div><div class="cds">Build golden test sets. Track whether changes improve or break your app over time.</div></div>
+    <div class="card"><div class="ci">⚡</div><div class="ctit">Evaluations</div><div class="cds">Automatically score responses for correctness, faithfulness, and relevancy against your test set.</div></div>
+    <div class="card"><div class="ci">💰</div><div class="ctit">Cost Tracking</div><div class="cds">See token usage and cost per call. Catch expensive prompts before they blow up your budget.</div></div>
+  </div>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">langsmith_complete.py — Setup, tracing, and evaluation</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="cm"># STEP 1: Setup — just set env vars (auto-traces ALL LangChain calls)</span>
+<span class="kw">import</span> os
+os.environ[<span class="str">"LANGCHAIN_TRACING_V2"</span>] = <span class="str">"true"</span>
+os.environ[<span class="str">"LANGCHAIN_API_KEY"</span>]    = <span class="str">"ls__your_key"</span>
+os.environ[<span class="str">"LANGCHAIN_PROJECT"</span>]   = <span class="str">"my-rag-app"</span>
+<span class="cm"># Now EVERY LangChain call appears in smith.langchain.com — that's all!</span>
+
+<span class="cm"># STEP 2: Custom traces with @traceable decorator</span>
+<span class="kw">from</span> langsmith <span class="kw">import</span> traceable, Client
+
+<span class="dc">@traceable</span>(name=<span class="str">"rag_answer"</span>, tags=[<span class="str">"rag"</span>, <span class="str">"production"</span>])
+<span class="kw">async def</span> <span class="fn">answer_question</span>(question: str, user_id: str) -> str:
+    <span class="cm">"""This whole function + all sub-calls appear as one trace"""</span>
+    docs   = retriever.invoke(question)     <span class="cm"># traced as sub-span</span>
+    answer = rag_chain.invoke(question)     <span class="cm"># traced as sub-span</span>
+    <span class="kw">return</span> answer
+
+<span class="cm"># STEP 3: Create evaluation dataset</span>
+client = <span class="cx">Client</span>()
+dataset = client.create_dataset(<span class="str">"HR-FAQ-Golden-Set"</span>)
+
+examples = [
+    {<span class="str">"q"</span>: <span class="str">"How many vacation days do I get?"</span>,       <span class="str">"a"</span>: <span class="str">"20 days per year"</span>},
+    {<span class="str">"q"</span>: <span class="str">"Is remote work allowed?"</span>,                 <span class="str">"a"</span>: <span class="str">"Yes, 3 days per week"</span>},
+    {<span class="str">"q"</span>: <span class="str">"What does health insurance cover?"</span>,        <span class="str">"a"</span>: <span class="str">"Dental and vision"</span>},
+    {<span class="str">"q"</span>: <span class="str">"How do I submit an expense report?"</span>,       <span class="str">"a"</span>: <span class="str">"Use the Concur portal"</span>},
+]
+
+client.create_examples(
+    inputs= [{<span class="str">"question"</span>: e[<span class="str">"q"</span>]} <span class="kw">for</span> e <span class="kw">in</span> examples],
+    outputs=[{<span class="str">"answer"</span>:   e[<span class="str">"a"</span>]} <span class="kw">for</span> e <span class="kw">in</span> examples],
+    dataset_id=dataset.id
+)
+
+<span class="cm"># STEP 4: Run automated evaluation</span>
+<span class="kw">from</span> langsmith.evaluation <span class="kw">import</span> evaluate, LangChainStringEvaluator
+
+<span class="kw">def</span> <span class="fn">predict</span>(inputs: dict) -> dict:
+    <span class="kw">return</span> {<span class="str">"answer"</span>: rag_chain.invoke(inputs[<span class="str">"question"</span>])}
+
+results = evaluate(
+    predict,
+    data=<span class="str">"HR-FAQ-Golden-Set"</span>,
+    evaluators=[
+        <span class="cx">LangChainStringEvaluator</span>(<span class="str">"qa"</span>),          <span class="cm"># Is the answer correct?</span>
+        <span class="cx">LangChainStringEvaluator</span>(<span class="str">"context_qa"</span>),  <span class="cm"># Is it grounded in context?</span>
+    ],
+    experiment_prefix=<span class="str">"rag-v2"</span>
+)
+<span class="fn">print</span>(results)  <span class="cm"># per-example scores + aggregates → visible in LangSmith UI</span></pre></div>
+</section>
+
+<!-- BEDROCK -->
+<section id="bedrock" class="sec" data-level="advanced">
+  <div class="seh">
+    <div class="see">Chapter 12 — AWS Bedrock</div>
+    <h2><span class="si2">☁️</span> AWS Bedrock — Enterprise LLM Platform</h2>
+    <p class="sed">AWS Bedrock gives you access to Claude, Llama, Titan, Mistral, and more via AWS — with enterprise security, VPC support, SOC 2 compliance, and no model management.</p>
+  </div>
+  <ul class="li">
+    <li><strong>Foundation Models API</strong> — Claude 3.5 Sonnet, Llama 3 70B, Mistral, Amazon Titan</li>
+    <li><strong>Knowledge Bases</strong> — Fully managed RAG: upload docs, Bedrock handles chunking + embedding + vector storage</li>
+    <li><strong>Agents</strong> — Managed agent runtime with tool calling, no LangGraph needed</li>
+    <li><strong>Guardrails</strong> — Content filtering, PII detection, topic blocking, grounding check</li>
+    <li><strong>Pricing</strong> — Pay per token, no server costs. Claude Haiku: $0.25/1M in, $1.25/1M out</li>
+  </ul>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">bedrock_complete.py — Direct API + LangChain integration</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">import</span> boto3, json
+
+<span class="cm"># Method 1: Direct boto3 (maximum control)</span>
+bedrock = boto3.client(<span class="str">"bedrock-runtime"</span>, region_name=<span class="str">"us-east-1"</span>)
+
+<span class="kw">def</span> <span class="fn">call_claude</span>(prompt: str) -> str:
+    body = json.dumps({
+        <span class="str">"anthropic_version"</span>: <span class="str">"bedrock-2023-05-31"</span>,
+        <span class="str">"max_tokens"</span>: <span class="nu">1024</span>,
+        <span class="str">"messages"</span>: [{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: prompt}]
+    })
+    response = bedrock.invoke_model(
+        modelId=<span class="str">"anthropic.claude-3-5-sonnet-20241022-v2:0"</span>,
+        body=body
+    )
+    <span class="kw">return</span> json.loads(response[<span class="str">"body"</span>].read())[<span class="str">"content"</span>][<span class="nu">0</span>][<span class="str">"text"</span>]
+
+<span class="cm"># Method 2: Via LangChain (recommended — works with all LangChain tools)</span>
+<span class="kw">from</span> langchain_aws <span class="kw">import</span> ChatBedrock
+
+llm = <span class="cx">ChatBedrock</span>(
+    model_id=<span class="str">"anthropic.claude-3-5-sonnet-20241022-v2:0"</span>,
+    region_name=<span class="str">"us-east-1"</span>,
+    model_kwargs={<span class="str">"max_tokens"</span>: <span class="nu">1024</span>, <span class="str">"temperature"</span>: <span class="nu">0</span>}
+)
+<span class="cm"># Drop-in for ChatOpenAI: just swap this into your existing chains!</span>
+response = llm.invoke(<span class="str">"What is the capital of Bangladesh?"</span>)
+<span class="fn">print</span>(response.content)  <span class="cm"># Dhaka</span>
+
+<span class="cm"># Your RAG chain now uses Claude via AWS with no code changes:</span>
+rag_chain_bedrock = (
+    {<span class="str">"context"</span>: retriever | format_docs, <span class="str">"question"</span>: <span class="cx">RunnablePassthrough</span>()}
+    | rag_prompt
+    | llm   <span class="cm"># just swap ChatOpenAI for ChatBedrock</span>
+    | <span class="cx">StrOutputParser</span>()
+)
+
+<span class="cm"># Bedrock Knowledge Bases (managed RAG — zero setup)</span>
+agent = boto3.client(<span class="str">"bedrock-agent-runtime"</span>, region_name=<span class="str">"us-east-1"</span>)
+
+<span class="kw">def</span> <span class="fn">query_knowledge_base</span>(question: str, kb_id: str) -> dict:
+    response = agent.retrieve_and_generate(
+        input={<span class="str">"text"</span>: question},
+        retrieveAndGenerateConfiguration={
+            <span class="str">"type"</span>: <span class="str">"KNOWLEDGE_BASE"</span>,
+            <span class="str">"knowledgeBaseConfiguration"</span>: {
+                <span class="str">"knowledgeBaseId"</span>: kb_id,
+                <span class="str">"modelArn"</span>: <span class="str">"arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0"</span>,
+                <span class="str">"retrievalConfiguration"</span>: {
+                    <span class="str">"vectorSearchConfiguration"</span>: {
+                        <span class="str">"numberOfResults"</span>: <span class="nu">5</span>,
+                        <span class="str">"overrideSearchType"</span>: <span class="str">"HYBRID"</span>
+                    }
+                }
+            }
+        }
+    )
+    <span class="kw">return</span> {
+        <span class="str">"answer"</span>: response[<span class="str">"output"</span>][<span class="str">"text"</span>],
+        <span class="str">"citations"</span>: response[<span class="str">"citations"</span>]
+    }</pre></div>
+</section>
+
+<!-- SAGEMAKER -->
+<section id="sagemaker" class="sec" data-level="advanced">
+  <div class="seh">
+    <div class="see">Chapter 13 — SageMaker</div>
+    <h2><span class="si2">🚀</span> AWS SageMaker — Custom Model Training &amp; Deployment</h2>
+    <p class="sed">SageMaker is for when you need to train or fine-tune your own models. Different from Bedrock — you control the entire ML pipeline.</p>
+  </div>
+  <h3>Bedrock vs SageMaker — When to Use Which</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Use Case</th><th>Bedrock</th><th>SageMaker</th></tr></thead>
+    <tbody>
+      <tr><td>Call Claude / Llama / Mistral API</td><td>✅ Perfect — just an API call</td><td>❌ Overkill</td></tr>
+      <tr><td>RAG on your documents</td><td>✅ Knowledge Bases feature</td><td>❌ Not the right tool</td></tr>
+      <tr><td>Fine-tune on your domain data</td><td>⚠️ Limited (Titan/Nova only)</td><td>✅ Any model, full control</td></tr>
+      <tr><td>Deploy a HuggingFace model</td><td>❌ Not supported</td><td>✅ Direct support</td></tr>
+      <tr><td>Custom sklearn / XGBoost model</td><td>❌ Not applicable</td><td>✅ Full ML pipeline</td></tr>
+      <tr><td>ML training pipelines</td><td>❌</td><td>✅ SageMaker Pipelines</td></tr>
+    </tbody>
+  </table></div>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">sagemaker_deploy.py — Deploy and fine-tune models</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">import</span> sagemaker
+<span class="kw">from</span> sagemaker.jumpstart.model <span class="kw">import</span> JumpStartModel
+<span class="kw">from</span> sagemaker.huggingface <span class="kw">import</span> HuggingFace, HuggingFaceModel
+
+session = sagemaker.Session()
+role    = sagemaker.get_execution_role()
+
+<span class="cm"># OPTION 1: Deploy Llama 3 70B via JumpStart (easiest)</span>
+model = <span class="cx">JumpStartModel</span>(
+    model_id=<span class="str">"meta-textgeneration-llama-3-70b-instruct"</span>,
+    role=role, region_name=<span class="str">"us-east-1"</span>
+)
+predictor = model.deploy(
+    initial_instance_count=<span class="nu">1</span>,
+    instance_type=<span class="str">"ml.g5.48xlarge"</span>,   <span class="cm"># 4x A10G GPU, 192GB VRAM</span>
+    endpoint_name=<span class="str">"llama3-70b"</span>
+)
+response = predictor.predict({
+    <span class="str">"inputs"</span>: <span class="str">"What is machine learning?"</span>,
+    <span class="str">"parameters"</span>: {<span class="str">"max_new_tokens"</span>: <span class="nu">512</span>, <span class="str">"temperature"</span>: <span class="nu">0.7</span>}
+})
+
+<span class="cm"># OPTION 2: Fine-tuning with QLoRA (4-bit quantization)</span>
+estimator = <span class="cx">HuggingFace</span>(
+    entry_point=<span class="str">"train.py"</span>,
+    source_dir=<span class="str">"./training"</span>,
+    role=role,
+    transformers_version=<span class="str">"4.36"</span>,
+    pytorch_version=<span class="str">"2.1"</span>,
+    py_version=<span class="str">"py310"</span>,
+    instance_type=<span class="str">"ml.g5.12xlarge"</span>,  <span class="cm"># 4x A10G GPU</span>
+    instance_count=<span class="nu">1</span>,
+    hyperparameters={
+        <span class="str">"model_name_or_path"</span>: <span class="str">"meta-llama/Meta-Llama-3-8B"</span>,
+        <span class="str">"num_train_epochs"</span>: <span class="nu">3</span>,
+        <span class="str">"per_device_train_batch_size"</span>: <span class="nu">4</span>,
+        <span class="str">"use_qlora"</span>: True,  <span class="cm"># 4-bit quantized fine-tuning — saves VRAM</span>
+        <span class="str">"lora_r"</span>: <span class="nu">64</span>,
+        <span class="str">"lora_alpha"</span>: <span class="nu">16</span>,
+    }
+)
+estimator.fit({<span class="str">"training"</span>: <span class="str">"s3://my-bucket/training-data/"</span>})</pre></div>
+</section>
+<!-- PRODUCTION -->
+<section id="production" class="sec" data-level="advanced">
+  <div class="seh">
+    <div class="see">Chapter 14 — Production</div>
+    <h2><span class="si2">🏭</span> Production Deployment</h2>
+    <p class="sed">How to take your RAG app from your laptop to a real server that handles real users at scale.</p>
+  </div>
+  <h3>Step 1 — FastAPI with Streaming</h3>
+  <div class="cb"><div class="ch"><span class="cl">Python</span><span class="ct">api.py — Production-grade FastAPI server</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, HTTPException, Depends
+<span class="kw">from</span> fastapi.responses <span class="kw">import</span> StreamingResponse
+<span class="kw">from</span> fastapi.middleware.cors <span class="kw">import</span> CORSMiddleware
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+<span class="kw">from</span> typing <span class="kw">import</span> AsyncIterator, Optional
+<span class="kw">import</span> asyncio, json, time
+
+app = <span class="cx">FastAPI</span>(title=<span class="str">"AI Q&A API"</span>, version=<span class="str">"2.0.0"</span>)
+
+app.add_middleware(<span class="cx">CORSMiddleware</span>,
+    allow_origins=[<span class="str">"*"</span>], allow_methods=[<span class="str">"*"</span>], allow_headers=[<span class="str">"*"</span>])
+
+<span class="kw">class</span> <span class="cx">QueryRequest</span>(BaseModel):
+    question: str
+    session_id: str
+    temperature: float = <span class="nu">0.0</span>
+    stream: bool = False
+    max_tokens: Optional[int] = <span class="nu">1000</span>
+
+<span class="kw">class</span> <span class="cx">QueryResponse</span>(BaseModel):
+    answer: str
+    sources: list[str]
+    latency_ms: int
+
+<span class="dc">@app.post</span>(<span class="str">"/query"</span>, response_model=<span class="cx">QueryResponse</span>)
+<span class="kw">async def</span> <span class="fn">query</span>(req: <span class="cx">QueryRequest</span>):
+    <span class="cm">"""Standard query endpoint — returns full answer at once"""</span>
+    start = time.time()
+    <span class="kw">try</span>:
+        docs   = retriever.invoke(req.question)
+        answer = rag_chain.invoke(req.question)
+        sources = list({d.metadata.get(<span class="str">"source"</span>, <span class="str">"?"</span>) <span class="kw">for</span> d <span class="kw">in</span> docs})
+        <span class="kw">return</span> {
+            <span class="str">"answer"</span>: answer,
+            <span class="str">"sources"</span>: sources,
+            <span class="str">"latency_ms"</span>: int((time.time() - start) * <span class="nu">1000</span>)
+        }
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="kw">raise</span> <span class="cx">HTTPException</span>(status_code=<span class="nu">500</span>, detail=<span class="fn">str</span>(e))
+
+<span class="dc">@app.post</span>(<span class="str">"/stream"</span>)
+<span class="kw">async def</span> <span class="fn">stream_query</span>(req: <span class="cx">QueryRequest</span>):
+    <span class="cm">"""Streaming endpoint — sends tokens as they're generated (better UX!)"""</span>
+    <span class="kw">async def</span> <span class="fn">generate</span>() -> <span class="cx">AsyncIterator</span>[str]:
+        <span class="kw">async for</span> chunk <span class="kw">in</span> rag_chain.astream(req.question):
+            <span class="cm"># Server-Sent Events format</span>
+            yield <span class="str">f"data: {json.dumps({'token': chunk})}\n\n"</span>
+        yield <span class="str">"data: [DONE]\n\n"</span>
+    <span class="kw">return</span> <span class="cx">StreamingResponse</span>(generate(), media_type=<span class="str">"text/event-stream"</span>)
+
+<span class="dc">@app.get</span>(<span class="str">"/health"</span>)
+<span class="kw">def</span> <span class="fn">health</span>():
+    <span class="cm">"""Health check endpoint — load balancers ping this"""</span>
+    <span class="kw">return</span> {<span class="str">"status"</span>: <span class="str">"ok"</span>, <span class="str">"version"</span>: <span class="str">"2.0.0"</span>}
+
+<span class="dc">@app.get</span>(<span class="str">"/metrics"</span>)
+<span class="kw">def</span> <span class="fn">metrics</span>():
+    <span class="cm">"""Return basic usage metrics"""</span>
+    <span class="kw">return</span> {<span class="str">"total_queries"</span>: <span class="nu">1000</span>, <span class="str">"avg_latency_ms"</span>: <span class="nu">850</span>}</pre></div>
+
+  <h3>Step 2 — Dockerfile (Production Grade)</h3>
+  <div class="cb"><div class="ch"><span class="cl">Dockerfile</span><span class="ct">Multi-stage build with non-root user</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre><span class="cm"># Stage 1: Build dependencies</span>
+FROM python:3.12-slim AS builder
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir --user -r requirements.txt
+
+<span class="cm"># Stage 2: Lean production image</span>
+FROM python:3.12-slim
+WORKDIR /app
+
+<span class="cm"># Security: run as non-root user</span>
+RUN adduser --disabled-password --no-create-home appuser
+
+<span class="cm"># Copy installed packages from builder</span>
+COPY --from=builder /root/.local /home/appuser/.local
+COPY . .
+
+RUN chown -R appuser:appuser /app
+USER appuser
+
+EXPOSE 8000
+
+<span class="cm"># 4 workers for handling concurrent requests</span>
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]</pre></div>
+
+  <h3>Step 3 — Docker Compose (Full Stack)</h3>
+  <div class="cb"><div class="ch"><span class="cl">YAML</span><span class="ct">docker-compose.yml — API + Vector DB + Cache</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+  <pre>version: '3.8'
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    depends_on: [qdrant, redis]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      retries: 3
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports: ["6333:6333"]
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  qdrant_data:
+  redis_data:</pre></div>
+
+  <div class="ca ok"><div class="cai">🏆</div><div class="cac"><div class="cat">Production Deployment Checklist</div>
+    <ul class="chk">
+      <li><label><input type="checkbox"> <span>API keys in .env file, never hardcoded</span></label></li>
+      <li><label><input type="checkbox"> <span>Health check endpoint at /health</span></label></li>
+      <li><label><input type="checkbox"> <span>Non-root user in Docker container</span></label></li>
+      <li><label><input type="checkbox"> <span>Error handling with proper HTTP status codes</span></label></li>
+      <li><label><input type="checkbox"> <span>Streaming endpoint for better UX</span></label></li>
+      <li><label><input type="checkbox"> <span>CORS configured for your frontend domain</span></label></li>
+      <li><label><input type="checkbox"> <span>Rate limiting (FastAPI-limiter or API Gateway)</span></label></li>
+      <li><label><input type="checkbox"> <span>LangSmith tracing enabled in production</span></label></li>
+      <li><label><input type="checkbox"> <span>Vector DB (Qdrant) persisting data to volume</span></label></li>
+      <li><label><input type="checkbox"> <span>Redis for session storage and semantic cache</span></label></li>
+    </ul>
+  </div></div>
+</section>
+
+<!-- SYSTEM DESIGN -->
+<section id="sysdesign" class="sec" data-level="advanced">
+  <div class="seh">
+    <div class="see">Chapter 15 — System Design</div>
+    <h2><span class="si2">🏛️</span> AI System Design for Interviews</h2>
+    <p class="sed">Senior AI engineering interviews always include system design. Here are the patterns, diagrams, and tradeoffs you need to know.</p>
+  </div>
+
+  <h3>Design: Enterprise RAG (100k docs, 10k users/day)</h3>
+  <div class="arch"><span class="ac">ENTERPRISE RAG ARCHITECTURE</span>
+
+USER
+ |
+ v
+<span class="ag">[API Gateway]</span>  -- Rate limiting, Auth (JWT), SSL, DDoS protection
+ |
+ +---> <span class="ay">[Redis Semantic Cache]</span>
+ |         If similar question asked before (cosine sim > 0.95),
+ |         return cached answer instantly. Saves 40-70% LLM cost.
+ |
+ v
+<span class="apx">[RAG Orchestrator]</span>  (FastAPI, 4+ workers, Docker)
+ |
+ +---> <span class="ao">[Query Processing]</span>
+ |         - Query expansion (MultiQueryRetriever: 3 variants)
+ |         - Query classification: simple/complex/off-topic
+ |         - Entity extraction for metadata filtering
+ |
+ +---> <span class="ac">[Hybrid Retrieval]</span>
+ |         - Vector Search (Qdrant: semantic similarity)
+ |         - BM25 (Elasticsearch: exact keyword match)
+ |         - Cohere Reranker (re-scores top 10, keeps top 3)
+ |
+ +---> <span class="ag">[LLM Layer]</span>
+ |         - Primary:  AWS Bedrock Claude 3.5 Sonnet
+ |         - Fallback: OpenAI GPT-4o (if Bedrock rate-limited)
+ |         - Cheap:    GPT-4o-mini (for simple/short queries)
+ |         - Timeout:  30s hard limit with graceful degradation
+ |
+ +---> <span class="ay">[Observability]</span>
+           - LangSmith (all traces, costs, evals)
+           - DataDog (latency metrics, error alerts)
+           - S3 (log archive, 90-day retention)</div>
+
+  <h3>Scalability + Cost + Reliability Patterns</h3>
+  <div class="tc">
+    <div class="tcb">
+      <h4>💰 Cut LLM Costs by 80%</h4>
+      <ul class="li">
+        <li><strong>Semantic caching</strong> — If same Q asked before (cosine &gt; 0.95), skip LLM. Saves 40-70%.</li>
+        <li><strong>Model routing</strong> — Simple Q → GPT-4o-mini ($0.15/1M). Complex → GPT-4o ($5/1M). 33x difference.</li>
+        <li><strong>Prompt compression</strong> — LLMLingua cuts context by 50% with minimal quality loss.</li>
+        <li><strong>Fewer, better chunks</strong> — Retrieve 3 precise chunks vs 10 loose ones. Same quality, 70% fewer tokens.</li>
+      </ul>
+    </div>
+    <div class="tcb">
+      <h4>⚡ Performance + Reliability</h4>
+      <ul class="li">
+        <li><strong>Async everything</strong> — Never block on LLM calls. Use FastAPI + async chains.</li>
+        <li><strong>Retry + backoff</strong> — LLMs rate-limit. Exponential backoff with jitter.</li>
+        <li><strong>Fallback chain</strong> — Bedrock fails → OpenAI → local model → cached response.</li>
+        <li><strong>Timeout handling</strong> — 30s max. Return "still processing" if timeout, don't hang.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- INTERVIEW -->
+<section id="interview" class="sec" data-level="interview">
+  <div class="seh">
+    <div class="see">Chapter 16 — Interview Prep</div>
+    <h2><span class="si2">🎯</span> 80+ Interview Questions with Full Answers</h2>
+    <p class="sed">Every question here has been asked in real AI engineering interviews. These cover FAANG, top AI startups, and enterprise roles.</p>
+  </div>
+
+  <h3>LLM Fundamentals (Q01–Q10)</h3>
+  <div class="ql">
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q01</span><span>What is a token? Why does tokenization matter in practice?</span><span class="qt">+</span></div>
+    <div class="qa"><p>A token is a subword unit — LLMs split text into chunks that can be parts of words, whole words, or punctuation. "unhappy" → ["un","happy"] (2 tokens). "tokenization" → ["token","iz","ation"] (3 tokens). On average 1 token ≈ 0.75 words ≈ 4 characters.</p>
+    <p><strong>Why it matters:</strong> (1) API pricing is per token — count before calling. (2) Context window limits are in tokens — 128k for GPT-4o. (3) Non-English languages tokenize less efficiently — Bengali can use 2-4x more tokens per word than English, increasing costs. (4) Long documents must be chunked because they exceed context limits. Use tiktoken to count tokens before making expensive API calls.</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q02</span><span>What is temperature and when do you set it to 0 vs 0.7 vs 1.0+?</span><span class="qt">+</span></div>
+    <div class="qa"><p>Temperature controls the randomness of token selection. At 0, the model always picks the highest-probability next token (deterministic — same input always gives same output). At 1.0, it samples proportionally to probabilities. Above 1.0, it becomes increasingly random and incoherent.</p>
+    <p><strong>temperature=0:</strong> data extraction, SQL generation, classification, factual Q&A, code generation. You need consistency and correctness.</p>
+    <p><strong>temperature=0.3–0.7:</strong> summarization, translation, professional emails. Some variation acceptable but not too wild.</p>
+    <p><strong>temperature=0.7–1.0:</strong> creative writing, brainstorming, marketing copy, story generation. Want diverse, fresh outputs each time.</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q03</span><span>Explain embeddings and cosine similarity. How do they power RAG?</span><span class="qt">+</span></div>
+    <div class="qa"><p>An embedding is a dense vector (e.g., 1536 float numbers) that captures the semantic meaning of text. The key property: texts with similar meanings produce similar vectors in vector space.</p>
+    <p>Cosine similarity measures the angle between two vectors, returning a score from -1 to 1 (in practice 0 to 1 for text). Score of 0.95 means nearly identical meaning. Score of 0.3 means unrelated.</p>
+    <p><strong>In RAG:</strong> At index time, each chunk is embedded and stored. At query time, the user's question is embedded with the SAME model (critical — mismatched models break everything). Then you find chunks with highest cosine similarity to the question. These are the most relevant context chunks. The magic: "vacation days" and "annual leave entitlement" produce 0.91 similarity even though they share zero words — that's semantic search.</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q04</span><span>What is hallucination? How do you detect and prevent it in production?</span><span class="qt">+</span></div>
+    <div class="qa"><p>Hallucination is when an LLM generates factually wrong information with high confidence. It happens because LLMs optimize for statistically likely next tokens, not factual accuracy. They pattern-match instead of "knowing facts."</p>
+    <p><strong>Prevention:</strong></p>
+    <p><strong>1. RAG with strong prompt:</strong> "Answer ONLY from the provided context. If not in context, say you don't know." Dramatically reduces hallucination by grounding in real documents.</p>
+    <p><strong>2. temperature=0:</strong> More deterministic, less creative = fewer invented facts.</p>
+    <p><strong>3. Structured output + validation:</strong> Use Pydantic schemas. If output doesn't match expected format, it likely hallucinated.</p>
+    <p><strong>4. RAGAS faithfulness metric:</strong> Automatically extracts claims from the answer and verifies each one against the retrieved context. Low score = hallucination detected.</p>
+    <p><strong>5. Self-consistency:</strong> Ask the same question 3x with temperature=0.5. If answers differ significantly, flag for human review.</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q05</span><span>What is the difference between few-shot and zero-shot prompting?</span><span class="qt">+</span></div>
+    <div class="qa"><p><strong>Zero-shot:</strong> Give the LLM the task description with no examples. Relies entirely on the model's training. Example: "Classify this review as positive/negative: 'Great product!'"</p>
+    <p><strong>Few-shot:</strong> Provide 3-10 example input/output pairs before the actual task. The model learns the pattern from examples. Example: Show 3 (review, label) pairs, then ask to classify a new review.</p>
+    <p><strong>When to use few-shot:</strong> When zero-shot gives wrong format, wrong style, or inconsistent results. Examples dramatically improve classification tasks, data extraction, and any task with a specific output format. Cost: each example adds tokens, so balance quality vs cost. Typically 3-5 examples is the sweet spot — more rarely helps but adds cost.</p></div></div>
+  </div>
+
+  <h3>RAG Systems (Q06–Q15)</h3>
+  <div class="ql">
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q06</span><span>Walk through the full RAG pipeline. Where are the failure points?</span><span class="qt">+</span></div>
+    <div class="qa"><p><strong>Pipeline:</strong> Document loading → chunking → embedding → vector storage → query embedding → retrieval → (reranking) → LLM generation → output.</p>
+    <p><strong>Failure point 1 — Bad chunking:</strong> Chunks too large dilute relevance; too small lose context. Fix: RecursiveCharacterTextSplitter with 1000-char chunks, 200-char overlap.</p>
+    <p><strong>Failure point 2 — Mismatched embedding models:</strong> Index with model A, query with model B = nonsense results. Fix: always use the same embedding model for both phases. Store model name with index metadata.</p>
+    <p><strong>Failure point 3 — Retrieval misses:</strong> User asks "refund" but doc says "return policy." Vector search may rank this lower. Fix: hybrid search (BM25 + vector).</p>
+    <p><strong>Failure point 4 — Context window overflow:</strong> Retrieving 10 chunks × 1000 chars = 10,000 chars of context, which may exceed limits. Fix: rerank and keep top 3 only.</p>
+    <p><strong>Failure point 5 — LLM ignores context:</strong> LLM uses training knowledge instead of retrieved context. Fix: strong system prompt "ONLY use the provided context." Measure with RAGAS faithfulness.</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q07</span><span>What is hybrid search and why is it better than pure vector search?</span><span class="qt">+</span></div>
+    <div class="qa"><p>Hybrid search combines two retrieval methods and merges their results:</p>
+    <p><strong>Vector search:</strong> Finds semantically similar documents based on meaning. Excellent at synonyms and paraphrases. "Neural network training" matches "deep learning model building" even with no shared words.</p>
+    <p><strong>BM25 (keyword search):</strong> Traditional TF-IDF-based ranking. Excellent at exact matches for specific terms, product codes, names, acronyms. "ISO 9001" or "gpt-4o-mini" finds exact matches reliably.</p>
+    <p><strong>Why hybrid wins:</strong> Vector fails on specific product names and acronyms. BM25 fails on synonyms and paraphrases. Together they cover each other's weaknesses. Real-world benchmark improvement: ~10-20% better recall vs either method alone. Implement with LangChain EnsembleRetriever: weights=[0.5, 0.5]. In production, tune weights based on your query distribution — more keyword-heavy domains benefit from higher BM25 weight.</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q08</span><span>How do you evaluate a RAG system? What metrics matter?</span><span class="qt">+</span></div>
+    <div class="qa"><p>Use <strong>RAGAS</strong> framework. Four core metrics:</p>
+    <p><strong>1. Faithfulness (0–1):</strong> Does the answer contain only facts from the retrieved context? Low = hallucination. Measures: extract claims from answer, verify each claim against context. Most important metric for trust.</p>
+    <p><strong>2. Answer Relevancy (0–1):</strong> Does the answer actually address the question asked? Low = off-topic response.</p>
+    <p><strong>3. Context Precision (0–1):</strong> Of the retrieved chunks, how many were actually relevant? Low = retrieval returning noise.</p>
+    <p><strong>4. Context Recall (0–1):</strong> Did retrieval find all the chunks needed to answer? Low = missing key information.</p>
+    <p><strong>Evaluation process:</strong> Build a test dataset of 50-100 (question, ideal_answer, relevant_chunks) triplets — your "golden set." Run RAGAS on each change to chunking, retrieval, or LLM. Track metrics in LangSmith across versions. Catch regressions before they reach users.</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q09</span><span>What is reranking and when should you use it?</span><span class="qt">+</span></div>
+    <div class="qa"><p>Reranking is a two-stage retrieval process. First, retrieve the top-K candidates (fast but approximate — 8-20 chunks). Then, re-score those candidates with a more powerful but slower cross-encoder model, and keep only the top-N (3-5 chunks).</p>
+    <p><strong>Why it works:</strong> Initial retrieval (bi-encoder) computes query and document embeddings separately. Cross-encoders (rerankers) process query+document together, capturing fine-grained interactions. Much more accurate, but too slow to run on millions of documents. The two-stage approach gets the best of both worlds.</p>
+    <p><strong>Use Cohere Rerank:</strong> <code>CohereRerank(model="rerank-english-v3.0", top_n=3)</code>. Works with LangChain's ContextualCompressionRetriever.</p>
+    <p><strong>When to use:</strong> When retrieval precision is low (too many irrelevant chunks). When context window is limited (want fewest, highest-quality chunks). For high-stakes applications like legal, medical, or financial Q&A. Adds ~100-300ms latency and small API cost.</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q10</span><span>How would you handle multi-document RAG where docs have contradictory information?</span><span class="qt">+</span></div>
+    <div class="qa"><p>Contradictory information is a real challenge in enterprise RAG. Multiple strategies:</p>
+    <p><strong>1. Metadata-based prioritization:</strong> Store source reliability, document date, and document type in metadata. At query time, filter/boost recent or authoritative sources. Example: "policy_doc" > "meeting_notes".</p>
+    <p><strong>2. Source attribution in prompt:</strong> Include source name and date with each chunk. Tell LLM: "If sources contradict, prefer the most recent official policy document and flag the contradiction to the user."</p>
+    <p><strong>3. Explicit contradiction detection:</strong> After retrieval, use a cheap LLM call to detect if chunks contradict. If yes, include ALL contradicting chunks and ask the generation LLM to acknowledge and reconcile.</p>
+    <p><strong>4. Version control for documents:</strong> When re-indexing, delete old version chunks before adding new ones. Use document_id + version as unique ID.</p></div></div>
+  </div>
+
+  <h3>Vector Databases (Q11–Q16)</h3>
+  <div class="ql">
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q11</span><span>What is HNSW? Why do vector databases use approximate nearest neighbor search?</span><span class="qt">+</span></div>
+    <div class="qa"><p><strong>The problem:</strong> Finding the exact nearest neighbor in 1536-dimensional space requires computing distance to every stored vector — O(n) time. With 1 million vectors, that's 1M calculations per query, taking seconds. Too slow for real-time use.</p>
+    <p><strong>HNSW (Hierarchical Navigable Small World):</strong> An approximate nearest neighbor (ANN) algorithm that builds a multi-layer graph. Top layers are sparse "highway" connections linking distant nodes. Bottom layers are dense "local" connections to nearby nodes. Search starts at top, quickly narrows the search space through layers, arriving at approximate nearest neighbors in O(log n) time.</p>
+    <p><strong>Tradeoff:</strong> HNSW might miss the true closest vector 1-5% of the time. But it's 100-1000x faster than exact search. For RAG, approximate is absolutely fine — you're not doing precision science, you're finding relevant context. Every major vector DB (Pinecone, Qdrant, ChromaDB, Weaviate) uses HNSW. Key parameters to tune: ef_construction (build quality vs speed), M (graph connections per node), ef_search (query quality vs speed).</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q12</span><span>Pinecone vs Qdrant vs ChromaDB vs pgvector — how do you choose?</span><span class="qt">+</span></div>
+    <div class="qa"><p><strong>ChromaDB:</strong> Zero setup, in-process (no server). Perfect for learning, prototypes, demos. Runs locally with Python. Not horizontally scalable — max a few million vectors on one machine. Never use in production with multiple servers.</p>
+    <p><strong>Pinecone:</strong> Fully managed SaaS, zero ops. Handles billions of vectors, auto-scales. Best when you want to never think about vector DB infrastructure and can afford $70+/month. Proprietary — no self-hosting.</p>
+    <p><strong>Qdrant:</strong> Open source. Self-host with Docker or use Qdrant Cloud. Performance comparable to Pinecone. Excellent payload filtering. Free to self-host. Best for teams with DevOps capacity who want control and cost savings at scale.</p>
+    <p><strong>pgvector:</strong> PostgreSQL extension. If you already use Postgres, just <code>CREATE EXTENSION vector</code>. Gives vector search inside your existing database. Simplest architecture — no extra service. Not as fast as dedicated vector DBs for billions of vectors, but perfect for millions.</p>
+    <p><strong>Decision:</strong> Learning → ChromaDB. Production (managed) → Qdrant Cloud or Pinecone. Production (existing Postgres, &lt;10M vectors) → pgvector.</p></div></div>
+  </div>
+
+  <h3>LangGraph &amp; Agents (Q17–Q22)</h3>
+  <div class="ql">
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q17</span><span>Explain the ReAct pattern. How does LangGraph implement it?</span><span class="qt">+</span></div>
+    <div class="qa"><p><strong>ReAct = Reason + Act.</strong> The agent alternates between (1) thinking/reasoning about what to do, (2) acting by calling a tool, (3) observing the tool result, (4) thinking again — until it has enough information to give a final answer.</p>
+    <p><strong>Classic text-based ReAct:</strong><br>Thought: I need to find Dhaka's population<br>Action: search_web("Dhaka population 2024")<br>Observation: Dhaka has 23 million people<br>Thought: Now I have the answer<br>Final Answer: Dhaka's population is approximately 23 million</p>
+    <p><strong>LangGraph implementation:</strong> Two nodes — "agent" (calls LLM) and "tools" (executes tool calls). A conditional edge: if response has tool_calls → go to tools node, then back to agent. If response has no tool_calls → END. This creates the Reason-Act loop without any text parsing. The LLM generates structured tool_calls objects natively via tool binding.</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q18</span><span>How do you prevent infinite loops in LangGraph agents?</span><span class="qt">+</span></div>
+    <div class="qa"><p>Infinite loops happen when an agent calls tools repeatedly without converging on an answer.</p>
+    <p><strong>1. recursion_limit:</strong> LangGraph's built-in safety: <code>app.invoke(input, config={"recursion_limit": 10})</code>. Default is 25 steps. When exceeded, LangGraph raises GraphRecursionError.</p>
+    <p><strong>2. Step counter in state:</strong> Add <code>step_count: int = 0</code> to your state TypedDict. Increment in every node. Add conditional edge: if step_count > max_steps → END with error message.</p>
+    <p><strong>3. Detect repeated tool calls:</strong> Track last tool call in state. If agent calls the same tool with the same arguments twice, stop and return what you have.</p>
+    <p><strong>4. Human-in-the-loop:</strong> For high-stakes actions (send email, delete data), use <code>interrupt_before=["tools"]</code> checkpoint. Agent pauses, human reviews and approves, then resumes.</p>
+    <p><strong>5. Tool result quality check:</strong> After each tool call, have the LLM rate whether it got useful information (0-1). If rating stays low for 3 consecutive calls, stop.</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q19</span><span>What is the difference between LangChain agents and LangGraph agents?</span><span class="qt">+</span></div>
+    <div class="qa"><p><strong>LangChain AgentExecutor:</strong> Simple, linear loop. Good for basic ReAct. Black-box execution — hard to customize the flow. No persistent state. No parallelism. Limited control.</p>
+    <p><strong>LangGraph agents:</strong> Explicit state machine. Every node and edge is defined by you. Full control over the flow. Native support for: branching (if/else routing), loops (ReAct cycle), parallel branches, human-in-the-loop (interrupt_before), persistent state across sessions (checkpointers), sub-graphs (nested agents).</p>
+    <p><strong>When to use which:</strong> Simple agent that calls a few tools → AgentExecutor (less code). Complex workflows with branching logic, human approval, multi-agent collaboration, or session persistence → LangGraph. For production, LangGraph is almost always better — more debuggable, more controllable, more scalable.</p></div></div>
+  </div>
+
+  <h3>MCP &amp; Composio (Q23–Q26)</h3>
+  <div class="ql">
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q23</span><span>What is MCP and why has it been called a "game-changer"?</span><span class="qt">+</span></div>
+    <div class="qa"><p>MCP (Model Context Protocol) is an open standard by Anthropic for connecting AI models to tools and data sources using a uniform JSON-RPC 2.0 protocol.</p>
+    <p><strong>Problem before MCP:</strong> Every AI framework had its own tool format. LangChain tools couldn't be used in the OpenAI Assistants API. Cursor IDE had its own integration format. Every team wrote custom integrations that were incompatible.</p>
+    <p><strong>Why game-changing:</strong> (1) Interoperability — build one MCP server, use it with Claude, GPT-4, LangGraph, Cursor, VS Code Copilot, any host. Write once, run anywhere. (2) Ecosystem — community builds MCP servers for common services, you install and use, no custom code. (3) Industry adoption — OpenAI, Anthropic, Microsoft GitHub Copilot, Cursor, Replit all adopted MCP in 2025. Becoming the USB-C standard for AI integrations. (4) Three concepts — Tools (functions AI calls), Resources (data AI reads), Prompts (reusable templates).</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q24</span><span>When would you build a custom MCP server vs using Composio?</span><span class="qt">+</span></div>
+    <div class="qa"><p><strong>Use Composio when:</strong> You need to integrate with popular services (Gmail, Slack, GitHub, Notion, Jira, Salesforce). Composio has 250+ pre-built servers. No custom auth, rate limiting, or API wrapper code needed. Minutes vs weeks of setup. Perfect for 80% of use cases.</p>
+    <p><strong>Build custom MCP server when:</strong> You need to integrate with your internal company API/database. You need custom business logic beyond what APIs expose (e.g., complex database queries combining multiple tables). You're exposing company data as resources (dashboards, reports). Privacy concerns — your internal data should not go through Composio's servers. Your integration isn't in Composio's catalog.</p>
+    <p><strong>Best practice:</strong> Use Composio for external services, build custom MCP for internal systems. Combine both in MultiServerMCPClient.</p></div></div>
+  </div>
+
+  <h3>AWS Bedrock &amp; SageMaker (Q27–Q32)</h3>
+  <div class="ql">
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q27</span><span>When do you use Bedrock vs SageMaker? Give a real-world scenario for each.</span><span class="qt">+</span></div>
+    <div class="qa"><p><strong>Bedrock scenario:</strong> An e-commerce company wants to add an AI assistant that answers customer questions from their product documentation and support articles. They have no ML team. They need AWS compliance (HIPAA/SOC2). Deploy in 2 weeks. → Use Bedrock: call Claude API, use Bedrock Knowledge Bases for RAG, done.</p>
+    <p><strong>SageMaker scenario:</strong> A medical diagnostics company has 500,000 labeled X-ray reports. They want to fine-tune a language model to extract structured data (diagnosis, severity, treatment) from radiology reports with higher accuracy than a general LLM. They have an MLOps team and 3 months. → SageMaker: fine-tune Llama 3 8B on their data with QLoRA, deploy to SageMaker endpoint, get domain-specific model that outperforms general models by 25% on their task.</p>
+    <p><strong>Rule:</strong> Bedrock = consume someone else's model via API. SageMaker = train, fine-tune, or deploy your own model with full control.</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q28</span><span>What is Bedrock Guardrails? When is it required?</span><span class="qt">+</span></div>
+    <div class="qa"><p>Bedrock Guardrails is an AWS-managed content safety and policy enforcement layer that runs before/after every LLM call. It operates independently of the model itself.</p>
+    <p><strong>Features:</strong> (1) Content filtering — blocks hate speech, violence, sexual content at 5 configurable sensitivity levels. (2) Topic denial — prevents discussion of specific topics ("don't discuss competitor products," "no medical advice"). (3) PII detection — detects and redacts SSN, credit cards, email addresses, phone numbers from inputs/outputs. (4) Grounding check — verifies LLM answer is grounded in provided context (anti-hallucination). (5) Word filters — blocks custom lists of words/phrases.</p>
+    <p><strong>When required:</strong> Any consumer-facing app (B2C). Regulated industries (finance, healthcare, legal). Enterprise compliance requirements. Education platforms for minors. Any app where jailbreaking is a concern. <strong>Not needed for:</strong> Internal developer tools with trusted users, admin dashboards, data processing pipelines.</p></div></div>
+  </div>
+
+  <h3>System Design (Q33–Q40)</h3>
+  <div class="ql">
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q33</span><span>Design a multi-tenant AI SaaS that serves 1000 companies, each with their own private documents.</span><span class="qt">+</span></div>
+    <div class="qa"><p><strong>Core challenge:</strong> Perfect data isolation — Company A must NEVER see Company B's documents.</p>
+    <p><strong>Option A — Namespace isolation (recommended for most):</strong> One Pinecone/Qdrant index with namespaces per tenant. All upserts/queries use namespace: <code>namespace=f"tenant_{company_id}"</code>. Simple, cheap, fast to implement. Risk: a code bug could cross-contaminate. Mitigate with defensive coding and tests.</p>
+    <p><strong>Option B — Metadata filtering:</strong> Store <code>tenant_id</code> in every chunk's metadata. Always filter queries: <code>where={"tenant_id": company_id}</code>. Works well with Qdrant payload filtering. Same index, strict filtering.</p>
+    <p><strong>Option C — Separate indexes (true isolation):</strong> One Pinecone/Qdrant index per company. Perfect isolation, zero blast radius. Very expensive at scale ($70+/month per company).</p>
+    <p><strong>Auth:</strong> JWT tokens with <code>tenant_id</code> claim. Middleware extracts from token, never from request body. Every DB query, every retrieval call includes tenant_id filter as mandatory parameter.</p>
+    <p><strong>Start with Option B (metadata), move to Option A (namespaces) at scale, offer Option C to enterprise tier customers.</strong></p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q34</span><span>How would you reduce LLM API costs by 80% for a high-traffic application?</span><span class="qt">+</span></div>
+    <div class="qa"><p><strong>Strategy 1 — Semantic Caching (saves 30-50%):</strong> Cache LLM responses. When a new query arrives, check if a semantically similar query was answered before (cosine similarity > 0.95). Return cached answer. Many users ask the same or similar questions. GPTCache or custom Redis + embedding implementation. Near-zero latency for cache hits.</p>
+    <p><strong>Strategy 2 — Model Routing (saves 30-60%):</strong> Classify query complexity before calling the LLM. Simple factual queries → GPT-4o-mini ($0.15/1M tokens). Complex multi-step reasoning → GPT-4o ($5/1M). That's a 33x cost difference. Route 70% of queries to the cheap model.</p>
+    <p><strong>Strategy 3 — Prompt Compression (saves 20-30%):</strong> Use LLMLingua to compress system prompts and retrieved context by 50% with minimal quality degradation. Fewer input tokens = lower cost.</p>
+    <p><strong>Strategy 4 — Better Retrieval (saves 20-40%):</strong> Retrieve 3 high-quality chunks instead of 10 mediocre ones. Reranking helps. Fewer context tokens, same or better answer quality.</p>
+    <p><strong>Strategy 5 — Batch Processing (saves 10-20%):</strong> Use OpenAI Batch API for non-time-sensitive tasks. 50% cost discount for async batch jobs (results returned within 24h).</p></div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q35</span><span>How do you handle LLM rate limits and API failures in production?</span><span class="qt">+</span></div>
+    <div class="qa"><p><strong>LLM APIs fail more often than regular REST APIs.</strong> Rate limits, timeouts, and transient errors are common at scale.</p>
+    <p><strong>1. Exponential backoff with jitter:</strong> On RateLimitError or 5xx, retry with wait = 2^attempt + random(0,1). This spreads out retries to avoid thundering herd.</p>
+    <p><strong>2. Fallback providers:</strong> Primary fails → secondary. Bedrock Claude → OpenAI GPT-4o → GPT-4o-mini (cheaper fallback). Implement with try/except chain.</p>
+    <p><strong>3. Circuit breaker:</strong> If primary provider fails 5 times in 60 seconds, "open the circuit" — route all traffic to fallback for the next 2 minutes. Prevents hammering a failing service.</p>
+    <p><strong>4. Timeout handling:</strong> Set hard timeout (30 seconds). If timeout, return a graceful message: "Response is taking longer than expected. Please try again." Don't leave the user hanging.</p>
+    <p><strong>5. Queue for heavy loads:</strong> Put document indexing and batch LLM jobs in a queue (Celery + Redis). Don't block the API thread on slow operations.</p></div></div>
+  </div>
+
+  <h3>Coding Challenge (Q36–Q40)</h3>
+  <div class="ql">
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q36</span><span>CODE: Implement a semantic cache for LLM responses</span><span class="qt">+</span></div>
+    <div class="qa">
+      <div class="cb"><div class="ch"><span class="cl">Python</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+      <pre><span class="kw">from</span> langchain_openai <span class="kw">import</span> OpenAIEmbeddings
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> typing <span class="kw">import</span> Optional, List, Tuple
+
+<span class="kw">class</span> <span class="cx">SemanticCache</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, similarity_threshold: float = <span class="nu">0.95</span>):
+        self.embeddings = <span class="cx">OpenAIEmbeddings</span>()
+        self.threshold  = similarity_threshold
+        self.cache: List[Tuple[List[float], str, str]] = []
+
+    <span class="kw">def</span> <span class="fn">get</span>(self, question: str) -> Optional[str]:
+        <span class="kw">if not</span> self.cache: <span class="kw">return</span> None
+        q_emb = self.embeddings.embed_query(question)
+        <span class="kw">for</span> stored_emb, _, answer <span class="kw">in</span> self.cache:
+            sim = np.dot(q_emb, stored_emb) / (
+                np.linalg.norm(q_emb) * np.linalg.norm(stored_emb))
+            <span class="kw">if</span> sim >= self.threshold:
+                <span class="fn">print</span>(<span class="str">f"Cache hit! similarity={sim:.3f}"</span>)
+                <span class="kw">return</span> answer
+        <span class="kw">return</span> None
+
+    <span class="kw">def</span> <span class="fn">set</span>(self, question: str, answer: str):
+        emb = self.embeddings.embed_query(question)
+        self.cache.append((emb, question, answer))
+
+cache = <span class="cx">SemanticCache</span>(similarity_threshold=<span class="nu">0.95</span>)
+
+<span class="kw">def</span> <span class="fn">cached_llm</span>(question: str) -> str:
+    hit = cache.get(question)
+    <span class="kw">if</span> hit: <span class="kw">return</span> hit  <span class="cm"># free!</span>
+    answer = llm.invoke(question).content  <span class="cm"># paid API call</span>
+    cache.set(question, answer)
+    <span class="kw">return</span> answer
+
+<span class="cm"># Test semantic caching</span>
+r1 = cached_llm(<span class="str">"What is the capital of France?"</span>)      <span class="cm"># API call</span>
+r2 = cached_llm(<span class="str">"What city is the capital of France?"</span>)  <span class="cm"># Cache hit!</span>
+r3 = cached_llm(<span class="str">"France's capital city name?"</span>)          <span class="cm"># Cache hit!</span></pre></div>
+    </div></div>
+
+    <div class="qi"><div class="qq" onclick="tQA(this)"><span class="qb">Q37</span><span>CODE: Build a simple document Q&A pipeline from scratch (no LangChain)</span><span class="qt">+</span></div>
+    <div class="qa">
+      <div class="cb"><div class="ch"><span class="cl">Python</span><button class="cpb" onclick="cpCode(this)">Copy</button></div>
+      <pre><span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+client = <span class="cx">OpenAI</span>()
+
+<span class="kw">def</span> <span class="fn">embed</span>(text: str) -> List[float]:
+    res = client.embeddings.create(model=<span class="str">"text-embedding-3-small"</span>, input=text)
+    <span class="kw">return</span> res.data[<span class="nu">0</span>].embedding
+
+<span class="kw">def</span> <span class="fn">similarity</span>(a, b) -> float:
+    va, vb = np.array(a), np.array(b)
+    <span class="kw">return</span> float(np.dot(va, vb) / (np.linalg.norm(va) * np.linalg.norm(vb)))
+
+<span class="kw">def</span> <span class="fn">chunk_text</span>(text: str, size: int = <span class="nu">500</span>, overlap: int = <span class="nu">100</span>) -> List[str]:
+    chunks = []
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nu">0</span>, <span class="fn">len</span>(text), size - overlap):
+        chunks.append(text[i : i + size])
+    <span class="kw">return</span> chunks
+
+<span class="cm"># Index documents</span>
+documents = [<span class="str">"Employees get 20 vacation days per year."</span>,
+             <span class="str">"Remote work is allowed 3 days a week."</span>,
+             <span class="str">"Health insurance covers dental and vision."</span>]
+
+index = [(doc, embed(doc)) <span class="kw">for</span> doc <span class="kw">in</span> documents]
+
+<span class="kw">def</span> <span class="fn">answer</span>(question: str, k: int = <span class="nu">2</span>) -> str:
+    q_emb = embed(question)
+    ranked = <span class="fn">sorted</span>(index, key=<span class="kw">lambda</span> x: similarity(q_emb, x[<span class="nu">1</span>]), reverse=True)
+    context = <span class="str">"\n"</span>.join(doc <span class="kw">for</span> doc, _ <span class="kw">in</span> ranked[:k])
+    response = client.chat.completions.create(
+        model=<span class="str">"gpt-4o-mini"</span>,
+        messages=[
+            {<span class="str">"role"</span>: <span class="str">"system"</span>, <span class="str">"content"</span>: <span class="str">f"Answer from context only:\n{context}"</span>},
+            {<span class="str">"role"</span>: <span class="str">"user"</span>,   <span class="str">"content"</span>: question}
+        ]
+    )
+    <span class="kw">return</span> response.choices[<span class="nu">0</span>].message.content
+
+<span class="fn">print</span>(answer(<span class="str">"How many vacation days do I get?"</span>))
+<span class="cm"># "You get 20 vacation days per year."</span></pre></div>
+    </div></div>
+  </div>
+</section>
+<!-- ROADMAP -->
+<section id="roadmap" class="sec" data-level="beginner">
+  <div class="seh">
+    <div class="see">Chapter 17 — Your Path</div>
+    <h2><span class="si2">🗓️</span> 90-Day Roadmap to AI Engineer</h2>
+    <p class="sed">A concrete week-by-week plan. Do the projects — that is what gets you hired.</p>
+  </div>
+
+  <div class="pg2">
+    <div class="ph">
+      <div class="phl">Week 1–2</div>
+      <div class="pht">🌱 Foundation</div>
+      <ul class="phi">
+        <li>Python async/await mastery</li>
+        <li>OpenAI API direct calls</li>
+        <li>Prompt engineering patterns</li>
+        <li>tiktoken — count tokens</li>
+        <li>LangSmith account setup</li>
+        <li><strong>Project:</strong> AI text summarizer CLI</li>
+      </ul>
+    </div>
+    <div class="ph">
+      <div class="phl">Week 3–5</div>
+      <div class="pht">🔍 RAG Mastery</div>
+      <ul class="phi">
+        <li>ChromaDB + basic RAG pipeline</li>
+        <li>LangChain LCEL chains</li>
+        <li>Chunking strategy experiments</li>
+        <li>Hybrid search (BM25 + vector)</li>
+        <li>RAGAS evaluation setup</li>
+        <li><strong>Project:</strong> Company HR chatbot from PDFs</li>
+      </ul>
+    </div>
+    <div class="ph">
+      <div class="phl">Week 6–8</div>
+      <div class="pht">🕸️ Agents</div>
+      <ul class="phi">
+        <li>LangGraph ReAct agent</li>
+        <li>Custom tool creation</li>
+        <li>State persistence (SQLite)</li>
+        <li>Composio integration</li>
+        <li>Multi-agent patterns</li>
+        <li><strong>Project:</strong> Autonomous research agent</li>
+      </ul>
+    </div>
+    <div class="ph">
+      <div class="phl">Week 9–11</div>
+      <div class="pht">☁️ Cloud + Production</div>
+      <ul class="phi">
+        <li>AWS Bedrock API setup</li>
+        <li>Qdrant Cloud deployment</li>
+        <li>FastAPI + Docker packaging</li>
+        <li>Custom MCP server</li>
+        <li>Production checklist</li>
+        <li><strong>Project:</strong> Deploy RAG API to AWS</li>
+      </ul>
+    </div>
+    <div class="ph">
+      <div class="phl">Week 12–13</div>
+      <div class="pht">🎯 Capstone + Jobs</div>
+      <ul class="phi">
+        <li>Full-stack AI portfolio project</li>
+        <li>Write system design doc</li>
+        <li>Mock all 80+ interview Q&amp;As</li>
+        <li>GitHub portfolio cleanup</li>
+        <li>Apply to 20 positions</li>
+        <li><strong>Goal:</strong> First AI engineering offer</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>The Complete Interview-Ready Checklist</h3>
+  <div class="ca info"><div class="cai">📋</div><div class="cac"><div class="cat">Check every box before applying for AI Engineer roles</div>
+    <ul class="chk" style="margin-top:10px">
+      <li><label><input type="checkbox"> <span>Built a working RAG chatbot from a real PDF — answers questions from doc content</span></label></li>
+      <li><label><input type="checkbox"> <span>Deployed it as a FastAPI + Docker endpoint (accessible via URL, not just local)</span></label></li>
+      <li><label><input type="checkbox"> <span>Used LangSmith to trace every call, see token costs, and evaluate quality</span></label></li>
+      <li><label><input type="checkbox"> <span>Implemented hybrid search (BM25 + vector) and can explain why it's better</span></label></li>
+      <li><label><input type="checkbox"> <span>Built a LangGraph agent with at least 3 custom tools and loop detection</span></label></li>
+      <li><label><input type="checkbox"> <span>Connected an agent to a real service via Composio or custom MCP server</span></label></li>
+      <li><label><input type="checkbox"> <span>Called a model via AWS Bedrock (even just one successful invoke_model call)</span></label></li>
+      <li><label><input type="checkbox"> <span>Can explain tokens, embeddings, cosine similarity, HNSW in plain English</span></label></li>
+      <li><label><input type="checkbox"> <span>Can design multi-tenant RAG architecture on a whiteboard with data isolation</span></label></li>
+      <li><label><input type="checkbox"> <span>Know tradeoffs between Pinecone, Qdrant, ChromaDB, pgvector</span></label></li>
+      <li><label><input type="checkbox"> <span>Can name 5 strategies to reduce LLM costs by 80%</span></label></li>
+      <li><label><input type="checkbox"> <span>Practiced answering all 37+ Q&amp;As out loud (not just reading them)</span></label></li>
+      <li><label><input type="checkbox"> <span>GitHub has 3+ AI engineering projects with clear READMEs and demo GIFs</span></label></li>
+      <li><label><input type="checkbox"> <span>Can explain your capstone to a non-technical person in under 2 minutes</span></label></li>
+      <li><label><input type="checkbox"> <span>Know when to use Bedrock vs SageMaker and can give one real-world scenario each</span></label></li>
+      <li><label><input type="checkbox"> <span>Implemented a semantic cache and can explain how it saves 40%+ LLM cost</span></label></li>
+      <li><label><input type="checkbox"> <span>Set up RAGAS evaluation with faithfulness, relevancy, precision, recall metrics</span></label></li>
+      <li><label><input type="checkbox"> <span>Built a production error handler with retry, backoff, and fallback provider</span></label></li>
+    </ul>
+  </div></div>
+
+  <h3>Do This / Avoid This</h3>
+  <div class="dg">
+    <div class="dc2 do"><div class="dct">✅ Do This</div>
+      <ul>
+        <li>Start with the simplest working solution, then add complexity</li>
+        <li>Know when NOT to use LangChain (simple single API calls)</li>
+        <li>Talk about cost optimization, monitoring, and observability in every design</li>
+        <li>Mention RAGAS by name when asked about RAG evaluation</li>
+        <li>Have deployed projects — not just Jupyter notebooks</li>
+        <li>Read LangChain and LangGraph docs weekly — they change fast</li>
+        <li>Practice explaining technical decisions to a non-technical audience</li>
+      </ul>
+    </div>
+    <div class="dc2 dn"><div class="dct">❌ Avoid This</div>
+      <ul>
+        <li>Using LangChain for simple one-LLM calls (adds overhead for no benefit)</li>
+        <li>Not handling LLM errors, rate limits, and timeouts</li>
+        <li>Storing API keys in code, git repos, or environment (use Secrets Manager)</li>
+        <li>Using in-memory chat history or in-memory vector store in production</li>
+        <li>Not measuring quality (blind optimism about LLM output quality)</li>
+        <li>Over-engineering with LangGraph when a simple chain would do</li>
+        <li>Skipping Docker and going straight to cloud — local Docker first always</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Salary Reality Check (2026 Data)</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Role / Level</th><th>US (Remote)</th><th>UK (London)</th><th>India</th><th>Key Differentiator</th></tr></thead>
+    <tbody>
+      <tr><td>Junior AI Engineer (0-2 yrs)</td><td>$90k–$130k</td><td>£55k–£75k</td><td>₹12L–₹25L</td><td>Working RAG + basic agents</td></tr>
+      <tr><td>Mid AI Engineer (2-5 yrs)</td><td>$140k–$190k</td><td>£80k–£110k</td><td>₹25L–₹55L</td><td>Production systems, LangGraph mastery</td></tr>
+      <tr><td>Senior AI Engineer (5+ yrs)</td><td>$190k–$280k</td><td>£110k–£160k</td><td>₹55L–₹100L+</td><td>Architecture, team leadership, Bedrock/AWS</td></tr>
+      <tr><td>AI Engineering Lead</td><td>$250k–$400k+</td><td>£140k–£200k</td><td>₹80L–₹150L+</td><td>Cross-team, strategy, hiring</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="ca pur"><div class="cai">🎯</div><div class="cac"><div class="cat">The Real Secret to Getting Hired</div>
+    <p>90% of candidates who fail AI engineering interviews fail because they can explain theory but cannot write working code or design real systems under pressure. The solution: <strong>build real things</strong>. A deployed chatbot that actually works beats 100 hours of watching YouTube tutorials. Every project in this roadmap is designed to produce something you can show in an interview and push to GitHub.</p>
+  </div></div>
+</section>
+
+</main>
+
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ── SEARCH ──
+const si    = document.getElementById('si');
+const sclr  = document.getElementById('sclr');
+const scnt  = document.getElementById('scnt');
+const secs  = document.querySelectorAll('.sec');
+
+si.addEventListener('input', doSearch);
+sclr.addEventListener('click', () => { si.value = ''; doSearch(); });
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== si) { e.preventDefault(); si.focus(); }
+  if (e.key === 'Escape') { si.value = ''; doSearch(); si.blur(); }
+});
+
+function doSearch() {
+  const q = si.value.trim().toLowerCase();
+  sclr.style.display = q ? 'block' : 'none';
+  if (!q) {
+    secs.forEach(s => s.classList.remove('hide'));
+    scnt.style.display = 'none'; return;
+  }
+  let vis = 0;
+  secs.forEach(s => {
+    const match = s.textContent.toLowerCase().includes(q);
+    s.classList.toggle('hide', !match);
+    if (match) vis++;
+  });
+  scnt.textContent = `${vis} section${vis !== 1 ? 's' : ''} match "${si.value}"`;
+  scnt.style.display = 'block';
+}
+
+// ── FILTER BUTTONS ──
+document.querySelectorAll('.fb').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.fb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    const f = btn.dataset.f;
+    secs.forEach(s => {
+      if (f === 'all') { s.classList.remove('hide'); return; }
+      if (f === 'interview')  { s.classList.toggle('hide', s.id !== 'interview'); return; }
+      if (f === 'code')       { s.classList.toggle('hide', !s.querySelector('.cb')); return; }
+      s.classList.toggle('hide', s.dataset.level !== f);
+    });
+  });
+});
+
+// ── Q&A TOGGLE ──
+function tQA(el) { el.parentElement.classList.toggle('open'); }
+
+// ── COPY CODE ──
+function cpCode(btn) {
+  const pre = btn.closest('.cb').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!'; btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('ok'); }, 2000);
+  });
+}
+
+// ── CHECKLIST + PROGRESS ──
+const cbs = document.querySelectorAll('.chk input[type="checkbox"]');
+cbs.forEach((cb, i) => {
+  const k = 'ai_cb_' + i;
+  cb.checked = localStorage.getItem(k) === '1';
+  if (cb.checked) cb.closest('li').classList.add('done');
+  cb.addEventListener('change', () => {
+    localStorage.setItem(k, cb.checked ? '1' : '0');
+    cb.closest('li').classList.toggle('done', cb.checked);
+    updateProgress();
+  });
+});
+
+function updateProgress() {
+  const checked = document.querySelectorAll('.chk input:checked').length;
+  const total   = cbs.length;
+  const pct     = total ? (checked / total * 100) : 0;
+  document.getElementById('pfil').style.width  = pct + '%';
+  document.getElementById('plbl').textContent  = `${checked} / ${total} tasks done`;
+}
+updateProgress();
+
+// ── ACTIVE NAV HIGHLIGHT ──
+const navLinks = document.querySelectorAll('.nl[href^="#"]');
+const navObs   = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('on'));
+      const lnk = document.querySelector(`.nl[href="#${e.target.id}"]`);
+      if (lnk) lnk.classList.add('on');
+    }
+  });
+}, { rootMargin: '-15% 0px -75% 0px' });
+
+document.querySelectorAll('section[id]').forEach(s => navObs.observe(s));
+
+// ── BACK TO TOP ──
+const btt = document.getElementById('btt');
+window.addEventListener('scroll', () => btt.classList.toggle('show', window.scrollY > 400));
+</script>
+</body>
+</html>

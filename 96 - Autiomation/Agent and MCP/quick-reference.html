@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick Reference — Agentic AI + MCP + Workflow Platforms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+  --bg:#0d0f1a;--bg2:#11131f;--bg3:#161928;--bg4:#1c1f33;
+  --tx1:#e8eaf6;--tx2:#8b90b8;--tx3:#4a4f74;
+  --ac:#7c6ff7;--acd:rgba(124,111,247,.16);--acg:rgba(124,111,247,.07);
+  --gn:#4ade80;--gnd:rgba(74,222,128,.13);
+  --am:#fbbf24;--amd:rgba(251,191,36,.13);
+  --ro:#f87171;--rod:rgba(248,113,113,.13);
+  --sk:#38bdf8;--skd:rgba(56,189,248,.13);
+  --te:#2dd4bf;--ted:rgba(45,212,191,.13);
+  --pu:#c084fc;--pud:rgba(192,132,252,.13);
+  --or:#fb923c;--ord:rgba(251,146,60,.13);
+  --bd:rgba(255,255,255,.07);--bdm:rgba(255,255,255,.13);
+  --r:10px;--rsm:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);font-size:14px;line-height:1.6;background:var(--bg);color:var(--tx1);-webkit-font-smoothing:antialiased}
+code{font-family:var(--mono);font-size:.83em;background:var(--acd);color:#b0aaff;padding:1px 5px;border-radius:4px}
+strong{font-weight:600;color:var(--tx1)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bdm);border-radius:10px}
+
+/* NAV */
+.topnav{display:flex;align-items:center;gap:8px;padding:.85rem 2rem;background:var(--bg2);border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.topnav h1{font-size:15px;font-weight:700;color:var(--tx1);margin-right:8px}
+.tnb{padding:5px 13px;border-radius:20px;border:1px solid var(--bdm);background:transparent;color:var(--tx2);cursor:pointer;font-size:12px;font-family:var(--sans);font-weight:500;transition:all .14s}
+.tnb:hover{background:var(--bg4);color:var(--tx1)}
+.tnb.on{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:2rem 2rem 4rem}
+
+/* PANEL */
+.panel{display:none}.panel.on{display:block}
+
+/* SECTION HEADER */
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--bd)}
+.sec-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.sec-title{font-size:20px;font-weight:700;color:var(--tx1)}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem}
+@media(max-width:800px){.grid2,.grid3,.grid4{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+
+/* CARD */
+.card{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:1rem 1.1rem}
+.card h3{font-size:13px;font-weight:600;color:var(--tx1);margin-bottom:.6rem}
+.card p,.card li{font-size:13px;color:var(--tx2);line-height:1.7}
+.card ul{list-style:none;padding:0}
+.card ul li{display:flex;gap:6px;margin-bottom:3px}
+.card ul li::before{content:"›";color:var(--tx3);flex-shrink:0}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin-bottom:1.5rem;font-size:13px}
+.tbl th{text-align:left;padding:8px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);border-bottom:1px solid var(--bdm);background:var(--bg4)}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--bd);color:var(--tx2);vertical-align:top;line-height:1.65}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td:first-child{color:var(--tx1);font-weight:500;white-space:nowrap}
+.tbl td code{font-size:11.5px}
+
+/* CODE BLOCK */
+.cb{background:var(--bg);border:1px solid var(--bdm);border-radius:var(--r);padding:.9rem 1rem;font-family:var(--mono);font-size:12px;color:#a8b4d8;line-height:1.75;margin-bottom:1rem;overflow-x:auto;white-space:pre}
+
+/* SH */
+.sh{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tx3);margin:1.25rem 0 .5rem}
+.sh:first-child{margin-top:0}
+
+/* PILLS */
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.9rem}
+.pill{font-size:11.5px;padding:3px 10px;border-radius:20px;font-weight:500;border:1px solid}
+.ac{background:var(--acd);color:#b0aaff;border-color:rgba(124,111,247,.3)}
+.gn{background:var(--gnd);color:var(--gn);border-color:rgba(74,222,128,.3)}
+.am{background:var(--amd);color:var(--am);border-color:rgba(251,191,36,.3)}
+.ro{background:var(--rod);color:var(--ro);border-color:rgba(248,113,113,.3)}
+.sk{background:var(--skd);color:var(--sk);border-color:rgba(56,189,248,.3)}
+.te{background:var(--ted);color:var(--te);border-color:rgba(45,212,191,.3)}
+.pu{background:var(--pud);color:var(--pu);border-color:rgba(192,132,252,.3)}
+.or{background:var(--ord);color:var(--or);border-color:rgba(251,146,60,.3)}
+.gy{background:var(--bg4);color:var(--tx2);border-color:var(--bdm)}
+
+/* PHASE BADGE */
+.pbadge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.5rem;border:1px solid}
+
+/* CALLOUT */
+.callout{border-radius:var(--r);padding:12px 15px;margin-bottom:1rem}
+.callout.tip{background:var(--gnd);border:1px solid rgba(74,222,128,.25)}
+.callout.warn{background:var(--amd);border:1px solid rgba(251,191,36,.25)}
+.callout.danger{background:var(--rod);border:1px solid rgba(248,113,113,.25)}
+.callout.info{background:var(--acd);border:1px solid rgba(124,111,247,.25)}
+.callout p{font-size:13.5px;margin:0;line-height:1.65}
+.callout.tip p{color:#86efac}.callout.warn p{color:#fde68a}.callout.danger p{color:#fca5a5}.callout.info p{color:#c4c0f8}
+
+/* PHASE COMPARISON ROW */
+.phase-row{display:grid;grid-template-columns:120px 1fr 1fr 1fr;gap:0;margin-bottom:.25rem}
+.phase-row .ph-label{font-size:12px;font-weight:600;color:var(--ac);padding:8px 10px;background:var(--acd);border-radius:var(--rsm) 0 0 var(--rsm)}
+.phase-row .ph-col{font-size:12px;color:var(--tx2);padding:8px 10px;border-bottom:1px solid var(--bd);background:var(--bg3)}
+.phase-row .ph-col:last-child{border-radius:0 var(--rsm) var(--rsm) 0}
+.phase-row-hdr{grid-template-columns:120px 1fr 1fr 1fr}
+.phase-row-hdr .ph-col{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);background:var(--bg4)}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <h1>⚡ Quick Reference</h1>
+  <button class="tnb on" data-tab="t0">🗺 Phase map</button>
+  <button class="tnb" data-tab="t1">🆚 Platform compare</button>
+  <button class="tnb" data-tab="t2">🔑 All env vars</button>
+  <button class="tnb" data-tab="t3">💻 Commands</button>
+  <button class="tnb" data-tab="t4">🔌 API endpoints</button>
+  <button class="tnb" data-tab="t5">🐛 Troubleshooting</button>
+  <button class="tnb" data-tab="t6">📚 Resources</button>
+  <button class="tnb" data-tab="t7">🧩 Platform deep-dives</button>
+</nav>
+
+<div class="main">
+
+<!-- ════ PHASE MAP ════ -->
+<div class="panel on" id="t0">
+  <div class="sec-hdr"><div class="sec-icon" style="background:var(--acd)">🗺</div><div class="sec-title">Full Phase Map — What you build at each level</div></div>
+
+  <div class="sh">Code track (main guide) vs Platform track (workflow guide)</div>
+  <div style="margin-bottom:.35rem">
+    <div class="phase-row phase-row-hdr">
+      <div class="ph-label" style="background:var(--bg4);color:var(--tx3)">Phase</div>
+      <div class="ph-col">Code / MCP (main guide)</div>
+      <div class="ph-col">Platforms (workflow guide)</div>
+      <div class="ph-col">Hybrid milestone</div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:.25rem">
+    <div class="phase-row">
+      <div class="ph-label">Phase 0</div>
+      <div class="ph-col">Basic agent loop, first tool_use, Docker, ANTHROPIC_API_KEY</div>
+      <div class="ph-col">n8n + Flowise on VPS, first webhook→Claude workflow, credential store</div>
+      <div class="ph-col">Chatbot running in code AND as an n8n workflow. Pick one stack to go deep.</div>
+    </div>
+    <div class="phase-row">
+      <div class="ph-label">Phase 1</div>
+      <div class="ph-col">ReAct loop, MCP server over HTTP/SSE, PM2 + Nginx</div>
+      <div class="ph-col">n8n AI Agent node + MCP Tool node, Flowise ReAct agent, triage router</div>
+      <div class="ph-col">MCP server tools accessible from both code agents AND n8n AI Agent node</div>
+    </div>
+    <div class="phase-row">
+      <div class="ph-label">Phase 2</div>
+      <div class="ph-col">Multi-agent orchestrator, pgvector memory, RAG, CI/CD</div>
+      <div class="ph-col">Orchestrator workflow → sub-workflows, Postgres memory nodes, workflow git export</div>
+      <div class="ph-col">n8n orchestrates code-built specialist agents via HTTP. Shared pgvector memory.</div>
+    </div>
+    <div class="phase-row">
+      <div class="ph-label">Phase 3</div>
+      <div class="ph-col">BullMQ durable jobs, OTel tracing, multi-tenant MCP, blue-green</div>
+      <div class="ph-col">n8n queue mode, webhook auth, multi-tenant routing, Langfuse, dead-letter alerts</div>
+      <div class="ph-col">Code agents handle CPU-intensive paths; n8n handles integration/orchestration paths</div>
+    </div>
+    <div class="phase-row">
+      <div class="ph-label">Phase 4</div>
+      <div class="ph-col">K8s, HPA, LLM gateway, edge MCP, Reflexion, ArgoCD</div>
+      <div class="ph-col">Custom n8n nodes, K8s worker scaling, workflow-as-product, cost attribution</div>
+      <div class="ph-col">Unified platform: custom n8n nodes wrap MCP tools. K8s runs both stacks.</div>
+    </div>
+  </div>
+
+  <div class="sh" style="margin-top:1.5rem">Skill checkpoints per phase</div>
+  <div class="grid2" style="margin-top:.5rem">
+    <div class="card">
+      <h3>✅ Phase 0 done when…</h3>
+      <ul>
+        <li>You can explain tool_use → tool_result cycle from memory</li>
+        <li>Agent runs inside Docker with env-var key</li>
+        <li>n8n or Flowise running on VPS behind HTTPS</li>
+        <li>First webhook → Claude → response works end-to-end</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>✅ Phase 1 done when…</h3>
+      <ul>
+        <li>MCP server live on VPS, tools testable via Inspector</li>
+        <li>Agent discovers tools at runtime, not hardcoded</li>
+        <li>n8n AI Agent uses your MCP server as a tool source</li>
+        <li>SSE streaming working through Nginx without drops</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>✅ Phase 2 done when…</h3>
+      <ul>
+        <li>Orchestrator delegates to 2+ agents in parallel</li>
+        <li>pgvector memory persists across sessions</li>
+        <li>Git push triggers full CI/CD deploy</li>
+        <li>Workflow JSONs version-controlled in git</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>✅ Phase 3 done when…</h3>
+      <ul>
+        <li>Every LLM call has a Langfuse trace</li>
+        <li>Agent jobs survive server restarts (BullMQ checkpoint)</li>
+        <li>n8n in queue mode, workers scale independently</li>
+        <li>Zero-downtime blue-green deploy tested and working</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>✅ Phase 4 done when…</h3>
+      <ul>
+        <li>Workers auto-scale on K8s based on queue depth</li>
+        <li>Custom n8n node wraps your MCP server tools</li>
+        <li>Cost is attributed per tenant per workflow step</li>
+        <li>Load tested at 1000+ concurrent agent sessions</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:rgba(124,111,247,.35)">
+      <h3>🎯 Expert signal</h3>
+      <ul>
+        <li>You can design a new agent architecture from scratch</li>
+        <li>You've contributed to MCP spec or published an MCP server</li>
+        <li>Other developers use your workflow templates or custom nodes</li>
+        <li>You can explain cost/latency/quality tradeoffs at any scale</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PLATFORM COMPARE ════ -->
+<div class="panel" id="t1">
+  <div class="sec-hdr"><div class="sec-icon" style="background:var(--skd)">🆚</div><div class="sec-title">Platform Comparison — full decision matrix</div></div>
+
+  <div class="sh">Code-only vs Platform-only vs Hybrid — when to choose what</div>
+  <table class="tbl">
+    <thead><tr><th>Approach</th><th>Best when</th><th>Avoid when</th><th>Phase</th></tr></thead>
+    <tbody>
+      <tr><td>Code-only (SDK)</td><td>Custom logic, performance-critical, complex tool orchestration, full control needed</td><td>Simple integrations that platforms handle in 5 clicks, non-developer teams</td><td>All phases</td></tr>
+      <tr><td>Platform-only (n8n/Make)</td><td>Integration-heavy workflows (Slack + Sheets + email), non-dev teammates, fast prototyping</td><td>Complex agent reasoning, custom MCP tools, high-volume (cost per task adds up)</td><td>Phase 0–2</td></tr>
+      <tr><td>Hybrid (code tools + platform orchestration)</td><td>Best of both: n8n handles integrations, code handles AI reasoning, MCP connects them</td><td>Early stages — adds complexity before you understand both sides</td><td>Phase 2–4</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Full platform feature matrix</div>
+  <table class="tbl">
+    <thead><tr><th>Platform</th><th>Self-host</th><th>AI Agent node</th><th>MCP support</th><th>Memory node</th><th>Free tier</th><th>Best for</th></tr></thead>
+    <tbody>
+      <tr><td>n8n</td><td>✅ Docker</td><td>✅ Native</td><td>✅ v1.88+</td><td>✅ Postgres/Redis</td><td>✅ Unlimited self-host</td><td>Developer automation + AI agents</td></tr>
+      <tr><td>Flowise</td><td>✅ Docker</td><td>✅ Native</td><td>⚠️ Via custom tool</td><td>✅ Postgres/Redis/Zep</td><td>✅ Unlimited self-host</td><td>LLM chatbots, RAG, embedded chat</td></tr>
+      <tr><td>Langflow</td><td>✅ Docker</td><td>✅ Native</td><td>⚠️ Via HTTP tool</td><td>✅ Multiple backends</td><td>✅ Self-host + limited cloud</td><td>LangChain-based agent pipelines</td></tr>
+      <tr><td>Dify</td><td>✅ Docker</td><td>✅ Native</td><td>⚠️ Via API tool</td><td>✅ Built-in datasets</td><td>✅ Self-host + limited cloud</td><td>All-in-one AI app platform</td></tr>
+      <tr><td>Zapier</td><td>❌ Cloud only</td><td>✅ AI Zaps</td><td>❌</td><td>❌</td><td>✅ 100 tasks/mo</td><td>Non-dev teams, 6000+ app integrations</td></tr>
+      <tr><td>Make</td><td>❌ Cloud only</td><td>✅ OpenAI/Claude module</td><td>❌</td><td>❌</td><td>✅ 1000 ops/mo</td><td>Visual data routing, complex branching</td></tr>
+      <tr><td>Activepieces</td><td>✅ Docker</td><td>⚠️ Via HTTP</td><td>❌</td><td>❌</td><td>✅ Unlimited self-host</td><td>Open-source Zapier replacement</td></tr>
+      <tr><td>Pipedream</td><td>❌ Cloud only</td><td>⚠️ Via code step</td><td>⚠️ Via code</td><td>❌</td><td>✅ 10k invocations/mo</td><td>Code-first automation, developer integrations</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Cost comparison (at 10,000 workflow runs/month)</div>
+  <table class="tbl">
+    <thead><tr><th>Platform</th><th>Self-host cost</th><th>Cloud cost at 10k runs</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>n8n (self-host)</td><td>~$0 (existing VPS)</td><td>~$50/mo (cloud Starter)</td><td>Self-host = unlimited executions free</td></tr>
+      <tr><td>Flowise (self-host)</td><td>~$0</td><td>~$35/mo cloud</td><td>Self-host = unlimited</td></tr>
+      <tr><td>Zapier</td><td>N/A</td><td>~$299/mo (Professional)</td><td>10k tasks = Professional tier</td></tr>
+      <tr><td>Make</td><td>N/A</td><td>~$29/mo (Core, 10k ops)</td><td>Most affordable cloud option</td></tr>
+      <tr><td>Pipedream</td><td>N/A</td><td>~$29/mo (Basic)</td><td>10k invocations included in Basic</td></tr>
+      <tr><td>Activepieces (self-host)</td><td>~$0</td><td>Free cloud (limited)</td><td>Best free cloud option after n8n</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip"><p>💡 For Bangladesh-based projects: self-host n8n + Flowise on your KVM2 VPS. Zero per-task cost, full data control, no USD billing for workflow execution. You only pay for LLM API tokens (Anthropic). This is the most cost-efficient stack available.</p></div>
+</div>
+
+<!-- ════ ENV VARS ════ -->
+<div class="panel" id="t2">
+  <div class="sec-hdr"><div class="sec-icon" style="background:var(--amd)">🔑</div><div class="sec-title">All environment variables — every service</div></div>
+
+  <div class="sh">n8n</div>
+  <table class="tbl">
+    <thead><tr><th>Variable</th><th>Value / Example</th><th>Required</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>N8N_ENCRYPTION_KEY</code></td><td>32-char random string</td><td>✅ Yes</td><td>Set once, never change. Encrypts all credentials.</td></tr>
+      <tr><td><code>N8N_BASIC_AUTH_ACTIVE</code></td><td><code>true</code></td><td>✅ Yes</td><td>Enable password protection for editor UI</td></tr>
+      <tr><td><code>N8N_BASIC_AUTH_USER</code></td><td><code>admin</code></td><td>✅ Yes</td><td>Editor login username</td></tr>
+      <tr><td><code>N8N_BASIC_AUTH_PASSWORD</code></td><td>strong-password</td><td>✅ Yes</td><td>Editor login password</td></tr>
+      <tr><td><code>WEBHOOK_URL</code></td><td><code>https://n8n.yourdomain.com/</code></td><td>✅ Yes</td><td>Public URL for webhook triggers</td></tr>
+      <tr><td><code>N8N_PROTOCOL</code></td><td><code>https</code></td><td>✅ Prod</td><td>Set to https in production</td></tr>
+      <tr><td><code>N8N_HOST</code></td><td><code>n8n.yourdomain.com</code></td><td>✅ Prod</td><td>Domain without protocol</td></tr>
+      <tr><td><code>EXECUTIONS_MODE</code></td><td><code>queue</code></td><td>Phase 3+</td><td>Enable queue mode for scaling. Default: <code>regular</code></td></tr>
+      <tr><td><code>QUEUE_BULL_REDIS_HOST</code></td><td><code>redis</code></td><td>Phase 3+</td><td>Redis hostname for queue mode</td></tr>
+      <tr><td><code>EXECUTIONS_DATA_PRUNE</code></td><td><code>true</code></td><td>Recommended</td><td>Enable auto-pruning of old execution logs</td></tr>
+      <tr><td><code>EXECUTIONS_DATA_MAX_AGE</code></td><td><code>720</code></td><td>Recommended</td><td>Hours to keep execution data (720 = 30 days)</td></tr>
+      <tr><td><code>DB_TYPE</code></td><td><code>postgresdb</code></td><td>Phase 3+</td><td>Use Postgres instead of SQLite for production</td></tr>
+      <tr><td><code>DB_POSTGRESDB_HOST</code></td><td><code>postgres</code></td><td>Phase 3+</td><td>Postgres container hostname</td></tr>
+      <tr><td><code>N8N_CUSTOM_EXTENSIONS</code></td><td><code>/opt/custom-nodes</code></td><td>Phase 4</td><td>Directory for custom node packages</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Flowise</div>
+  <table class="tbl">
+    <thead><tr><th>Variable</th><th>Value / Example</th><th>Required</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>PORT</code></td><td><code>3000</code></td><td>✅ Yes</td><td>Port Flowise listens on</td></tr>
+      <tr><td><code>FLOWISE_USERNAME</code></td><td><code>admin</code></td><td>✅ Yes</td><td>UI login username</td></tr>
+      <tr><td><code>FLOWISE_PASSWORD</code></td><td>strong-password</td><td>✅ Yes</td><td>UI login password</td></tr>
+      <tr><td><code>APIKEY_PATH</code></td><td><code>/root/.flowise</code></td><td>✅ Yes</td><td>Where API keys are stored</td></tr>
+      <tr><td><code>DATABASE_TYPE</code></td><td><code>postgres</code></td><td>Prod</td><td>Default is SQLite. Use Postgres in production.</td></tr>
+      <tr><td><code>DATABASE_HOST</code></td><td><code>postgres</code></td><td>Prod</td><td>Postgres host when DATABASE_TYPE=postgres</td></tr>
+      <tr><td><code>REDIS_URL</code></td><td><code>redis://redis:6379</code></td><td>Phase 2+</td><td>For Redis-backed memory nodes</td></tr>
+      <tr><td><code>FLOWISE_SECRETKEY_OVERWRITE</code></td><td>32-char string</td><td>Prod</td><td>Encrypts stored credentials. Set once.</td></tr>
+      <tr><td><code>CORS_ORIGINS</code></td><td><code>https://yourdomain.com</code></td><td>Prod</td><td>Restrict which domains can embed the chat widget</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Langflow</div>
+  <table class="tbl">
+    <thead><tr><th>Variable</th><th>Value</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>LANGFLOW_SECRET_KEY</code></td><td>32-char random</td><td>Encrypts auth tokens. Required for production.</td></tr>
+      <tr><td><code>LANGFLOW_AUTO_LOGIN</code></td><td><code>false</code></td><td>Disable for production. Enables user auth.</td></tr>
+      <tr><td><code>LANGFLOW_SUPERUSER</code></td><td><code>admin</code></td><td>Admin username</td></tr>
+      <tr><td><code>LANGFLOW_SUPERUSER_PASSWORD</code></td><td>strong-password</td><td>Admin password</td></tr>
+      <tr><td><code>LANGFLOW_DATABASE_URL</code></td><td><code>postgresql://...</code></td><td>Postgres connection string for production</td></tr>
+      <tr><td><code>LANGFLOW_CACHE_TYPE</code></td><td><code>redis</code></td><td>Use Redis for session caching in production</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Your MCP server</div>
+  <table class="tbl">
+    <thead><tr><th>Variable</th><th>Value</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>ANTHROPIC_API_KEY</code></td><td><code>sk-ant-api03-...</code></td><td>From console.anthropic.com → API Keys</td></tr>
+      <tr><td><code>MCP_API_KEY</code></td><td>random 32-char string</td><td>Your custom auth key for the MCP server. Generate with: <code>openssl rand -hex 16</code></td></tr>
+      <tr><td><code>PORT</code></td><td><code>3001</code></td><td>MCP server port</td></tr>
+      <tr><td><code>DATABASE_URL</code></td><td><code>postgresql://user:pass@localhost/agentdb</code></td><td>Postgres with pgvector</td></tr>
+      <tr><td><code>REDIS_URL</code></td><td><code>redis://localhost:6379</code></td><td>For rate limiting and session state</td></tr>
+      <tr><td><code>NODE_ENV</code></td><td><code>production</code></td><td>Enables production error handling and logging</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn"><p>⚠️ Never commit <code>.env</code> files to git. Add <code>.env</code> and <code>.env.*</code> to <code>.gitignore</code>. Use <code>.env.example</code> with placeholder values as documentation.</p></div>
+</div>
+
+<!-- ════ COMMANDS ════ -->
+<div class="panel" id="t3">
+  <div class="sec-hdr"><div class="sec-icon" style="background:var(--gnd)">💻</div><div class="sec-title">All essential commands — copy-paste ready</div></div>
+
+  <div class="sh">Generate secrets</div>
+  <div class="cb">openssl rand -hex 32   # 64-char hex secret (for encryption keys)
+openssl rand -base64 32 # 44-char base64 secret
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"</div>
+
+  <div class="sh">Docker — n8n</div>
+  <div class="cb">docker compose -f /opt/n8n/docker-compose.yml up -d       # start
+docker compose -f /opt/n8n/docker-compose.yml pull         # update image
+docker compose -f /opt/n8n/docker-compose.yml logs -f n8n  # tail logs
+docker compose -f /opt/n8n/docker-compose.yml restart n8n  # restart
+docker compose -f /opt/n8n/docker-compose.yml down          # stop</div>
+
+  <div class="sh">Docker — Flowise</div>
+  <div class="cb">docker compose -f /opt/flowise/docker-compose.yml up -d
+docker compose -f /opt/flowise/docker-compose.yml pull
+docker volume inspect flowise_data   # check volume size</div>
+
+  <div class="sh">Docker — MCP server</div>
+  <div class="cb">docker compose up -d --build mcp-server   # rebuild + restart
+docker compose logs -f mcp-server        # tail logs
+docker compose scale worker=3            # scale worker replicas (Phase 3)</div>
+
+  <div class="sh">PM2 (Phase 1)</div>
+  <div class="cb">pm2 start ecosystem.config.js   # start all apps
+pm2 reload ecosystem.config.js  # zero-downtime reload
+pm2 logs mcp-server             # tail logs for mcp-server
+pm2 status                      # show all processes + CPU/RAM
+pm2 save                        # save process list (survives reboot)
+pm2 startup                     # generate systemd startup script</div>
+
+  <div class="sh">Nginx</div>
+  <div class="cb">nginx -t                        # test config syntax
+nginx -s reload                 # reload config (no downtime)
+certbot --nginx -d yourdomain.com -d mcp.yourdomain.com  # get SSL certs
+certbot renew --dry-run         # test cert renewal
+tail -f /var/log/nginx/error.log  # watch errors</div>
+
+  <div class="sh">n8n API — workflow management</div>
+  <div class="cb">N8N=https://n8n.yourdomain.com; KEY=your-api-key
+
+# List all workflows
+curl -H "X-N8N-API-KEY: $KEY" $N8N/api/v1/workflows | jq '.data[] | {id,name,active}'
+
+# Export a workflow
+curl -H "X-N8N-API-KEY: $KEY" $N8N/api/v1/workflows/123 > workflow-123.json
+
+# Activate / deactivate
+curl -XPATCH -H "X-N8N-API-KEY: $KEY" $N8N/api/v1/workflows/123 \
+  -H "Content-Type: application/json" -d '{"active": true}'
+
+# Create credential
+curl -XPOST -H "X-N8N-API-KEY: $KEY" $N8N/api/v1/credentials \
+  -H "Content-Type: application/json" \
+  -d '{"name":"anthropic-prod","type":"anthropicApi","data":{"apiKey":"sk-ant-..."}}'</div>
+
+  <div class="sh">Postgres — pgvector</div>
+  <div class="cb">psql -U postgres -d agentdb
+
+-- Enable extension (once)
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Create memory table
+CREATE TABLE memories (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  content TEXT, embedding VECTOR(1536),
+  session_id TEXT, agent_id TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(), metadata JSONB DEFAULT '{}'
+);
+CREATE INDEX ON memories USING ivfflat (embedding vector_cosine_ops);
+
+-- Prune old memories
+DELETE FROM memories WHERE created_at &lt; now() - INTERVAL '30 days';
+
+-- Check vector count
+SELECT agent_id, COUNT(*) FROM memories GROUP BY agent_id;</div>
+
+  <div class="sh">Redis — inspect queues (Phase 3)</div>
+  <div class="cb">redis-cli LLEN bull:agent-runs:wait   # jobs waiting
+redis-cli LLEN bull:agent-runs:active # jobs in progress
+redis-cli LLEN bull:agent-runs:failed # failed jobs
+redis-cli GET agent:checkpoint:JOB_ID # view checkpoint data
+redis-cli KEYS "rate:*" | head -20    # rate limit counters</div>
+
+  <div class="sh">Kubernetes (Phase 4)</div>
+  <div class="cb">kubectl apply -f k8s/base/                     # deploy all base resources
+kubectl rollout status deployment/agent-worker  # watch rollout
+kubectl get hpa                                  # check autoscaler
+kubectl scale deployment agent-worker --replicas=5  # manual scale
+kubectl logs -f deployment/n8n-worker            # stream logs
+kubectl exec -it pod/n8n-main-xxx -- n8n list:workflows  # list workflows in pod
+kubectl delete pod n8n-worker-xxx                # force pod restart</div>
+</div>
+
+<!-- ════ API ENDPOINTS ════ -->
+<div class="panel" id="t4">
+  <div class="sec-hdr"><div class="sec-icon" style="background:var(--pud)">🔌</div><div class="sec-title">API endpoints — every service</div></div>
+
+  <div class="sh">Anthropic API</div>
+  <table class="tbl">
+    <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>api.anthropic.com/v1/messages</code></td><td>POST</td><td>Chat / agent completion. Main endpoint.</td></tr>
+      <tr><td><code>api.anthropic.com/v1/messages/batches</code></td><td>POST</td><td>Batch API — 50% cheaper, async, up to 24h</td></tr>
+      <tr><td><code>api.anthropic.com/v1/messages/batches/{id}</code></td><td>GET</td><td>Poll batch status</td></tr>
+      <tr><td><code>api.anthropic.com/v1/messages/batches/{id}/results</code></td><td>GET</td><td>Download batch results (JSONL)</td></tr>
+    </tbody>
+  </table>
+  <div class="cb"># Minimal Anthropic API call
+curl https://api.anthropic.com/v1/messages \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  -d '{
+    "model": "claude-sonnet-4-6",
+    "max_tokens": 1024,
+    "messages": [{"role": "user", "content": "Hello"}]
+  }'</div>
+
+  <div class="sh">n8n REST API</div>
+  <table class="tbl">
+    <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>/api/v1/workflows</code></td><td>GET</td><td>List all workflows</td></tr>
+      <tr><td><code>/api/v1/workflows/:id</code></td><td>GET / PATCH / DELETE</td><td>Get, update, or delete a workflow</td></tr>
+      <tr><td><code>/api/v1/workflows</code></td><td>POST</td><td>Create / import a workflow</td></tr>
+      <tr><td><code>/api/v1/executions</code></td><td>GET</td><td>List recent executions</td></tr>
+      <tr><td><code>/api/v1/executions/:id</code></td><td>GET / DELETE</td><td>Get or delete a specific execution</td></tr>
+      <tr><td><code>/api/v1/credentials</code></td><td>GET / POST</td><td>List or create credentials</td></tr>
+      <tr><td><code>/api/v1/credentials/:id</code></td><td>DELETE</td><td>Delete a credential</td></tr>
+      <tr><td><code>/webhook/:path</code></td><td>GET / POST</td><td>Trigger a webhook workflow</td></tr>
+      <tr><td><code>/metrics</code></td><td>GET</td><td>Prometheus metrics (queue depth, execution counts)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Flowise REST API</div>
+  <table class="tbl">
+    <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>/api/v1/chatflows</code></td><td>GET</td><td>List all chat flows</td></tr>
+      <tr><td><code>/api/v1/prediction/:flowId</code></td><td>POST</td><td>Run a chat flow — your main integration endpoint</td></tr>
+      <tr><td><code>/api/v1/chatflows/:id</code></td><td>GET / PUT / DELETE</td><td>Manage a specific flow</td></tr>
+      <tr><td><code>/api/v1/apikey</code></td><td>GET / POST</td><td>Manage Flowise API keys</td></tr>
+      <tr><td><code>/api/v1/vector/upsert/:flowId</code></td><td>POST</td><td>Upload documents to a flow's vector store</td></tr>
+    </tbody>
+  </table>
+  <div class="cb"># Call a Flowise chatflow
+curl https://flowise.yourdomain.com/api/v1/prediction/FLOW_ID \
+  -H "Authorization: Bearer FLOWISE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What is the refund policy?", "sessionId": "user-123"}'</div>
+
+  <div class="sh">Your MCP server</div>
+  <table class="tbl">
+    <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>/health</code></td><td>GET</td><td>Health check — returns 200 + version</td></tr>
+      <tr><td><code>/mcp</code></td><td>POST / GET</td><td>MCP protocol endpoint (Streamable HTTP)</td></tr>
+      <tr><td><code>/tools</code></td><td>GET</td><td>List available tools (non-MCP REST fallback)</td></tr>
+      <tr><td><code>/tools/:name</code></td><td>POST</td><td>Call a specific tool directly (non-MCP REST fallback)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ════ TROUBLESHOOTING ════ -->
+<div class="panel" id="t5">
+  <div class="sec-hdr"><div class="sec-icon" style="background:var(--rod)">🐛</div><div class="sec-title">Troubleshooting — every common failure</div></div>
+
+  <div class="sh">Agent / MCP issues</div>
+  <table class="tbl">
+    <thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Agent loops indefinitely</td><td>No max_iterations guard, or stop_reason never triggers</td><td>Add <code>for (let i = 0; i &lt; 10; i++)</code> guard. Check stop_reason after every API call. Ensure tool results are being appended correctly.</td></tr>
+      <tr><td>Tool call always errors</td><td>Wrong input schema, or executeTool throws instead of returning is_error</td><td>Wrap executeTool in try/catch. Return <code>{type:'tool_result', is_error:true, content: err.message}</code> — never throw.</td></tr>
+      <tr><td>MCP Inspector shows no tools</td><td>Server not connected, wrong transport config, or SDK version mismatch</td><td>Check server logs. Confirm port is open. Try stdio transport first to isolate network issues.</td></tr>
+      <tr><td>SSE connection drops after ~60s</td><td>Nginx default proxy_read_timeout</td><td>Add <code>proxy_read_timeout 300s; proxy_buffering off;</code> to Nginx location block.</td></tr>
+      <tr><td>Tool results not appearing in agent context</td><td>Forgetting to push tool results back to messages array</td><td>After executing tools, push <code>{role:'user', content: toolResultsArray}</code> to messages before next LLM call.</td></tr>
+      <tr><td>Model ignores tool definitions</td><td>Tool descriptions too vague, or schema has errors</td><td>Add clear description + examples to each tool. Validate JSON schema with <code>ajv</code>. Test tool definitions with direct API call.</td></tr>
+      <tr><td>Context window overflow error</td><td>Message history too long, tool results too verbose</td><td>Truncate old messages, summarize history, compress tool results before adding to context.</td></tr>
+      <tr><td>Rate limit errors (429)</td><td>Too many concurrent agent runs, or burst of requests</td><td>Add exponential backoff retry. Reduce concurrency. Use Anthropic Batch API for non-urgent tasks.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">n8n issues</div>
+  <table class="tbl">
+    <thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Webhook not triggering</td><td>Workflow not active, wrong URL, or Nginx not proxying WebSocket</td><td>Check workflow is Active (toggle in editor). Test URL with curl. Check Nginx config has <code>proxy_set_header Upgrade</code> for WebSocket.</td></tr>
+      <tr><td>"Could not decrypt credentials"</td><td>N8N_ENCRYPTION_KEY changed after credentials were saved</td><td>Restore original encryption key from backup. If lost, delete all credentials and re-enter manually.</td></tr>
+      <tr><td>Executions queue backing up</td><td>Worker count too low, or AI calls timing out</td><td>Scale worker containers: <code>docker compose scale n8n-worker=3</code>. Set <code>EXECUTIONS_TIMEOUT=300</code>.</td></tr>
+      <tr><td>n8n editor slow / unresponsive</td><td>Too many saved executions filling SQLite/Postgres</td><td>Enable <code>EXECUTIONS_DATA_PRUNE=true</code> and <code>EXECUTIONS_DATA_MAX_AGE=168</code>. Run manual SQL prune.</td></tr>
+      <tr><td>AI node "model not found"</td><td>Wrong model ID in node settings</td><td>Use exact model string: <code>claude-sonnet-4-6</code> (not "claude-sonnet"). Check Anthropic docs for current model names.</td></tr>
+      <tr><td>Sub-workflow not found error</td><td>Referenced by ID that changed after import</td><td>Reference sub-workflows by name, not ID. Use n8n API to get current ID after import.</td></tr>
+      <tr><td>n8n container OOM killed</td><td>Large execution data in memory</td><td>Increase Docker memory limit. Enable execution pruning. Move to Postgres DB instead of SQLite.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Flowise issues</div>
+  <table class="tbl">
+    <thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Chat widget shows no response</td><td>CORS error, wrong API key, or flow not saved</td><td>Check browser console for CORS error. Set <code>CORS_ORIGINS</code> in Flowise env. Verify FLOWISE_API_KEY in request header.</td></tr>
+      <tr><td>Memory not persisting between sessions</td><td>Using Buffer Memory (in-memory) instead of Postgres Memory</td><td>Replace Buffer Memory node with Postgres Chat Memory. Set same session_id in every request.</td></tr>
+      <tr><td>Vector store empty after upload</td><td>Wrong file format, missing text splitter, or embedding error</td><td>Check Flowise logs. Verify API key for embedding model. Add a Text Splitter node before the Vector Store node.</td></tr>
+      <tr><td>Flow returns 500 on prediction API</td><td>Missing credential, node config error, or LLM timeout</td><td>Open flow in editor and test node-by-node. Check Flowise container logs: <code>docker compose logs -f flowise</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Deployment issues</div>
+  <table class="tbl">
+    <thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Blue-green: health check fails</td><td>App not ready within timeout, or /health returns non-200</td><td>Increase sleep time in blue-green.sh. Check app startup logs. Ensure /health endpoint exists and returns 200.</td></tr>
+      <tr><td>CI/CD deploy fails silently</td><td>SSH key not added to VPS, or GitHub secret wrong</td><td>Test SSH connection manually: <code>ssh -i key user@vps</code>. Re-add secret in GitHub → Settings → Secrets.</td></tr>
+      <tr><td>Docker volume data lost after update</td><td>Used <code>docker compose down -v</code> which deletes volumes</td><td>Never use <code>-v</code> flag in production. Use <code>docker compose up -d</code> to update (preserves volumes).</td></tr>
+      <tr><td>Certbot renewal fails</td><td>Port 80 blocked by firewall or another service</td><td>Ensure <code>ufw allow 80</code>. Stop any service on port 80 during renewal, or use Cloudflare DNS challenge.</td></tr>
+      <tr><td>K8s pods crash-looping</td><td>Missing secret, wrong image, or resource limits too low</td><td><code>kubectl describe pod pod-name</code> for events. <code>kubectl logs pod-name --previous</code> for last crash output.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Quick diagnostic commands</div>
+  <div class="cb"># Is the service running?
+docker ps | grep n8n
+docker ps | grep flowise
+curl -sf http://localhost:5678/healthz && echo "n8n OK"
+curl -sf http://localhost:3000/api/v1/chatflows && echo "Flowise OK"
+curl -sf http://localhost:3001/health && echo "MCP server OK"
+
+# Check logs for errors
+docker compose logs --tail=50 n8n | grep -i error
+docker compose logs --tail=50 flowise | grep -i error
+
+# Check disk space (common cause of failures)
+df -h /
+docker system df  # Docker disk usage
+
+# Check memory
+free -h
+docker stats --no-stream  # container memory usage
+
+# Test Anthropic API key
+curl https://api.anthropic.com/v1/messages \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  -d '{"model":"claude-haiku-4-5-20251001","max_tokens":10,"messages":[{"role":"user","content":"hi"}]}'</div>
+</div>
+
+<!-- ════ RESOURCES ════ -->
+<div class="panel" id="t6">
+  <div class="sec-hdr"><div class="sec-icon" style="background:var(--ted)">📚</div><div class="sec-title">Resources &amp; links — everything you need</div></div>
+
+  <div class="grid3">
+    <div class="card">
+      <h3>📘 Official docs</h3>
+      <ul>
+        <li>docs.anthropic.com — Anthropic full docs</li>
+        <li>docs.anthropic.com/en/docs/build-with-claude/tool-use — tool_use guide</li>
+        <li>modelcontextprotocol.io — MCP spec + SDK</li>
+        <li>docs.n8n.io — n8n official docs</li>
+        <li>docs.flowiseai.com — Flowise docs</li>
+        <li>docs.langflow.org — Langflow docs</li>
+        <li>docs.dify.ai — Dify docs</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🛠 Tools &amp; utilities</h3>
+      <ul>
+        <li>MCP Inspector: <code>npx @modelcontextprotocol/inspector</code></li>
+        <li>Langfuse: langfuse.com (self-host or cloud)</li>
+        <li>pgvector: github.com/pgvector/pgvector</li>
+        <li>BullMQ: docs.bullmq.io</li>
+        <li>OpenTelemetry Node: opentelemetry.io/docs/languages/js</li>
+        <li>LiteLLM (LLM gateway): litellm.ai</li>
+        <li>Portkey (LLM gateway): portkey.ai</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>📦 Key npm packages</h3>
+      <ul>
+        <li><code>@anthropic-ai/sdk</code> — Anthropic SDK</li>
+        <li><code>@modelcontextprotocol/sdk</code> — MCP SDK</li>
+        <li><code>bullmq</code> — Redis job queue</li>
+        <li><code>@opentelemetry/api</code> — OTel tracing</li>
+        <li><code>langfuse</code> — LLM observability</li>
+        <li><code>zod</code> — schema validation</li>
+        <li><code>ioredis</code> — Redis client</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🎓 Learning resources</h3>
+      <ul>
+        <li>Anthropic courses: anthropic.com/courses</li>
+        <li>DeepLearning.AI: deeplearning.ai (free AI courses)</li>
+        <li>n8n community: community.n8n.io</li>
+        <li>MCP awesome list: github.com/punkpeye/awesome-mcp-servers</li>
+        <li>LangChain Academy: academy.langchain.com</li>
+        <li>Hugging Face courses: huggingface.co/learn</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🔐 Security resources</h3>
+      <ul>
+        <li>OWASP LLM Top 10: owasp.org/llmtop10</li>
+        <li>Anthropic responsible scaling: anthropic.com/rsp</li>
+        <li>n8n security docs: docs.n8n.io/hosting/security</li>
+        <li>Prompt injection defense: learnprompting.org/docs/prompt_hacking</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>📊 Monitoring tools</h3>
+      <ul>
+        <li>Langfuse: langfuse.com (LLM traces)</li>
+        <li>Grafana: grafana.com (infra dashboards)</li>
+        <li>Prometheus: prometheus.io (metrics)</li>
+        <li>Sentry: sentry.io (error tracking)</li>
+        <li>Uptime Kuma: github.com/louislam/uptime-kuma</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sh">Anthropic model quick reference (as of mid-2025)</div>
+  <table class="tbl">
+    <thead><tr><th>Model</th><th>API string</th><th>Best for</th><th>Speed</th></tr></thead>
+    <tbody>
+      <tr><td>Claude Sonnet 4.6</td><td><code>claude-sonnet-4-6</code></td><td>Agent loops, reasoning, tool use — best balance</td><td>Fast</td></tr>
+      <tr><td>Claude Haiku 4.5</td><td><code>claude-haiku-4-5-20251001</code></td><td>Classification, simple extraction, high-volume cheap steps</td><td>Fastest</td></tr>
+      <tr><td>Claude Opus 4.6</td><td><code>claude-opus-4-6</code></td><td>Complex multi-step reasoning, hard planning tasks</td><td>Slower</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ════ PLATFORM DEEP-DIVES ════ -->
+<div class="panel" id="t7">
+  <div class="sec-hdr"><div class="sec-icon" style="background:var(--ord)">🧩</div><div class="sec-title">Platform deep-dives — Langflow · Dify · Activepieces · Pipedream · Make production</div></div>
+
+  <div class="sh">Langflow — step-by-step agent setup</div>
+  <div class="cb"># 1. Self-host Langflow
+docker run -d --name langflow \
+  -p 7860:7860 \
+  -e LANGFLOW_SECRET_KEY="$(openssl rand -hex 32)" \
+  -e LANGFLOW_AUTO_LOGIN=false \
+  -e LANGFLOW_SUPERUSER=admin \
+  -e LANGFLOW_SUPERUSER_PASSWORD=yourpassword \
+  -v langflow_data:/app/langflow \
+  langflowai/langflow:latest</div>
+
+  <p>Once running, open <code>http://localhost:7860</code>. Build a ReAct agent flow:</p>
+  <ol class="steps" style="margin-top:.5rem">
+    <li>New Flow → Blank Canvas</li>
+    <li>Add <strong>ChatInput</strong> node (user message entry)</li>
+    <li>Add <strong>ChatAnthropic</strong> node → set model to <code>claude-sonnet-4-6</code> → connect API key credential</li>
+    <li>Add <strong>Calculator</strong> tool + <strong>SearchAPI</strong> tool nodes</li>
+    <li>Add <strong>ReAct Agent</strong> node → connect LLM + tools</li>
+    <li>Add <strong>Postgres Chat Memory</strong> node → connect DATABASE_URL</li>
+    <li>Add <strong>ChatOutput</strong> node</li>
+    <li>Save → click Run → test in the built-in playground</li>
+    <li>Get the API endpoint: Settings → API → copy the <code>/api/v1/run/:flowId</code> URL</li>
+  </ol>
+  <div class="cb"># Call your Langflow agent via API
+curl https://langflow.yourdomain.com/api/v1/run/FLOW_ID \
+  -H "x-api-key: YOUR_LANGFLOW_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"input_value": "What is the capital of France?", "session_id": "user-abc"}'</div>
+
+  <div class="sh">Dify — complete setup and agent creation</div>
+  <div class="cb"># Self-host Dify via Docker Compose
+git clone https://github.com/langgenius/dify.git
+cd dify/docker
+cp .env.example .env
+# Edit .env: set SECRET_KEY, DB passwords
+docker compose up -d
+
+# Access at http://localhost:3000
+# Default admin: set on first login</div>
+
+  <p>Build an agent in Dify:</p>
+  <ol class="steps" style="margin-top:.5rem">
+    <li>Settings → Model Provider → Add Anthropic → enter ANTHROPIC_API_KEY</li>
+    <li>Studio → Create App → Agent type</li>
+    <li>Add tools: Web Search, Calculator, or custom API tools</li>
+    <li>Set system prompt and knowledge base (optional)</li>
+    <li>Publish → get API endpoint + API key from the app settings</li>
+    <li>Call: <code>POST /api/chat-messages</code> with <code>{"inputs":{},"query":"your question","response_mode":"streaming"}</code></li>
+  </ol>
+
+  <div class="sh">Activepieces — self-host + AI step</div>
+  <div class="cb"># Self-host Activepieces
+docker run -d --name activepieces \
+  -p 8080:80 \
+  -e AP_ENCRYPTION_KEY="$(openssl rand -hex 16)" \
+  -e AP_JWT_SECRET="$(openssl rand -hex 32)" \
+  -e AP_POSTGRES_DATABASE=activepieces \
+  -e AP_POSTGRES_HOST=your-postgres \
+  -e AP_POSTGRES_USERNAME=postgres \
+  -e AP_POSTGRES_PASSWORD=yourpassword \
+  activepieces/activepieces:latest</div>
+  <p>Add an AI action in a flow: <strong>Add Step → AI → Claude</strong> → connect API key → write prompt. Activepieces wraps Claude calls in a simple "Generate Text" action. For custom tool calling, use the "Code" step (TypeScript) to call your MCP server directly.</p>
+
+  <div class="sh">Pipedream — code-step + Claude agent pattern</div>
+  <div class="cb">// Pipedream Step: Call Claude with tool use
+import Anthropic from "@anthropic-ai/sdk";
+
+export default defineComponent({
+  props: {
+    anthropic: { type: "app", app: "anthropic" }  // OAuth managed by Pipedream
+  },
+  async run({ steps, $ }) {
+    const client = new Anthropic({ apiKey: this.anthropic.$auth.api_key });
+
+    const messages = [{ role: "user", content: steps.trigger.event.body.message }];
+    const tools = [{
+      name: "search_web",
+      description: "Search the web",
+      input_schema: { type: "object", properties: { query: { type: "string" } }, required: ["query"] }
+    }];
+
+    let res = await client.messages.create({ model: "claude-sonnet-4-6", max_tokens: 1024, tools, messages });
+
+    // Handle tool calls inline in Pipedream step
+    while (res.stop_reason === "tool_use") {
+      const tc = res.content.find(b => b.type === "tool_use");
+      const result = await fetch(`${process.env.MCP_URL}/tools/${tc.name}`, {
+        method: "POST",
+        headers: { "x-api-key": process.env.MCP_API_KEY },
+        body: JSON.stringify(tc.input)
+      }).then(r => r.json());
+
+      messages.push({ role: "assistant", content: res.content });
+      messages.push({ role: "user", content: [{ type: "tool_result", tool_use_id: tc.id, content: JSON.stringify(result) }] });
+      res = await client.messages.create({ model: "claude-sonnet-4-6", max_tokens: 1024, tools, messages });
+    }
+
+    return res.content.find(b => b.type === "text")?.text;
+  }
+});</div>
+
+  <div class="sh">Make (Integromat) — production patterns</div>
+  <p>Make shines for <strong>complex data routing</strong> between SaaS tools. For AI agents, the pattern is: HTTP module calls your MCP server REST API → Claude via the "OpenAI" module (set base URL to a proxy) or native "Anthropic" module.</p>
+  <div class="cb">/* Make scenario: Multi-step AI pipeline */
+
+// Module 1: Webhook — receive trigger
+// Module 2: HTTP → POST to your MCP server
+URL: https://mcp.yourdomain.com/tools/search_web
+Body: { "query": "{{1.query}}" }
+Headers: x-api-key: {{connection.mcp_key}}
+
+// Module 3: Anthropic module (or HTTP to Anthropic API)
+Model: claude-sonnet-4-6
+System: "You are a research assistant..."
+User: "Based on this research: {{2.result}} Answer: {{1.query}}"
+
+// Module 4: Aggregator — combine parallel branch results
+// Module 5: HTTP → POST result to your app API
+// Module 6: Google Sheets → log to spreadsheet</div>
+
+  <div class="callout info"><p>💡 Make's <strong>Router</strong> module is its superpower: split one flow into parallel branches based on conditions, process them independently, then merge with an Aggregator. This is the visual equivalent of <code>Promise.all</code> and extremely useful for parallel AI processing steps.</p></div>
+
+  <div class="sh">Flowise — multi-tenant white-label deploy</div>
+  <p>To run a separate Flowise environment per tenant (or a single instance with isolated flows):</p>
+  <div class="cb"># Option A: One Flowise per tenant (full isolation)
+# Use Docker labels to route traffic by subdomain
+services:
+  flowise-tenant1:
+    image: flowiseai/flowise
+    environment:
+      - FLOWISE_USERNAME=tenant1-admin
+      - FLOWISE_PASSWORD=${TENANT1_PASS}
+      - DATABASE_PATH=/root/.flowise-tenant1
+    volumes: [flowise_tenant1:/root/.flowise-tenant1]
+    labels:
+      - "traefik.http.routers.t1.rule=Host(`tenant1.yourdomain.com`)"
+
+  flowise-tenant2:
+    image: flowiseai/flowise
+    environment:
+      - FLOWISE_USERNAME=tenant2-admin
+      - FLOWISE_PASSWORD=${TENANT2_PASS}
+      - DATABASE_PATH=/root/.flowise-tenant2
+    volumes: [flowise_tenant2:/root/.flowise-tenant2]
+    labels:
+      - "traefik.http.routers.t2.rule=Host(`tenant2.yourdomain.com`)"
+
+# Option B: Single Flowise, isolated by API key
+# Each tenant gets their own Flowise API key (Settings → API Keys)
+# Their key only allows access to flows you've shared with that key</div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+document.querySelectorAll('.tnb').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const id = btn.dataset.tab;
+    document.querySelectorAll('.tnb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+    document.getElementById(id).classList.add('on');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>

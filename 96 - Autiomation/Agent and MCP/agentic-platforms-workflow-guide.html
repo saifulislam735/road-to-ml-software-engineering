@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic Platforms & Workflow Guide — n8n · Zapier · Make · Langflow · Flowise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sans:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono','Fira Code',monospace;
+  --bg-page:#0d0f1a;
+  --bg-side:#11131f;
+  --bg-card:#161928;
+  --bg-raised:#1c1f33;
+  --bg-code:#0b0d18;
+  --tx-1:#e8eaf6; --tx-2:#8b90b8; --tx-3:#4a4f74;
+  --accent:#7c6ff7; --accent-d:rgba(124,111,247,.16); --accent-g:rgba(124,111,247,.07);
+  --green:#4ade80; --green-d:rgba(74,222,128,.13);
+  --amber:#fbbf24; --amber-d:rgba(251,191,36,.13);
+  --rose:#f87171;  --rose-d:rgba(248,113,113,.13);
+  --sky:#38bdf8;   --sky-d:rgba(56,189,248,.13);
+  --teal:#2dd4bf;  --teal-d:rgba(45,212,191,.13);
+  --purple:#c084fc;--purple-d:rgba(192,132,252,.13);
+  --orange:#fb923c;--orange-d:rgba(251,146,60,.13);
+  --pink:#f472b6;  --pink-d:rgba(244,114,182,.13);
+  --border:rgba(255,255,255,.07);
+  --border-md:rgba(255,255,255,.13);
+  --r-sm:6px; --r-md:10px; --r-lg:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);font-size:15px;line-height:1.65;background:var(--bg-page);color:var(--tx-1);-webkit-font-smoothing:antialiased}
+code{font-family:var(--mono);font-size:.84em;background:rgba(124,111,247,.14);color:#b0aaff;padding:1px 6px;border-radius:4px}
+strong{font-weight:600;color:var(--tx-1)}
+a{color:var(--accent);text-decoration:none}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:10px}
+
+/* ── SHELL ── */
+.shell{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{width:252px;flex-shrink:0;background:var(--bg-side);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.sb-brand{padding:1.4rem 1.2rem 1.1rem;border-bottom:1px solid var(--border)}
+.sb-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-d);border:1px solid rgba(124,111,247,.3);border-radius:8px;padding:4px 10px;margin-bottom:9px}
+.sb-badge span{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
+.sb-brand h1{font-size:14px;font-weight:700;color:var(--tx-1);line-height:1.3}
+.sb-brand p{font-size:12px;color:var(--tx-3);margin-top:3px}
+.sb-sec{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--tx-3);padding:.85rem 1.2rem .3rem}
+.sb-item{display:flex;flex-direction:column;padding:8px 1.2rem;font-size:13px;color:var(--tx-2);cursor:pointer;border-left:2px solid transparent;transition:all .14s;text-decoration:none}
+.sb-item:hover{color:var(--tx-1);background:var(--accent-g)}
+.sb-item.active{border-left-color:var(--accent);color:var(--tx-1);font-weight:500;background:var(--accent-d)}
+.sb-item .wk{font-size:11px;color:var(--tx-3);font-weight:400;margin-top:1px}
+.sb-item.active .wk{color:var(--accent);opacity:.7}
+.sb-divider{height:1px;background:var(--border);margin:.5rem 1.2rem}
+.sb-platform-list{padding:.4rem 1.2rem .8rem;display:flex;flex-direction:column;gap:4px}
+.sb-plat{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:var(--r-sm);background:var(--bg-raised);font-size:11px;color:var(--tx-2);border:1px solid var(--border)}
+.sb-plat .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* ── MAIN ── */
+.main{flex:1;padding:2.5rem 3rem;max-width:900px;overflow-x:hidden}
+
+/* ── PHASE HEADER ── */
+.ph-head{margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.ph-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);margin-bottom:9px;background:var(--accent-d);padding:3px 11px;border-radius:20px;border:1px solid rgba(124,111,247,.25)}
+.ph-head h2{font-size:26px;font-weight:700;color:var(--tx-1);line-height:1.25}
+.ph-head .sub{font-size:14px;color:var(--tx-2);margin-top:6px}
+
+/* ── TAB NAV ── */
+.tab-nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:2rem;padding:1rem 1.1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg)}
+.tnb{padding:5px 13px;border-radius:20px;border:1px solid var(--border-md);background:transparent;color:var(--tx-2);cursor:pointer;font-size:12.5px;font-family:var(--sans);font-weight:500;transition:all .14s}
+.tnb:hover{background:var(--bg-raised);color:var(--tx-1)}
+.tnb.on{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+
+/* ── PANELS ── */
+.panel{display:none}
+.panel.on{display:block;animation:fi .18s ease}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.panel-hdr{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;padding-bottom:.9rem;border-bottom:1px solid var(--border)}
+.p-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.p-title{font-size:17px;font-weight:600;color:var(--tx-1)}
+
+/* ── TYPOGRAPHY ── */
+.panel p{color:var(--tx-2);font-size:15px;margin-bottom:.85rem;line-height:1.75}
+.panel p:last-child{margin-bottom:0}
+.sh{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tx-3);margin:1.25rem 0 .5rem}
+.sh:first-child{margin-top:0}
+
+/* ── PLATFORM GRID ── */
+.plat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:.6rem 0 1.2rem}
+.plat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 14px 12px;transition:border-color .14s}
+.plat-card:hover{border-color:var(--border-md)}
+.plat-card.featured{border-color:rgba(124,111,247,.35);background:linear-gradient(135deg,var(--bg-card) 0%,rgba(124,111,247,.05) 100%)}
+.plat-top{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.plat-emoji{font-size:20px;line-height:1}
+.plat-name{font-size:14px;font-weight:600;color:var(--tx-1)}
+.plat-tag{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600;margin-top:2px}
+.plat-desc{font-size:12.5px;color:var(--tx-2);line-height:1.6;margin-bottom:8px}
+.plat-props{display:flex;flex-direction:column;gap:3px}
+.plat-prop{font-size:11.5px;color:var(--tx-3);display:flex;gap:5px;align-items:flex-start}
+.plat-prop::before{content:"·";color:var(--tx-3);flex-shrink:0}
+
+/* ── WORKFLOW DIAGRAM ── */
+.wf-diagram{background:var(--bg-code);border:1px solid var(--border-md);border-radius:var(--r-md);padding:1.1rem 1.2rem;margin:.6rem 0 1rem;overflow-x:auto}
+.wf-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--tx-3);margin-bottom:.8rem}
+.wf-flow{display:flex;align-items:center;flex-wrap:wrap;gap:0}
+.wf-node{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:90px}
+.wf-node-box{padding:7px 11px;border-radius:var(--r-sm);font-size:11.5px;font-weight:600;text-align:center;border:1px solid;line-height:1.35;white-space:nowrap}
+.wf-node-label{font-size:10px;color:var(--tx-3);font-weight:500;text-align:center;max-width:90px;line-height:1.3}
+.wf-arrow{font-size:16px;color:var(--tx-3);padding:0 4px;margin-bottom:18px;flex-shrink:0}
+.wf-node.trigger .wf-node-box{background:var(--green-d);border-color:rgba(74,222,128,.4);color:var(--green)}
+.wf-node.ai      .wf-node-box{background:var(--accent-d);border-color:rgba(124,111,247,.4);color:#b0aaff}
+.wf-node.action  .wf-node-box{background:var(--sky-d);border-color:rgba(56,189,248,.4);color:var(--sky)}
+.wf-node.condition .wf-node-box{background:var(--amber-d);border-color:rgba(251,191,36,.4);color:var(--amber)}
+.wf-node.output  .wf-node-box{background:var(--teal-d);border-color:rgba(45,212,191,.4);color:var(--teal)}
+.wf-node.mcp     .wf-node-box{background:var(--purple-d);border-color:rgba(192,132,252,.4);color:var(--purple)}
+.wf-node.store   .wf-node-box{background:var(--orange-d);border-color:rgba(251,146,60,.4);color:var(--orange)}
+.wf-node.webhook .wf-node-box{background:var(--rose-d);border-color:rgba(248,113,113,.4);color:var(--rose)}
+
+/* ── STEPS ── */
+.steps{list-style:none;counter-reset:st;margin:.5rem 0 1rem}
+.steps li{counter-increment:st;display:flex;gap:12px;margin-bottom:12px;color:var(--tx-2);font-size:15px;line-height:1.7;align-items:flex-start}
+.steps li::before{content:counter(st);min-width:23px;height:23px;border-radius:50%;background:var(--accent-d);border:1px solid rgba(124,111,247,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;margin-top:3px}
+
+/* ── PATH CARDS ── */
+.pcards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:.5rem 0 1rem}
+.pcard{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:13px 14px;transition:border-color .14s}
+.pcard:hover{border-color:var(--border-md)}
+.pcard.rec{border-color:rgba(74,222,128,.35);background:linear-gradient(135deg,var(--bg-card),rgba(74,222,128,.04))}
+.rec-badge{font-size:10.5px;font-weight:700;color:var(--green);margin-bottom:5px}
+.pname{font-size:14px;font-weight:600;color:var(--tx-1);margin-bottom:3px}
+.pdesc{font-size:13px;color:var(--tx-2);line-height:1.6}
+
+/* ── PILLS ── */
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:.4rem 0 .9rem}
+.pill{font-size:12px;padding:4px 11px;border-radius:20px;font-weight:500}
+.bl{background:var(--sky-d);color:var(--sky);border:1px solid rgba(56,189,248,.25)}
+.gr{background:var(--green-d);color:var(--green);border:1px solid rgba(74,222,128,.25)}
+.am{background:var(--amber-d);color:var(--amber);border:1px solid rgba(251,191,36,.25)}
+.pu{background:var(--purple-d);color:var(--purple);border:1px solid rgba(192,132,252,.25)}
+.te{background:var(--teal-d);color:var(--teal);border:1px solid rgba(45,212,191,.25)}
+.co{background:var(--rose-d);color:var(--rose);border:1px solid rgba(248,113,113,.25)}
+.or{background:var(--orange-d);color:var(--orange);border:1px solid rgba(251,146,60,.25)}
+.pk{background:var(--pink-d);color:var(--pink);border:1px solid rgba(244,114,182,.25)}
+.gy{background:var(--bg-raised);color:var(--tx-2);border:1px solid var(--border-md)}
+.ac{background:var(--accent-d);color:#b0aaff;border:1px solid rgba(124,111,247,.25)}
+
+/* ── CODE ── */
+.code-block{background:var(--bg-code);border:1px solid var(--border-md);border-radius:var(--r-md);padding:1rem 1.1rem;font-family:var(--mono);font-size:12.5px;color:#a8b4d8;line-height:1.75;margin:.6rem 0 1rem;overflow-x:auto;white-space:pre}
+
+/* ── FILE TREE ── */
+.ftree{background:var(--bg-code);border:1px solid var(--border-md);border-radius:var(--r-md);padding:1rem 1.1rem;font-family:var(--mono);font-size:13px;line-height:2;margin:.6rem 0 1rem;overflow-x:auto}
+.ftree-row{display:flex;align-items:baseline;white-space:nowrap}
+.fi{color:#2d3154;user-select:none}
+.fd{color:var(--sky);font-weight:600}
+.ff{color:#a8b4d8}
+.fn{color:var(--tx-3);font-style:italic;margin-left:10px;font-size:11.5px}
+
+/* ── KEY-VALUE TABLE ── */
+.kv-table{width:100%;border-collapse:collapse;margin:.6rem 0 1rem;font-size:13.5px}
+.kv-table th{text-align:left;padding:8px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tx-3);border-bottom:1px solid var(--border-md);background:var(--bg-raised)}
+.kv-table td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--tx-2);vertical-align:top;line-height:1.6}
+.kv-table tr:last-child td{border-bottom:none}
+.kv-table td:first-child{color:var(--tx-1);font-weight:500;font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+.kv-table td.cat{color:var(--accent);font-family:var(--sans);font-size:13px;font-weight:600}
+
+/* ── CALLOUT ── */
+.callout{border-radius:var(--r-md);padding:13px 16px;margin:1rem 0}
+.callout.info{background:var(--accent-d);border:1px solid rgba(124,111,247,.25)}
+.callout.warn{background:var(--amber-d);border:1px solid rgba(251,191,36,.25)}
+.callout.tip {background:var(--green-d);border:1px solid rgba(74,222,128,.25)}
+.callout.danger{background:var(--rose-d);border:1px solid rgba(248,113,113,.25)}
+.callout p{font-size:14px;margin:0;line-height:1.65}
+.callout.info p{color:#c4c0f8}
+.callout.warn p{color:#fde68a}
+.callout.tip  p{color:#86efac}
+.callout.danger p{color:#fca5a5}
+
+/* ── CHECKPOINT ── */
+.checkpoint{display:flex;align-items:flex-start;gap:12px;background:var(--green-d);border:1px solid rgba(74,222,128,.25);border-radius:var(--r-md);padding:13px 16px;margin-top:1.5rem}
+.ck-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.checkpoint p{font-size:14px;color:#86efac;margin:0;line-height:1.65}
+.checkpoint p code{background:rgba(74,222,128,.15);color:#4ade80}
+
+/* ── ACTION BTN ── */
+.ask-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:var(--r-md);border:1px solid rgba(124,111,247,.4);background:var(--accent-d);color:var(--accent);cursor:pointer;font-size:13px;font-weight:500;font-family:var(--sans);margin-top:.75rem;transition:all .14s;text-decoration:none}
+.ask-btn:hover{background:rgba(124,111,247,.24);color:#c0b9ff}
+
+/* ── SECTION ── */
+.phase-section{display:none}
+.phase-section.active{display:block}
+
+/* ── RESPONSIVE ── */
+@media(max-width:720px){
+  .shell{flex-direction:column}
+  .sidebar{width:100%;height:auto;position:relative}
+  .main{padding:1.5rem 1rem}
+  .pcards,.plat-grid{grid-template-columns:1fr}
+  .wf-flow{flex-direction:column;align-items:flex-start}
+  .wf-arrow{transform:rotate(90deg)}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ══ SIDEBAR ══ -->
+<nav class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-badge"><span>Workflow Platforms</span></div>
+    <h1>Agentic Platforms Guide</h1>
+    <p>n8n · Zapier · Make · Langflow · Flowise + more</p>
+  </div>
+
+  <div class="sb-sec">By Level</div>
+  <a class="sb-item active" data-phase="p0" href="#">
+    <span>Phase 0 — Foundation</span>
+    <span class="wk">First automations · 2–3 weeks</span>
+  </a>
+  <a class="sb-item" data-phase="p1" href="#">
+    <span>Phase 1 — Junior</span>
+    <span class="wk">AI nodes + MCP · 3–4 weeks</span>
+  </a>
+  <a class="sb-item" data-phase="p2" href="#">
+    <span>Phase 2 — Intermediate</span>
+    <span class="wk">Multi-step agents · 4–6 weeks</span>
+  </a>
+  <a class="sb-item" data-phase="p3" href="#">
+    <span>Phase 3 — Senior</span>
+    <span class="wk">Production workflows · 6–8 weeks</span>
+  </a>
+  <a class="sb-item" data-phase="p4" href="#">
+    <span>Phase 4 — Expert</span>
+    <span class="wk">Platform scale · ongoing</span>
+  </a>
+
+  <div class="sb-divider"></div>
+  <div class="sb-sec">Platforms covered</div>
+  <div class="sb-platform-list">
+    <div class="sb-plat"><div class="dot" style="background:#ea5c2b"></div>n8n (self-host / cloud)</div>
+    <div class="sb-plat"><div class="dot" style="background:#f4a233"></div>Zapier</div>
+    <div class="sb-plat"><div class="dot" style="background:#a259ff"></div>Make (Integromat)</div>
+    <div class="sb-plat"><div class="dot" style="background:#38bdf8"></div>Langflow</div>
+    <div class="sb-plat"><div class="dot" style="background:#4ade80"></div>Flowise</div>
+    <div class="sb-plat"><div class="dot" style="background:#c084fc"></div>Activepieces</div>
+    <div class="sb-plat"><div class="dot" style="background:#fb923c"></div>Pipedream</div>
+  </div>
+</nav>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+
+<!-- ════════════════ PHASE 0 ════════════════ -->
+<section class="phase-section active" id="p0">
+  <div class="ph-head">
+    <div class="ph-eyebrow">Phase 0 — Foundation</div>
+    <h2>Your first agentic workflows</h2>
+    <p class="sub">Platform overview · first automation · no-code AI actions · API key management · 2–3 weeks</p>
+  </div>
+
+  <div class="tab-nav">
+    <button class="tnb on"  data-tab="p0-t0">🧭 Platform overview</button>
+    <button class="tnb"     data-tab="p0-t1">🔢 Steps</button>
+    <button class="tnb"     data-tab="p0-t2">⚙️ First workflow</button>
+    <button class="tnb"     data-tab="p0-t3">🔑 API keys</button>
+    <button class="tnb"     data-tab="p0-t4">🚀 Deployment</button>
+    <button class="tnb"     data-tab="p0-t5">🔧 Maintenance</button>
+  </div>
+
+  <!-- Platform overview -->
+  <div class="panel on" id="p0-t0">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--sky-d)">🧭</div><div class="p-title">Platform overview — which tool, when, and why</div></div>
+    <p>Before writing a single workflow, you need to understand the landscape. These platforms fall into two categories: <strong>general automation platforms</strong> (Zapier, Make, n8n, Activepieces, Pipedream) that connect apps and trigger actions, and <strong>AI-native flow builders</strong> (Langflow, Flowise) that are purpose-built for chaining LLM calls, tools, and memory.</p>
+
+    <div class="sh">General automation platforms</div>
+    <div class="plat-grid">
+      <div class="plat-card featured">
+        <div class="plat-top"><span class="plat-emoji">🔶</span><div><div class="plat-name">n8n</div><span class="plat-tag" style="background:var(--orange-d);color:var(--orange)">Self-hostable ★</span></div></div>
+        <div class="plat-desc">Open-source, self-hostable on your KVM VPS. Full code escape hatches (JS/Python nodes). Native AI agent node with tool-calling. Best for developers who want control.</div>
+        <div class="plat-props">
+          <div class="plat-prop">Free self-host, ~$20/mo cloud</div>
+          <div class="plat-prop">400+ integrations</div>
+          <div class="plat-prop">MCP client support (v1.88+)</div>
+          <div class="plat-prop">Docker Compose deploy</div>
+        </div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-top"><span class="plat-emoji">⚡</span><div><div class="plat-name">Zapier</div><span class="plat-tag" style="background:var(--amber-d);color:var(--amber)">No-code</span></div></div>
+        <div class="plat-desc">Largest app ecosystem (6000+ apps). AI steps via "Zapier AI" and ChatGPT/Claude actions. Best for non-developers or teams needing fast integrations. Limited custom code.</div>
+        <div class="plat-props">
+          <div class="plat-prop">Free tier: 100 tasks/month</div>
+          <div class="plat-prop">Paid: from $29.99/mo</div>
+          <div class="plat-prop">No self-hosting option</div>
+          <div class="plat-prop">AI Zaps beta (limited)</div>
+        </div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-top"><span class="plat-emoji">🟣</span><div><div class="plat-name">Make (Integromat)</div><span class="plat-tag" style="background:var(--purple-d);color:var(--purple)">Visual</span></div></div>
+        <div class="plat-desc">Visual scenario builder with powerful data routing and filtering. Cheaper than Zapier per operation. Great for complex branching logic without code. No self-host.</div>
+        <div class="plat-props">
+          <div class="plat-prop">Free tier: 1,000 ops/month</div>
+          <div class="plat-prop">Paid: from $9/mo</div>
+          <div class="plat-prop">HTTP module for any API</div>
+          <div class="plat-prop">OpenAI/Claude module</div>
+        </div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-top"><span class="plat-emoji">🟡</span><div><div class="plat-name">Activepieces</div><span class="plat-tag" style="background:var(--green-d);color:var(--green)">Open-source</span></div></div>
+        <div class="plat-desc">Open-source Zapier alternative. Self-hostable, growing ecosystem. Good for teams moving away from Zapier costs. TypeScript-first pieces.</div>
+        <div class="plat-props">
+          <div class="plat-prop">Free self-host</div>
+          <div class="plat-prop">Cloud from $0</div>
+          <div class="plat-prop">200+ integrations</div>
+        </div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-top"><span class="plat-emoji">🔵</span><div><div class="plat-name">Pipedream</div><span class="plat-tag" style="background:var(--sky-d);color:var(--sky)">Dev-first</span></div></div>
+        <div class="plat-desc">Code-first workflow platform. Every step is a Node.js function. 2000+ pre-built components. Excellent for developers who want automation + custom code in one place.</div>
+        <div class="plat-props">
+          <div class="plat-prop">Free: 10k invocations/month</div>
+          <div class="plat-prop">Paid: from $29/mo</div>
+          <div class="plat-prop">Node.js/Python steps</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sh">AI-native flow builders</div>
+    <div class="plat-grid">
+      <div class="plat-card featured">
+        <div class="plat-top"><span class="plat-emoji">🌊</span><div><div class="plat-name">Langflow</div><span class="plat-tag" style="background:var(--sky-d);color:var(--sky)">LLM-native ★</span></div></div>
+        <div class="plat-desc">Visual drag-and-drop builder for LangChain-based agents. Build RAG pipelines, multi-agent flows, and tool chains without code. Self-hostable via Docker.</div>
+        <div class="plat-props">
+          <div class="plat-prop">Free self-host (Docker)</div>
+          <div class="plat-prop">Cloud from $0 (limited)</div>
+          <div class="plat-prop">Supports all major LLMs</div>
+          <div class="plat-prop">Built-in vector store</div>
+          <div class="plat-prop">Export as Python code</div>
+        </div>
+      </div>
+      <div class="plat-card featured">
+        <div class="plat-top"><span class="plat-emoji">🌀</span><div><div class="plat-name">Flowise</div><span class="plat-tag" style="background:var(--green-d);color:var(--green)">LLM-native ★</span></div></div>
+        <div class="plat-desc">Open-source LangChain UI. Simpler than Langflow. Great for chatbots, document Q&amp;A, and agent workflows. Embeddable chat widget. Self-hostable.</div>
+        <div class="plat-props">
+          <div class="plat-prop">Free self-host (npm / Docker)</div>
+          <div class="plat-prop">Cloud from $35/mo</div>
+          <div class="plat-prop">Embed as chat widget</div>
+          <div class="plat-prop">REST API for each flow</div>
+          <div class="plat-prop">Marketplace of templates</div>
+        </div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-top"><span class="plat-emoji">🤖</span><div><div class="plat-name">Dify</div><span class="plat-tag" style="background:var(--teal-d);color:var(--teal)">All-in-one</span></div></div>
+        <div class="plat-desc">LLM app platform with workflow builder, RAG, agents, and model management in one UI. Docker self-host or cloud. Good for teams building AI products fast.</div>
+        <div class="plat-props">
+          <div class="plat-prop">Free self-host</div>
+          <div class="plat-prop">Cloud from $59/mo</div>
+          <div class="plat-prop">Built-in dataset management</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sh">Decision guide — which platform for your level</div>
+    <table class="kv-table">
+      <thead><tr><th>Your goal</th><th>Best platform</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td class="cat">First automation (no code)</td><td>Make or Zapier</td><td>Zero setup, fast results, visual</td></tr>
+        <tr><td class="cat">Self-hosted automation (dev)</td><td>n8n on your VPS</td><td>Free, full control, JS nodes, Docker</td></tr>
+        <tr><td class="cat">First AI chatbot / RAG</td><td>Flowise</td><td>Simplest LLM flow builder, embeddable</td></tr>
+        <tr><td class="cat">Complex AI agent pipeline</td><td>Langflow or n8n</td><td>Visual multi-step agents with memory</td></tr>
+        <tr><td class="cat">Code-first + automation</td><td>Pipedream</td><td>Every step is real Node.js code</td></tr>
+        <tr><td class="cat">Bangladeshi SaaS product</td><td>n8n + Flowise (self-host)</td><td>Zero per-task cost, VPS control, exportable</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Steps -->
+  <div class="panel" id="p0-t1">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--green-d)">🔢</div><div class="p-title">Foundation steps</div></div>
+    <ol class="steps">
+      <li>Pick <strong>one</strong> platform to start with. Recommendation: n8n on your KVM VPS (free, self-hosted, dev-friendly) or Make cloud (fastest to test). Don't try multiple at once.</li>
+      <li>Install n8n via Docker Compose on your VPS: <code>docker compose up -d</code>. Access the editor at <code>http://your-vps:5678</code>.</li>
+      <li>Build the classic "Hello World" automation: trigger on a webhook → do something (send email, write to Postgres, call an API) → respond.</li>
+      <li>Add your first AI step: in n8n use the "AI Agent" node, or in Make add an "OpenAI / Claude" module. Send it a message and see the response.</li>
+      <li>Connect your Anthropic API key in the credentials panel. Understand how the platform stores secrets (encrypted credential store, not env vars).</li>
+      <li>Build a simple "question → Claude → answer" workflow exposed as a webhook. This is your first AI-powered API.</li>
+      <li>In Flowise: install via Docker, create a "Basic LLM Chain" flow, connect Claude, and get the embedded chat widget working on a test page.</li>
+    </ol>
+    <div class="checkpoint"><div class="ck-icon">✅</div><p>Checkpoint: n8n running on VPS behind Nginx. One working webhook → Claude → response workflow. Flowise chat widget embedded on a test HTML page.</p></div>
+  </div>
+
+  <!-- First workflow -->
+  <div class="panel" id="p0-t2">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--teal-d)">⚙️</div><div class="p-title">First workflow — Webhook → Claude → respond</div></div>
+    <p>The simplest useful agentic workflow: receive a message, process it with Claude, return the result. This is the foundation every more complex workflow builds on.</p>
+
+    <div class="wf-diagram">
+      <div class="wf-title">Workflow: Basic AI Webhook Responder (n8n)</div>
+      <div class="wf-flow">
+        <div class="wf-node trigger"><div class="wf-node-box">Webhook</div><div class="wf-node-label">POST /ai-query receives user message</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node action"><div class="wf-node-box">Set Variables</div><div class="wf-node-label">Extract message, session_id</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">Claude (AI Node)</div><div class="wf-node-label">System prompt + user message</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node output"><div class="wf-node-box">Respond to Webhook</div><div class="wf-node-label">Return JSON response</div></div>
+      </div>
+    </div>
+
+    <div class="wf-diagram">
+      <div class="wf-title">Workflow: Document Q&amp;A (Flowise)</div>
+      <div class="wf-flow">
+        <div class="wf-node trigger"><div class="wf-node-box">Chat Input</div><div class="wf-node-label">User question</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node store"><div class="wf-node-box">Vector Store</div><div class="wf-node-label">Retrieve relevant chunks</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">Claude LLM</div><div class="wf-node-label">Question + context</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node output"><div class="wf-node-box">Chat Output</div><div class="wf-node-label">Grounded answer</div></div>
+      </div>
+    </div>
+
+    <div class="sh">n8n workflow JSON structure</div>
+    <div class="code-block">{
+  "nodes": [
+    {
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "path": "ai-query",
+        "httpMethod": "POST",
+        "responseMode": "responseNode"
+      }
+    },
+    {
+      "name": "Claude AI",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "systemMessage": "You are a helpful assistant.",
+        "messages": "={{ $json.body.message }}"
+      },
+      "credentials": { "anthropicApi": { "id": "YOUR_CRED_ID" } }
+    // Replace YOUR_CRED_ID with the credential ID from n8n Credentials panel
+    },
+    {
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { answer: $json.text } }}"
+      }
+    }
+  ]
+}</div>
+    <a class="ask-btn" href="#" onclick="navigator.clipboard?.writeText('Show me a complete n8n workflow JSON for webhook → Claude AI agent → respond, with error handling and response formatting');return false;">📋 Copy prompt for full workflow</a>
+  </div>
+
+  <!-- API Keys -->
+  <div class="panel" id="p0-t3">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--amber-d)">🔑</div><div class="p-title">API key management — every platform</div></div>
+    <p>API keys are the most common source of security incidents in automation workflows. At Phase 0 you're using personal keys on a single platform — but understand the principles now so you don't carry bad habits forward.</p>
+
+    <div class="sh">Keys you'll need at Phase 0</div>
+    <table class="kv-table">
+      <thead><tr><th>Service</th><th>Key name</th><th>Where to get</th><th>Cost</th></tr></thead>
+      <tbody>
+        <tr><td>Anthropic</td><td><code>ANTHROPIC_API_KEY</code></td><td>console.anthropic.com → API Keys</td><td>Pay per token</td></tr>
+        <tr><td>n8n (self-host)</td><td>N/A — you own it</td><td>Set admin password on first run</td><td>Free</td></tr>
+        <tr><td>n8n cloud</td><td>n8n API key</td><td>n8n.io dashboard → Settings</td><td>~$20/mo</td></tr>
+        <tr><td>Zapier</td><td>OAuth per-app</td><td>Each app's OAuth flow in Zapier UI</td><td>Per plan</td></tr>
+        <tr><td>Make</td><td>OAuth + API keys</td><td>Make UI → Connections</td><td>Per plan</td></tr>
+        <tr><td>Flowise</td><td>FLOWISE_USERNAME/PASS</td><td>Set in Docker env vars</td><td>Free self-host</td></tr>
+        <tr><td>Langflow</td><td>LANGFLOW_SECRET_KEY</td><td>Set in .env on self-host</td><td>Free self-host</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sh">n8n credential storage (how it works)</div>
+    <p>n8n stores credentials encrypted in its database using a <code>N8N_ENCRYPTION_KEY</code> you set. Never hardcode API keys in workflow nodes — always use the Credentials panel. The key is encrypted at rest, decrypted only at execution time.</p>
+    <div class="code-block"># n8n docker-compose env — set this ONCE, never change it
+environment:
+  N8N_ENCRYPTION_KEY: "your-32-char-random-string-here"
+  N8N_BASIC_AUTH_ACTIVE: "true"
+  N8N_BASIC_AUTH_USER: "admin"
+  N8N_BASIC_AUTH_PASSWORD: "your-strong-password"</div>
+
+    <div class="callout warn"><p>⚠️ If you change <code>N8N_ENCRYPTION_KEY</code> after storing credentials, all stored credentials become unreadable. Set it once and back it up securely.</p></div>
+
+    <div class="sh">Best practices for Phase 0</div>
+    <div class="pills">
+      <span class="pill gr">Store all keys in the platform's credential store — never in workflow nodes</span>
+    </div>
+    <div class="pills">
+      <span class="pill am">Set usage limits on your Anthropic key (console → Settings → Limits)</span>
+      <span class="pill bl">Create a separate key per platform/project</span>
+      <span class="pill gy">Never commit .env files to git</span>
+    </div>
+  </div>
+
+  <!-- Deployment -->
+  <div class="panel" id="p0-t4">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--sky-d)">🚀</div><div class="p-title">Deployment — self-host vs platform cloud</div></div>
+
+    <div class="sh">Option A — n8n self-hosted on your KVM VPS</div>
+    <div class="code-block"># /opt/n8n/docker-compose.yml
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    ports: ["5678:5678"]
+    environment:
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASS}
+      - WEBHOOK_URL=https://n8n.yourdomain.com/
+      - N8N_PROTOCOL=https
+      - N8N_HOST=n8n.yourdomain.com
+      - EXECUTIONS_PROCESS=main
+    volumes:
+      - n8n_data:/home/node/.n8n
+volumes:
+  n8n_data:</div>
+
+    <div class="sh">Nginx reverse proxy for n8n</div>
+    <div class="code-block">server {
+    listen 443 ssl;
+    server_name n8n.yourdomain.com;
+    location / {
+        proxy_pass         http://localhost:5678;
+        proxy_http_version 1.1;
+        proxy_set_header   Upgrade $http_upgrade;
+        proxy_set_header   Connection "upgrade"; # WebSocket for editor
+        proxy_set_header   Host $host;
+        proxy_buffering    off;
+        chunked_transfer_encoding on;           # for streaming
+    }
+}</div>
+
+    <div class="sh">Option B — Flowise self-hosted</div>
+    <div class="code-block">services:
+  flowise:
+    image: flowiseai/flowise:latest
+    restart: unless-stopped
+    ports: ["3000:3000"]
+    environment:
+      - PORT=3000
+      - FLOWISE_USERNAME=${FLOWISE_USER}
+      - FLOWISE_PASSWORD=${FLOWISE_PASS}
+      - APIKEY_PATH=/root/.flowise
+      - SECRETKEY_PATH=/root/.flowise
+      - DATABASE_PATH=/root/.flowise
+    volumes:
+      - flowise_data:/root/.flowise
+volumes:
+  flowise_data:</div>
+
+    <div class="sh">Comparison: self-host vs cloud</div>
+    <table class="kv-table">
+      <thead><tr><th>Factor</th><th>Self-host (your VPS)</th><th>Platform cloud</th></tr></thead>
+      <tbody>
+        <tr><td>Cost</td><td>~$0 (use existing VPS)</td><td>$20–$100+/mo</td></tr>
+        <tr><td>Data privacy</td><td>Full — stays on your server</td><td>Vendor stores your workflow data</td></tr>
+        <tr><td>Maintenance</td><td>You handle updates, backups</td><td>Managed for you</td></tr>
+        <tr><td>Reliability</td><td>Depends on your VPS uptime</td><td>99.9%+ SLA</td></tr>
+        <tr><td>Setup time</td><td>1–2 hours</td><td>5 minutes</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Maintenance -->
+  <div class="panel" id="p0-t5">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--rose-d)">🔧</div><div class="p-title">Maintenance</div></div>
+    <div class="sh">n8n self-host maintenance checklist</div>
+    <div class="pills">
+      <span class="pill gr">Weekly: check execution logs for failed workflows</span>
+      <span class="pill am">Monthly: pull latest n8n Docker image + redeploy</span>
+      <span class="pill bl">Weekly: backup n8n_data volume (workflows + credentials)</span>
+      <span class="pill gy">Monitor disk: n8n stores execution logs, prune after 30 days</span>
+    </div>
+    <div class="sh">Backup n8n data</div>
+    <div class="code-block">#!/bin/bash
+# backup-n8n.sh — run via cron daily
+DATE=$(date +%Y%m%d)
+docker run --rm \
+  -v n8n_data:/data \
+  -v /opt/backups:/backup \
+  alpine tar czf /backup/n8n-$DATE.tar.gz /data
+# Keep last 30 days
+find /opt/backups -name "n8n-*.tar.gz" -mtime +30 -delete</div>
+    <div class="sh">Update n8n safely</div>
+    <div class="code-block">cd /opt/n8n
+docker compose pull          # pull new image
+docker compose up -d         # redeploy (zero data loss — data is in volume)
+docker compose logs -f n8n   # watch startup</div>
+    <div class="callout tip"><p>💡 n8n has an API: <code>GET /api/v1/workflows</code>. Export all workflow JSONs to git as part of your backup so you have version history of automation changes.</p></div>
+  </div>
+</section>
+
+<!-- ════════════════ PHASE 1 ════════════════ -->
+<section class="phase-section" id="p1">
+  <div class="ph-head">
+    <div class="ph-eyebrow">Phase 1 — Junior</div>
+    <h2>AI agent nodes + MCP integration</h2>
+    <p class="sub">n8n AI Agent node · tool-calling workflows · MCP as workflow tool · Flowise agents · 3–4 weeks</p>
+  </div>
+
+  <div class="tab-nav">
+    <button class="tnb on"  data-tab="p1-t0">🧭 Concepts</button>
+    <button class="tnb"     data-tab="p1-t1">🔢 Steps</button>
+    <button class="tnb"     data-tab="p1-t2">⚙️ Workflows</button>
+    <button class="tnb"     data-tab="p1-t3">🔌 MCP in workflows</button>
+    <button class="tnb"     data-tab="p1-t4">🔑 API keys</button>
+    <button class="tnb"     data-tab="p1-t5">🚀 Deployment</button>
+    <button class="tnb"     data-tab="p1-t6">🔧 Maintenance</button>
+  </div>
+
+  <div class="panel on" id="p1-t0">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--sky-d)">🧭</div><div class="p-title">Concepts — AI agent nodes in automation platforms</div></div>
+    <p>At Phase 1, you graduate from "call Claude and return the result" to "let Claude decide what tools to call". Every major platform now has an AI Agent node that runs a ReAct loop internally — you just configure the tools it can use.</p>
+    <p>In <strong>n8n</strong>, the "AI Agent" node connects to an LLM (Claude, GPT, Gemini) and a set of "tools" — which can be other n8n nodes, HTTP requests, database queries, or MCP servers. The agent loop runs inside n8n. You see each tool call in the execution log.</p>
+    <p>In <strong>Flowise</strong>, the "Agent" flow type chains a ReAct agent with a toolset. Tools are pre-built (Calculator, Web Browser, Custom Function) or your own API calls. The agent reasons, picks tools, and assembles the final answer.</p>
+    <p>The key insight: <strong>your MCP server from Phase 1 code work can plug directly into n8n as an MCP Tool node</strong>. This means code-built tools and visual-workflow agents can share the same tool backend.</p>
+  </div>
+
+  <div class="panel" id="p1-t1">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--green-d)">🔢</div><div class="p-title">Steps</div></div>
+    <ol class="steps">
+      <li>In n8n, create a new workflow. Add an "AI Agent" node. Connect it to Claude via the Anthropic credential. Set a system prompt.</li>
+      <li>Add a "Calculator" tool, a "Wikipedia" tool, and a custom "HTTP Request" tool to the agent. Test multi-step reasoning.</li>
+      <li>Connect your Phase 1 MCP server as an MCP Tool node (n8n v1.88+ has native MCP support): set the URL to <code>https://mcp.yourdomain.com/mcp</code>.</li>
+      <li>In Flowise, build a "ReAct Agent" flow: LLM node → Tools (Calculator + Custom API Tool) → Memory (Buffer) → Chat output.</li>
+      <li>Build a "triage" workflow: webhook receives a support ticket → Claude classifies it (billing/tech/other) → routes to different sub-workflows based on classification.</li>
+      <li>Add error-handling branches to every AI node: if the AI fails (timeout, rate limit), route to a fallback node that returns a default response.</li>
+      <li>Expose your Flowise agent flow as a REST API and call it from an n8n workflow — composing two platforms.</li>
+    </ol>
+    <div class="checkpoint"><div class="ck-icon">✅</div><p>Checkpoint: n8n AI Agent using your MCP server tools. Flowise ReAct agent with memory. Triage workflow routing to sub-workflows. Both deployed on VPS.</p></div>
+  </div>
+
+  <div class="panel" id="p1-t2">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--teal-d)">⚙️</div><div class="p-title">Key workflows at this level</div></div>
+
+    <div class="wf-diagram">
+      <div class="wf-title">Workflow 1: AI Triage Router (n8n)</div>
+      <div class="wf-flow">
+        <div class="wf-node trigger"><div class="wf-node-box">Webhook / Form</div><div class="wf-node-label">Incoming support ticket or query</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">Claude Classify</div><div class="wf-node-label">Output: billing | tech | general</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node condition"><div class="wf-node-box">Switch Node</div><div class="wf-node-label">Route by category</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node output"><div class="wf-node-box">Sub-workflow</div><div class="wf-node-label">Specialist handler per type</div></div>
+      </div>
+    </div>
+
+    <div class="wf-diagram">
+      <div class="wf-title">Workflow 2: AI Agent with MCP Tools (n8n)</div>
+      <div class="wf-flow">
+        <div class="wf-node trigger"><div class="wf-node-box">Webhook</div><div class="wf-node-label">User task request</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">n8n AI Agent</div><div class="wf-node-label">Claude + ReAct loop</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node mcp"><div class="wf-node-box">MCP Tool Node</div><div class="wf-node-label">Calls your MCP server</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">Agent resumes</div><div class="wf-node-label">Processes tool result</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node output"><div class="wf-node-box">Respond</div><div class="wf-node-label">Final answer to caller</div></div>
+      </div>
+    </div>
+
+    <div class="wf-diagram">
+      <div class="wf-title">Workflow 3: Document Ingestion + RAG (Flowise)</div>
+      <div class="wf-flow">
+        <div class="wf-node webhook"><div class="wf-node-box">File Upload API</div><div class="wf-node-label">PDF / DOCX input</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node action"><div class="wf-node-box">Text Splitter</div><div class="wf-node-label">Chunk into segments</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">Embeddings</div><div class="wf-node-label">Claude / OpenAI embed</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node store"><div class="wf-node-box">Vector Store</div><div class="wf-node-label">pgvector / Pinecone</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node output"><div class="wf-node-box">Chat Agent</div><div class="wf-node-label">Q&amp;A over document</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="p1-t3">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--purple-d)">🔌</div><div class="p-title">Connecting your MCP server to workflow platforms</div></div>
+    <p>Your code-built MCP server (from the main guide Phase 1) can plug directly into n8n as a tool source. This is the most powerful integration: you get the visual workflow orchestration of n8n <em>plus</em> the custom TypeScript tools of your MCP server.</p>
+
+    <div class="sh">n8n MCP Tool node setup</div>
+    <div class="code-block"># In n8n AI Agent node → Add Tool → MCP Client
+# Settings:
+Server URL:   https://mcp.yourdomain.com/mcp
+Auth header:  x-api-key: YOUR_MCP_API_KEY
+Timeout:      30000ms
+
+# n8n will call listTools() at workflow activation
+# and make the discovered tools available to the agent</div>
+
+    <div class="sh">Flowise — Custom Tool pointing to MCP</div>
+    <div class="code-block">// In Flowise: Add "Custom Tool" node
+Name:        "mcp_search"
+Description: "Search the web using the MCP server tool"
+Schema:      { "query": { "type": "string", "description": "search query" } }
+Function:    async ({ query }) => {
+  const res = await fetch('https://mcp.yourdomain.com/tools/search_web', {
+    method: 'POST',
+    headers: { 'x-api-key': process.env.MCP_API_KEY },
+    body: JSON.stringify({ query })
+  });
+  return (await res.json()).result;
+}</div>
+
+    <div class="sh">Make (Integromat) — HTTP module to MCP</div>
+    <div class="code-block">Module: HTTP → Make a request
+URL:    https://mcp.yourdomain.com/tools/search_web
+Method: POST
+Headers:
+  x-api-key: {{connection.mcp_api_key}}
+  Content-Type: application/json
+Body:   { "query": "{{1.message}}" }</div>
+
+    <div class="callout info"><p>💡 Any automation platform with an HTTP node (Make, Zapier, Pipedream, Activepieces) can call your MCP server's tools directly over its REST API — you don't need native MCP protocol support. MCP is just HTTP+JSON under the hood.</p></div>
+  </div>
+
+  <div class="panel" id="p1-t4">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--amber-d)">🔑</div><div class="p-title">API keys at Phase 1</div></div>
+    <table class="kv-table">
+      <thead><tr><th>Service</th><th>Key / Credential</th><th>How to store in platform</th></tr></thead>
+      <tbody>
+        <tr><td>Anthropic</td><td><code>ANTHROPIC_API_KEY</code></td><td>n8n Credentials → Anthropic API. Flowise: Credential node type "ChatAnthropic".</td></tr>
+        <tr><td>Your MCP server</td><td>MCP API key (custom)</td><td>n8n: Header Auth credential → x-api-key. Flowise: env var <code>MCP_API_KEY</code>.</td></tr>
+        <tr><td>Postgres (pgvector)</td><td>Connection string</td><td>n8n: Postgres credential. Flowise: env <code>DATABASE_URL</code>.</td></tr>
+        <tr><td>External APIs (search, weather)</td><td>Per-service API key</td><td>n8n: Header Auth or dedicated node credential. Never inline in workflow JSON.</td></tr>
+      </tbody>
+    </table>
+    <div class="sh">Rotating API keys safely</div>
+    <ol class="steps">
+      <li>Generate a new key in the provider's dashboard.</li>
+      <li>Update the credential in n8n: Credentials → edit → paste new key → save. n8n re-encrypts instantly.</li>
+      <li>Test the workflow with the new key.</li>
+      <li>Revoke the old key in the provider dashboard.</li>
+    </ol>
+    <div class="callout warn"><p>⚠️ In Flowise, API keys stored in <code>.env</code> require a container restart after changes. Plan key rotations during low-traffic windows.</p></div>
+  </div>
+
+  <div class="panel" id="p1-t5">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--sky-d)">🚀</div><div class="p-title">Deployment</div></div>
+    <div class="sh">Combined stack on one VPS</div>
+    <div class="ftree">
+      <div class="ftree-row"><span class="fd">/opt/</span></div>
+      <div class="ftree-row"><span class="fi">├── </span><span class="fd">n8n/</span></div>
+      <div class="ftree-row"><span class="fi">│   ├── </span><span class="ff">docker-compose.yml</span></div>
+      <div class="ftree-row"><span class="fi">│   └── </span><span class="ff">.env</span><span class="fn">// N8N_ENCRYPTION_KEY, N8N_USER, N8N_PASS</span></div>
+      <div class="ftree-row"><span class="fi">├── </span><span class="fd">flowise/</span></div>
+      <div class="ftree-row"><span class="fi">│   ├── </span><span class="ff">docker-compose.yml</span></div>
+      <div class="ftree-row"><span class="fi">│   └── </span><span class="ff">.env</span><span class="fn">// FLOWISE_USER, FLOWISE_PASS, ANTHROPIC_API_KEY</span></div>
+      <div class="ftree-row"><span class="fi">└── </span><span class="fd">mcp-server/</span><span class="fn">// your Phase 1 MCP server</span></div>
+      <div class="ftree-row"><span class="fi">    └── </span><span class="ff">docker-compose.yml</span></div>
+    </div>
+
+    <div class="sh">Nginx routing multiple services</div>
+    <div class="code-block">server {
+    server_name n8n.yourdomain.com;
+    location / { proxy_pass http://localhost:5678; ... }
+}
+server {
+    server_name flowise.yourdomain.com;
+    location / { proxy_pass http://localhost:3000; ... }
+}
+server {
+    server_name mcp.yourdomain.com;
+    location /mcp { proxy_pass http://localhost:3001; proxy_buffering off; }
+}</div>
+  </div>
+
+  <div class="panel" id="p1-t6">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--rose-d)">🔧</div><div class="p-title">Maintenance</div></div>
+    <div class="sh">Monitoring workflow executions</div>
+    <p>n8n keeps execution history (default: last 100 per workflow). Check for failed executions daily. Set up an "Error Trigger" workflow in n8n that fires when any other workflow fails — it can send you a Telegram/email/Slack alert automatically.</p>
+    <div class="code-block">// Error Trigger workflow: catches all execution errors
+Trigger: Error Trigger node
+Action: Send Telegram message →
+  "Workflow {{ $json.workflow.name }} failed
+   Error: {{ $json.execution.error.message }}
+   Time: {{ $now }}"</div>
+    <div class="sh">n8n execution pruning (prevent disk fill)</div>
+    <div class="code-block"># In n8n env vars — prune executions older than 30 days
+EXECUTIONS_DATA_PRUNE=true
+EXECUTIONS_DATA_MAX_AGE=720   # hours (30 days)</div>
+  </div>
+</section>
+
+<!-- ════════════════ PHASE 2 ════════════════ -->
+<section class="phase-section" id="p2">
+  <div class="ph-head">
+    <div class="ph-eyebrow">Phase 2 — Intermediate</div>
+    <h2>Multi-step agents + memory + real integrations</h2>
+    <p class="sub">Orchestration in n8n · Langflow agent chains · memory nodes · sub-workflows · CI/CD for workflows · 4–6 weeks</p>
+  </div>
+
+  <div class="tab-nav">
+    <button class="tnb on"  data-tab="p2-t0">🧭 Concepts</button>
+    <button class="tnb"     data-tab="p2-t1">🔢 Steps</button>
+    <button class="tnb"     data-tab="p2-t2">⚙️ Workflows</button>
+    <button class="tnb"     data-tab="p2-t3">🧠 Memory patterns</button>
+    <button class="tnb"     data-tab="p2-t4">🔑 API keys &amp; auth</button>
+    <button class="tnb"     data-tab="p2-t5">🚀 Deployment</button>
+    <button class="tnb"     data-tab="p2-t6">🔧 Maintenance</button>
+  </div>
+
+  <div class="panel on" id="p2-t0">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--sky-d)">🧭</div><div class="p-title">Concepts — orchestration in visual platforms</div></div>
+    <p>At Phase 2, you build workflows that mimic the multi-agent patterns from your code work — but entirely (or partially) in visual tools. n8n's "Execute Workflow" node lets one workflow call another, creating an orchestrator-subagent pattern visually.</p>
+    <p>In <strong>Langflow</strong>, you can chain multiple agent flows: an orchestrator flow that calls subagent flows via HTTP, each with different tool sets. Langflow's "Sub Flow" component makes this native. Memory is a first-class node (buffer memory, Postgres memory, Redis memory).</p>
+    <p>The key skill at this phase is <strong>deciding what belongs in code vs visual tools</strong>. Rule of thumb: business logic and integrations → visual platforms. Custom tools, data transformation, performance-critical paths → code (your MCP server). Don't fight the platform's strengths.</p>
+  </div>
+
+  <div class="panel" id="p2-t1">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--green-d)">🔢</div><div class="p-title">Steps</div></div>
+    <ol class="steps">
+      <li>Build an orchestrator workflow in n8n that calls multiple sub-workflows in parallel using the "Execute Workflow" node with "Execute in parallel" mode.</li>
+      <li>Add a Postgres memory node in Flowise: configure it to store conversation history per session_id. Test that memory persists across chat sessions.</li>
+      <li>Build a "research pipeline" workflow: webhook → Claude outlines subtasks → parallel web search sub-workflows → Claude synthesizes results → respond.</li>
+      <li>Connect your MCP server's pgvector memory to Flowise as an "External Memory" node using its REST API.</li>
+      <li>Add Zapier/Make webhook triggers that feed into your n8n workflows (e.g. new form submission in Typeform → n8n → AI processing → save to Postgres).</li>
+      <li>Version-control your n8n workflows: use n8n's export API to dump all workflow JSONs to a git repo on every change.</li>
+      <li>Build a Langflow multi-agent flow: Orchestrator agent → calls 2 sub-flows (researcher + writer) → assembles output.</li>
+    </ol>
+    <div class="checkpoint"><div class="ck-icon">✅</div><p>Checkpoint: Orchestrator n8n workflow delegates parallel tasks to sub-workflows. Flowise agent with Postgres memory. Workflow JSONs version-controlled in git.</p></div>
+  </div>
+
+  <div class="panel" id="p2-t2">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--teal-d)">⚙️</div><div class="p-title">Key workflows at this level</div></div>
+
+    <div class="wf-diagram">
+      <div class="wf-title">Workflow 4: Research + Write Pipeline (n8n orchestrator)</div>
+      <div class="wf-flow">
+        <div class="wf-node trigger"><div class="wf-node-box">Webhook</div><div class="wf-node-label">Topic request</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">Claude Planner</div><div class="wf-node-label">Generate 3 research questions</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node action"><div class="wf-node-box">Split in Batches</div><div class="wf-node-label">Parallel execution</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node mcp"><div class="wf-node-box">Search Sub-wf</div><div class="wf-node-label">MCP web search × 3</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">Claude Synthesize</div><div class="wf-node-label">Write final report</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node store"><div class="wf-node-box">Save to DB</div><div class="wf-node-label">Postgres + notify</div></div>
+      </div>
+    </div>
+
+    <div class="wf-diagram">
+      <div class="wf-title">Workflow 5: Customer Support Agent (n8n + Flowise)</div>
+      <div class="wf-flow">
+        <div class="wf-node trigger"><div class="wf-node-box">Email / Form</div><div class="wf-node-label">Customer inquiry arrives</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node action"><div class="wf-node-box">Classify Intent</div><div class="wf-node-label">Claude: billing/tech/refund?</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node mcp"><div class="wf-node-box">Flowise RAG API</div><div class="wf-node-label">Search knowledge base</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">Claude Draft Reply</div><div class="wf-node-label">Using KB context</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node condition"><div class="wf-node-box">Confidence check</div><div class="wf-node-label">&gt; 0.8 auto-send, else human review</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node output"><div class="wf-node-box">Send / Escalate</div><div class="wf-node-label">Auto-send reply or route to human agent</div></div>
+      </div>
+    </div>
+
+    <div class="wf-diagram">
+      <div class="wf-title">Workflow 6: Content Factory (Make + Claude)</div>
+      <div class="wf-flow">
+        <div class="wf-node trigger"><div class="wf-node-box">Google Sheets</div><div class="wf-node-label">New row = content brief</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">Claude: Draft</div><div class="wf-node-label">Write article from brief</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">Claude: Review</div><div class="wf-node-label">Check quality + SEO</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node action"><div class="wf-node-box">WordPress API</div><div class="wf-node-label">Publish as draft post</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node output"><div class="wf-node-box">Update Sheet</div><div class="wf-node-label">Status = published</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="p2-t3">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--purple-d)">🧠</div><div class="p-title">Memory patterns in workflow platforms</div></div>
+    <div class="sh">n8n memory options</div>
+    <div class="pcards">
+      <div class="pcard rec"><div class="rec-badge">★ Best for production</div><div class="pname">Postgres Chat Memory</div><div class="pdesc">Stores conversation history in your existing Postgres DB per session_id. Persistent, queryable, no extra infra.</div></div>
+      <div class="pcard"><div class="pname">Redis Chat Memory</div><div class="pdesc">Faster reads, TTL-based expiry. Good for short-lived chat sessions. Requires Redis (you have it).</div></div>
+      <div class="pcard"><div class="pname">Buffer Window Memory</div><div class="pdesc">Keeps last N messages in-memory per execution. No persistence. Good for single-turn agent tasks.</div></div>
+      <div class="pcard"><div class="pname">Zep / Motorhead</div><div class="pdesc">Dedicated memory servers with summarization. More complex setup. Worth it for very long sessions.</div></div>
+    </div>
+    <div class="sh">Flowise memory nodes</div>
+    <div class="pills">
+      <span class="pill gr">Postgres Chat Memory (recommended — same DB)</span>
+      <span class="pill bl">Redis-Backed Chat Memory</span>
+      <span class="pill pu">Zep Memory (long-term summarization)</span>
+      <span class="pill gy">Buffer Memory (in-memory, no persistence)</span>
+    </div>
+    <div class="sh">Session ID strategy</div>
+    <div class="code-block">// Pass session_id in every webhook call
+POST /webhook/ai-agent
+{
+  "message": "Continue our conversation about the project",
+  "sessionId": "user-123-project-456"  // ← key for memory lookup
+}
+
+// In n8n AI Agent node → Memory → Session Key:
+// {{ $json.sessionId }}</div>
+  </div>
+
+  <div class="panel" id="p2-t4">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--amber-d)">🔑</div><div class="p-title">API keys &amp; auth at Phase 2</div></div>
+    <table class="kv-table">
+      <thead><tr><th>New at Phase 2</th><th>Key/Credential</th><th>Platform storage</th></tr></thead>
+      <tbody>
+        <tr><td>Flowise API (calling from n8n)</td><td><code>FLOWISE_API_KEY</code></td><td>Flowise: Settings → API Keys. n8n: Header Auth credential.</td></tr>
+        <tr><td>Postgres (memory)</td><td>DB connection string</td><td>n8n: Postgres credential. Flowise: <code>DATABASE_TYPE=postgres</code> env.</td></tr>
+        <tr><td>Redis (memory)</td><td><code>REDIS_URL</code></td><td>Flowise: <code>REDIS_URL</code> env. n8n: Redis credential.</td></tr>
+        <tr><td>External services (Slack, Notion, GSheets)</td><td>OAuth or API keys</td><td>n8n: dedicated credential type per service. OAuth handled automatically.</td></tr>
+        <tr><td>n8n API (for workflow export)</td><td>n8n API key</td><td>n8n: Settings → API Keys → create key with read-only scope for export scripts.</td></tr>
+      </tbody>
+    </table>
+    <div class="sh">Scope your credentials</div>
+    <div class="callout info"><p>💡 Create service-specific API keys with minimum permissions. An n8n key used only for workflow exports should have <strong>read-only</strong> scope. An Anthropic key used for non-production workflows should have a lower usage limit set in the Anthropic console.</p></div>
+  </div>
+
+  <div class="panel" id="p2-t5">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--sky-d)">🚀</div><div class="p-title">Deployment — CI/CD for workflows</div></div>
+    <p>At Phase 2, you should treat your n8n workflow JSONs as infrastructure code. Export them to git, review changes like PRs, and deploy them programmatically.</p>
+    <div class="sh">Workflow version control script</div>
+    <div class="code-block">#!/bin/bash
+# export-workflows.sh — run via cron or GitHub Actions
+N8N_URL="https://n8n.yourdomain.com"
+N8N_KEY="your-n8n-api-key"
+
+# Export all workflows
+curl -s -H "X-N8N-API-KEY: $N8N_KEY" \
+  "$N8N_URL/api/v1/workflows" | \
+  jq -r '.data[] | "\(.id) \(.name)"' | \
+while read id name; do
+  curl -s -H "X-N8N-API-KEY: $N8N_KEY" \
+    "$N8N_URL/api/v1/workflows/$id" \
+    > "workflows/$(echo $name | tr ' ' '_').json"
+done
+
+cd workflows && git add -A && git commit -m "Auto-export $(date)" && git push</div>
+
+    <div class="sh">Import workflows on deploy (n8n API)</div>
+    <div class="code-block">#!/bin/bash
+# import-workflow.sh — deploy a workflow JSON to n8n
+curl -X POST \
+  -H "X-N8N-API-KEY: $N8N_KEY" \
+  -H "Content-Type: application/json" \
+  -d @workflows/my_workflow.json \
+  "$N8N_URL/api/v1/workflows"</div>
+  </div>
+
+  <div class="panel" id="p2-t6">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--rose-d)">🔧</div><div class="p-title">Maintenance</div></div>
+    <div class="sh">What breaks at Phase 2 and how to fix it</div>
+    <table class="kv-table">
+      <thead><tr><th>Problem</th><th>Cause</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>Memory grows unbounded</td><td>No TTL on session records</td><td>Add a scheduled workflow: <code>DELETE FROM chat_history WHERE created_at &lt; now() - interval '30 days'</code></td></tr>
+        <tr><td>n8n execution queue backs up</td><td>AI calls timing out</td><td>Set <code>EXECUTIONS_TIMEOUT=300</code> and add a timeout handler node</td></tr>
+        <tr><td>Flowise container OOM</td><td>Large document embeddings in memory</td><td>Increase Docker memory limit, use Postgres vector store instead of in-memory</td></tr>
+        <tr><td>Credential errors after rotation</td><td>Old key cached in workflow</td><td>Re-test each workflow after key rotation; check n8n execution log for auth errors</td></tr>
+        <tr><td>Sub-workflow not found</td><td>Workflow ID changed after import</td><td>Reference sub-workflows by name, not ID, in Execute Workflow node</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ════════════════ PHASE 3 ════════════════ -->
+<section class="phase-section" id="p3">
+  <div class="ph-head">
+    <div class="ph-eyebrow">Phase 3 — Senior</div>
+    <h2>Production workflows — reliability, security, scale</h2>
+    <p class="sub">Queue-backed execution · auth hardening · multi-tenant workflows · monitoring · zero-downtime updates · 6–8 weeks</p>
+  </div>
+
+  <div class="tab-nav">
+    <button class="tnb on"  data-tab="p3-t0">🧭 Concepts</button>
+    <button class="tnb"     data-tab="p3-t1">🔢 Steps</button>
+    <button class="tnb"     data-tab="p3-t2">⚙️ Workflows</button>
+    <button class="tnb"     data-tab="p3-t3">🔐 Security &amp; auth</button>
+    <button class="tnb"     data-tab="p3-t4">🔑 API key management</button>
+    <button class="tnb"     data-tab="p3-t5">🚀 Deployment</button>
+    <button class="tnb"     data-tab="p3-t6">🔧 Maintenance</button>
+  </div>
+
+  <div class="panel on" id="p3-t0">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--sky-d)">🧭</div><div class="p-title">Concepts — production-grade workflow platforms</div></div>
+    <p>At Phase 3, your workflows are serving real users. The concerns shift to: what happens when an AI call fails mid-workflow? How do you ensure one tenant's heavy workflow doesn't affect another? How do you update workflows without dropping in-flight executions?</p>
+    <p><strong>n8n queue mode</strong>: instead of running workflows in the main process, n8n can push executions to a Redis-backed queue and run them in separate worker processes. This gives you horizontal scaling, retry-on-crash, and isolation between executions.</p>
+    <p><strong>Workflow auth</strong>: by default, n8n webhooks are public (with a random path). In production, add authentication: Webhook node → Authentication → Header Auth (require <code>x-api-key</code> header). Treat webhook URLs as secrets.</p>
+  </div>
+
+  <div class="panel" id="p3-t1">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--green-d)">🔢</div><div class="p-title">Steps</div></div>
+    <ol class="steps">
+      <li>Switch n8n to queue mode: add Redis as a queue backend, deploy n8n main + n8n worker as separate containers. Worker count = CPU cores available.</li>
+      <li>Add webhook authentication to all public-facing n8n webhooks: Header Auth with an <code>x-api-key</code> that clients must include.</li>
+      <li>Implement multi-tenant workflow routing: a single entry webhook reads <code>tenantId</code> from the request, looks up tenant config in Postgres, and routes to tenant-specific sub-workflows.</li>
+      <li>Set up n8n with Langfuse integration: use n8n's custom HTTP node to log every AI execution to Langfuse for cost and quality tracking.</li>
+      <li>Add a dead-letter workflow: any workflow that fails 3 times sends a Slack/Telegram alert with full execution context.</li>
+      <li>Configure n8n workflow-level rate limiting: use a Redis counter before the AI node to enforce per-tenant request limits.</li>
+      <li>Export and test workflow rollback: keep the last 3 versions of every workflow JSON in git so you can redeploy a previous version in under 2 minutes.</li>
+    </ol>
+    <div class="checkpoint"><div class="ck-icon">✅</div><p>Checkpoint: n8n in queue mode with Redis. All webhooks authenticated. Multi-tenant routing live. Execution costs visible in Langfuse. Dead-letter alerting working.</p></div>
+  </div>
+
+  <div class="panel" id="p3-t2">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--teal-d)">⚙️</div><div class="p-title">Production workflow patterns</div></div>
+
+    <div class="wf-diagram">
+      <div class="wf-title">Workflow 7: Multi-tenant AI Request Handler</div>
+      <div class="wf-flow">
+        <div class="wf-node webhook"><div class="wf-node-box">Auth Webhook</div><div class="wf-node-label">Validates x-api-key header</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node store"><div class="wf-node-box">Lookup Tenant</div><div class="wf-node-label">Postgres: apiKey → tenantConfig</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node condition"><div class="wf-node-box">Rate Limit</div><div class="wf-node-label">Redis: check tenant quota</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">AI Agent</div><div class="wf-node-label">Tenant-scoped tools + system prompt</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node action"><div class="wf-node-box">Log to Langfuse</div><div class="wf-node-label">Cost + quality tracking</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node output"><div class="wf-node-box">Respond</div><div class="wf-node-label">JSON with trace_id</div></div>
+      </div>
+    </div>
+
+    <div class="wf-diagram">
+      <div class="wf-title">Workflow 8: Human-in-the-loop approval</div>
+      <div class="wf-flow">
+        <div class="wf-node trigger"><div class="wf-node-box">Task Trigger</div><div class="wf-node-label">Agent completes draft action</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">Claude Draft</div><div class="wf-node-label">Generate action + reasoning</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node webhook"><div class="wf-node-box">Send for Approval</div><div class="wf-node-label">Slack/email with approve link</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node condition"><div class="wf-node-box">Wait for Webhook</div><div class="wf-node-label">n8n Wait node (up to 24h)</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node output"><div class="wf-node-box">Execute or Cancel</div><div class="wf-node-label">Based on approval response</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="p3-t3">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--rose-d)">🔐</div><div class="p-title">Security &amp; auth hardening</div></div>
+    <div class="sh">Webhook authentication options</div>
+    <table class="kv-table">
+      <thead><tr><th>Method</th><th>How</th><th>Best for</th></tr></thead>
+      <tbody>
+        <tr><td>Header API Key</td><td><code>x-api-key: secret</code> required on every request</td><td>Server-to-server calls (your app → n8n)</td></tr>
+        <tr><td>Basic Auth</td><td>Username + password in HTTP header</td><td>Simple integrations</td></tr>
+        <tr><td>JWT</td><td>Verify Bearer token in Code node before processing</td><td>User-facing webhooks with per-user tokens</td></tr>
+        <tr><td>HMAC Signature</td><td>Verify webhook signature (like GitHub/Stripe webhooks)</td><td>Third-party platform callbacks</td></tr>
+      </tbody>
+    </table>
+    <div class="sh">HMAC verification in n8n Code node</div>
+    <div class="code-block">// Code node: verify Stripe/GitHub webhook signature
+const crypto = require('crypto');
+const secret = $credentials.webhookSecret;
+const payload = JSON.stringify($input.body);
+const signature = $input.headers['x-hub-signature-256'];
+const expected = 'sha256=' + crypto
+  .createHmac('sha256', secret)
+  .update(payload)
+  .digest('hex');
+if (signature !== expected) throw new Error('Invalid signature');
+return $input.all();</div>
+    <div class="callout danger"><p>🚨 Never expose n8n execution data publicly. Set <code>N8N_HIRING_BANNER=false</code> and ensure your n8n instance is behind Nginx with HTTPS. Execution logs contain your API keys in request/response data if you log full payloads.</p></div>
+  </div>
+
+  <div class="panel" id="p3-t4">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--amber-d)">🔑</div><div class="p-title">API key management at production scale</div></div>
+    <p>At Phase 3, you have multiple tenants, multiple workflow environments (staging/production), and multiple platform credentials. Manual key management breaks down. You need a system.</p>
+    <div class="sh">Environment separation</div>
+    <div class="code-block"># Two n8n instances: staging + production
+# Staging uses test API keys with low limits
+# Production uses live keys with usage alerts set
+
+# n8n staging .env
+ANTHROPIC_API_KEY=sk-ant-staging-key
+WEBHOOK_URL=https://n8n-staging.yourdomain.com/
+
+# n8n production .env
+ANTHROPIC_API_KEY=sk-ant-production-key
+WEBHOOK_URL=https://n8n.yourdomain.com/</div>
+
+    <div class="sh">Anthropic console: key-per-environment setup</div>
+    <ol class="steps">
+      <li>Create separate API keys for staging and production in console.anthropic.com → API Keys.</li>
+      <li>Set a monthly spend limit on the staging key ($10 max) to prevent accidental overuse.</li>
+      <li>Set a Slack/email alert on the production key at 80% of your expected budget.</li>
+      <li>Name keys descriptively: <code>n8n-staging-2025</code>, <code>flowise-prod-2025</code>.</li>
+      <li>Rotate keys every 90 days. Schedule this as a recurring task in your calendar.</li>
+    </ol>
+
+    <div class="sh">n8n credential audit</div>
+    <div class="code-block"># List all credentials (names only, never values) via n8n API
+curl -H "X-N8N-API-KEY: $N8N_KEY" \
+  "https://n8n.yourdomain.com/api/v1/credentials" | \
+  jq '[.data[] | {id, name, type, createdAt}]'</div>
+  </div>
+
+  <div class="panel" id="p3-t5">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--sky-d)">🚀</div><div class="p-title">Deployment — n8n queue mode + zero-downtime</div></div>
+    <div class="sh">n8n queue mode Docker Compose</div>
+    <div class="code-block">services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: n8n
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: ${POSTGRES_PASS}
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --maxmemory 512mb
+
+  n8n-main:
+    image: n8nio/n8n:latest
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASS}
+      - QUEUE_BULL_REDIS_HOST=redis
+      - EXECUTIONS_MODE=queue          # ← queue mode
+      - N8N_ENCRYPTION_KEY=${N8N_KEY}
+      - WEBHOOK_URL=https://n8n.yourdomain.com/
+    depends_on: [postgres, redis]
+    ports: ["5678:5678"]
+
+  n8n-worker:
+    image: n8nio/n8n:latest
+    command: worker
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - QUEUE_BULL_REDIS_HOST=redis
+      - EXECUTIONS_MODE=queue
+      - N8N_ENCRYPTION_KEY=${N8N_KEY}
+    depends_on: [n8n-main, redis]
+    deploy:
+      replicas: 2   # run 2 worker processes</div>
+
+    <div class="sh">Zero-downtime workflow update</div>
+    <div class="code-block">#!/bin/bash
+# update-workflow.sh
+WORKFLOW_ID=$1
+JSON_FILE=$2
+
+# 1. Deactivate workflow (stops new executions, in-flight finish)
+curl -XPATCH -H "X-N8N-API-KEY: $N8N_KEY" \
+  "$N8N_URL/api/v1/workflows/$WORKFLOW_ID" \
+  -d '{"active": false}'
+
+sleep 10  # allow in-flight executions to complete
+
+# 2. Update workflow JSON
+curl -XPATCH -H "X-N8N-API-KEY: $N8N_KEY" \
+  -H "Content-Type: application/json" \
+  "$N8N_URL/api/v1/workflows/$WORKFLOW_ID" \
+  -d @$JSON_FILE
+
+# 3. Re-activate
+curl -XPATCH -H "X-N8N-API-KEY: $N8N_KEY" \
+  "$N8N_URL/api/v1/workflows/$WORKFLOW_ID" \
+  -d '{"active": true}'</div>
+  </div>
+
+  <div class="panel" id="p3-t6">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--rose-d)">🔧</div><div class="p-title">Maintenance at production scale</div></div>
+    <div class="sh">Regular maintenance schedule</div>
+    <table class="kv-table">
+      <thead><tr><th>Frequency</th><th>Task</th><th>How</th></tr></thead>
+      <tbody>
+        <tr><td>Daily</td><td>Check failed executions</td><td>n8n dashboard → Executions → filter by Failed. Or Error Trigger workflow → Slack alert.</td></tr>
+        <tr><td>Daily</td><td>Check Anthropic cost</td><td>console.anthropic.com → Usage. Set budget alerts.</td></tr>
+        <tr><td>Weekly</td><td>Export workflows to git</td><td>Run export script via cron. Review diff for unintended changes.</td></tr>
+        <tr><td>Weekly</td><td>Prune execution logs</td><td>n8n env: <code>EXECUTIONS_DATA_MAX_AGE=168</code> (7 days). Or manual SQL: <code>DELETE FROM execution_entity WHERE startedAt &lt; now()-'7 days'</code></td></tr>
+        <tr><td>Monthly</td><td>Update n8n</td><td><code>docker compose pull &amp;&amp; docker compose up -d</code>. Test critical workflows after update.</td></tr>
+        <tr><td>Quarterly</td><td>Rotate all API keys</td><td>Anthropic, third-party services. Update in n8n credentials. Test all workflows.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ════════════════ PHASE 4 ════════════════ -->
+<section class="phase-section" id="p4">
+  <div class="ph-head">
+    <div class="ph-eyebrow">Phase 4 — Expert</div>
+    <h2>Platform-scale workflows + custom platform extensions</h2>
+    <p class="sub">Custom n8n nodes · self-hosted platform clusters · workflow-as-product · cost optimization · K8s deploy · ongoing</p>
+  </div>
+
+  <div class="tab-nav">
+    <button class="tnb on"  data-tab="p4-t0">🧭 Concepts</button>
+    <button class="tnb"     data-tab="p4-t1">🔢 Steps</button>
+    <button class="tnb"     data-tab="p4-t2">⚙️ Workflows</button>
+    <button class="tnb"     data-tab="p4-t3">🛠 Custom nodes</button>
+    <button class="tnb"     data-tab="p4-t4">🔑 Enterprise key mgmt</button>
+    <button class="tnb"     data-tab="p4-t5">🚀 Deployment</button>
+    <button class="tnb"     data-tab="p4-t6">🔧 Maintenance</button>
+  </div>
+
+  <div class="panel on" id="p4-t0">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--sky-d)">🧭</div><div class="p-title">Expert-level concepts</div></div>
+    <p>At expert level, the workflow platform itself becomes part of your product. You build custom n8n nodes for your specific integrations, operate n8n clusters on Kubernetes for thousands of workflow executions per day, and potentially offer "workflow builder" capabilities to your own users (white-label n8n or Flowise).</p>
+    <p><strong>Custom n8n nodes</strong> are npm packages that add new trigger/action types to n8n. You build them when the built-in HTTP node isn't enough — complex OAuth flows, binary data handling, streaming responses, or deep integration with your MCP server protocol.</p>
+    <p><strong>Workflow-as-product</strong>: n8n's self-hosted version can be embedded in a SaaS product. Each tenant gets their own workflow environment, isolated credentials, and workflow templates. This is how Retool, Zapier, and similar platforms work under the hood.</p>
+  </div>
+
+  <div class="panel" id="p4-t1">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--green-d)">🔢</div><div class="p-title">Steps</div></div>
+    <ol class="steps">
+      <li>Build a custom n8n node for your MCP server: implement <code>INodeType</code> with proper credential types, operation definitions, and execute function.</li>
+      <li>Publish the node to npm as <code>n8n-nodes-your-product</code>. Install it in your n8n instance via <code>N8N_CUSTOM_EXTENSIONS</code> env var.</li>
+      <li>Deploy n8n on Kubernetes: separate deployments for n8n-main and n8n-worker, HPA on worker pods based on Redis queue depth.</li>
+      <li>Set up workflow monitoring at scale: push n8n execution metrics to Prometheus → Grafana dashboard (execution rate, error rate, p99 latency, cost/hour).</li>
+      <li>Build a workflow template system: maintain a library of workflow JSON templates for common use cases. Deploy to new tenant environments via the n8n API on tenant signup.</li>
+      <li>Implement a multi-tenant Flowise deployment: one Flowise instance per tenant namespace, or single instance with tenant-isolated chatflow IDs and API keys.</li>
+      <li>Build an LLM cost attribution pipeline: parse Anthropic API responses in your workflow platform, attribute token costs to tenant + workflow + step, store in Postgres, expose in a billing dashboard.</li>
+    </ol>
+    <div class="checkpoint"><div class="ck-icon">✅</div><p>Checkpoint: Custom n8n node published and installed. n8n on K8s with HPA. Grafana dashboard for workflow metrics. Workflow templates auto-deployed on tenant signup. Cost attribution live.</p></div>
+  </div>
+
+  <div class="panel" id="p4-t2">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--teal-d)">⚙️</div><div class="p-title">Expert-level workflow architectures</div></div>
+
+    <div class="wf-diagram">
+      <div class="wf-title">Architecture: Workflow-as-Product (n8n embedded)</div>
+      <div class="wf-flow">
+        <div class="wf-node trigger"><div class="wf-node-box">Tenant Signup</div><div class="wf-node-label">Your SaaS API</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node action"><div class="wf-node-box">Provision n8n env</div><div class="wf-node-label">Create isolated workspace</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node mcp"><div class="wf-node-box">Deploy Templates</div><div class="wf-node-label">n8n API: import starter workflows</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node store"><div class="wf-node-box">Create Credentials</div><div class="wf-node-label">Tenant API keys injected</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node output"><div class="wf-node-box">Tenant Dashboard</div><div class="wf-node-label">Embed n8n editor iframe</div></div>
+      </div>
+    </div>
+
+    <div class="wf-diagram">
+      <div class="wf-title">Architecture: Cost-Attributed AI Pipeline</div>
+      <div class="wf-flow">
+        <div class="wf-node trigger"><div class="wf-node-box">API Request</div><div class="wf-node-label">tenantId + task</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node action"><div class="wf-node-box">LLM Gateway</div><div class="wf-node-label">Route + log request</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node ai"><div class="wf-node-box">Claude Agent</div><div class="wf-node-label">Execute workflow</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node store"><div class="wf-node-box">Cost Attribution</div><div class="wf-node-label">tokens × price → Postgres</div></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-node output"><div class="wf-node-box">Billing Dashboard</div><div class="wf-node-label">Per-tenant usage + cost</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="p4-t3">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--purple-d)">🛠</div><div class="p-title">Building custom n8n nodes</div></div>
+    <div class="sh">Custom node structure</div>
+    <div class="ftree">
+      <div class="ftree-row"><span class="fd">n8n-nodes-myproduct/</span></div>
+      <div class="ftree-row"><span class="fi">├── </span><span class="fd">nodes/</span></div>
+      <div class="ftree-row"><span class="fi">│   └── </span><span class="fd">MyMcpTool/</span></div>
+      <div class="ftree-row"><span class="fi">│       ├── </span><span class="ff">MyMcpTool.node.ts</span><span class="fn">// INodeType implementation</span></div>
+      <div class="ftree-row"><span class="fi">│       ├── </span><span class="ff">MyMcpTool.node.json</span><span class="fn">// node metadata</span></div>
+      <div class="ftree-row"><span class="fi">│       └── </span><span class="ff">mymcptool.svg</span><span class="fn">// node icon</span></div>
+      <div class="ftree-row"><span class="fi">├── </span><span class="fd">credentials/</span></div>
+      <div class="ftree-row"><span class="fi">│   └── </span><span class="ff">MyMcpApi.credentials.ts</span></div>
+      <div class="ftree-row"><span class="fi">├── </span><span class="ff">package.json</span><span class="fn">// n8n.nodes + n8n.credentials fields</span></div>
+      <div class="ftree-row"><span class="fi">└── </span><span class="ff">tsconfig.json</span></div>
+    </div>
+
+    <div class="sh">Minimal node implementation</div>
+    <div class="code-block">import { IExecuteFunctions, INodeType, INodeTypeDescription } from 'n8n-workflow';
+
+export class MyMcpTool implements INodeType {
+  description: INodeTypeDescription = {
+    displayName: 'My MCP Tool',
+    name: 'myMcpTool',
+    group: ['transform'],
+    version: 1,
+    properties: [
+      {
+        displayName: 'Tool Name',
+        name: 'toolName',
+        type: 'options',
+        options: [
+          { name: 'Search Web', value: 'search_web' },
+          { name: 'Get Weather', value: 'get_weather' },
+        ],
+        default: 'search_web',
+      },
+      {
+        displayName: 'Query',
+        name: 'query',
+        type: 'string',
+        default: '',
+      }
+    ],
+  };
+
+  async execute(this: IExecuteFunctions) {
+    const toolName = this.getNodeParameter('toolName', 0) as string;
+    const query    = this.getNodeParameter('query', 0) as string;
+    const creds    = await this.getCredentials('myMcpApi');
+
+    const res = await this.helpers.httpRequest({
+      method: 'POST',
+      url: `${creds.serverUrl}/tools/${toolName}`,
+      headers: { 'x-api-key': creds.apiKey as string },
+      body: { query },
+      json: true,
+    });
+    return this.helpers.returnJsonArray(res);
+  }
+}</div>
+
+    <div class="sh">Install custom node in n8n</div>
+    <div class="code-block"># In n8n Docker env:
+N8N_CUSTOM_EXTENSIONS=/opt/custom-nodes
+
+# Copy compiled node to that directory:
+cp -r dist/n8n-nodes-myproduct /opt/custom-nodes/
+# Restart n8n — node appears in the node panel</div>
+  </div>
+
+  <div class="panel" id="p4-t4">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--amber-d)">🔑</div><div class="p-title">Enterprise API key management</div></div>
+    <p>At expert scale, manually managing API keys per-tenant in n8n's UI breaks down. You need a programmatic credential management system.</p>
+    <div class="sh">Programmatic credential creation (n8n API)</div>
+    <div class="code-block">// Create a credential for a new tenant via n8n API
+async function provisionTenantCredentials(tenantId: string, anthropicKey: string) {
+  await fetch(`${N8N_URL}/api/v1/credentials`, {
+    method: 'POST',
+    headers: {
+      'X-N8N-API-KEY': N8N_ADMIN_KEY,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: `anthropic-tenant-${tenantId}`,
+      type: 'anthropicApi',
+      data: { apiKey: anthropicKey },
+    }),
+  });
+}</div>
+
+    <div class="sh">Secrets manager integration</div>
+    <p>For enterprise deployments, store secrets in HashiCorp Vault or AWS Secrets Manager and pull them into n8n at startup, not as static env vars.</p>
+    <div class="code-block"># n8n supports external secrets via provider (n8n v1.22+)
+N8N_EXTERNAL_SECRETS_UPDATE_INTERVAL=300  # refresh every 5 min
+N8N_EXTERNAL_SECRETS_BACKEND=aws          # or vault, gcp
+
+# AWS Secrets Manager setup:
+AWS_REGION=ap-southeast-1
+AWS_SECRET_NAME=n8n-prod-secrets</div>
+
+    <div class="sh">Key rotation at scale (automated)</div>
+    <div class="code-block">// Automated key rotation workflow (n8n scheduled)
+// Trigger: every 90 days
+// 1. Generate new Anthropic API key via console API
+// 2. Update n8n credential via API
+// 3. Update Flowise env var via Docker API
+// 4. Send Slack confirmation
+// 5. Revoke old key after 24h grace period</div>
+  </div>
+
+  <div class="panel" id="p4-t5">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--sky-d)">🚀</div><div class="p-title">Deployment — K8s for workflow platforms</div></div>
+    <div class="sh">n8n on Kubernetes</div>
+    <div class="code-block">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: n8n-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: n8n-worker
+  template:
+    spec:
+      containers:
+      - name: n8n-worker
+        image: n8nio/n8n:latest
+        command: ["n8n", "worker"]
+        env:
+        - name: EXECUTIONS_MODE
+          value: queue
+        - name: QUEUE_BULL_REDIS_HOST
+          value: redis-service
+        - name: N8N_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              name: n8n-secrets
+              key: encryption-key
+        resources:
+          requests: { memory: "512Mi", cpu: "250m" }
+          limits:   { memory: "1Gi",  cpu: "1000m" }
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: n8n-worker-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: n8n-worker
+  minReplicas: 2
+  maxReplicas: 20
+  metrics:
+  - type: External
+    external:
+      metric:
+        name: redis_queue_length
+        selector:
+          matchLabels:
+            queue: bull_jobs_waiting
+      target:
+        type: AverageValue
+        averageValue: "5"</div>
+  </div>
+
+  <div class="panel" id="p4-t6">
+    <div class="panel-hdr"><div class="p-icon" style="background:var(--rose-d)">🔧</div><div class="p-title">Maintenance at expert scale</div></div>
+    <div class="sh">Monitoring stack for workflow platforms</div>
+    <div class="pills">
+      <span class="pill gr">Prometheus scrapes n8n metrics endpoint</span>
+      <span class="pill bl">Grafana dashboard: execution rate / error rate / queue depth</span>
+      <span class="pill pu">Langfuse: per-tenant LLM cost + quality</span>
+      <span class="pill am">PagerDuty / Opsgenie: alert on error spike</span>
+      <span class="pill te">Sentry: capture unhandled errors in custom nodes</span>
+    </div>
+
+    <div class="sh">n8n metrics (Prometheus scrape config)</div>
+    <div class="code-block">scrape_configs:
+  - job_name: 'n8n'
+    static_configs:
+      - targets: ['n8n-service:5678']
+    metrics_path: /metrics
+    # Exposed metrics include:
+    # n8n_workflow_executions_total
+    # n8n_workflow_executions_failed_total
+    # n8n_queue_jobs_waiting</div>
+
+    <div class="sh">Graceful platform updates (K8s rolling)</div>
+    <div class="code-block">kubectl set image deployment/n8n-worker \
+  n8n-worker=n8nio/n8n:1.95.0
+
+# Rolling update: K8s replaces pods one at a time
+# In-flight executions complete before pod terminates
+# (n8n worker handles SIGTERM gracefully)</div>
+
+    <div class="callout tip"><p>💡 At expert scale, subscribe to n8n's GitHub releases and Anthropic's changelog. Breaking changes in either (new API response format, new node API) can affect hundreds of workflows simultaneously. Test in staging first, always.</p></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+// Phase nav
+document.querySelectorAll('.sb-item').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    const id = btn.dataset.phase;
+    document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.phase-section').forEach(s => s.classList.toggle('active', s.id === id));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+// Tab nav (delegated)
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.tnb');
+  if (!btn) return;
+  const tabId = btn.dataset.tab;
+  const phaseId = tabId.split('-t')[0];
+  const section = document.getElementById(phaseId);
+  if (!section) return;
+  section.querySelectorAll('.tnb').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  section.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  const panel = document.getElementById(tabId);
+  if (panel) panel.classList.add('on');
+});
+</script>
+</body>
+</html>

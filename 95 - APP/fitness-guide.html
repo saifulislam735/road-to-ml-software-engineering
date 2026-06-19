@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Male Fitness Reference Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0b0e; --surface:#111318; --surface2:#181b22; --border:#232733;
+  --border2:#2e3345; --accent:#c8a96e; --accent2:#8b6f47; --green:#4a9e6e;
+  --blue:#4a7fa5; --text:#dde1ec; --text2:#9399ae; --card:#0f1117;
+  --personal:#0f1409; --pb:#2a3a1a;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;line-height:1.65;overflow-x:hidden;}
+img{display:block;max-width:100%;}
+button{cursor:pointer;font-family:inherit;}
+.bangla{font-family:'Tiro Bangla',serif;}
+.mono{font-family:'DM Mono',monospace;}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:4rem;padding:5rem 6vw 4rem;border-bottom:1px solid var(--border);position:relative;}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 40%,rgba(200,169,110,.04) 0%,transparent 60%);pointer-events:none;}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;margin-bottom:1.4rem;display:flex;align-items:center;gap:.6rem;}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent);}
+.hero h1{font-family:'Instrument Serif',serif;font-size:clamp(3rem,8vw,6.5rem);line-height:.92;letter-spacing:-.02em;}
+.hero h1 em{font-style:italic;color:var(--accent);}
+.hero-desc{margin-top:1.8rem;font-size:.88rem;color:var(--text2);max-width:400px;line-height:1.8;font-family:'Tiro Bangla',serif;}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.hstat{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1.2rem 1.4rem;}
+.hstat .num{font-family:'DM Mono',monospace;font-size:1.6rem;color:var(--accent);line-height:1;margin-bottom:.3rem;}
+.hstat .lbl{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;font-family:'Tiro Bangla',serif;}
+@media(max-width:768px){.hero{grid-template-columns:1fr;padding:4rem 1.5rem 3rem;min-height:auto;gap:2.5rem;}}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:200;background:rgba(10,11,14,.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 6vw;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-logo{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--accent);letter-spacing:.1em;white-space:nowrap;padding:1rem 1rem 1rem 0;border-right:1px solid var(--border);margin-right:.6rem;flex-shrink:0;}
+.nav a{color:var(--text2);text-decoration:none;padding:1rem .8rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;transition:color .2s;border-bottom:1px solid transparent;font-family:'Tiro Bangla',serif;}
+.nav a:hover{color:var(--text);border-bottom-color:var(--accent);}
+
+/* LAYOUT */
+.wrap{max-width:1040px;margin:0 auto;padding:5rem 6vw;}
+.sec-head{margin-bottom:3rem;}
+.sec-index{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem;}
+.sec-index::before{content:'';display:block;width:20px;height:1px;background:var(--accent);}
+.sec-title{font-family:'Instrument Serif',serif;font-size:clamp(1.6rem,4vw,2.6rem);line-height:1.1;}
+.sec-title em{font-style:italic;color:var(--accent);}
+.divider{height:1px;background:var(--border);}
+
+/* NOTE BOX */
+.note-box{background:var(--surface2);border-left:2px solid var(--accent);padding:1.2rem 1.4rem;font-family:'Tiro Bangla',serif;font-size:.87rem;line-height:1.85;color:var(--text2);border-radius:0 3px 3px 0;}
+.note-box strong{color:var(--text);font-weight:500;}
+
+/* TABLES */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:3px;margin-bottom:1.8rem;}
+.rtbl{width:100%;border-collapse:collapse;font-size:.82rem;}
+.rtbl th{background:var(--surface2);padding:.65rem 1rem;text-align:left;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text2);font-weight:400;border-bottom:1px solid var(--border);white-space:nowrap;}
+.rtbl td{padding:.6rem 1rem;border-bottom:1px solid var(--border);font-family:'Tiro Bangla',serif;vertical-align:middle;white-space:nowrap;}
+.rtbl tr:last-child td{border-bottom:none;}
+.rtbl tr:hover td{background:var(--surface);}
+.rtbl tr.hl td{background:rgba(200,169,110,.05);}
+.rtbl tr.hl td:first-child{border-left:2px solid var(--accent);}
+.badge{display:inline-block;font-family:'DM Mono',monospace;font-size:.58rem;padding:.12rem .45rem;border-radius:2px;letter-spacing:.06em;text-transform:uppercase;}
+.bg{background:rgba(74,158,110,.15);color:#6bbf8d;}
+.by{background:rgba(200,169,110,.15);color:var(--accent);}
+.br{background:rgba(180,70,70,.15);color:#c47070;}
+.bb{background:rgba(74,127,165,.15);color:#7ab5d5;}
+.sub-head{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:.14em;margin-bottom:.8rem;}
+
+/* PERSONAL SECTION */
+.personal-wrap{background:var(--personal);border-top:1px solid var(--pb);border-bottom:1px solid var(--pb);}
+.ptag{display:inline-flex;align-items:center;gap:.4rem;background:rgba(74,158,110,.08);border:1px solid rgba(74,158,110,.2);color:var(--green);font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .7rem;border-radius:2px;margin-bottom:1.2rem;}
+.ptag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);}
+.assess-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.7rem;margin-bottom:1.8rem;}
+.acard{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1.3rem;}
+.acard .al{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.14em;color:var(--text2);text-transform:uppercase;margin-bottom:.45rem;}
+.acard .av{font-family:'DM Mono',monospace;font-size:1.7rem;color:var(--accent);line-height:1;margin-bottom:.3rem;}
+.acard .an{font-family:'Tiro Bangla',serif;font-size:.8rem;color:var(--text2);}
+
+/* WARMUP */
+.flow{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;margin-bottom:2.2rem;}
+.fstep{background:var(--surface2);border:1px solid var(--border);padding:.38rem .85rem;font-family:'DM Mono',monospace;font-size:.68rem;color:var(--text2);display:flex;align-items:center;gap:.35rem;border-radius:2px;}
+.fstep .fn{color:var(--accent);font-size:.75rem;}
+.farrow{color:var(--border2);font-size:.85rem;}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:1rem;}
+.wcard{background:var(--card);border:1px solid var(--border);border-radius:3px;overflow:hidden;transition:border-color .2s;}
+.wcard:hover{border-color:var(--border2);}
+.wimgs{display:flex;gap:2px;height:122px;background:var(--surface2);overflow:hidden;}
+.wimgs img{flex:1;object-fit:cover;object-position:center top;filter:brightness(.85);transition:filter .2s;}
+.wimgs img:hover{filter:brightness(1);}
+.wbody{padding:.95rem 1.05rem;}
+.wmeta{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;}
+.wtitle{font-family:'Tiro Bangla',serif;font-size:.93rem;color:var(--text);margin-bottom:.45rem;}
+.wdesc{font-family:'Tiro Bangla',serif;font-size:.8rem;color:var(--text2);line-height:1.65;}
+.wsteps{margin-top:.55rem;display:flex;flex-direction:column;gap:.22rem;}
+.wsteps span{font-family:'Tiro Bangla',serif;font-size:.77rem;color:var(--text2);display:flex;gap:.35rem;}
+.wsteps span::before{content:'–';color:var(--accent);flex-shrink:0;}
+
+/* ROUTINE */
+.wkgrid{display:grid;gap:.55rem;}
+.dcard{background:var(--card);border:1px solid var(--border);border-radius:3px;overflow:hidden;transition:border-color .2s;}
+.dcard:hover{border-color:var(--border2);}
+.dhead{display:grid;grid-template-columns:60px 1fr auto;align-items:center;gap:1rem;padding:.85rem 1.1rem;cursor:pointer;}
+.didx{font-family:'DM Mono',monospace;font-size:1.45rem;color:var(--accent);line-height:1;}
+.dlabel h3{font-family:'Tiro Bangla',serif;font-size:.9rem;font-weight:500;margin-bottom:.18rem;color:var(--text);}
+.tagrow{display:flex;gap:.28rem;flex-wrap:wrap;}
+.tag{font-family:'DM Mono',monospace;font-size:.56rem;padding:.1rem .42rem;border-radius:2px;text-transform:uppercase;letter-spacing:.05em;}
+.tc{background:rgba(180,80,80,.15);color:#c47878;}
+.tb{background:rgba(74,127,165,.15);color:#7ab5d5;}
+.tl{background:rgba(74,158,110,.15);color:#6bbf8d;}
+.ts{background:rgba(200,169,110,.15);color:var(--accent);}
+.ta{background:rgba(140,100,180,.15);color:#b09ad5;}
+.tk{background:rgba(74,174,174,.15);color:#6bbfbf;}
+.tr{background:rgba(100,100,100,.1);color:var(--text2);}
+.dburn{text-align:right;}
+.dburn .kcal{font-family:'DM Mono',monospace;font-size:1.05rem;color:var(--green);}
+.dburn .klbl{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--text2);display:block;}
+.dbody{display:none;padding:0 1.1rem 1.1rem;border-top:1px solid var(--border);}
+.dcard.open .dbody{display:block;}
+.exlist{list-style:none;margin-top:.9rem;display:grid;gap:.8rem;}
+.exitem{background:var(--surface);border:1px solid var(--border);border-radius:3px;overflow:hidden;}
+.exhead{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:.45rem;padding:.7rem .95rem;}
+.exnm{font-family:'Tiro Bangla',serif;font-size:.87rem;color:var(--text);}
+.exsets{font-family:'DM Mono',monospace;font-size:.88rem;color:var(--accent);}
+.exnt{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--text2);text-align:right;}
+.eximgs{display:flex;gap:2px;height:105px;background:var(--surface2);}
+.eximgs img{flex:1;object-fit:cover;object-position:center top;filter:brightness(.88);transition:filter .2s;}
+.eximgs img:hover{filter:brightness(1.05);}
+.extip{padding:.52rem .95rem;font-family:'Tiro Bangla',serif;font-size:.76rem;color:var(--text2);border-top:1px solid var(--border);background:rgba(0,0,0,.15);line-height:1.6;}
+.extip b{color:var(--accent);font-weight:500;}
+.htag{font-family:'DM Mono',monospace;font-size:.53rem;background:rgba(74,158,110,.08);border:1px solid rgba(74,158,110,.18);color:var(--green);padding:.08rem .38rem;border-radius:2px;margin-left:.3rem;vertical-align:middle;text-transform:uppercase;letter-spacing:.05em;}
+
+/* LIBRARY */
+.libtabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+.libtab{background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:.42rem .88rem;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;border-radius:2px;transition:all .18s;}
+.libtab:hover{border-color:var(--border2);color:var(--text);}
+.libtab.active{background:var(--accent);border-color:var(--accent);color:#0a0b0e;}
+.libpanel{display:none;}
+.libpanel.active{display:block;}
+.libcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+.libcard{background:var(--card);border:1px solid var(--border);border-radius:3px;overflow:hidden;transition:border-color .2s,transform .2s;}
+.libcard:hover{border-color:var(--border2);transform:translateY(-2px);}
+.libgal{display:flex;gap:2px;height:132px;background:var(--surface2);overflow:hidden;}
+.libgal img{flex:1;object-fit:cover;object-position:center top;filter:brightness(.85);transition:filter .2s;}
+.libgal img:hover{filter:brightness(1);}
+.libbody{padding:.95rem 1.05rem;}
+.libbody h3{font-family:'Tiro Bangla',serif;font-size:.93rem;margin-bottom:.2rem;color:var(--text);}
+.libmuscle{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.45rem;}
+.libbody p{font-family:'Tiro Bangla',serif;font-size:.8rem;color:var(--text2);line-height:1.65;}
+.cbox{background:rgba(74,127,165,.06);border-left:2px solid rgba(74,127,165,.35);padding:.58rem .88rem;margin-top:.65rem;border-radius:0 2px 2px 0;}
+.cbox .clbl{font-family:'DM Mono',monospace;font-size:.56rem;color:#7ab5d5;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.22rem;}
+.cbox p{font-family:'Tiro Bangla',serif;font-size:.77rem;color:var(--text2);line-height:1.6;}
+
+/* NUTRITION */
+.nutgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:.7rem;margin-bottom:1.8rem;}
+.nutcard{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1.15rem 1.2rem;}
+.nutcard .nl{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--text2);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.4rem;}
+.nutcard .nv{font-family:'DM Mono',monospace;font-size:1.95rem;color:var(--accent);line-height:1;}
+.nutcard .nu{font-family:'Tiro Bangla',serif;font-size:.72rem;color:var(--text2);margin-top:.18rem;}
+.timgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:.7rem;margin-top:1.5rem;}
+.timcard{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1.05rem 1.1rem;}
+.timcard .tt{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.45rem;}
+.timcard .tl{font-family:'Tiro Bangla',serif;font-size:.87rem;color:var(--text);margin-bottom:.32rem;}
+.timcard .ti{font-family:'Tiro Bangla',serif;font-size:.79rem;color:var(--text2);line-height:1.75;}
+
+/* BURN */
+.burnrows{display:flex;flex-direction:column;gap:.65rem;}
+.burnrow{display:grid;grid-template-columns:140px 1fr 65px;align-items:center;gap:.9rem;}
+.burnlbl{font-family:'Tiro Bangla',serif;font-size:.82rem;color:var(--text2);}
+.burntrack{height:18px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.burnfill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:2px;width:0;transition:width 1.3s ease;}
+.burnfill.cardio{background:linear-gradient(90deg,#2d7a52,var(--green));}
+.burnnum{font-family:'DM Mono',monospace;font-size:.95rem;color:var(--green);text-align:right;}
+
+/* TIPS */
+.tipsgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:.7rem;}
+.tipcard{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1.2rem 1.1rem;}
+.tipcard .tnum{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--accent);text-transform:uppercase;letter-spacing:.14em;margin-bottom:.45rem;}
+.tipcard h3{font-family:'Tiro Bangla',serif;font-size:.92rem;color:var(--text);margin-bottom:.32rem;}
+.tipcard p{font-family:'Tiro Bangla',serif;font-size:.8rem;color:var(--text2);line-height:1.7;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:3rem 6vw;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:end;}
+.fhadith{font-family:'Instrument Serif',serif;font-style:italic;font-size:1rem;color:var(--accent);line-height:1.65;}
+.fhadith-bn{font-family:'Tiro Bangla',serif;font-size:.8rem;color:var(--text2);margin-top:.38rem;line-height:1.75;}
+.fref{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--text2);opacity:.45;margin-top:.28rem;}
+.fright{text-align:right;}
+.fmark{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text2);opacity:.35;letter-spacing:.09em;line-height:2;}
+@media(max-width:600px){
+  footer{grid-template-columns:1fr;}
+  .fright{text-align:left;}
+  .burnrow{grid-template-columns:100px 1fr 52px;}
+  .dhead{grid-template-columns:52px 1fr auto;}
+}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
+.reveal.visible{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-eyebrow">Male Fitness Reference Guide</div>
+    <h1>Strength<br>Built to <em>Last</em></h1>
+    <p class="hero-desc">শরীরের প্রতিটি অংশের জন্য বৈজ্ঞানিকভাবে পরিকল্পিত একটি সম্পূর্ণ রেফারেন্স গাইড — জিম ও হোম উভয় পরিবেশে প্রযোজ্য।</p>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><div class="num">18–60</div><div class="lbl">বয়সের রেঞ্জ</div></div>
+    <div class="hstat"><div class="num">5</div><div class="lbl">বডি পার্ট গ্রুপ</div></div>
+    <div class="hstat"><div class="num">30 min</div><div class="lbl">সেশন দৈর্ঘ্য</div></div>
+    <div class="hstat"><div class="num">3–5</div><div class="lbl">দিন প্রতি সপ্তাহ</div></div>
+  </div>
+</section>
+<nav class="nav">
+  <div class="nav-logo">FGUIDE v2</div>
+  <a href="#reference">রেফারেন্স</a>
+  <a href="#personal">আমার প্রোফাইল</a>
+  <a href="#warmup">ওয়ার্মআপ</a>
+  <a href="#routine">রুটিন</a>
+  <a href="#library">লাইব্রেরি</a>
+  <a href="#nutrition">নিউট্রিশন</a>
+  <a href="#burn">ক্যালোরি</a>
+  <a href="#principles">নীতিমালা</a>
+</nav>
+<section id="reference"><div class="wrap reveal">
+  <div class="sec-head">
+    <div class="sec-index">01 — General Reference</div>
+    <h2 class="sec-title">বয়স, উচ্চতা ও ওজন<br><em>রেফারেন্স চার্ট</em></h2>
+  </div>
+  <p class="bangla" style="color:var(--text2);font-size:.86rem;margin-bottom:1.6rem;line-height:1.8;">নিচের চার্টগুলো পুরুষদের জন্য আন্তর্জাতিক স্বাস্থ্য মানদণ্ড (WHO, ACSM) অনুযায়ী তৈরি।</p>
+  <div class="sub-head">BMI Classification — পুরুষ</div>
+  <div class="tbl-wrap">
+    <table class="rtbl">
+      <thead><tr><th>BMI রেঞ্জ</th><th>ক্যাটাগরি</th><th>৫'৯" এ ওজন</th><th>৫'১১" এ ওজন</th><th>৬'১" এ ওজন</th><th>স্বাস্থ্য ঝুঁকি</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">&lt; 18.5</td><td class="bangla">আন্ডারওয়েট</td><td class="mono">&lt; 62 kg</td><td class="mono">&lt; 67 kg</td><td class="mono">&lt; 72 kg</td><td><span class="badge by">মাঝারি</span></td></tr>
+        <tr><td class="mono">18.5 – 24.9</td><td class="bangla">স্বাভাবিক</td><td class="mono">62 – 83 kg</td><td class="mono">67 – 90 kg</td><td class="mono">72 – 97 kg</td><td><span class="badge bg">কম</span></td></tr>
+        <tr><td class="mono">25.0 – 29.9</td><td class="bangla">ওভারওয়েট</td><td class="mono">84 – 99 kg</td><td class="mono">91 – 107 kg</td><td class="mono">98 – 115 kg</td><td><span class="badge by">মাঝারি</span></td></tr>
+        <tr><td class="mono">30.0 – 34.9</td><td class="bangla">স্থূলকায় I</td><td class="mono">100 – 117 kg</td><td class="mono">108 – 127 kg</td><td class="mono">116 – 136 kg</td><td><span class="badge br">বেশি</span></td></tr>
+        <tr><td class="mono">&gt; 35</td><td class="bangla">স্থূলকায় II</td><td class="mono">&gt; 118 kg</td><td class="mono">&gt; 128 kg</td><td class="mono">&gt; 137 kg</td><td><span class="badge br">অনেক বেশি</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sub-head" style="margin-top:2rem;">বয়স অনুযায়ী প্রোটিন চাহিদা — ৭০–৮০ কেজি পুরুষ</div>
+  <div class="tbl-wrap">
+    <table class="rtbl">
+      <thead><tr><th>বয়স গ্রুপ</th><th>আদর্শ ওজন</th><th>দৈনিক ক্যালোরি</th><th>প্রোটিন (মিনিমাম)</th><th>প্রোটিন (অ্যাক্টিভ)</th><th>প্রাথমিক লক্ষ্য</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">16 – 20</td><td class="mono">60 – 80 kg</td><td class="mono">2600 – 3000</td><td class="bangla">1.2 g/কেজি</td><td class="bangla">1.6 – 1.8 g/কেজি</td><td><span class="badge bb">গ্রোথ + স্ট্রেন্থ</span></td></tr>
+        <tr><td class="mono">21 – 30</td><td class="mono">65 – 85 kg</td><td class="mono">2400 – 2800</td><td class="bangla">1.4 g/কেজি</td><td class="bangla">1.8 – 2.2 g/কেজি</td><td><span class="badge bg">মাসেল বিল্ড</span></td></tr>
+        <tr><td class="mono">31 – 40</td><td class="mono">68 – 88 kg</td><td class="mono">2200 – 2600</td><td class="bangla">1.4 g/কেজি</td><td class="bangla">1.8 – 2.0 g/কেজি</td><td><span class="badge bg">রিকম্পোজিশন</span></td></tr>
+        <tr><td class="mono">41 – 50</td><td class="mono">70 – 90 kg</td><td class="mono">2000 – 2400</td><td class="bangla">1.5 g/কেজি</td><td class="bangla">1.8 – 2.0 g/কেজি</td><td><span class="badge by">মেইনটেন্যান্স</span></td></tr>
+        <tr><td class="mono">51 – 60</td><td class="mono">68 – 88 kg</td><td class="mono">1900 – 2200</td><td class="bangla">1.6 g/কেজি</td><td class="bangla">1.8 – 2.0 g/কেজি</td><td><span class="badge by">মাসেল রিটেনশন</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sub-head" style="margin-top:2rem;">উচ্চতা অনুযায়ী আদর্শ ওজন ও ক্যালোরি — পুরুষ</div>
+  <div class="tbl-wrap">
+    <table class="rtbl">
+      <thead><tr><th>উচ্চতা</th><th>লিন ওজন</th><th>স্বাভাবিক BMI ওজন</th><th>BMR</th><th>TDEE (মাঝারি অ্যাক্টিভ)</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">5'7" (170 cm)</td><td class="mono">63 – 73 kg</td><td class="mono">53 – 79 kg</td><td class="mono">1680 kcal</td><td class="mono">2310 kcal</td></tr>
+        <tr><td class="mono">5'9" (175 cm)</td><td class="mono">67 – 77 kg</td><td class="mono">57 – 83 kg</td><td class="mono">1760 kcal</td><td class="mono">2420 kcal</td></tr>
+        <tr class="hl"><td class="mono">5'11" (180 cm)</td><td class="mono">70 – 82 kg</td><td class="mono">60 – 90 kg</td><td class="mono">1820 kcal</td><td class="mono">2500 kcal</td></tr>
+        <tr><td class="mono">6'1" (185 cm)</td><td class="mono">74 – 86 kg</td><td class="mono">64 – 97 kg</td><td class="mono">1900 kcal</td><td class="mono">2610 kcal</td></tr>
+        <tr><td class="mono">6'3" (190 cm)</td><td class="mono">78 – 91 kg</td><td class="mono">67 – 103 kg</td><td class="mono">1970 kcal</td><td class="mono">2710 kcal</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="bangla" style="font-size:.74rem;color:var(--text2);margin-top:.6rem;">হাইলাইট = ৫'১১" রেফারেন্স। BMR: Mifflin-St Jeor সূত্র অনুযায়ী।</p>
+</div></section>
+<div class="divider"></div>
+<section id="personal" class="personal-wrap"><div class="wrap reveal">
+  <div class="ptag">Personal Profile — এই সেকশন আলাদা করা আছে, রাখতে বা মুছতে পারবেন</div>
+  <div class="sec-head" style="margin-bottom:2rem;">
+    <div class="sec-index">02 — My Profile</div>
+    <h2 class="sec-title">ব্যক্তিগত<br><em>অ্যাসেসমেন্ট</em></h2>
+  </div>
+  <div class="assess-grid">
+    <div class="acard"><div class="al">উচ্চতা</div><div class="av">5'11"</div><div class="an bangla">১৮০ সেন্টিমিটার</div></div>
+    <div class="acard"><div class="al">ওজন</div><div class="av">75 kg</div><div class="an bangla">আদর্শ রেঞ্জের মধ্যে</div></div>
+    <div class="acard"><div class="al">BMI</div><div class="av">22.6</div><div class="an bangla">স্বাভাবিক (18.5–24.9)</div></div>
+    <div class="acard"><div class="al">BMR</div><div class="av">1820</div><div class="an bangla">kcal — TDEE ≈ 2400–2600</div></div>
+    <div class="acard"><div class="al">প্রোটিন টার্গেট</div><div class="av">150g</div><div class="an bangla">২g × ৭৫ কেজি / দিন</div></div>
+    <div class="acard"><div class="al">সেশন টার্গেট</div><div class="av">30 min</div><div class="an bangla">সপ্তাহে ৩–৫ দিন</div></div>
+  </div>
+  <div class="note-box bangla">
+    <strong>মূল্যায়ন:</strong> BMI ২২.৬ — স্বাভাবিক রেঞ্জের মাঝামাঝি। লক্ষ্য <strong>Lean Recomposition</strong> — ফ্যাট না বাড়িয়ে মাসেল বৃদ্ধি। চেস্ট ও শোল্ডার করছেন; এখন ব্যাক ও লেগসে সমান মনোযোগ দিন। ৩০ মিনিট যথেষ্ট — প্রতিটি সেট <strong>সঠিক ফর্মে ও পূর্ণ মনোযোগে</strong> করলে।
+  </div>
+  <div style="margin-top:1.8rem;">
+    <div class="sub-head">সহজলভ্য খাবার থেকে প্রোটিন — ৭৫ কেজি টার্গেট</div>
+    <div class="tbl-wrap">
+      <table class="rtbl">
+        <thead><tr><th>খাবার</th><th>পরিমাণ</th><th>প্রোটিন</th><th>ক্যালোরি</th><th>সেরা সময়</th></tr></thead>
+        <tbody>
+          <tr><td class="bangla">সেদ্ধ ডিম (পুরো)</td><td class="mono">৩টা</td><td class="mono" style="color:var(--green);">18 g</td><td class="mono">210 kcal</td><td class="bangla">পোস্ট-ওয়ার্কআউট</td></tr>
+          <tr><td class="bangla">কলা</td><td class="mono">২টা</td><td class="mono" style="color:var(--green);">2.5 g</td><td class="mono">180 kcal</td><td class="bangla">প্রি-ওয়ার্কআউট</td></tr>
+          <tr><td class="bangla">দুধ</td><td class="mono">৫০০ ml</td><td class="mono" style="color:var(--green);">17 g</td><td class="mono">300 kcal</td><td class="bangla">পোস্ট-ওয়ার্কআউট</td></tr>
+          <tr><td class="bangla">মুরগি বা মাছ</td><td class="mono">১০০g রান্না</td><td class="mono" style="color:var(--green);">25–28 g</td><td class="mono">165 kcal</td><td class="bangla">দুপুর বা রাতে</td></tr>
+          <tr><td class="bangla">ডাল বা ছোলা</td><td class="mono">১ বাটি</td><td class="mono" style="color:var(--green);">15 g</td><td class="mono">230 kcal</td><td class="bangla">যেকোনো সময়</td></tr>
+          <tr class="hl"><td class="bangla"><strong>মোট</strong></td><td></td><td class="mono" style="color:var(--accent);font-size:1rem;"><strong>77–78 g</strong></td><td class="mono">885 kcal</td><td class="bangla">+ রেগুলার খাবার = ১৫০g পূরণ</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note-box bangla" style="margin-top:1rem;">
+      <strong>পোস্ট-ওয়ার্কআউট (৩০ মিনিটের মধ্যে):</strong> ৩টা সেদ্ধ ডিম + ২টা কলা + ১ গ্লাস দুধ — প্রায় ৩৫g প্রোটিন ও ৫০g কার্ব।<br>
+      <strong>প্রি-ওয়ার্কআউট (৩০ মিনিট আগে):</strong> ১টা কলা + ১টা ডিম। সারাদিনে ৩–৪ লিটার পানি।
+    </div>
+  </div>
+</div></section>
+<div class="divider"></div>
+<section id="warmup"><div class="wrap reveal">
+  <div class="sec-head">
+    <div class="sec-index">03 — Pre-Workout Protocol</div>
+    <h2 class="sec-title">ওয়ার্মআপ<br><em>প্রোটোকল</em></h2>
+  </div>
+  <p class="bangla" style="color:var(--text2);font-size:.86rem;margin-bottom:1.8rem;line-height:1.8;">প্রতিটি সেশনের আগে বাধ্যতামূলক (৫–৭ মিনিট)। রক্ত সঞ্চালন বৃদ্ধি, মাসেল টান প্রতিরোধ ও পারফরম্যান্স উন্নয়নের জন্য।</p>
+  <div class="flow">
+    <div class="fstep"><span class="fn">01</span>আর্ম সার্কেল</div><div class="farrow">›</div>
+    <div class="fstep"><span class="fn">02</span>জাম্পিং জ্যাক</div><div class="farrow">›</div>
+    <div class="fstep"><span class="fn">03</span>হিপ সার্কেল</div><div class="farrow">›</div>
+    <div class="fstep"><span class="fn">04</span>লেগ সুইং</div><div class="farrow">›</div>
+    <div class="fstep"><span class="fn">05</span>চেস্ট স্ট্রেচ</div><div class="farrow">›</div>
+    <div class="fstep"><span class="fn">06</span>BW স্কোয়াট</div>
+  </div>
+  <div class="wgrid">
+<div class="wcard">
+      <div style="background:#0a0b0e;overflow:hidden;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTc1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE3NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE1MicgeDI9JzI4MCcgeTI9JzE1Micgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTUyJyB4Mj0nMTYwJyB5Mj0nNzInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc2MScgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE1MicgeDI9JzE0MycgeTI9JzE1Micgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTUyJyB4Mj0nMTc3JyB5Mj0nMTUyJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNjAnIHkxPSc4OCcgeDI9JzkwJyB5Mj0nODgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nODgnIHgyPScyMzAnIHkyPSc4OCcgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxwYXRoIGQ9J005MCA4OCBBNDIgNDIgMCAxIDEgOTEgODcnIGZpbGw9J25vbmUnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScyJyBzdHJva2UtZGFzaGFycmF5PSc0IDMnIG9wYWNpdHk9JzAuNzUnLz48cGF0aCBkPSdNMjMwIDg4IEE0MiA0MiAwIDEgMCAyMjkgODcnIGZpbGw9J25vbmUnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScyJyBzdHJva2UtZGFzaGFycmF5PSc0IDMnIG9wYWNpdHk9JzAuNzUnLz48dGV4dCB4PSc1MicgeT0nNzYnIGZpbGw9JyM0YTllNmUnIGZvbnQtc2l6ZT0nMTAnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5Gd2QgMTV4PC90ZXh0Pjx0ZXh0IHg9JzIxOCcgeT0nNzYnIGZpbGw9JyM0YTllNmUnIGZvbnQtc2l6ZT0nMTAnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5CYWNrIDE1eDwvdGV4dD48dGV4dCB4PScxNjAnIHk9JzE2OCcgdGV4dC1hbmNob3I9J21pZGRsZScgZmlsbD0nIzkzOTlhZScgZm9udC1zaXplPScxMScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPkFybSBDaXJjbGVzIOKAlCBzaG91bGRlciBqb2ludCB3YXJtdXA8L3RleHQ+PC9zdmc+" style="width:100%;height:180px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="wbody">
+        <div class="wmeta">01 — 30 sec</div>
+        <div class="wtitle">আর্ম সার্কেল</div>
+        <div class="wdesc">কাঁধের জয়েন্ট ও রোটেটর কাফ প্রস্তুত করে। চেস্ট, ব্যাক ও শোল্ডার সেশনে অপরিহার্য।</div>
+        <div class="wsteps"><span>দুই হাত পাশে সোজা করুন</span><span>১৫ বার সামনে, ১৫ বার পিছনে</span><span>ছোট থেকে বড় সার্কেলে যান</span></div>
+      </div>
+    </div>
+<div class="wcard">
+      <div style="background:#0a0b0e;overflow:hidden;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MicgeDI9JzI4MCcgeTI9JzE3Micgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTcyJyB4Mj0nMTYwJyB5Mj0nODInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc3MScgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE3MicgeDI9JzEyMCcgeTI9JzE2Micgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNjAnIHkxPScxNzInIHgyPScyMDAnIHkyPScxNjInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nOTgnIHgyPSc5MCcgeTI9JzY1JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE2MCcgeTE9Jzk4JyB4Mj0nMjMwJyB5Mj0nNjUnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nOTgnIHgyPScxNTUnIHkyPScxMTUnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBvcGFjaXR5PScwLjM1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nOTgnIHgyPScxNjUnIHkyPScxMTUnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBvcGFjaXR5PScwLjM1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48cGF0aCBkPSdNOTAgNjUgUTg1IDkwIDEyMCAxNjInIGZpbGw9J25vbmUnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScxLjUnIHN0cm9rZS1kYXNoYXJyYXk9JzQgMycvPjxwYXRoIGQ9J00yMzAgNjUgUTIzNSA5MCAyMDAgMTYyJyBmaWxsPSdub25lJyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMS41JyBzdHJva2UtZGFzaGFycmF5PSc0IDMnLz48dGV4dCB4PScxNjAnIHk9JzE4OCcgdGV4dC1hbmNob3I9J21pZGRsZScgZmlsbD0nIzkzOTlhZScgZm9udC1zaXplPScxMScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPkp1bXBpbmcgSmFja3Mg4oCUIDMweCwgcmFpc2UgaGVhcnQgcmF0ZTwvdGV4dD48L3N2Zz4=" style="width:100%;height:180px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="wbody">
+        <div class="wmeta">02 — 30 sec</div>
+        <div class="wtitle">জাম্পিং জ্যাক</div>
+        <div class="wdesc">সারা শরীরে দ্রুত রক্ত সঞ্চালন বাড়ায়। হার্ট রেট বৃদ্ধি করে বডি প্রস্তুত করে।</div>
+        <div class="wsteps"><span>পা জোড়া, হাত নিচে থেকে শুরু</span><span>লাফিয়ে পা ফাঁকা, হাত উপরে</span><span>৩০ বার রিদমিক্যালি করুন</span></div>
+      </div>
+    </div>
+<div class="wcard">
+      <div style="background:#0a0b0e;overflow:hidden;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTc1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE3NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE1MicgeDI9JzI4MCcgeTI9JzE1Micgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTUyJyB4Mj0nMTYwJyB5Mj0nNzAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc1OScgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE1MicgeDI9JzE0MycgeTI9JzE1Micgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTUyJyB4Mj0nMTc3JyB5Mj0nMTUyJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNjAnIHkxPSc5NScgeDI9JzEzNScgeTI9JzEwNScgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzMnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNjAnIHkxPSc5NScgeDI9JzE4NScgeTI9JzEwNScgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzMnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzE2MCcgY3k9JzExMicgcj0nMjcnIGZpbGw9J25vbmUnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScyJyBzdHJva2UtZGFzaGFycmF5PSc1IDMnIG9wYWNpdHk9JzAuNycvPjx0ZXh0IHg9JzE5NicgeT0nMTEyJyBmaWxsPScjNGE5ZTZlJyBmb250LXNpemU9JzEwJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+MTB4IGVhY2g8L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxNjgnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5IaXAgQ2lyY2xlcyDigJQgaGlwIGpvaW50IGFuZCBsb3dlciBiYWNrIHdhcm11cDwvdGV4dD48L3N2Zz4=" style="width:100%;height:180px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="wbody">
+        <div class="wmeta">03 — 30 sec</div>
+        <div class="wtitle">হিপ সার্কেল</div>
+        <div class="wdesc">হিপ জয়েন্ট ও লোয়ার ব্যাক প্রস্তুত করে। লেগ ডে ও ডেডলিফটের আগে অপরিহার্য।</div>
+        <div class="wsteps"><span>হাত কোমরে, পা কাঁধ সমান ফাঁকা</span><span>কোমর দিয়ে বড় বৃত্ত — ১০ বার</span><span>উল্টো দিকে আরও ১০ বার</span></div>
+      </div>
+    </div>
+<div class="wcard">
+      <div style="background:#0a0b0e;overflow:hidden;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MicgeDI9JzI4MCcgeTI9JzE3Micgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMjQwJyB5MT0nNTAnIHgyPScyNDAnIHkyPScxNzInIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc4Jy8+PGxpbmUgeDE9JzIwMCcgeTE9JzE3MicgeDI9JzIwMCcgeTI9Jzg4JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGNpcmNsZSBjeD0nMjAwJyBjeT0nNzcnIHI9JzEyJyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScyMDAnIHkxPScxNzInIHgyPScxOTMnIHkyPScxNzInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0Jy8+PGxpbmUgeDE9JzIwMCcgeTE9Jzk4JyB4Mj0nMjMyJyB5Mj0nOTMnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMjAwJyB5MT0nMTQzJyB4Mj0nMTcyJyB5Mj0nMTE3JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE3MicgeTE9JzExNycgeDI9JzE1OCcgeTI9JzE0Nicgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScyMDAnIHkxPScxNDMnIHgyPScyMjAnIHkyPScxMjgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIG9wYWNpdHk9JzAuMzgnLz48bGluZSB4MT0nMjIwJyB5MT0nMTI4JyB4Mj0nMjI4JyB5Mj0nMTYwJyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBvcGFjaXR5PScwLjM4Jy8+PHBhdGggZD0nTTE1OCAxNDYgUTE3OCAxMDAgMjI4IDE2MCcgZmlsbD0nbm9uZScgc3Ryb2tlPScjNGE5ZTZlJyBzdHJva2Utd2lkdGg9JzEuNScgc3Ryb2tlLWRhc2hhcnJheT0nNCAzJy8+PHRleHQgeD0nMTE1JyB5PScxMTUnIGZpbGw9JyM0YTllNmUnIGZvbnQtc2l6ZT0nMTAnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz4xNXggZWFjaCBsZWc8L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxODgnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5MZWcgU3dpbmdzIOKAlCBoYW1zdHJpbmcgYW5kIGhpcCBmbGV4b3Igd2FybXVwPC90ZXh0Pjwvc3ZnPg==" style="width:100%;height:180px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="wbody">
+        <div class="wmeta">04 — 30 sec</div>
+        <div class="wtitle">লেগ সুইং</div>
+        <div class="wdesc">হ্যামস্ট্রিং ও হিপ ফ্লেক্সর প্রস্তুত করে। স্কোয়াট ও লাঞ্জের আগে প্রয়োজনীয়।</div>
+        <div class="wsteps"><span>দেয়াল ধরে দাঁড়ান</span><span>এক পা সামনে-পিছনে দোলান — ১৫ বার</span><span>অন্য পা একইভাবে</span></div>
+      </div>
+    </div>
+<div class="wcard">
+      <div style="background:#0a0b0e;overflow:hidden;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTc1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE3NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE1MicgeDI9JzI4MCcgeTI9JzE1Micgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTUyJyB4Mj0nMTYwJyB5Mj0nNzInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc2MScgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE1MicgeDI9JzE0MycgeTI9JzE1Micgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTUyJyB4Mj0nMTc3JyB5Mj0nMTUyJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNjAnIHkxPSc4OCcgeDI9JzkwJyB5Mj0nODgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nODgnIHgyPScyMzAnIHkyPSc4OCcgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxwYXRoIGQ9J005MCA4OCBBNDIgNDIgMCAxIDEgOTEgODcnIGZpbGw9J25vbmUnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScyJyBzdHJva2UtZGFzaGFycmF5PSc0IDMnIG9wYWNpdHk9JzAuNzUnLz48cGF0aCBkPSdNMjMwIDg4IEE0MiA0MiAwIDEgMCAyMjkgODcnIGZpbGw9J25vbmUnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScyJyBzdHJva2UtZGFzaGFycmF5PSc0IDMnIG9wYWNpdHk9JzAuNzUnLz48dGV4dCB4PSc1MicgeT0nNzYnIGZpbGw9JyM0YTllNmUnIGZvbnQtc2l6ZT0nMTAnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5Gd2QgMTV4PC90ZXh0Pjx0ZXh0IHg9JzIxOCcgeT0nNzYnIGZpbGw9JyM0YTllNmUnIGZvbnQtc2l6ZT0nMTAnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5CYWNrIDE1eDwvdGV4dD48dGV4dCB4PScxNjAnIHk9JzE2OCcgdGV4dC1hbmNob3I9J21pZGRsZScgZmlsbD0nIzkzOTlhZScgZm9udC1zaXplPScxMScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPkFybSBDaXJjbGVzIOKAlCBzaG91bGRlciBqb2ludCB3YXJtdXA8L3RleHQ+PC9zdmc+" style="width:100%;height:180px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="wbody">
+        <div class="wmeta">05 — 30 sec</div>
+        <div class="wtitle">চেস্ট ওপেনার স্ট্রেচ</div>
+        <div class="wdesc">পেক্টোরাল ও শোল্ডার প্রস্তুত করে। চেস্ট ও শোল্ডার সেশনে রেঞ্জ অফ মোশন বাড়ায়।</div>
+        <div class="wsteps"><span>হাত পিছনে নিয়ে বুক সামনে ঠেলুন</span><span>স্ক্যাপুলা squeeze করুন ৩ সেকেন্ড</span><span>১০ বার রিপিট</span></div>
+      </div>
+    </div>
+<div class="wcard">
+      <div style="background:#0a0b0e;overflow:hidden;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MicgeDI9JzI4MCcgeTI9JzE3Micgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTAyJyB4Mj0nMTYwJyB5Mj0nNjcnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc1Nicgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzEwMicgeDI9JzEzMCcgeTI9JzEwMicgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnLz48bGluZSB4MT0nMTYwJyB5MT0nMTAyJyB4Mj0nMTkwJyB5Mj0nMTAyJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNScvPjxsaW5lIHgxPScxMzAnIHkxPScxMDInIHgyPScxMTUnIHkyPScxNDUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTkwJyB5MT0nMTAyJyB4Mj0nMjA1JyB5Mj0nMTQ1JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzExNScgeTE9JzE0NScgeDI9JzEyMCcgeTI9JzE3Micgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScyMDUnIHkxPScxNDUnIHgyPScyMDAnIHkyPScxNzInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nODInIHgyPScxMjInIHkyPSc3Nycgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzMnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNjAnIHkxPSc4MicgeDI9JzE5OCcgeTI9Jzc3JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PHRleHQgeD0nODgnIHk9JzExNScgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPSc5JyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+U2xvdyBjb250cm9sbGVkPC90ZXh0Pjx0ZXh0IHg9JzE2MCcgeT0nMTg4JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjOTM5OWFlJyBmb250LXNpemU9JzExJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+Qm9keXdlaWdodCBTcXVhdCDigJQgMTV4IHNsb3csIGFjdGl2YXRlIGxlZ3M8L3RleHQ+PC9zdmc+" style="width:100%;height:180px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="wbody">
+        <div class="wmeta">06 — 60 sec</div>
+        <div class="wtitle">বডিওয়েট স্কোয়াট</div>
+        <div class="wdesc">পুরো লোয়ার বডি অ্যাক্টিভেট করে। যেকোনো সেশনের আগে লোয়ার বডির প্রস্তুতি।</div>
+        <div class="wsteps"><span>ওজন ছাড়া ধীরে ১৫টা করুন</span><span>নিচে ২ সেকেন্ড থাকুন</span><span>পুরো পায়ের তলা মাটিতে</span></div>
+      </div>
+    </div>
+</div>
+  <div class="note-box bangla" style="margin-top:1.5rem;">
+    <strong>দিন অনুযায়ী ওয়ার্মআপ ফোকাস:</strong> চেস্ট দিন — আর্ম সার্কেল ও চেস্ট স্ট্রেচ বেশি। লেগ দিন — হিপ সার্কেল, লেগ সুইং ও BW স্কোয়াট বেশি। ব্যাক দিন — আর্ম সার্কেল ও কাঁধের রোটেশন বেশি।
+  </div>
+</div></section>
+<div class="divider"></div>
+<section id="routine"><div class="wrap reveal">
+  <div class="sec-head">
+    <div class="sec-index">04 — Weekly Structure</div>
+    <h2 class="sec-title">সাপ্তাহিক<br><em>ট্রেনিং রুটিন</em></h2>
+  </div>
+  <p class="bangla" style="color:var(--text2);font-size:.86rem;margin-bottom:1.8rem;">প্রতিটি দিনে ক্লিক করুন বিস্তারিত দেখতে। Push–Pull–Legs বিভাজন।</p>
+  <div class="wkgrid">
+<div class="dcard" onclick="toggleDay(this)">
+      <div class="dhead">
+        <div class="didx">D1</div>
+        <div class="dlabel"><h3>শনিবার — Chest + Triceps (Push)</h3><div class="tagrow"><span class="tag tc">Chest</span><span class="tag ta">Triceps</span></div></div>
+        <div class="dburn"><div class="kcal">~220</div><span class="klbl">kcal</span></div>
+      </div>
+      <div class="dbody"><ul class="exlist"><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">ইনক্লাইন বারবেল / ডাম্বেল প্রেস</span><span class="exsets">4×8</span><span class="exnt">Upper Chest</span></div>
+      <div style="background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTgwJz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE4MCcgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc4MCcgeTE9JzE0MCcgeDI9JzI0MCcgeTI9JzkwJyBzdHJva2U9JyM0YTU1NjgnIHN0cm9rZS13aWR0aD0nOCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzgwJyB5MT0nMTQwJyB4Mj0nODAnIHkyPScxNTUnIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc2JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMjQwJyB5MT0nOTAnIHgyPScyNDAnIHkyPScxMDUnIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc2JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nOTUnIHkxPScxMzYnIHgyPScyMjUnIHkyPSc4OCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzIzNScgY3k9JzgwJyByPScxMicgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTcwJyB5MT0nMTA4JyB4Mj0nMTU1JyB5Mj0nNjgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTcwJyB5MT0nMTA4JyB4Mj0nMTg1JyB5Mj0nNjgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTMwJyB5MT0nNjInIHgyPScyMTAnIHkyPSc2Micgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzEzMCcgY3k9JzYyJyByPSc3JyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxjaXJjbGUgY3g9JzIxMCcgY3k9JzYyJyByPSc3JyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScxNjAnIHkxPSc3NScgeDI9JzE2MCcgeTI9JzU1JyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWRhc2hhcnJheT0nMyAyJy8+PHRleHQgeD0nMTYwJyB5PScxNzMnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5JbmNsaW5lIFByZXNzIOKAlCAzMC00NSBkZWcsIGJhciB0byB1cHBlciBjaGVzdDwvdGV4dD48L3N2Zz4=" style="width:100%;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> ৩০–৪৫° ইনক্লাইন। স্ক্যাপুলা পিছনে টানুন। ৩ সেকেন্ড নামান, ১ সেকেন্ড উঠান।</div>
+    </li><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">ডাম্বেল বাটারফ্লাই / কেবল ফ্লাই</span><span class="exsets">3×12</span><span class="exnt">Inner Chest</span></div>
+      <div style="background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTU1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE1NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc2MCcgeTE9JzEwMCcgeDI9JzI2MCcgeTI9JzEwMCcgc3Ryb2tlPScjNGE1NTY4JyBzdHJva2Utd2lkdGg9JzgnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPSc4MCcgeTE9JzEwMCcgeDI9JzgwJyB5Mj0nMTE1JyBzdHJva2U9JyM0YTU1NjgnIHN0cm9rZS13aWR0aD0nNScvPjxsaW5lIHgxPScyNDAnIHkxPScxMDAnIHgyPScyNDAnIHkyPScxMTUnIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc1Jy8+PGxpbmUgeDE9JzkwJyB5MT0nOTYnIHgyPScyMzAnIHkyPSc5Nicgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzI0MCcgY3k9Jzg5JyByPScxMScgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTYwJyB5MT0nOTYnIHgyPSc4MCcgeTI9Jzc1JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE2MCcgeTE9Jzk2JyB4Mj0nMjQwJyB5Mj0nNzUnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PSc3NScgY3k9JzcyJyByPSc4JyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxjaXJjbGUgY3g9JzI0NScgY3k9JzcyJyByPSc4JyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxwYXRoIGQ9J004MCA3NSBRMTYwIDUwIDI0MCA3NScgZmlsbD0nbm9uZScgc3Ryb2tlPScjNGE5ZTZlJyBzdHJva2Utd2lkdGg9JzEuNScgc3Ryb2tlLWRhc2hhcnJheT0nNCAzJy8+PHRleHQgeD0nMTYwJyB5PScxNDMnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5CdXR0ZXJmbHkgLyBGbHkg4oCUIGFyYyBtb3Rpb24sIHNxdWVlemUgYXQgcGVhazwvdGV4dD48L3N2Zz4=" style="width:100%;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> বাহু সামান্য বাঁকা। পিক কন্ট্র্যাকশনে ১ সেকেন্ড ধরুন।</div>
+    </li><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">পুশআপ / Dips <span class="htag">Home</span></span><span class="exsets">3×15</span><span class="exnt">Chest + Tri</span></div>
+      <div style="background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTQ1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE0NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzExOCcgeDI9JzI4MCcgeTI9JzExOCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nODAnIHkxPScxMTgnIHgyPSc5NScgeTI9Jzk4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzIyMCcgeTE9JzExOCcgeDI9JzIwNScgeTI9Jzk4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9Jzk1JyB5MT0nOTgnIHgyPScyMDUnIHkyPSc5OCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzYnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzIxNScgY3k9JzkwJyByPScxMScgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nODAnIHkxPScxMTgnIHgyPSc3NScgeTI9JzExOCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMjIwJyB5MT0nMTE4JyB4Mj0nMjI1JyB5Mj0nMTE4JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNTAnIHkxPSc5OCcgeDI9JzE1MCcgeTI9Jzc4JyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWRhc2hhcnJheT0nMyAyJy8+PGxpbmUgeDE9JzgwJyB5MT0nOTMnIHgyPScyMjgnIHkyPSc5Mycgc3Ryb2tlPScjNGE5ZTZlJyBzdHJva2Utd2lkdGg9JzEnIHN0cm9rZS1kYXNoYXJyYXk9JzUgMycgb3BhY2l0eT0nMC41Jy8+PHRleHQgeD0nMTYwJyB5PScxMzMnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5QdXNoLXVwIOKAlCBzdHJhaWdodCBib2R5LCBsb3dlciBjaGVzdCB0byBmbG9vcjwvdGV4dD48L3N2Zz4=" style="width:100%;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="extip bangla"><b>ভ্যারিয়েশন:</b> ওয়াইড পুশআপ = চেস্ট। ডায়মন্ড পুশআপ = ট্রাইসেপ।</div>
+    </li><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">ট্রাইসেপ পুশডাউন / ওভারহেড</span><span class="exsets">3×12</span><span class="exnt">Triceps</span></div>
+      <div style="background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MCcgeDI9JzI4MCcgeTI9JzE3MCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48cmVjdCB4PScxNDAnIHk9JzE1JyB3aWR0aD0nNDAnIGhlaWdodD0nMTgnIHJ4PSczJyBmaWxsPSdub25lJyBzdHJva2U9JyM0YTU1NjgnIHN0cm9rZS13aWR0aD0nMicvPjxsaW5lIHgxPScxNjAnIHkxPSczMycgeDI9JzE2MCcgeTI9JzcyJyBzdHJva2U9JyM0YTU1NjgnIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWRhc2hhcnJheT0nMyAzJy8+PGxpbmUgeDE9JzE0NScgeTE9JzcyJyB4Mj0nMTc1JyB5Mj0nNzInIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTYwJyB5Mj0nODgnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc3Nycgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE3MCcgeDI9JzE0MycgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTc3JyB5Mj0nMTcwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNTInIHkxPSc5NicgeDI9JzEzOCcgeTI9JzEwOCcgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxMzgnIHkxPScxMDgnIHgyPScxMjgnIHkyPScxNDMnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTY4JyB5MT0nOTYnIHgyPScxODInIHkyPScxMDgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTgyJyB5MT0nMTA4JyB4Mj0nMTkyJyB5Mj0nMTQzJyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzEyNicgeTE9JzE0NicgeDI9JzE5NCcgeTI9JzE0Nicgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNjAnIHkxPScxMjUnIHgyPScxNjAnIHkyPScxNDYnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScyJyBzdHJva2UtZGFzaGFycmF5PSczIDInLz48dGV4dCB4PScxMDAnIHk9JzExMCcgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPScxMCcgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPkVsYm93cyBhdCBzaWRlczwvdGV4dD48dGV4dCB4PScxNjAnIHk9JzE4NycgdGV4dC1hbmNob3I9J21pZGRsZScgZmlsbD0nIzkzOTlhZScgZm9udC1zaXplPScxMScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPlRyaWNlcCBQdXNoZG93biDigJQgZWxib3dzIGZpeGVkLCBmdWxsIGV4dGVuc2lvbjwvdGV4dD48L3N2Zz4=" style="width:100%;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> কনুই স্থির। পিক কন্ট্র্যাকশনে squeeze করুন।</div>
+    </li></ul></div>
+    </div>
+<div class="dcard" onclick="toggleDay(this)">
+      <div class="dhead">
+        <div class="didx">D2</div>
+        <div class="dlabel"><h3>রবিবার — Back + Biceps (Pull)</h3><div class="tagrow"><span class="tag tb">Back</span><span class="tag ta">Biceps</span></div></div>
+        <div class="dburn"><div class="kcal">~230</div><span class="klbl">kcal</span></div>
+      </div>
+      <div class="dbody"><ul class="exlist"><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">পুলআপ / ল্যাট পুলডাউন <span class="htag">Home</span></span><span class="exsets">4×8</span><span class="exnt">Lats</span></div>
+      <div style="background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPScxMDAnIHkxPSczMCcgeDI9JzIyMCcgeTI9JzMwJyBzdHJva2U9JyM0YTU1NjgnIHN0cm9rZS13aWR0aD0nOCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzEwMCcgeTE9JzMwJyB4Mj0nMTAwJyB5Mj0nMTUnIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc1Jy8+PGxpbmUgeDE9JzIyMCcgeTE9JzMwJyB4Mj0nMjIwJyB5Mj0nMTUnIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc1Jy8+PGxpbmUgeDE9JzEzMCcgeTE9JzMwJyB4Mj0nMTQ1JyB5Mj0nNTUnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTkwJyB5MT0nMzAnIHgyPScxNzUnIHkyPSc1NScgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzE2MCcgY3k9JzQ4JyByPScxMycgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTYwJyB5MT0nNjEnIHgyPScxNjAnIHkyPScxMzAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTMwJyB4Mj0nMTQ1JyB5Mj0nMTcwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzEzMCcgeDI9JzE3NScgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjx0ZXh0IHg9Jzk1JyB5PSc4NScgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPScxMCcgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPlB1bGwgZWxib3dzIGRvd248L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxODgnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5QdWxsLXVwIOKAlCB3aWRlIGdyaXAsIGNoaW4gYWJvdmUgYmFyPC90ZXh0Pjwvc3ZnPg==" style="width:100%;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> হাত চওড়া। কনুই নিচে টানুন। বুক বার-এর কাছে আনুন।</div>
+    </li><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">বেন্ট ওভার রো / সিটেড রো</span><span class="exsets">3×10</span><span class="exnt">Mid Back</span></div>
+      <div style="background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTc1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE3NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE1NScgeDI9JzI4MCcgeTI9JzE1NScgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTU1JyB4Mj0nMTYwJyB5Mj0nMTE1JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzExNScgeDI9JzIyMCcgeTI9Jzg1JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGNpcmNsZSBjeD0nMjMwJyBjeT0nNzYnIHI9JzEyJyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScxNjAnIHkxPScxNTUnIHgyPScxNDAnIHkyPScxNTUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTU1JyB4Mj0nMTgwJyB5Mj0nMTU1JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzIwNScgeTE9JzkwJyB4Mj0nMTkwJyB5Mj0nMTE1JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzIwNScgeTE9JzkwJyB4Mj0nMjIwJyB5Mj0nMTE1JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE1NScgeTE9JzExOCcgeDI9JzI1NScgeTI9JzExOCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzE1NScgY3k9JzExOCcgcj0nNycgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48Y2lyY2xlIGN4PScyNTUnIGN5PScxMTgnIHI9JzcnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzIwNScgeTE9JzEzMCcgeDI9JzIwNScgeTI9JzExMicgc3Ryb2tlPScjNGE5ZTZlJyBzdHJva2Utd2lkdGg9JzInIHN0cm9rZS1kYXNoYXJyYXk9JzMgMicvPjx0ZXh0IHg9JzE2MCcgeT0nMTcwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjOTM5OWFlJyBmb250LXNpemU9JzExJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+QmVudCBPdmVyIFJvdyDigJQgNDUgZGVnIGhpbmdlLCBwdWxsIHRvIHRvcnNvPC90ZXh0Pjwvc3ZnPg==" style="width:100%;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> পিঠ ৪৫° বাঁকান। বার পেটের কাছে টানুন। লোয়ার ব্যাক নিউট্রাল।</div>
+    </li><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">ডাম্বেল কার্ল + হ্যামার কার্ল <span class="htag">Home</span></span><span class="exsets">3×12</span><span class="exnt">Biceps</span></div>
+      <div style="display:flex;gap:2px;background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MCcgeDI9JzI4MCcgeTI9JzE3MCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTYwJyB5Mj0nODUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc3NCcgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE3MCcgeDI9JzE0MycgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTc3JyB5Mj0nMTcwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNTUnIHkxPScxMDAnIHgyPScxNDAnIHkyPScxMTgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTQwJyB5MT0nMTE4JyB4Mj0nMTI1JyB5Mj0nOTMnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxMjInIGN5PSc4OScgcj0nNycgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTY1JyB5MT0nMTAwJyB4Mj0nMTc4JyB5Mj0nMTE4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBvcGFjaXR5PScwLjQnLz48bGluZSB4MT0nMTc4JyB5MT0nMTE4JyB4Mj0nMTgzJyB5Mj0nMTQ4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBvcGFjaXR5PScwLjQnLz48Y2lyY2xlIGN4PScxODUnIGN5PScxNTInIHI9JzcnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPScyJyBvcGFjaXR5PScwLjQnLz48cGF0aCBkPSdNMTgzIDE0OCBRMTU1IDEyOCAxMjUgOTMnIGZpbGw9J25vbmUnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScxLjUnIHN0cm9rZS1kYXNoYXJyYXk9JzQgMycvPjx0ZXh0IHg9JzIwNScgeT0nMTIyJyBmaWxsPScjNGE5ZTZlJyBmb250LXNpemU9JzEwJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+RWxib3cgZml4ZWQ8L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxODcnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5CaWNlcCBDdXJsIOKAlCBmaXhlZCBlbGJvdywgc3VwaW5hdGUgYXQgdG9wPC90ZXh0Pjwvc3ZnPg==" style="flex:1;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MCcgeDI9JzI4MCcgeTI9JzE3MCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTYwJyB5Mj0nODUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc3NCcgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE3MCcgeDI9JzE0MycgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTc3JyB5Mj0nMTcwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNTUnIHkxPScxMDAnIHgyPScxNDAnIHkyPScxMTgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTQwJyB5MT0nMTE4JyB4Mj0nMTI4JyB5Mj0nOTcnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48cmVjdCB4PScxMTgnIHk9Jzg0JyB3aWR0aD0nMTgnIGhlaWdodD0nMTAnIHJ4PSczJyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScxNjUnIHkxPScxMDAnIHgyPScxNzgnIHkyPScxMTgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIG9wYWNpdHk9JzAuNCcvPjxsaW5lIHgxPScxNzgnIHkxPScxMTgnIHgyPScxODMnIHkyPScxNDgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIG9wYWNpdHk9JzAuNCcvPjxyZWN0IHg9JzE3OCcgeT0nMTUyJyB3aWR0aD0nMTgnIGhlaWdodD0nMTAnIHJ4PSczJyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMicgb3BhY2l0eT0nMC40Jy8+PHRleHQgeD0nOTInIHk9Jzg4JyBmaWxsPScjNGE5ZTZlJyBmb250LXNpemU9JzEwJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+TmV1dHJhbCBncmlwPC90ZXh0Pjx0ZXh0IHg9JzE2MCcgeT0nMTg3JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjOTM5OWFlJyBmb250LXNpemU9JzExJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+SGFtbWVyIEN1cmwg4oCUIHRodW1iIHVwLCBidWlsZHMgYXJtIHRoaWNrbmVzczwvdGV4dD48L3N2Zz4=" style="flex:1;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;border-left:1px solid #232733;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> কনুই স্থির। সুপিনেশন করুন। ৩ সেকেন্ডে ধীরে নামান।</div>
+    </li></ul></div>
+    </div>
+<div class="dcard" onclick="toggleDay(this)">
+      <div class="dhead">
+        <div class="didx">D3</div>
+        <div class="dlabel"><h3>সোমবার — Legs + Core</h3><div class="tagrow"><span class="tag tl">Quads</span><span class="tag tl">Hamstrings</span><span class="tag tk">Core</span></div></div>
+        <div class="dburn"><div class="kcal">~280</div><span class="klbl">kcal</span></div>
+      </div>
+      <div class="dbody"><ul class="exlist"><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">স্কোয়াট <span class="htag">Home</span></span><span class="exsets">4×10</span><span class="exnt">Compound</span></div>
+      <div style="background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MicgeDI9JzI4MCcgeTI9JzE3Micgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTAwJyB4Mj0nMTYwJyB5Mj0nNjUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc1NCcgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzEwMCcgeDI9JzEzMCcgeTI9JzEwMCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnLz48bGluZSB4MT0nMTYwJyB5MT0nMTAwJyB4Mj0nMTkwJyB5Mj0nMTAwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNScvPjxsaW5lIHgxPScxMzAnIHkxPScxMDAnIHgyPScxMTUnIHkyPScxNDUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTkwJyB5MT0nMTAwJyB4Mj0nMjA1JyB5Mj0nMTQ1JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzExNScgeTE9JzE0NScgeDI9JzEyMCcgeTI9JzE3Micgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScyMDUnIHkxPScxNDUnIHgyPScyMDAnIHkyPScxNzInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nODAnIHgyPScxMjUnIHkyPSc3NScgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzMnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNjAnIHkxPSc4MCcgeDI9JzE5NScgeTI9Jzc1JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzEwMCcgeTE9JzEwMCcgeDI9JzEwMCcgeTI9JzE3Micgc3Ryb2tlPScjNGE5ZTZlJyBzdHJva2Utd2lkdGg9JzEuNScgc3Ryb2tlLWRhc2hhcnJheT0nMyAyJy8+PHRleHQgeD0nODgnIHk9JzEzOCcgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPSc5JyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZicgdGV4dC1hbmNob3I9J21pZGRsZSc+UGFyYWxsZWw8L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxODgnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5TcXVhdCDigJQgYmVsb3cgcGFyYWxsZWwsIGNoZXN0IHVwLCBuZXV0cmFsIGJhY2s8L3RleHQ+PC9zdmc+" style="width:100%;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> পা কাঁধ সমান। নিতম্ব সমান্তরালের নিচে নামুন। পিঠ সোজা।</div>
+    </li><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">রোমানিয়ান ডেডলিফট</span><span class="exsets">3×10</span><span class="exnt">Hamstrings</span></div>
+      <div style="background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTc1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE3NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE1OCcgeDI9JzI4MCcgeTI9JzE1OCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTMwJyB5MT0nMTU4JyB4Mj0nMTQwJyB5Mj0nMTE4JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE3NScgeTE9JzE1OCcgeDI9JzE2MicgeTI9JzExOCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNDAnIHkxPScxNTgnIHgyPScxMzAnIHkyPScxNTgnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0Jy8+PGxpbmUgeDE9JzE2NScgeTE9JzE1OCcgeDI9JzE3NScgeTI9JzE1OCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48Y2lyY2xlIGN4PScxNTEnIGN5PScxMTYnIHI9JzUnIGZpbGw9JyNjOGE5NmUnLz48bGluZSB4MT0nMTUxJyB5MT0nMTE2JyB4Mj0nMjIwJyB5Mj0nODInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScyMzAnIGN5PSc3NCcgcj0nMTEnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE4OCcgeTE9Jzk3JyB4Mj0nMTc4JyB5Mj0nMTIyJyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzIwMCcgeTE9JzEwNScgeDI9JzIwMCcgeTI9JzEyOCcgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNTInIHkxPScxMjYnIHgyPScyMzInIHkyPScxMTgnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNTInIGN5PScxMjYnIHI9JzYnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPScyLjUnLz48Y2lyY2xlIGN4PScyMzInIGN5PScxMTgnIHI9JzYnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPScyLjUnLz48dGV4dCB4PScxMTAnIHk9JzE0MicgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPSc5JyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+RmVlbCBzdHJldGNoPC90ZXh0Pjx0ZXh0IHg9JzE2MCcgeT0nMTcwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjOTM5OWFlJyBmb250LXNpemU9JzExJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+Um9tYW5pYW4gREwg4oCUIGhpcCBoaW5nZSwgZmVlbCBoYW1zdHJpbmcgc3RyZXRjaDwvdGV4dD48L3N2Zz4=" style="width:100%;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> হিপ হিঞ্জ করুন। হ্যামস্ট্রিং স্ট্রেচ ফিল করুন। পিঠ কখনো গোল করবেন না।</div>
+    </li><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">প্ল্যাঙ্ক + লেগ রেইজ <span class="htag">Home</span></span><span class="exsets">3×45s</span><span class="exnt">Core</span></div>
+      <div style="display:flex;gap:2px;background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTQ1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE0NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzEyMCcgeDI9JzI4MCcgeTI9JzEyMCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nODAnIHkxPScxMjAnIHgyPSc5NScgeTI9JzEwMicgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScyMjAnIHkxPScxMjAnIHgyPScyMDUnIHkyPScxMDInIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nOTUnIHkxPScxMDInIHgyPScyMDUnIHkyPScxMDInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc2JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScyMTUnIGN5PSc5NCcgcj0nMTEnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzgwJyB5MT0nMTAyJyB4Mj0nODAnIHkyPScxMjAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nOTAnIHkxPScxMDInIHgyPSc5MCcgeTI9JzEyMCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPSc4MCcgeTE9Jzk3JyB4Mj0nMjI4JyB5Mj0nOTcnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScxJyBzdHJva2UtZGFzaGFycmF5PSc1IDMnIG9wYWNpdHk9JzAuNScvPjx0ZXh0IHg9JzE1NScgeT0nOTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM0YTllNmUnIGZvbnQtc2l6ZT0nOScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPlN0cmFpZ2h0OiBoZWFkIHRvIGhlZWw8L3RleHQ+PHRleHQgeD0nMTc1JyB5PScxMTMnIGZpbGw9JyNjNDcwNzAnIGZvbnQtc2l6ZT0nOScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPk5vIHNhZzwvdGV4dD48dGV4dCB4PScxNjAnIHk9JzEzNScgdGV4dC1hbmNob3I9J21pZGRsZScgZmlsbD0nIzkzOTlhZScgZm9udC1zaXplPScxMScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPlBsYW5rIOKAlCBob2xkIDMwLTYwIHNlYywgbm8gaGlwIHNhZzwvdGV4dD48L3N2Zz4=" style="flex:1;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTQ1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE0NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzExNScgeDI9JzI4MCcgeTI9JzExNScgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nNzAnIHkxPScxMTAnIHgyPScyMDAnIHkyPScxMTAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc2JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScyMTAnIGN5PScxMDMnIHI9JzExJyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScyMDAnIHkxPScxMTAnIHgyPScyMjInIHkyPSc3Micgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxOTAnIHkxPScxMTAnIHgyPScyMTInIHkyPSc3Micgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScyMDAnIHkxPScxMTAnIHgyPScyMjUnIHkyPScxMTAnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIG9wYWNpdHk9JzAuNCcvPjxsaW5lIHgxPScxOTAnIHkxPScxMTAnIHgyPScyMTUnIHkyPScxMTAnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIG9wYWNpdHk9JzAuNCcvPjxwYXRoIGQ9J00yMTUgMTEwIFEyMjIgOTAgMjE1IDcyJyBmaWxsPSdub25lJyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMS41JyBzdHJva2UtZGFzaGFycmF5PSczIDInLz48dGV4dCB4PSc4NScgeT0nMTA1JyBmaWxsPScjNGE5ZTZlJyBmb250LXNpemU9JzEwJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+QmFjayBwcmVzc2VkIGZsYXQ8L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxMzInIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5MZWcgUmFpc2Ug4oCUIGJhY2sgZmxhdCwgbGVncyBzdHJhaWdodCB1cDwvdGV4dD48L3N2Zz4=" style="flex:1;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;border-left:1px solid #232733;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> পিঠ সোজা, নিতম্ব উঠাবেন না। লেগ রেইজে কোমর মাটিতে।</div>
+    </li></ul></div>
+    </div>
+<div class="dcard" onclick="toggleDay(this)">
+      <div class="dhead">
+        <div class="didx">D4</div>
+        <div class="dlabel"><h3>মঙ্গলবার — Recovery</h3><div class="tagrow"><span class="tag tr">Rest</span><span class="tag tr">Optional Cardio</span></div></div>
+        <div class="dburn"><div class="kcal">~100</div><span class="klbl">kcal</span></div>
+      </div>
+      <div class="dbody"><div class="note-box bangla" style="margin-top:1rem;">মাসেল রিপেয়ার এই দিনে হয় — এটাই প্রকৃত গ্রোথের সময়। ইচ্ছা হলে ১৫–২০ মিনিট হালকা হাঁটা বা স্ট্রেচিং। ভারী ওজন সম্পূর্ণ নিষেধ। ৭–৮ ঘণ্টা ঘুম ও পর্যাপ্ত পানি নিশ্চিত করুন।</div></div>
+    </div>
+<div class="dcard" onclick="toggleDay(this)">
+      <div class="dhead">
+        <div class="didx">D5</div>
+        <div class="dlabel"><h3>বুধবার — Shoulders + Abs</h3><div class="tagrow"><span class="tag ts">Shoulders</span><span class="tag tk">Abs</span></div></div>
+        <div class="dburn"><div class="kcal">~210</div><span class="klbl">kcal</span></div>
+      </div>
+      <div class="dbody"><ul class="exlist"><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">ওভারহেড প্রেস (OHP) <span class="htag">Home</span></span><span class="exsets">4×8</span><span class="exnt">Front+Mid Delt</span></div>
+      <div style="background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MCcgeDI9JzI4MCcgeTI9JzE3MCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTYwJyB5Mj0nODUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc3NCcgcj0nMTMnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE3MCcgeDI9JzE0MCcgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTgwJyB5Mj0nMTcwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNjAnIHkxPSc5MCcgeDI9JzEzMCcgeTI9JzQyJyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzkwJyB4Mj0nMTkwJyB5Mj0nNDInIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTEwJyB5MT0nMzYnIHgyPScyMTAnIHkyPSczNicgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzExMCcgY3k9JzM2JyByPSc3JyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxjaXJjbGUgY3g9JzIxMCcgY3k9JzM2JyByPSc3JyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScxNjAnIHkxPSc1MCcgeDI9JzE2MCcgeTI9JzMwJyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWRhc2hhcnJheT0nMyAyJy8+PHRleHQgeD0nMTYwJyB5PScxODgnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5PdmVyaGVhZCBQcmVzcyDigJQgY29yZSB0aWdodCwgcHJlc3MgcGFzdCBlYXJzPC90ZXh0Pjwvc3ZnPg==" style="width:100%;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> বার কানের পাশ দিয়ে উঠান। কোর টাইট। পিঠ হাইপার-এক্সটেন্ড করবেন না।</div>
+    </li><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">ল্যাটারাল রেইজ <span class="htag">Home</span></span><span class="exsets">3×15</span><span class="exnt">Side Delt</span></div>
+      <div style="background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTc1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE3NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE1NScgeDI9JzI4MCcgeTI9JzE1NScgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTU1JyB4Mj0nMTYwJyB5Mj0nNzUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc2NCcgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE1NScgeDI9JzE0MycgeTI9JzE1NScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTU1JyB4Mj0nMTc3JyB5Mj0nMTU1JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNjAnIHkxPSc5MicgeDI9JzgzJyB5Mj0nOTInIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nOTInIHgyPScyMzcnIHkyPSc5Micgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzgwJyBjeT0nOTInIHI9JzcnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGNpcmNsZSBjeD0nMjQwJyBjeT0nOTInIHI9JzcnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzkyJyB4Mj0nODgnIHkyPScxMTUnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPScyJyBvcGFjaXR5PScwLjMnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNjAnIHkxPSc5MicgeDI9JzIzMicgeTI9JzExNScgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzInIG9wYWNpdHk9JzAuMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PHBhdGggZD0nTTg4IDExNSBRODMgMTAwIDgzIDkyJyBmaWxsPSdub25lJyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMS41JyBzdHJva2UtZGFzaGFycmF5PSczIDInLz48cGF0aCBkPSdNMjMyIDExNSBRMjM3IDEwMCAyMzcgOTInIGZpbGw9J25vbmUnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScxLjUnIHN0cm9rZS1kYXNoYXJyYXk9JzMgMicvPjx0ZXh0IHg9JzE2MCcgeT0nMTcwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjOTM5OWFlJyBmb250LXNpemU9JzExJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+TGF0ZXJhbCBSYWlzZSDigJQgc3RvcCBhdCBzaG91bGRlciBoZWlnaHQsIG5vIHNocnVnPC90ZXh0Pjwvc3ZnPg==" style="width:100%;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> হালকা ওজনে ধীরে তুলুন। কাঁধ সমান উচ্চতায়। ট্র্যাপ দিয়ে শ্রাগ করবেন না।</div>
+    </li><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">ক্রাঞ্চ + বাইসাইকেল ক্রাঞ্চ <span class="htag">Home</span></span><span class="exsets">3×20</span><span class="exnt">Abs</span></div>
+      <div style="display:flex;gap:2px;background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTQ1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE0NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzEyMCcgeDI9JzI4MCcgeTI9JzEyMCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nODAnIHkxPScxMjAnIHgyPSc5NScgeTI9JzEwMicgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScyMjAnIHkxPScxMjAnIHgyPScyMDUnIHkyPScxMDInIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nOTUnIHkxPScxMDInIHgyPScyMDUnIHkyPScxMDInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc2JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScyMTUnIGN5PSc5NCcgcj0nMTEnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzgwJyB5MT0nMTAyJyB4Mj0nODAnIHkyPScxMjAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nOTAnIHkxPScxMDInIHgyPSc5MCcgeTI9JzEyMCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPSc4MCcgeTE9Jzk3JyB4Mj0nMjI4JyB5Mj0nOTcnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScxJyBzdHJva2UtZGFzaGFycmF5PSc1IDMnIG9wYWNpdHk9JzAuNScvPjx0ZXh0IHg9JzE1NScgeT0nOTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM0YTllNmUnIGZvbnQtc2l6ZT0nOScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPlN0cmFpZ2h0OiBoZWFkIHRvIGhlZWw8L3RleHQ+PHRleHQgeD0nMTc1JyB5PScxMTMnIGZpbGw9JyNjNDcwNzAnIGZvbnQtc2l6ZT0nOScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPk5vIHNhZzwvdGV4dD48dGV4dCB4PScxNjAnIHk9JzEzNScgdGV4dC1hbmNob3I9J21pZGRsZScgZmlsbD0nIzkzOTlhZScgZm9udC1zaXplPScxMScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPlBsYW5rIOKAlCBob2xkIDMwLTYwIHNlYywgbm8gaGlwIHNhZzwvdGV4dD48L3N2Zz4=" style="flex:1;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTQ1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE0NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzExNScgeDI9JzI4MCcgeTI9JzExNScgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nNzAnIHkxPScxMTAnIHgyPScyMDAnIHkyPScxMTAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc2JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScyMTAnIGN5PScxMDMnIHI9JzExJyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScyMDAnIHkxPScxMTAnIHgyPScyMjInIHkyPSc3Micgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxOTAnIHkxPScxMTAnIHgyPScyMTInIHkyPSc3Micgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScyMDAnIHkxPScxMTAnIHgyPScyMjUnIHkyPScxMTAnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIG9wYWNpdHk9JzAuNCcvPjxsaW5lIHgxPScxOTAnIHkxPScxMTAnIHgyPScyMTUnIHkyPScxMTAnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIG9wYWNpdHk9JzAuNCcvPjxwYXRoIGQ9J00yMTUgMTEwIFEyMjIgOTAgMjE1IDcyJyBmaWxsPSdub25lJyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMS41JyBzdHJva2UtZGFzaGFycmF5PSczIDInLz48dGV4dCB4PSc4NScgeT0nMTA1JyBmaWxsPScjNGE5ZTZlJyBmb250LXNpemU9JzEwJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+QmFjayBwcmVzc2VkIGZsYXQ8L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxMzInIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5MZWcgUmFpc2Ug4oCUIGJhY2sgZmxhdCwgbGVncyBzdHJhaWdodCB1cDwvdGV4dD48L3N2Zz4=" style="flex:1;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;border-left:1px solid #232733;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> ঘাড়ে না টেনে বুক তুলুন। বিপরীত কনুই-হাঁটু স্পর্শ করান।</div>
+    </li></ul></div>
+    </div>
+<div class="dcard" onclick="toggleDay(this)">
+      <div class="dhead">
+        <div class="didx">D6</div>
+        <div class="dlabel"><h3>বৃহস্পতিবার — Full Body / Deadlift</h3><div class="tagrow"><span class="tag tb">Back</span><span class="tag tl">Legs</span><span class="tag tc">Chest</span></div></div>
+        <div class="dburn"><div class="kcal">~270</div><span class="klbl">kcal</span></div>
+      </div>
+      <div class="dbody"><ul class="exlist"><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">ডেডলিফট</span><span class="exsets">3×5</span><span class="exnt">Posterior Chain</span></div>
+      <div style="background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MCcgeDI9JzI4MCcgeTI9JzE3MCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nODAnIHkxPScxNTgnIHgyPScyNDAnIHkyPScxNTgnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PSc4MCcgY3k9JzE1OCcgcj0nMTMnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGNpcmNsZSBjeD0nMjQwJyBjeT0nMTU4JyByPScxMycgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTQ4JyB5MT0nMTcwJyB4Mj0nMTU1JyB5Mj0nMTM4JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE3MicgeTE9JzE3MCcgeDI9JzE2NScgeTI9JzEzOCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNDgnIHkxPScxNzAnIHgyPScxMzgnIHkyPScxNzAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0Jy8+PGxpbmUgeDE9JzE3MicgeTE9JzE3MCcgeDI9JzE4MicgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTM4JyB4Mj0nMjEwJyB5Mj0nMTAzJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGNpcmNsZSBjeD0nMjE5JyBjeT0nOTUnIHI9JzExJyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScxOTMnIHkxPScxMTAnIHgyPScxNzgnIHkyPScxNTMnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMjAwJyB5MT0nMTA3JyB4Mj0nMjAwJyB5Mj0nMTQ4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PHRleHQgeD0nODUnIHk9JzE0MycgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPSc5JyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+QmFyIHN0YXlzIGNsb3NlPC90ZXh0Pjx0ZXh0IHg9JzE2MCcgeT0nMTg4JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjOTM5OWFlJyBmb250LXNpemU9JzExJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+RGVhZGxpZnQg4oCUIGZsYXQgYmFjaywgaGlwIGhpbmdlLCBiYXIgY2xvc2U8L3RleHQ+PC9zdmc+" style="width:100%;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> পিঠ সোজা, হিপ হিঞ্জ। পা দিয়ে মাটি ঠেলুন। শুরুতে হালকা ওজনে ফর্ম শিখুন।</div>
+    </li><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">পুলআপ + পুশআপ <span class="htag">Home</span></span><span class="exsets">3×AMRAP</span><span class="exnt">Max Reps</span></div>
+      <div style="display:flex;gap:2px;background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPScxMDAnIHkxPSczMCcgeDI9JzIyMCcgeTI9JzMwJyBzdHJva2U9JyM0YTU1NjgnIHN0cm9rZS13aWR0aD0nOCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzEwMCcgeTE9JzMwJyB4Mj0nMTAwJyB5Mj0nMTUnIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc1Jy8+PGxpbmUgeDE9JzIyMCcgeTE9JzMwJyB4Mj0nMjIwJyB5Mj0nMTUnIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc1Jy8+PGxpbmUgeDE9JzEzMCcgeTE9JzMwJyB4Mj0nMTQ1JyB5Mj0nNTUnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTkwJyB5MT0nMzAnIHgyPScxNzUnIHkyPSc1NScgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzE2MCcgY3k9JzQ4JyByPScxMycgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTYwJyB5MT0nNjEnIHgyPScxNjAnIHkyPScxMzAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTMwJyB4Mj0nMTQ1JyB5Mj0nMTcwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzEzMCcgeDI9JzE3NScgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjx0ZXh0IHg9Jzk1JyB5PSc4NScgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPScxMCcgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPlB1bGwgZWxib3dzIGRvd248L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxODgnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5QdWxsLXVwIOKAlCB3aWRlIGdyaXAsIGNoaW4gYWJvdmUgYmFyPC90ZXh0Pjwvc3ZnPg==" style="flex:1;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTQ1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE0NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzExOCcgeDI9JzI4MCcgeTI9JzExOCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nODAnIHkxPScxMTgnIHgyPSc5NScgeTI9Jzk4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzIyMCcgeTE9JzExOCcgeDI9JzIwNScgeTI9Jzk4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9Jzk1JyB5MT0nOTgnIHgyPScyMDUnIHkyPSc5OCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzYnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzIxNScgY3k9JzkwJyByPScxMScgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nODAnIHkxPScxMTgnIHgyPSc3NScgeTI9JzExOCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMjIwJyB5MT0nMTE4JyB4Mj0nMjI1JyB5Mj0nMTE4JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNTAnIHkxPSc5OCcgeDI9JzE1MCcgeTI9Jzc4JyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWRhc2hhcnJheT0nMyAyJy8+PGxpbmUgeDE9JzgwJyB5MT0nOTMnIHgyPScyMjgnIHkyPSc5Mycgc3Ryb2tlPScjNGE5ZTZlJyBzdHJva2Utd2lkdGg9JzEnIHN0cm9rZS1kYXNoYXJyYXk9JzUgMycgb3BhY2l0eT0nMC41Jy8+PHRleHQgeD0nMTYwJyB5PScxMzMnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5QdXNoLXVwIOKAlCBzdHJhaWdodCBib2R5LCBsb3dlciBjaGVzdCB0byBmbG9vcjwvdGV4dD48L3N2Zz4=" style="flex:1;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;border-left:1px solid #232733;"></div>
+      <div class="extip bangla"><b>AMRAP:</b> As Many Reps As Possible। প্রতি সপ্তাহে একটু বেশি করার লক্ষ্য রাখুন।</div>
+    </li><li class="exitem">
+      <div class="exhead"><span class="exnm bangla">লাঞ্জেস <span class="htag">Home</span></span><span class="exsets">3×12</span><span class="exnt">Legs</span></div>
+      <div style="background:#0a0b0e;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MicgeDI9JzI4MCcgeTI9JzE3Micgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTcwJyB5MT0nOTAnIHgyPScxNzAnIHkyPSc1NScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzE3MCcgY3k9JzQ0JyByPScxMicgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTcwJyB5MT0nOTAnIHgyPScxNTUnIHkyPSc5MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnLz48bGluZSB4MT0nMTcwJyB5MT0nOTAnIHgyPScxODUnIHkyPSc5MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnLz48bGluZSB4MT0nMTU1JyB5MT0nOTAnIHgyPScxOTAnIHkyPScxNDAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTkwJyB5MT0nMTQwJyB4Mj0nMTk1JyB5Mj0nMTcyJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE4NScgeTE9JzkwJyB4Mj0nMTQ1JyB5Mj0nMTMwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE0NScgeTE9JzEzMCcgeDI9JzEzMCcgeTI9JzE2OCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNTUnIHkxPSc4MCcgeDI9JzEzNScgeTI9Jzc4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE4NScgeTE9JzgwJyB4Mj0nMjA1JyB5Mj0nNzgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48dGV4dCB4PScxMDUnIHk9JzE2MicgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPSc5JyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+MSBpbmNoIGZyb20gZmxvb3I8L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxODgnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5MdW5nZSDigJQgYmFjayBrbmVlIDEgaW5jaCBmcm9tIGZsb29yPC90ZXh0Pjwvc3ZnPg==" style="width:100%;height:155px;object-fit:contain;display:block;padding:8px;box-sizing:border-box;"></div>
+      <div class="extip bangla"><b>ফর্ম:</b> পিছনের হাঁটু মাটির ১ ইঞ্চি উপরে থামুন। কোর টাইট।</div>
+    </li></ul></div>
+    </div>
+<div class="dcard">
+  <div class="dhead">
+    <div class="didx">D7</div>
+    <div class="dlabel"><h3>শুক্রবার — Complete Rest</h3><div class="tagrow"><span class="tag tr">Rest &amp; Recovery</span></div></div>
+    <div class="dburn"><div class="kcal">—</div><span class="klbl"></span></div>
+  </div>
+</div></div>
+  <div class="note-box bangla" style="margin-top:1.5rem;">
+    <strong>৩ দিনের ভার্সন:</strong> D1 → D2 → D3 করুন, বাকি দিন বিশ্রাম।<br>
+    <strong>প্রগ্রেসিভ ওভারলোড:</strong> প্রতি ২ সপ্তাহে ওজন বা রেপ বাড়ান — দীর্ঘমেয়াদী অগ্রগতির একমাত্র পথ।
+  </div>
+</div></section>
+<div class="divider"></div>
+<section id="library"><div class="wrap reveal">
+  <div class="sec-head">
+    <div class="sec-index">05 — Exercise Reference</div>
+    <h2 class="sec-title">এক্সারসাইজ<br><em>লাইব্রেরি</em></h2>
+  </div>
+  <p class="bangla" style="color:var(--text2);font-size:.86rem;margin-bottom:1.8rem;">প্রতিটি কার্ডে টার্গেট মাসেল, সঠিক ফর্ম এবং কোথায় পরিবর্তন আসবে। <span class="htag" style="font-size:.62rem;">Home</span> = ঘরে করা যাবে।</p>
+  <div class="libtabs">
+    <button class="libtab active" onclick="showPanel('chest',this)">Chest</button>
+    <button class="libtab" onclick="showPanel('back',this)">Back</button>
+    <button class="libtab" onclick="showPanel('shoulder',this)">Shoulder</button>
+    <button class="libtab" onclick="showPanel('legs',this)">Legs</button>
+    <button class="libtab" onclick="showPanel('arms',this)">Arms</button>
+    <button class="libtab" onclick="showPanel('core',this)">Core</button>
+  </div>
+<div class="libpanel active" id="panel-chest"><div class="libcards"><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTgwJz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE4MCcgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc4MCcgeTE9JzE0MCcgeDI9JzI0MCcgeTI9JzkwJyBzdHJva2U9JyM0YTU1NjgnIHN0cm9rZS13aWR0aD0nOCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzgwJyB5MT0nMTQwJyB4Mj0nODAnIHkyPScxNTUnIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc2JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMjQwJyB5MT0nOTAnIHgyPScyNDAnIHkyPScxMDUnIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc2JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nOTUnIHkxPScxMzYnIHgyPScyMjUnIHkyPSc4OCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzIzNScgY3k9JzgwJyByPScxMicgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTcwJyB5MT0nMTA4JyB4Mj0nMTU1JyB5Mj0nNjgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTcwJyB5MT0nMTA4JyB4Mj0nMTg1JyB5Mj0nNjgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTMwJyB5MT0nNjInIHgyPScyMTAnIHkyPSc2Micgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzEzMCcgY3k9JzYyJyByPSc3JyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxjaXJjbGUgY3g9JzIxMCcgY3k9JzYyJyByPSc3JyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScxNjAnIHkxPSc3NScgeDI9JzE2MCcgeTI9JzU1JyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWRhc2hhcnJheT0nMyAyJy8+PHRleHQgeD0nMTYwJyB5PScxNzMnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5JbmNsaW5lIFByZXNzIOKAlCAzMC00NSBkZWcsIGJhciB0byB1cHBlciBjaGVzdDwvdGV4dD48L3N2Zz4=" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>ইনক্লাইন বেঞ্চ প্রেস</h3>
+        <div class="libmuscle">Upper Pectoralis Major</div>
+        <p class="bangla">৩০–৪৫° ইনক্লাইনে বসুন। স্ক্যাপুলা রিট্র্যাক্টেড রাখুন। ফর্ম সবসময় ওজনের আগে।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">বুকের উপরের অংশ ভরাট হবে। কলারবোনের নিচে মাসেল স্পষ্ট হবে।</p></div>
+      </div>
+    </div><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTU1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE1NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc2MCcgeTE9JzEwMCcgeDI9JzI2MCcgeTI9JzEwMCcgc3Ryb2tlPScjNGE1NTY4JyBzdHJva2Utd2lkdGg9JzgnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPSc4MCcgeTE9JzEwMCcgeDI9JzgwJyB5Mj0nMTE1JyBzdHJva2U9JyM0YTU1NjgnIHN0cm9rZS13aWR0aD0nNScvPjxsaW5lIHgxPScyNDAnIHkxPScxMDAnIHgyPScyNDAnIHkyPScxMTUnIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc1Jy8+PGxpbmUgeDE9JzkwJyB5MT0nOTYnIHgyPScyMzAnIHkyPSc5Nicgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzI0MCcgY3k9Jzg5JyByPScxMScgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTYwJyB5MT0nOTYnIHgyPSc4MCcgeTI9Jzc1JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE2MCcgeTE9Jzk2JyB4Mj0nMjQwJyB5Mj0nNzUnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PSc3NScgY3k9JzcyJyByPSc4JyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxjaXJjbGUgY3g9JzI0NScgY3k9JzcyJyByPSc4JyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxwYXRoIGQ9J004MCA3NSBRMTYwIDUwIDI0MCA3NScgZmlsbD0nbm9uZScgc3Ryb2tlPScjNGE5ZTZlJyBzdHJva2Utd2lkdGg9JzEuNScgc3Ryb2tlLWRhc2hhcnJheT0nNCAzJy8+PHRleHQgeD0nMTYwJyB5PScxNDMnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5CdXR0ZXJmbHkgLyBGbHkg4oCUIGFyYyBtb3Rpb24sIHNxdWVlemUgYXQgcGVhazwvdGV4dD48L3N2Zz4=" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>বাটারফ্লাই / চেস্ট ফ্লাই <span class="htag">Home</span></h3>
+        <div class="libmuscle">Pectoralis Major — Stretch & Contraction</div>
+        <p class="bangla">বাহু সামান্য বাঁকা। পিক কন্ট্র্যাকশনে ১ সেকেন্ড ধরুন।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">বুকের মাঝের রেখা (chest separation) স্পষ্ট হবে।</p></div>
+      </div>
+    </div><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTQ1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE0NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzExOCcgeDI9JzI4MCcgeTI9JzExOCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nODAnIHkxPScxMTgnIHgyPSc5NScgeTI9Jzk4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzIyMCcgeTE9JzExOCcgeDI9JzIwNScgeTI9Jzk4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9Jzk1JyB5MT0nOTgnIHgyPScyMDUnIHkyPSc5OCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzYnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzIxNScgY3k9JzkwJyByPScxMScgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nODAnIHkxPScxMTgnIHgyPSc3NScgeTI9JzExOCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMjIwJyB5MT0nMTE4JyB4Mj0nMjI1JyB5Mj0nMTE4JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNTAnIHkxPSc5OCcgeDI9JzE1MCcgeTI9Jzc4JyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWRhc2hhcnJheT0nMyAyJy8+PGxpbmUgeDE9JzgwJyB5MT0nOTMnIHgyPScyMjgnIHkyPSc5Mycgc3Ryb2tlPScjNGE5ZTZlJyBzdHJva2Utd2lkdGg9JzEnIHN0cm9rZS1kYXNoYXJyYXk9JzUgMycgb3BhY2l0eT0nMC41Jy8+PHRleHQgeD0nMTYwJyB5PScxMzMnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5QdXNoLXVwIOKAlCBzdHJhaWdodCBib2R5LCBsb3dlciBjaGVzdCB0byBmbG9vcjwvdGV4dD48L3N2Zz4=" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>পুশআপ / Dips <span class="htag">Home</span></h3>
+        <div class="libmuscle">Pectoralis + Triceps + Core</div>
+        <p class="bangla">ওয়াইড = চেস্ট, ডায়মন্ড = ট্রাইসেপ। ঘরে সবচেয়ে কার্যকর।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">সামগ্রিক চেস্ট সাইজ ও পুশিং স্ট্রেন্থ বাড়বে।</p></div>
+      </div>
+    </div></div></div>
+<div class="libpanel " id="panel-back"><div class="libcards"><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPScxMDAnIHkxPSczMCcgeDI9JzIyMCcgeTI9JzMwJyBzdHJva2U9JyM0YTU1NjgnIHN0cm9rZS13aWR0aD0nOCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzEwMCcgeTE9JzMwJyB4Mj0nMTAwJyB5Mj0nMTUnIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc1Jy8+PGxpbmUgeDE9JzIyMCcgeTE9JzMwJyB4Mj0nMjIwJyB5Mj0nMTUnIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc1Jy8+PGxpbmUgeDE9JzEzMCcgeTE9JzMwJyB4Mj0nMTQ1JyB5Mj0nNTUnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTkwJyB5MT0nMzAnIHgyPScxNzUnIHkyPSc1NScgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzE2MCcgY3k9JzQ4JyByPScxMycgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTYwJyB5MT0nNjEnIHgyPScxNjAnIHkyPScxMzAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTMwJyB4Mj0nMTQ1JyB5Mj0nMTcwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzEzMCcgeDI9JzE3NScgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjx0ZXh0IHg9Jzk1JyB5PSc4NScgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPScxMCcgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPlB1bGwgZWxib3dzIGRvd248L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxODgnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5QdWxsLXVwIOKAlCB3aWRlIGdyaXAsIGNoaW4gYWJvdmUgYmFyPC90ZXh0Pjwvc3ZnPg==" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>পুলআপ / ল্যাট পুলডাউন <span class="htag">Home</span></h3>
+        <div class="libmuscle">Latissimus Dorsi — V-Shape</div>
+        <p class="bangla">হাত চওড়া। কনুই নিচে টানুন। পুলআপ ঘরে সেরা ব্যাক এক্সারসাইজ।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">পিঠের পাশ প্রশস্ত হবে (V-Taper)। কাঁধ চওড়া, কোমর সরু দেখাবে।</p></div>
+      </div>
+    </div><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTc1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE3NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE1NScgeDI9JzI4MCcgeTI9JzE1NScgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTU1JyB4Mj0nMTYwJyB5Mj0nMTE1JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzExNScgeDI9JzIyMCcgeTI9Jzg1JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGNpcmNsZSBjeD0nMjMwJyBjeT0nNzYnIHI9JzEyJyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScxNjAnIHkxPScxNTUnIHgyPScxNDAnIHkyPScxNTUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTU1JyB4Mj0nMTgwJyB5Mj0nMTU1JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzIwNScgeTE9JzkwJyB4Mj0nMTkwJyB5Mj0nMTE1JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzIwNScgeTE9JzkwJyB4Mj0nMjIwJyB5Mj0nMTE1JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE1NScgeTE9JzExOCcgeDI9JzI1NScgeTI9JzExOCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzE1NScgY3k9JzExOCcgcj0nNycgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48Y2lyY2xlIGN4PScyNTUnIGN5PScxMTgnIHI9JzcnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzIwNScgeTE9JzEzMCcgeDI9JzIwNScgeTI9JzExMicgc3Ryb2tlPScjNGE5ZTZlJyBzdHJva2Utd2lkdGg9JzInIHN0cm9rZS1kYXNoYXJyYXk9JzMgMicvPjx0ZXh0IHg9JzE2MCcgeT0nMTcwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjOTM5OWFlJyBmb250LXNpemU9JzExJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+QmVudCBPdmVyIFJvdyDigJQgNDUgZGVnIGhpbmdlLCBwdWxsIHRvIHRvcnNvPC90ZXh0Pjwvc3ZnPg==" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>বেন্ট ওভার রো</h3>
+        <div class="libmuscle">Rhomboids + Mid Trapezius</div>
+        <p class="bangla">পিঠ ৪৫° বাঁকান। বার পেটের কাছে টানুন। স্ক্যাপুলা squeeze করুন।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">মিড ব্যাক ঘন হবে। পোশ্চার উন্নত হবে।</p></div>
+      </div>
+    </div><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MCcgeDI9JzI4MCcgeTI9JzE3MCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nODAnIHkxPScxNTgnIHgyPScyNDAnIHkyPScxNTgnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PSc4MCcgY3k9JzE1OCcgcj0nMTMnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGNpcmNsZSBjeD0nMjQwJyBjeT0nMTU4JyByPScxMycgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTQ4JyB5MT0nMTcwJyB4Mj0nMTU1JyB5Mj0nMTM4JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE3MicgeTE9JzE3MCcgeDI9JzE2NScgeTI9JzEzOCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNDgnIHkxPScxNzAnIHgyPScxMzgnIHkyPScxNzAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0Jy8+PGxpbmUgeDE9JzE3MicgeTE9JzE3MCcgeDI9JzE4MicgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTM4JyB4Mj0nMjEwJyB5Mj0nMTAzJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGNpcmNsZSBjeD0nMjE5JyBjeT0nOTUnIHI9JzExJyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScxOTMnIHkxPScxMTAnIHgyPScxNzgnIHkyPScxNTMnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMjAwJyB5MT0nMTA3JyB4Mj0nMjAwJyB5Mj0nMTQ4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PHRleHQgeD0nODUnIHk9JzE0MycgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPSc5JyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+QmFyIHN0YXlzIGNsb3NlPC90ZXh0Pjx0ZXh0IHg9JzE2MCcgeT0nMTg4JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjOTM5OWFlJyBmb250LXNpemU9JzExJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+RGVhZGxpZnQg4oCUIGZsYXQgYmFjaywgaGlwIGhpbmdlLCBiYXIgY2xvc2U8L3RleHQ+PC9zdmc+" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>ডেডলিফট</h3>
+        <div class="libmuscle">Entire Posterior Chain</div>
+        <p class="bangla">সর্বোচ্চ মাসেল রিক্রুটমেন্ট। পিঠ সোজা, হিপ হিঞ্জ মুভমেন্ট।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">পুরো পিঠ, গ্লুটস ও হ্যামস্ট্রিং একসাথে শক্তিশালী হবে।</p></div>
+      </div>
+    </div></div></div>
+<div class="libpanel " id="panel-shoulder"><div class="libcards"><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MCcgeDI9JzI4MCcgeTI9JzE3MCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTYwJyB5Mj0nODUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc3NCcgcj0nMTMnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE3MCcgeDI9JzE0MCcgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTgwJyB5Mj0nMTcwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNjAnIHkxPSc5MCcgeDI9JzEzMCcgeTI9JzQyJyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzkwJyB4Mj0nMTkwJyB5Mj0nNDInIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTEwJyB5MT0nMzYnIHgyPScyMTAnIHkyPSczNicgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzExMCcgY3k9JzM2JyByPSc3JyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxjaXJjbGUgY3g9JzIxMCcgY3k9JzM2JyByPSc3JyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScxNjAnIHkxPSc1MCcgeDI9JzE2MCcgeTI9JzMwJyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWRhc2hhcnJheT0nMyAyJy8+PHRleHQgeD0nMTYwJyB5PScxODgnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5PdmVyaGVhZCBQcmVzcyDigJQgY29yZSB0aWdodCwgcHJlc3MgcGFzdCBlYXJzPC90ZXh0Pjwvc3ZnPg==" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>ওভারহেড প্রেস (OHP) <span class="htag">Home</span></h3>
+        <div class="libmuscle">Anterior + Medial Deltoid</div>
+        <p class="bangla">বার কানের পাশ দিয়ে উপরে তুলুন। কোর টাইট রাখুন।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">কাঁধের সামনে ও মাঝ গোলাকার হবে। কাঁধ চওড়া দেখাবে।</p></div>
+      </div>
+    </div><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTc1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE3NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE1NScgeDI9JzI4MCcgeTI9JzE1NScgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTU1JyB4Mj0nMTYwJyB5Mj0nNzUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc2NCcgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE1NScgeDI9JzE0MycgeTI9JzE1NScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTU1JyB4Mj0nMTc3JyB5Mj0nMTU1JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNjAnIHkxPSc5MicgeDI9JzgzJyB5Mj0nOTInIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nOTInIHgyPScyMzcnIHkyPSc5Micgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzgwJyBjeT0nOTInIHI9JzcnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGNpcmNsZSBjeD0nMjQwJyBjeT0nOTInIHI9JzcnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzkyJyB4Mj0nODgnIHkyPScxMTUnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPScyJyBvcGFjaXR5PScwLjMnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNjAnIHkxPSc5MicgeDI9JzIzMicgeTI9JzExNScgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzInIG9wYWNpdHk9JzAuMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PHBhdGggZD0nTTg4IDExNSBRODMgMTAwIDgzIDkyJyBmaWxsPSdub25lJyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMS41JyBzdHJva2UtZGFzaGFycmF5PSczIDInLz48cGF0aCBkPSdNMjMyIDExNSBRMjM3IDEwMCAyMzcgOTInIGZpbGw9J25vbmUnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScxLjUnIHN0cm9rZS1kYXNoYXJyYXk9JzMgMicvPjx0ZXh0IHg9JzE2MCcgeT0nMTcwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjOTM5OWFlJyBmb250LXNpemU9JzExJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+TGF0ZXJhbCBSYWlzZSDigJQgc3RvcCBhdCBzaG91bGRlciBoZWlnaHQsIG5vIHNocnVnPC90ZXh0Pjwvc3ZnPg==" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>ল্যাটারাল রেইজ <span class="htag">Home</span></h3>
+        <div class="libmuscle">Medial Deltoid</div>
+        <p class="bangla">হালকা ওজনে ধীরে। কাঁধ সমান উচ্চতায় থামুন।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">কাঁধের প্রশস্ততা সবচেয়ে বেশি বাড়ে এই এক্সারসাইজে।</p></div>
+      </div>
+    </div></div></div>
+<div class="libpanel " id="panel-legs"><div class="libcards"><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MicgeDI9JzI4MCcgeTI9JzE3Micgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTAwJyB4Mj0nMTYwJyB5Mj0nNjUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc1NCcgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzEwMCcgeDI9JzEzMCcgeTI9JzEwMCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnLz48bGluZSB4MT0nMTYwJyB5MT0nMTAwJyB4Mj0nMTkwJyB5Mj0nMTAwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNScvPjxsaW5lIHgxPScxMzAnIHkxPScxMDAnIHgyPScxMTUnIHkyPScxNDUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTkwJyB5MT0nMTAwJyB4Mj0nMjA1JyB5Mj0nMTQ1JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzExNScgeTE9JzE0NScgeDI9JzEyMCcgeTI9JzE3Micgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScyMDUnIHkxPScxNDUnIHgyPScyMDAnIHkyPScxNzInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nODAnIHgyPScxMjUnIHkyPSc3NScgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzMnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNjAnIHkxPSc4MCcgeDI9JzE5NScgeTI9Jzc1JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzEwMCcgeTE9JzEwMCcgeDI9JzEwMCcgeTI9JzE3Micgc3Ryb2tlPScjNGE5ZTZlJyBzdHJva2Utd2lkdGg9JzEuNScgc3Ryb2tlLWRhc2hhcnJheT0nMyAyJy8+PHRleHQgeD0nODgnIHk9JzEzOCcgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPSc5JyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZicgdGV4dC1hbmNob3I9J21pZGRsZSc+UGFyYWxsZWw8L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxODgnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5TcXVhdCDigJQgYmVsb3cgcGFyYWxsZWwsIGNoZXN0IHVwLCBuZXV0cmFsIGJhY2s8L3RleHQ+PC9zdmc+" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>স্কোয়াট <span class="htag">Home</span></h3>
+        <div class="libmuscle">Quadriceps + Glutes + Hamstrings</div>
+        <p class="bangla">পা কাঁধ সমান ফাঁকা। নিতম্ব সমান্তরালের নিচে নামুন। পিঠ সোজা।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">উরু ও নিতম্ব শক্তিশালী হবে। সর্বোচ্চ হরমোনাল রেসপন্স তৈরি করে।</p></div>
+      </div>
+    </div><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTc1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE3NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE1OCcgeDI9JzI4MCcgeTI9JzE1OCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTMwJyB5MT0nMTU4JyB4Mj0nMTQwJyB5Mj0nMTE4JyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE3NScgeTE9JzE1OCcgeDI9JzE2MicgeTI9JzExOCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNDAnIHkxPScxNTgnIHgyPScxMzAnIHkyPScxNTgnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0Jy8+PGxpbmUgeDE9JzE2NScgeTE9JzE1OCcgeDI9JzE3NScgeTI9JzE1OCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48Y2lyY2xlIGN4PScxNTEnIGN5PScxMTYnIHI9JzUnIGZpbGw9JyNjOGE5NmUnLz48bGluZSB4MT0nMTUxJyB5MT0nMTE2JyB4Mj0nMjIwJyB5Mj0nODInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScyMzAnIGN5PSc3NCcgcj0nMTEnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE4OCcgeTE9Jzk3JyB4Mj0nMTc4JyB5Mj0nMTIyJyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzIwMCcgeTE9JzEwNScgeDI9JzIwMCcgeTI9JzEyOCcgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNTInIHkxPScxMjYnIHgyPScyMzInIHkyPScxMTgnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNTInIGN5PScxMjYnIHI9JzYnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPScyLjUnLz48Y2lyY2xlIGN4PScyMzInIGN5PScxMTgnIHI9JzYnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPScyLjUnLz48dGV4dCB4PScxMTAnIHk9JzE0MicgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPSc5JyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+RmVlbCBzdHJldGNoPC90ZXh0Pjx0ZXh0IHg9JzE2MCcgeT0nMTcwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjOTM5OWFlJyBmb250LXNpemU9JzExJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+Um9tYW5pYW4gREwg4oCUIGhpcCBoaW5nZSwgZmVlbCBoYW1zdHJpbmcgc3RyZXRjaDwvdGV4dD48L3N2Zz4=" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>রোমানিয়ান ডেডলিফট</h3>
+        <div class="libmuscle">Hamstrings + Glutes</div>
+        <p class="bangla">হিপ হিঞ্জ করুন। হ্যামস্ট্রিং স্ট্রেচ ফিল করুন। পিঠ কখনো গোল নয়।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">উরুর পিছনের অংশ টোনড হবে। হিপ লাইন স্পষ্ট হবে।</p></div>
+      </div>
+    </div><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MicgeDI9JzI4MCcgeTI9JzE3Micgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTcwJyB5MT0nOTAnIHgyPScxNzAnIHkyPSc1NScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxjaXJjbGUgY3g9JzE3MCcgY3k9JzQ0JyByPScxMicgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTcwJyB5MT0nOTAnIHgyPScxNTUnIHkyPSc5MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnLz48bGluZSB4MT0nMTcwJyB5MT0nOTAnIHgyPScxODUnIHkyPSc5MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzUnLz48bGluZSB4MT0nMTU1JyB5MT0nOTAnIHgyPScxOTAnIHkyPScxNDAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTkwJyB5MT0nMTQwJyB4Mj0nMTk1JyB5Mj0nMTcyJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE4NScgeTE9JzkwJyB4Mj0nMTQ1JyB5Mj0nMTMwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE0NScgeTE9JzEzMCcgeDI9JzEzMCcgeTI9JzE2OCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNTUnIHkxPSc4MCcgeDI9JzEzNScgeTI9Jzc4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzE4NScgeTE9JzgwJyB4Mj0nMjA1JyB5Mj0nNzgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48dGV4dCB4PScxMDUnIHk9JzE2MicgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPSc5JyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+MSBpbmNoIGZyb20gZmxvb3I8L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxODgnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5MdW5nZSDigJQgYmFjayBrbmVlIDEgaW5jaCBmcm9tIGZsb29yPC90ZXh0Pjwvc3ZnPg==" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>লাঞ্জেস + কাফ রেইজ <span class="htag">Home</span></h3>
+        <div class="libmuscle">Quads + Glutes + Gastrocnemius</div>
+        <p class="bangla">লাঞ্জে ব্যালেন্স ও একক পায়ের শক্তি। কাফ রেইজে পায়ের নিচের অংশ।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">লেগ সিমেট্রি বাড়বে। হাঁটার ও দৌড়ানোর শক্তি বাড়বে।</p></div>
+      </div>
+    </div></div></div>
+<div class="libpanel " id="panel-arms"><div class="libcards"><div class="libcard">
+      <div style="display:flex;gap:2px;background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MCcgeDI9JzI4MCcgeTI9JzE3MCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTYwJyB5Mj0nODUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc3NCcgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE3MCcgeDI9JzE0MycgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTc3JyB5Mj0nMTcwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNTUnIHkxPScxMDAnIHgyPScxNDAnIHkyPScxMTgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTQwJyB5MT0nMTE4JyB4Mj0nMTI1JyB5Mj0nOTMnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxMjInIGN5PSc4OScgcj0nNycgZmlsbD0nbm9uZScgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzMnLz48bGluZSB4MT0nMTY1JyB5MT0nMTAwJyB4Mj0nMTc4JyB5Mj0nMTE4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBvcGFjaXR5PScwLjQnLz48bGluZSB4MT0nMTc4JyB5MT0nMTE4JyB4Mj0nMTgzJyB5Mj0nMTQ4JyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBvcGFjaXR5PScwLjQnLz48Y2lyY2xlIGN4PScxODUnIGN5PScxNTInIHI9JzcnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPScyJyBvcGFjaXR5PScwLjQnLz48cGF0aCBkPSdNMTgzIDE0OCBRMTU1IDEyOCAxMjUgOTMnIGZpbGw9J25vbmUnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScxLjUnIHN0cm9rZS1kYXNoYXJyYXk9JzQgMycvPjx0ZXh0IHg9JzIwNScgeT0nMTIyJyBmaWxsPScjNGE5ZTZlJyBmb250LXNpemU9JzEwJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+RWxib3cgZml4ZWQ8L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxODcnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5CaWNlcCBDdXJsIOKAlCBmaXhlZCBlbGJvdywgc3VwaW5hdGUgYXQgdG9wPC90ZXh0Pjwvc3ZnPg==" style="flex:1;height:175px;object-fit:contain;display:block;padding:10px;box-sizing:border-box;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MCcgeDI9JzI4MCcgeTI9JzE3MCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTYwJyB5Mj0nODUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc3NCcgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE3MCcgeDI9JzE0MycgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTc3JyB5Mj0nMTcwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNTUnIHkxPScxMDAnIHgyPScxNDAnIHkyPScxMTgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTQwJyB5MT0nMTE4JyB4Mj0nMTI4JyB5Mj0nOTcnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48cmVjdCB4PScxMTgnIHk9Jzg0JyB3aWR0aD0nMTgnIGhlaWdodD0nMTAnIHJ4PSczJyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScxNjUnIHkxPScxMDAnIHgyPScxNzgnIHkyPScxMTgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIG9wYWNpdHk9JzAuNCcvPjxsaW5lIHgxPScxNzgnIHkxPScxMTgnIHgyPScxODMnIHkyPScxNDgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIG9wYWNpdHk9JzAuNCcvPjxyZWN0IHg9JzE3OCcgeT0nMTUyJyB3aWR0aD0nMTgnIGhlaWdodD0nMTAnIHJ4PSczJyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMicgb3BhY2l0eT0nMC40Jy8+PHRleHQgeD0nOTInIHk9Jzg4JyBmaWxsPScjNGE5ZTZlJyBmb250LXNpemU9JzEwJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+TmV1dHJhbCBncmlwPC90ZXh0Pjx0ZXh0IHg9JzE2MCcgeT0nMTg3JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPScjOTM5OWFlJyBmb250LXNpemU9JzExJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+SGFtbWVyIEN1cmwg4oCUIHRodW1iIHVwLCBidWlsZHMgYXJtIHRoaWNrbmVzczwvdGV4dD48L3N2Zz4=" style="flex:1;height:175px;object-fit:contain;display:block;padding:10px;box-sizing:border-box;border-left:1px solid #232733;"></div>
+      <div class="libbody">
+        <h3>বাইসেপ কার্ল + হ্যামার কার্ল <span class="htag">Home</span></h3>
+        <div class="libmuscle">Biceps Brachii + Brachialis</div>
+        <p class="bangla">কনুই স্থির। সুপিনেশন করুন। ৩ সেকেন্ডে ধীরে নামান।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">বাইসেপ পিক স্পষ্ট হবে। বাহুর সামগ্রিক আকার বাড়বে।</p></div>
+      </div>
+    </div><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTk1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE5NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzE3MCcgeDI9JzI4MCcgeTI9JzE3MCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48cmVjdCB4PScxNDAnIHk9JzE1JyB3aWR0aD0nNDAnIGhlaWdodD0nMTgnIHJ4PSczJyBmaWxsPSdub25lJyBzdHJva2U9JyM0YTU1NjgnIHN0cm9rZS13aWR0aD0nMicvPjxsaW5lIHgxPScxNjAnIHkxPSczMycgeDI9JzE2MCcgeTI9JzcyJyBzdHJva2U9JyM0YTU1NjgnIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWRhc2hhcnJheT0nMyAzJy8+PGxpbmUgeDE9JzE0NScgeTE9JzcyJyB4Mj0nMTc1JyB5Mj0nNzInIHN0cm9rZT0nIzRhNTU2OCcgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTYwJyB5Mj0nODgnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScxNjAnIGN5PSc3Nycgcj0nMTInIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzE2MCcgeTE9JzE3MCcgeDI9JzE0MycgeTI9JzE3MCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnLz48bGluZSB4MT0nMTYwJyB5MT0nMTcwJyB4Mj0nMTc3JyB5Mj0nMTcwJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nNCcvPjxsaW5lIHgxPScxNTInIHkxPSc5NicgeDI9JzEzOCcgeTI9JzEwOCcgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxMzgnIHkxPScxMDgnIHgyPScxMjgnIHkyPScxNDMnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTY4JyB5MT0nOTYnIHgyPScxODInIHkyPScxMDgnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nMTgyJyB5MT0nMTA4JyB4Mj0nMTkyJyB5Mj0nMTQzJyBzdHJva2U9JyNkZGUxZWMnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PGxpbmUgeDE9JzEyNicgeTE9JzE0NicgeDI9JzE5NCcgeTI9JzE0Nicgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxNjAnIHkxPScxMjUnIHgyPScxNjAnIHkyPScxNDYnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScyJyBzdHJva2UtZGFzaGFycmF5PSczIDInLz48dGV4dCB4PScxMDAnIHk9JzExMCcgZmlsbD0nIzRhOWU2ZScgZm9udC1zaXplPScxMCcgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPkVsYm93cyBhdCBzaWRlczwvdGV4dD48dGV4dCB4PScxNjAnIHk9JzE4NycgdGV4dC1hbmNob3I9J21pZGRsZScgZmlsbD0nIzkzOTlhZScgZm9udC1zaXplPScxMScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPlRyaWNlcCBQdXNoZG93biDigJQgZWxib3dzIGZpeGVkLCBmdWxsIGV4dGVuc2lvbjwvdGV4dD48L3N2Zz4=" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>ট্রাইসেপ পুশডাউন + ওভারহেড <span class="htag">Home</span></h3>
+        <div class="libmuscle">Triceps Brachii — 3 Heads</div>
+        <p class="bangla">আর্মের ৬০% মাসেল ট্রাইসেপ। ওভারহেড ভ্যারিয়েশন লং হেড টার্গেট করে।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">বাহুর পিছনের অংশ শক্ত হবে। আর্মের সামগ্রিক আকার বাড়বে।</p></div>
+      </div>
+    </div></div></div>
+<div class="libpanel " id="panel-core"><div class="libcards"><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTQ1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE0NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzEyMCcgeDI9JzI4MCcgeTI9JzEyMCcgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nODAnIHkxPScxMjAnIHgyPSc5NScgeTI9JzEwMicgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzUnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScyMjAnIHkxPScxMjAnIHgyPScyMDUnIHkyPScxMDInIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSc1JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nOTUnIHkxPScxMDInIHgyPScyMDUnIHkyPScxMDInIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc2JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScyMTUnIGN5PSc5NCcgcj0nMTEnIGZpbGw9J25vbmUnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSczJy8+PGxpbmUgeDE9JzgwJyB5MT0nMTAyJyB4Mj0nODAnIHkyPScxMjAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48bGluZSB4MT0nOTAnIHkxPScxMDInIHgyPSc5MCcgeTI9JzEyMCcgc3Ryb2tlPScjYzhhOTZlJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPSc4MCcgeTE9Jzk3JyB4Mj0nMjI4JyB5Mj0nOTcnIHN0cm9rZT0nIzRhOWU2ZScgc3Ryb2tlLXdpZHRoPScxJyBzdHJva2UtZGFzaGFycmF5PSc1IDMnIG9wYWNpdHk9JzAuNScvPjx0ZXh0IHg9JzE1NScgeT0nOTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM0YTllNmUnIGZvbnQtc2l6ZT0nOScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPlN0cmFpZ2h0OiBoZWFkIHRvIGhlZWw8L3RleHQ+PHRleHQgeD0nMTc1JyB5PScxMTMnIGZpbGw9JyNjNDcwNzAnIGZvbnQtc2l6ZT0nOScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPk5vIHNhZzwvdGV4dD48dGV4dCB4PScxNjAnIHk9JzEzNScgdGV4dC1hbmNob3I9J21pZGRsZScgZmlsbD0nIzkzOTlhZScgZm9udC1zaXplPScxMScgZm9udC1mYW1pbHk9J0ludGVyLHNhbnMtc2VyaWYnPlBsYW5rIOKAlCBob2xkIDMwLTYwIHNlYywgbm8gaGlwIHNhZzwvdGV4dD48L3N2Zz4=" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>প্ল্যাঙ্ক ভেরিয়েশন <span class="htag">Home</span></h3>
+        <div class="libmuscle">Rectus Abdominis + Transverse + Obliques</div>
+        <p class="bangla">পিঠ সোজা। ৩০ সেকেন্ড থেকে শুরু করুন। সাইড প্ল্যাঙ্ক অবলিকের জন্য।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">কোর শক্তি বাড়বে। সব বড় লিফটে পারফরম্যান্স উন্নত হবে।</p></div>
+      </div>
+    </div><div class="libcard">
+      <div style="background:#0a0b0e;border-radius:3px 3px 0 0;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMTQ1Jz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzE0NScgZmlsbD0nIzBmMTExNycvPjxsaW5lIHgxPSc0MCcgeTE9JzExNScgeDI9JzI4MCcgeTI9JzExNScgc3Ryb2tlPScjMmUzMzQ1JyBzdHJva2Utd2lkdGg9JzInLz48bGluZSB4MT0nNzAnIHkxPScxMTAnIHgyPScyMDAnIHkyPScxMTAnIHN0cm9rZT0nI2M4YTk2ZScgc3Ryb2tlLXdpZHRoPSc2JyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48Y2lyY2xlIGN4PScyMTAnIGN5PScxMDMnIHI9JzExJyBmaWxsPSdub25lJyBzdHJva2U9JyNjOGE5NmUnIHN0cm9rZS13aWR0aD0nMycvPjxsaW5lIHgxPScyMDAnIHkxPScxMTAnIHgyPScyMjInIHkyPSc3Micgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScxOTAnIHkxPScxMTAnIHgyPScyMTInIHkyPSc3Micgc3Ryb2tlPScjZGRlMWVjJyBzdHJva2Utd2lkdGg9JzQnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjxsaW5lIHgxPScyMDAnIHkxPScxMTAnIHgyPScyMjUnIHkyPScxMTAnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIG9wYWNpdHk9JzAuNCcvPjxsaW5lIHgxPScxOTAnIHkxPScxMTAnIHgyPScyMTUnIHkyPScxMTAnIHN0cm9rZT0nI2RkZTFlYycgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIG9wYWNpdHk9JzAuNCcvPjxwYXRoIGQ9J00yMTUgMTEwIFEyMjIgOTAgMjE1IDcyJyBmaWxsPSdub25lJyBzdHJva2U9JyM0YTllNmUnIHN0cm9rZS13aWR0aD0nMS41JyBzdHJva2UtZGFzaGFycmF5PSczIDInLz48dGV4dCB4PSc4NScgeT0nMTA1JyBmaWxsPScjNGE5ZTZlJyBmb250LXNpemU9JzEwJyBmb250LWZhbWlseT0nSW50ZXIsc2Fucy1zZXJpZic+QmFjayBwcmVzc2VkIGZsYXQ8L3RleHQ+PHRleHQgeD0nMTYwJyB5PScxMzInIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9JyM5Mzk5YWUnIGZvbnQtc2l6ZT0nMTEnIGZvbnQtZmFtaWx5PSdJbnRlcixzYW5zLXNlcmlmJz5MZWcgUmFpc2Ug4oCUIGJhY2sgZmxhdCwgbGVncyBzdHJhaWdodCB1cDwvdGV4dD48L3N2Zz4=" style="width:100%;height:175px;object-fit:contain;display:block;padding:12px;box-sizing:border-box;"></div>
+      <div class="libbody">
+        <h3>লেগ রেইজ / হ্যাঙ্গিং লেগ রেইজ <span class="htag">Home</span></h3>
+        <div class="libmuscle">Lower Abdominals + Hip Flexors</div>
+        <p class="bangla">কোমর মাটিতে। পা সোজা উপরে তুলুন। হ্যাঙ্গিং ভার্সন সবচেয়ে কার্যকর।</p>
+        <div class="cbox"><div class="clbl">পরিবর্তন আসবে</div><p class="bangla">নাভির নিচের অংশ টোনড হবে। লোয়ার অ্যাব লাইন বের হবে।</p></div>
+      </div>
+    </div></div></div>
+</div></section>
+<div class="divider"></div>
+<section id="nutrition"><div class="wrap reveal">
+  <div class="sec-head">
+    <div class="sec-index">06 — Nutrition Principles</div>
+    <h2 class="sec-title">নিউট্রিশন<br><em>নির্দেশিকা</em></h2>
+  </div>
+  <div class="nutgrid">
+    <div class="nutcard"><div class="nl">দৈনিক ক্যালোরি</div><div class="nv">TDEE</div><div class="nu bangla">রেফারেন্স চার্ট থেকে নিন</div></div>
+    <div class="nutcard"><div class="nl">প্রোটিন (অ্যাক্টিভ)</div><div class="nv">1.8–2g</div><div class="nu bangla">প্রতি কেজি বডিওয়েট</div></div>
+    <div class="nutcard"><div class="nl">কার্বোহাইড্রেট</div><div class="nv">45–55%</div><div class="nu bangla">মোট ক্যালোরির শতাংশ</div></div>
+    <div class="nutcard"><div class="nl">ফ্যাট</div><div class="nv">25–35%</div><div class="nu bangla">মোট ক্যালোরির শতাংশ</div></div>
+  </div>
+  <div class="timgrid">
+    <div class="timcard"><div class="tt">Pre-Workout — 30 min আগে</div><div class="tl bangla">শক্তি প্রস্তুতি</div><div class="ti bangla">সহজ কার্বোহাইড্রেট (কলা, খেজুর)<br>সামান্য প্রোটিন (ডিম বা দুধ)<br>পর্যাপ্ত পানি</div></div>
+    <div class="timcard"><div class="tt">Post-Workout — 30 min মধ্যে</div><div class="tl bangla">রিকভারি উইন্ডো</div><div class="ti bangla">প্রোটিন ২৫–৪০g (ডিম বা দুধ)<br>কার্ব ৪০–৬০g (ভাত, কলা)<br>পানি ও ইলেকট্রোলাইট</div></div>
+    <div class="timcard"><div class="tt">রাতে ঘুমানোর আগে</div><div class="tl bangla">রাতের রিকভারি</div><div class="ti bangla">ধীর-পাচ্য প্রোটিন (দুধ, ডিম)<br>অতিরিক্ত কার্ব এড়িয়ে চলুন<br>২ ঘণ্টা আগে খাওয়া শেষ করুন</div></div>
+    <div class="timcard"><div class="tt">বিশ্রামের দিন</div><div class="tl bangla">Recovery Nutrition</div><div class="ti bangla">প্রোটিন টার্গেট অপরিবর্তিত<br>ক্যালোরি ১০–১৫% কমাতে পারেন<br>পানি গ্রহণ অব্যাহত রাখুন</div></div>
+  </div>
+</div></section>
+<div class="divider"></div>
+<section id="burn"><div class="wrap reveal">
+  <div class="sec-head">
+    <div class="sec-index">07 — Energy Expenditure</div>
+    <h2 class="sec-title">ক্যালোরি বার্ন<br><em>রেফারেন্স</em></h2>
+  </div>
+  <p class="bangla" style="color:var(--text2);font-size:.84rem;margin-bottom:2rem;">৭০–৮০ কেজি পুরুষের ৩০ মিনিটের সেশনে আনুমানিক বার্ন। MET মান অনুযায়ী।</p>
+  <div class="burnrows">
+    <div class="burnrow"><div class="burnlbl">লেগ ডে</div><div class="burntrack"><div class="burnfill" data-w="88"></div></div><div class="burnnum">~280</div></div>
+    <div class="burnrow"><div class="burnlbl">ফুল বডি</div><div class="burntrack"><div class="burnfill" data-w="78"></div></div><div class="burnnum">~250</div></div>
+    <div class="burnrow"><div class="burnlbl">ব্যাক + বাইসেপ</div><div class="burntrack"><div class="burnfill" data-w="72"></div></div><div class="burnnum">~230</div></div>
+    <div class="burnrow"><div class="burnlbl">চেস্ট + ট্রাইসেপ</div><div class="burntrack"><div class="burnfill" data-w="68"></div></div><div class="burnnum">~220</div></div>
+    <div class="burnrow"><div class="burnlbl">শোল্ডার + কোর</div><div class="burntrack"><div class="burnfill" data-w="65"></div></div><div class="burnnum">~210</div></div>
+    <div class="burnrow"><div class="burnlbl">জগিং ৩০ মিনিট</div><div class="burntrack"><div class="burnfill cardio" data-w="95"></div></div><div class="burnnum">~300</div></div>
+  </div>
+  <div class="note-box bangla" style="margin-top:1.8rem;">
+    <strong>EPOC (After Burn Effect):</strong> ওয়েট ট্রেনিংয়ের পর শরীর ২৪–৪৮ ঘণ্টা অতিরিক্ত ক্যালোরি বার্ন করে। তাই ৩০ মিনিট দেখতে কম মনে হলেও সার্বিক এনার্জি ব্যয় অনেক বেশি।
+  </div>
+</div></section>
+<div class="divider"></div>
+<section id="principles"><div class="wrap reveal">
+  <div class="sec-head">
+    <div class="sec-index">08 — Training Principles</div>
+    <h2 class="sec-title">প্রশিক্ষণের<br><em>মূল নীতিমালা</em></h2>
+  </div>
+  <div class="tipsgrid">
+    <div class="tipcard"><div class="tnum">Principle 01</div><h3 class="bangla">প্রগ্রেসিভ ওভারলোড</h3><p class="bangla">প্রতি ২ সপ্তাহে ওজন বা রেপ বাড়ান। শরীর অভিযোজিত হলে চ্যালেঞ্জ বাড়াতে হবে। দীর্ঘমেয়াদী উন্নতির একমাত্র পথ।</p></div>
+    <div class="tipcard"><div class="tnum">Principle 02</div><h3 class="bangla">ঘুম ও রিকভারি</h3><p class="bangla">৭–৮ ঘণ্টা ঘুম না হলে প্রোটিন গ্রহণেও মাসেল গ্রোথ বাধাগ্রস্ত হবে। গ্রোথ হরমোন গভীর ঘুমে নিঃসৃত হয়।</p></div>
+    <div class="tipcard"><div class="tnum">Principle 03</div><h3 class="bangla">মাইন্ড-মাসেল সংযোগ</h3><p class="bangla">শুধু ওজন তোলা নয় — টার্গেট মাসেলের কন্ট্র্যাকশন অনুভব করুন। একই ওজনে ভিন্ন ফলাফলের মূল কারণ এটি।</p></div>
+    <div class="tipcard"><div class="tnum">Principle 04</div><h3 class="bangla">ওয়ার্মআপ অপরিহার্য</h3><p class="bangla">৫ মিনিট ডায়নামিক ওয়ার্মআপ ছাড়া ভারী ওজন তোলা উচিত নয়। ইনজুরি এড়ানো দীর্ঘমেয়াদী ট্রেনিং ধরে রাখার পূর্বশর্ত।</p></div>
+    <div class="tipcard"><div class="tnum">Principle 05</div><h3 class="bangla">ধারাবাহিকতাই মূল</h3><p class="bangla">সপ্তাহে ৩ দিন নিয়মিত ট্রেনিং, ৫ দিনের অনিয়মিত চেষ্টার চেয়ে বেশি কার্যকর। লাইফটাইম ফিটনেসের ভিত্তি এটি।</p></div>
+    <div class="tipcard"><div class="tnum">Principle 06</div><h3 class="bangla">ঘরে বিকল্প সদা প্রস্তুত</h3><p class="bangla">জিম না যাওয়া গেলে পুশআপ, পুলআপ, স্কোয়াট ও প্ল্যাঙ্ক দিয়ে সম্পূর্ণ সেশন সম্ভব। কোনো দিন বাদ না দেওয়াই লক্ষ্য।</p></div>
+  </div>
+</div></section>
+<footer>
+  <div>
+    <div class="fhadith">"The strong believer is better and more beloved to Allah than the weak believer."</div>
+    <div class="fhadith-bn bangla">"শক্তিশালী মুমিন দুর্বল মুমিনের চেয়ে উত্তম এবং আল্লাহর কাছে বেশি প্রিয়।"</div>
+    <div class="fref mono">Sahih Muslim — 2664</div>
+  </div>
+  <div class="fright">
+    <div class="fmark mono">MALE FITNESS REFERENCE GUIDE<br>Push &middot; Pull &middot; Legs &middot; Core<br>v3.0 &mdash; Embedded SVG Edition</div>
+  </div>
+</footer>
+<script>
+function toggleDay(el){el.classList.toggle('open');}
+function showPanel(id,btn){
+  document.querySelectorAll('.libpanel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.libtab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+}
+const ro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:.06});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+const bo=new IntersectionObserver(e=>{
+  e.forEach(x=>{
+    if(x.isIntersecting){
+      x.target.querySelectorAll('.burnfill').forEach(b=>{
+        const w=b.getAttribute('data-w');
+        setTimeout(()=>{b.style.width=w+'%';},250);
+      });
+    }
+  });
+},{threshold:.3});
+const bs=document.getElementById('burn');
+if(bs)bo.observe(bs);
+</script>
+</body>
+</html>

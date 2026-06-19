@@ -1,0 +1,2797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Streaming Masterclass — Concept to Production</title>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --bg2: #141720;
+    --bg3: #1a1e2e;
+    --card: #1e2235;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8eaf0;
+    --muted: #8890aa;
+    --hint: #555e78;
+    --accent: #6c63ff;
+    --accent2: #00d4aa;
+    --accent3: #ff6b6b;
+    --amber: #ffb547;
+    --blue: #4a9eff;
+    --green: #4ade80;
+    --purple: #a78bfa;
+    --mono: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── Sidebar ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 260px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-logo h1 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.3px;
+  }
+
+  .sidebar-logo p {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .nav-section {
+    padding: 8px 20px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--hint);
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+
+  .nav-item.active {
+    color: var(--accent);
+    background: rgba(108,99,255,0.08);
+    border-left-color: var(--accent);
+  }
+
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--hint);
+    flex-shrink: 0;
+  }
+
+  .nav-item.active .nav-dot { background: var(--accent); }
+
+  /* ── Main content ── */
+  .main {
+    margin-left: 260px;
+    flex: 1;
+    padding: 48px 56px;
+    max-width: 900px;
+  }
+
+  /* ── Page / Section system ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .page-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .phase-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+
+  .phase-badge.p1 { background: rgba(108,99,255,0.15); color: var(--accent); }
+  .phase-badge.p2 { background: rgba(0,212,170,0.12); color: var(--accent2); }
+  .phase-badge.p3 { background: rgba(74,158,255,0.12); color: var(--blue); }
+  .phase-badge.p4 { background: rgba(255,181,71,0.12); color: var(--amber); }
+  .phase-badge.p5 { background: rgba(74,222,128,0.12); color: var(--green); }
+  .phase-badge.p6 { background: rgba(167,139,250,0.12); color: var(--purple); }
+
+  h2.page-title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .page-subtitle {
+    font-size: 16px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* ── Content blocks ── */
+  h3 { font-size: 20px; font-weight: 700; margin: 36px 0 12px; color: var(--text); letter-spacing: -0.3px; }
+  h4 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; color: var(--text); }
+  p { color: var(--muted); margin-bottom: 14px; line-height: 1.75; }
+  strong { color: var(--text); font-weight: 600; }
+
+  /* ── Concept cards ── */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .concept-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    transition: border-color 0.2s;
+  }
+
+  .concept-card:hover { border-color: var(--border2); }
+
+  .concept-icon {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+
+  .concept-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 6px;
+  }
+
+  .concept-card p {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* ── Flow diagram ── */
+  .flow-diagram {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+    overflow-x: auto;
+  }
+
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .flow-box {
+    background: var(--card);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .flow-box.highlight { border-color: var(--accent); color: var(--accent); background: rgba(108,99,255,0.08); }
+  .flow-box.green { border-color: var(--accent2); color: var(--accent2); background: rgba(0,212,170,0.07); }
+  .flow-box.amber { border-color: var(--amber); color: var(--amber); background: rgba(255,181,71,0.07); }
+  .flow-box.blue { border-color: var(--blue); color: var(--blue); background: rgba(74,158,255,0.07); }
+
+  .flow-arrow {
+    color: var(--hint);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .flow-label {
+    font-size: 10px;
+    color: var(--hint);
+    text-align: center;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Code blocks ── */
+  .code-block {
+    background: #0a0c12;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--hint);
+  }
+
+  .code-title { font-size: 12px; color: var(--muted); }
+
+  .copy-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: 5px;
+    padding: 3px 10px;
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover { color: var(--text); border-color: var(--accent); }
+  .copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+  .code-block pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: #c9d1d9;
+  }
+
+  .kw { color: #ff79c6; }
+  .str { color: #f1fa8c; }
+  .cm { color: #6272a4; font-style: italic; }
+  .fn { color: #8be9fd; }
+  .num { color: #bd93f9; }
+  .op { color: #ff79c6; }
+  .var { color: #50fa7b; }
+  .tag { color: #ff79c6; }
+  .attr { color: #50fa7b; }
+  .val { color: #f1fa8c; }
+  .prop { color: #8be9fd; }
+
+  /* ── Info boxes ── */
+  .info-box {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .info-box.tip { background: rgba(0,212,170,0.07); border-left: 3px solid var(--accent2); color: #a0e8d8; }
+  .info-box.warn { background: rgba(255,181,71,0.07); border-left: 3px solid var(--amber); color: #ddb97a; }
+  .info-box.danger { background: rgba(255,107,107,0.07); border-left: 3px solid var(--accent3); color: #e89090; }
+  .info-box.note { background: rgba(108,99,255,0.07); border-left: 3px solid var(--accent); color: #a8a3e8; }
+  .info-box strong { color: inherit; }
+
+  /* ── Comparison table ── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 13px;
+  }
+
+  .compare-table th {
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--bg3);
+    color: var(--text);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-table td {
+    padding: 10px 14px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .tag-yes { color: var(--green); font-weight: 600; }
+  .tag-no { color: var(--accent3); font-weight: 600; }
+  .tag-partial { color: var(--amber); font-weight: 600; }
+
+  /* ── Checklist ── */
+  .checklist { list-style: none; margin: 16px 0; }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .checklist li:last-child { border-bottom: none; }
+
+  .check-icon {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+    flex-shrink: 0;
+    margin-top: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+  }
+
+  .check-icon.done { background: var(--accent2); border-color: var(--accent2); color: #0d0f14; }
+
+  /* ── Progress bar ── */
+  .progress-bar {
+    background: var(--bg3);
+    border-radius: 4px;
+    height: 6px;
+    margin: 8px 0;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+
+  /* ── Interactive quiz ── */
+  .quiz-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+
+  .quiz-q { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+
+  .quiz-opt {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+  }
+
+  .quiz-opt:hover { border-color: var(--accent); color: var(--text); }
+  .quiz-opt.correct { border-color: var(--green); color: var(--green); background: rgba(74,222,128,0.07); }
+  .quiz-opt.wrong { border-color: var(--accent3); color: var(--accent3); background: rgba(255,107,107,0.07); }
+
+  .quiz-result { margin-top: 12px; font-size: 13px; padding: 10px; border-radius: 6px; display: none; }
+  .quiz-result.show { display: block; }
+  .quiz-result.ok { background: rgba(74,222,128,0.08); color: var(--green); }
+  .quiz-result.fail { background: rgba(255,107,107,0.08); color: var(--accent3); }
+
+  /* ── Accordion ── */
+  .accordion { margin: 16px 0; }
+
+  .accordion-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  .accordion-header {
+    width: 100%;
+    background: var(--card);
+    border: none;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: left;
+  }
+
+  .accordion-header:hover { background: var(--bg3); }
+  .accordion-chevron { color: var(--hint); transition: transform 0.2s; font-size: 16px; }
+  .accordion-item.open .accordion-chevron { transform: rotate(180deg); }
+
+  .accordion-body {
+    display: none;
+    padding: 16px 18px;
+    background: var(--bg3);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    border-top: 1px solid var(--border);
+  }
+
+  .accordion-item.open .accordion-body { display: block; }
+
+  /* ── Protocol simulator ── */
+  .simulator {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+
+  .sim-controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+
+  .sim-btn {
+    background: rgba(108,99,255,0.12);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .sim-btn:hover { background: rgba(108,99,255,0.2); }
+  .sim-btn.active { background: var(--accent); color: #fff; }
+
+  .sim-display {
+    background: #0a0c12;
+    border-radius: 8px;
+    padding: 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.8;
+    min-height: 160px;
+  }
+
+  .sim-line { display: flex; gap: 12px; margin-bottom: 4px; }
+  .sim-time { color: var(--hint); flex-shrink: 0; }
+  .sim-src { color: var(--amber); flex-shrink: 0; width: 80px; }
+  .sim-msg { color: var(--text); }
+  .sim-msg.rtmp { color: #ff79c6; }
+  .sim-msg.hls { color: #50fa7b; }
+  .sim-msg.ws { color: #8be9fd; }
+
+  /* ── Server comparison cards ── */
+  .server-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .server-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+  }
+
+  .server-card.recommended { border-color: var(--accent2); }
+
+  .rec-badge {
+    position: absolute;
+    top: -10px; left: 16px;
+    background: var(--accent2);
+    color: #0d0f14;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  .server-card h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .server-price { font-size: 22px; font-weight: 800; color: var(--accent2); margin: 8px 0; }
+  .server-price span { font-size: 13px; color: var(--muted); font-weight: 400; }
+  .server-specs { font-size: 12px; color: var(--muted); line-height: 1.8; }
+  .server-verdict {
+    margin-top: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  .verdict-yes { background: rgba(74,222,128,0.1); color: var(--green); }
+  .verdict-no { background: rgba(255,107,107,0.1); color: var(--accent3); }
+
+  /* ── Tabs inside content ── */
+  .tabs { margin: 20px 0; }
+  .tab-heads { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 0; }
+
+  .tab-head {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--hint);
+    cursor: pointer;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+  }
+
+  .tab-head:hover { color: var(--muted); }
+  .tab-head.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .tab-body { display: none; padding: 20px 0 0; }
+  .tab-body.active { display: block; }
+
+  /* ── Next section btn ── */
+  .next-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 40px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .next-btn:hover { background: #7c74ff; transform: translateY(-1px); }
+
+  /* ── Progress tracker top ── */
+  .top-bar {
+    position: fixed;
+    top: 0; left: 260px; right: 0;
+    height: 3px;
+    background: var(--bg2);
+    z-index: 200;
+  }
+
+  .top-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  /* ── Step indicator ── */
+  .steps {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+
+  .step-pill {
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--hint);
+  }
+
+  .step-pill.done { background: rgba(74,222,128,0.1); border-color: var(--green); color: var(--green); }
+  .step-pill.current { background: rgba(108,99,255,0.15); border-color: var(--accent); color: var(--accent); }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    .sidebar { width: 100%; position: static; }
+    .main { margin-left: 0; padding: 24px 20px; }
+    .top-bar { left: 0; }
+    .layout { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar"><div class="top-progress" id="topProgress" style="width:6%"></div></div>
+
+<div class="layout">
+
+<!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h1>&#9654; StreamDev</h1>
+    <p>Concept → Production Masterclass</p>
+  </div>
+
+  <div class="nav-section">Phase 1 · Foundations</div>
+  <button class="nav-item active" onclick="show('p1-concepts')"><span class="nav-dot"></span>How streaming works</button>
+  <button class="nav-item" onclick="show('p1-protocols')"><span class="nav-dot"></span>Protocols deep dive</button>
+  <button class="nav-item" onclick="show('p1-video')"><span class="nav-dot"></span>Video fundamentals</button>
+  <button class="nav-item" onclick="show('p1-server')"><span class="nav-dot"></span>Server types & DNS</button>
+
+  <div class="nav-section">Phase 2 · Stack</div>
+  <button class="nav-item" onclick="show('p2-stack')"><span class="nav-dot"></span>Tech stack decisions</button>
+  <button class="nav-item" onclick="show('p2-vps')"><span class="nav-dot"></span>VPS setup (KVM)</button>
+
+  <div class="nav-section">Phase 3 · Infrastructure</div>
+  <button class="nav-item" onclick="show('p3-nginx')"><span class="nav-dot"></span>Nginx + RTMP setup</button>
+  <button class="nav-item" onclick="show('p3-dns')"><span class="nav-dot"></span>DNS + Cloudflare</button>
+  <button class="nav-item" onclick="show('p3-ssl')"><span class="nav-dot"></span>SSL + firewall</button>
+
+  <div class="nav-section">Phase 4 · Build</div>
+  <button class="nav-item" onclick="show('p4-ingest')"><span class="nav-dot"></span>Stream ingest pipeline</button>
+  <button class="nav-item" onclick="show('p4-ffmpeg')"><span class="nav-dot"></span>FFmpeg transcoding</button>
+  <button class="nav-item" onclick="show('p4-player')"><span class="nav-dot"></span>HLS player (frontend)</button>
+  <button class="nav-item" onclick="show('p4-chat')"><span class="nav-dot"></span>Live chat (WebSocket)</button>
+
+  <div class="nav-section">Phase 5 · Platform</div>
+  <button class="nav-item" onclick="show('p5-auth')"><span class="nav-dot"></span>Auth + stream keys</button>
+  <button class="nav-item" onclick="show('p5-payments')"><span class="nav-dot"></span>Subscriptions (Stripe)</button>
+
+  <div class="nav-section">Phase 6 · Scale</div>
+  <button class="nav-item" onclick="show('p6-monitor')"><span class="nav-dot"></span>Monitoring + CI/CD</button>
+  <button class="nav-item" onclick="show('p6-scale')"><span class="nav-dot"></span>Scaling & cost</button>
+</nav>
+
+<!-- ═══════════════════════════════ MAIN ═══════════════════════════════ -->
+<main class="main">
+
+<!-- ══════════════ P1: HOW STREAMING WORKS ══════════════ -->
+<section class="page active" id="p1-concepts">
+  <div class="page-header">
+    <span class="phase-badge p1">Phase 1 · Foundations</span>
+    <h2 class="page-title">How live streaming actually works</h2>
+    <p class="page-subtitle">Before touching a single config file — understand what's happening end-to-end.</p>
+  </div>
+
+  <h3>The full pipeline in one picture</h3>
+  <p>Every live stream — from OBS on your laptop to a viewer's browser — passes through exactly these stages:</p>
+
+  <div class="flow-diagram">
+    <div class="flow-row">
+      <div>
+        <div class="flow-box highlight">OBS / Encoder</div>
+        <div class="flow-label">Broadcaster's PC</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-box amber">RTMP</div>
+        <div class="flow-label">Protocol used</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-box">Media Server</div>
+        <div class="flow-label">Your VPS (Nginx)</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-box amber">FFmpeg</div>
+        <div class="flow-label">Transcodes video</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-box green">HLS segments</div>
+        <div class="flow-label">.m3u8 + .ts files</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-box blue">CDN</div>
+        <div class="flow-label">Global delivery</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-box highlight">Browser / App</div>
+        <div class="flow-label">Viewer plays HLS</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box note">
+    <strong>Key insight:</strong> The broadcaster never talks directly to viewers. They push to your server, your server converts to HLS, and viewers pull those HLS files via HTTP — the same way a browser loads any webpage.
+  </div>
+
+  <h3>What each stage does</h3>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">&#127909;</div>
+      <h4>OBS / Encoder</h4>
+      <p>Captures screen + mic, compresses with H.264 codec, sends over RTMP. Free, open source software.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">&#128260;</div>
+      <h4>RTMP ingest</h4>
+      <p>Real-Time Messaging Protocol. TCP-based, port 1935. OBS → your server. Very stable, industry standard.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">&#9881;</div>
+      <h4>Nginx + nginx-rtmp</h4>
+      <p>Your media server. Receives the RTMP stream and triggers FFmpeg to process it.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">&#128250;</div>
+      <h4>FFmpeg transcode</h4>
+      <p>Converts one RTMP stream into multiple HLS quality levels (360p, 720p, 1080p) simultaneously.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">&#128196;</div>
+      <h4>HLS segments</h4>
+      <p>Video chopped into 2–6 second .ts files. A .m3u8 playlist tells the player which file to fetch next.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">&#127758;</div>
+      <h4>CDN delivery</h4>
+      <p>Content Delivery Network. Caches your HLS files at servers near viewers globally. Reduces latency.</p>
+    </div>
+  </div>
+
+  <h3>Why not FTP? Why not shared hosting?</h3>
+
+  <table class="compare-table">
+    <tr>
+      <th>Option</th>
+      <th>Can run Nginx?</th>
+      <th>Open port 1935?</th>
+      <th>Run FFmpeg?</th>
+      <th>Verdict</th>
+    </tr>
+    <tr>
+      <td>Shared hosting</td>
+      <td class="tag-no">✗ No</td>
+      <td class="tag-no">✗ No</td>
+      <td class="tag-no">✗ No</td>
+      <td class="tag-no">Dead end</td>
+    </tr>
+    <tr>
+      <td>FTP server</td>
+      <td class="tag-no">✗ Wrong tool</td>
+      <td class="tag-no">✗ Wrong tool</td>
+      <td class="tag-no">✗ Wrong tool</td>
+      <td class="tag-no">File transfer only</td>
+    </tr>
+    <tr>
+      <td>Cloudflare R2</td>
+      <td class="tag-no">✗ Storage only</td>
+      <td class="tag-no">✗ No compute</td>
+      <td class="tag-no">✗ No compute</td>
+      <td class="tag-partial">Use for VOD storage</td>
+    </tr>
+    <tr>
+      <td><strong>KVM VPS ✓</strong></td>
+      <td class="tag-yes">✓ Yes</td>
+      <td class="tag-yes">✓ Yes</td>
+      <td class="tag-yes">✓ Yes</td>
+      <td class="tag-yes">This is your answer</td>
+    </tr>
+  </table>
+
+  <div class="info-box tip">
+    <strong>Cloudflare R2</strong> is not useless — you will use it later to store recorded stream replays (VOD). But you cannot run any server software on it. Think of it as a cheap hard drive in the cloud.
+  </div>
+
+  <h3>Quick knowledge check</h3>
+
+  <div class="quiz-box">
+    <div class="quiz-q">What protocol does OBS use to send video to your media server?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="quiz(this, false)">FTP — File Transfer Protocol</button>
+      <button class="quiz-opt" onclick="quiz(this, false)">HLS — HTTP Live Streaming</button>
+      <button class="quiz-opt" onclick="quiz(this, true)">RTMP — Real-Time Messaging Protocol</button>
+      <button class="quiz-opt" onclick="quiz(this, false)">WebRTC — Web Real-Time Communication</button>
+    </div>
+    <div class="quiz-result" id="qresult1"></div>
+  </div>
+
+  <button class="next-btn" onclick="show('p1-protocols')">Next: Protocols deep dive &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P1: PROTOCOLS ══════════════ -->
+<section class="page" id="p1-protocols">
+  <div class="page-header">
+    <span class="phase-badge p1">Phase 1 · Foundations</span>
+    <h2 class="page-title">Protocols deep dive</h2>
+    <p class="page-subtitle">Every streaming system is built on these four protocols. Know them cold.</p>
+  </div>
+
+  <div class="simulator">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Simulate a stream lifecycle — click each stage to see what protocol fires:</p>
+    <div class="sim-controls">
+      <button class="sim-btn active" id="sbtn-idle" onclick="simStep('idle')">Idle</button>
+      <button class="sim-btn" id="sbtn-connect" onclick="simStep('connect')">1 · OBS connects</button>
+      <button class="sim-btn" id="sbtn-stream" onclick="simStep('stream')">2 · Stream starts</button>
+      <button class="sim-btn" id="sbtn-viewer" onclick="simStep('viewer')">3 · Viewer joins</button>
+      <button class="sim-btn" id="sbtn-chat" onclick="simStep('chat')">4 · Chat message</button>
+      <button class="sim-btn" id="sbtn-end" onclick="simStep('end')">5 · Stream ends</button>
+    </div>
+    <div class="sim-display" id="simDisplay">
+      <div class="sim-line"><span class="sim-time">00:00:00</span><span class="sim-src">SYSTEM</span><span class="sim-msg">Waiting for broadcaster to connect...</span></div>
+    </div>
+  </div>
+
+  <div class="accordion">
+
+    <div class="accordion-item open">
+      <button class="accordion-header" onclick="toggleAcc(this)">
+        RTMP — Real-Time Messaging Protocol
+        <span class="accordion-chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <p><strong>What it is:</strong> TCP-based protocol developed by Macromedia (now Adobe) for sending audio/video from an encoder to a media server.</p>
+        <p><strong>Port:</strong> 1935 (you must open this on your VPS firewall)</p>
+        <p><strong>Used for:</strong> Ingest only — OBS → your server. Never viewer → browser delivery.</p>
+        <p><strong>Why TCP?</strong> RTMP uses TCP which guarantees every packet arrives in order. Good for reliable ingest. Slightly slower than UDP but acceptable for the upload side.</p>
+        <p><strong>What you configure:</strong></p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">nginx config</span><span class="code-title">RTMP ingest endpoint</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="cm"># In nginx.conf — the RTMP block</span>
+<span class="prop">rtmp</span> {
+  server {
+    <span class="prop">listen</span> <span class="num">1935</span>;        <span class="cm"># Open this port on your firewall</span>
+    <span class="prop">chunk_size</span> <span class="num">4096</span>;
+
+    application <span class="str">live</span> {
+      <span class="prop">live</span> on;           <span class="cm"># Enable live streaming</span>
+      <span class="prop">record</span> off;        <span class="cm"># Don't record to disk (for now)</span>
+    }
+  }
+}</pre>
+        </div>
+        <p><strong>OBS settings:</strong> Server = <code>rtmp://YOUR_SERVER_IP/live</code>, Stream key = your unique key</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header" onclick="toggleAcc(this)">
+        HLS — HTTP Live Streaming
+        <span class="accordion-chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <p><strong>What it is:</strong> Apple's streaming format. Video is split into small segments, delivered over regular HTTP. Works in all browsers via HLS.js.</p>
+        <p><strong>How it works:</strong> FFmpeg chops video into 2–6 second <code>.ts</code> segment files. A <code>.m3u8</code> playlist file lists the latest segments. Player fetches the playlist every few seconds, then fetches the new segments.</p>
+        <p><strong>Why HTTP?</strong> Regular port 80/443. Passes through firewalls. CDNs cache it. No special client needed.</p>
+        <p><strong>Latency:</strong> 15–30 seconds by default. Can be reduced to ~5s with Low-Latency HLS (LL-HLS). Good enough for most sports streams.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">m3u8</span><span class="code-title">What an HLS playlist looks like</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="cm"># master.m3u8 — tells player available qualities</span>
+#EXTM3U
+#EXT-X-STREAM-INF:BANDWIDTH=2500000,RESOLUTION=1280x720
+720p/index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=800000,RESOLUTION=854x480
+480p/index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=400000,RESOLUTION=640x360
+360p/index.m3u8
+
+<span class="cm"># 720p/index.m3u8 — the per-quality playlist</span>
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:2
+#EXTINF:2.0,
+seg001.ts      <span class="cm">&lt;-- 2-second video chunk</span>
+#EXTINF:2.0,
+seg002.ts
+#EXTINF:2.0,
+seg003.ts</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header" onclick="toggleAcc(this)">
+        WebSocket — Real-time bidirectional communication
+        <span class="accordion-chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <p><strong>What it is:</strong> A persistent connection between browser and server that both can send messages over at any time. Unlike HTTP where client always initiates.</p>
+        <p><strong>Used for:</strong> Live chat, viewer count updates, stream status, real-time notifications.</p>
+        <p><strong>How it starts:</strong> Starts as an HTTP request, then upgrades ("handshake") to a WebSocket connection.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">javascript</span><span class="code-title">WebSocket in the browser</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="cm">// Client-side (browser)</span>
+<span class="kw">const</span> <span class="var">ws</span> = <span class="kw">new</span> <span class="fn">WebSocket</span>(<span class="str">'wss://yoursite.com/chat'</span>);
+
+ws.<span class="fn">onmessage</span> = (<span class="var">event</span>) => {
+  <span class="kw">const</span> <span class="var">msg</span> = JSON.<span class="fn">parse</span>(event.data);
+  <span class="fn">appendChatMessage</span>(msg);
+};
+
+<span class="cm">// Send a message</span>
+ws.<span class="fn">send</span>(JSON.<span class="fn">stringify</span>({
+  type: <span class="str">'chat'</span>,
+  message: <span class="str">'Great goal!'</span>
+}));</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header" onclick="toggleAcc(this)">
+        WebRTC — Ultra-low latency (advanced)
+        <span class="accordion-chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <p><strong>What it is:</strong> Browser-to-browser (or browser-to-server) real-time communication using UDP. Sub-1 second latency.</p>
+        <p><strong>When to use:</strong> Interactive streams where latency matters — betting streams, interactive sports, live Q&amp;A where you react to audience in real time.</p>
+        <p><strong>When NOT to use:</strong> General streaming. WebRTC doesn't scale to thousands of viewers without an SFU (Selective Forwarding Unit) server like Mediasoup or Livekit. Complex to implement.</p>
+        <p><strong>Your plan:</strong> Start with HLS (easy, scalable). Add WebRTC later for specific low-latency use cases.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="next-btn" onclick="show('p1-video')">Next: Video fundamentals &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P1: VIDEO FUNDAMENTALS ══════════════ -->
+<section class="page" id="p1-video">
+  <div class="page-header">
+    <span class="phase-badge p1">Phase 1 · Foundations</span>
+    <h2 class="page-title">Video fundamentals</h2>
+    <p class="page-subtitle">Codecs, bitrates, and adaptive streaming — what they mean and why they matter.</p>
+  </div>
+
+  <h3>Codecs</h3>
+  <p>A codec is an algorithm that compresses video. Raw video is enormous — a 1-minute 1080p clip is ~10GB uncompressed. Codecs shrink it to a manageable size by throwing away data the human eye can't perceive.</p>
+
+  <table class="compare-table">
+    <tr><th>Codec</th><th>Compression</th><th>CPU cost</th><th>Browser support</th><th>License</th><th>Use when</th></tr>
+    <tr>
+      <td><strong>H.264 / AVC</strong></td>
+      <td class="tag-partial">Good</td>
+      <td class="tag-yes">Low</td>
+      <td class="tag-yes">100% universal</td>
+      <td class="tag-partial">Patented</td>
+      <td>Default choice. Always.</td>
+    </tr>
+    <tr>
+      <td><strong>H.265 / HEVC</strong></td>
+      <td class="tag-yes">50% better</td>
+      <td class="tag-partial">Medium</td>
+      <td class="tag-partial">~85% browsers</td>
+      <td class="tag-no">Royalty fees</td>
+      <td>Better quality, but skip for now</td>
+    </tr>
+    <tr>
+      <td><strong>AV1</strong></td>
+      <td class="tag-yes">Best</td>
+      <td class="tag-no">Very high</td>
+      <td class="tag-partial">Modern browsers</td>
+      <td class="tag-yes">Free, open</td>
+      <td>Future — not yet for live</td>
+    </tr>
+    <tr>
+      <td><strong>VP9</strong></td>
+      <td class="tag-yes">Good</td>
+      <td class="tag-partial">Medium</td>
+      <td class="tag-partial">Chrome/Firefox</td>
+      <td class="tag-yes">Free, open</td>
+      <td>YouTube uses it, but skip</td>
+    </tr>
+  </table>
+
+  <div class="info-box tip">
+    <strong>Your starting codec: H.264.</strong> It works everywhere, FFmpeg handles it by default, and OBS outputs it by default. No configuration needed.
+  </div>
+
+  <h3>Bitrate</h3>
+  <p>Bitrate is how much data per second your stream uses. Higher bitrate = better quality but more bandwidth cost and more CPU to encode.</p>
+
+  <div class="tabs">
+    <div class="tab-heads">
+      <button class="tab-head active" onclick="tab(this,'br-live')">Live streaming</button>
+      <button class="tab-head" onclick="tab(this,'br-obs')">OBS settings</button>
+    </div>
+    <div class="tab-body active" id="br-live">
+      <table class="compare-table">
+        <tr><th>Resolution</th><th>FPS</th><th>Recommended bitrate</th><th>Upload needed</th></tr>
+        <tr><td>360p</td><td>30</td><td>400–800 Kbps</td><td>~1 Mbps</td></tr>
+        <tr><td>480p</td><td>30</td><td>800–1,500 Kbps</td><td>~2 Mbps</td></tr>
+        <tr><td>720p</td><td>30</td><td>2,000–3,000 Kbps</td><td>~4 Mbps</td></tr>
+        <tr><td>720p</td><td>60</td><td>3,000–4,500 Kbps</td><td>~6 Mbps</td></tr>
+        <tr><td>1080p</td><td>30</td><td>4,000–6,000 Kbps</td><td>~8 Mbps</td></tr>
+        <tr><td>1080p</td><td>60</td><td>6,000–9,000 Kbps</td><td>~12 Mbps</td></tr>
+      </table>
+    </div>
+    <div class="tab-body" id="br-obs">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">OBS settings</span><span class="code-title">Recommended for 1080p sports streaming</span></div>
+        <pre>Settings → Output → Streaming:
+  Rate Control: CBR
+  Bitrate: 4500 Kbps
+  Keyframe Interval: 2 (seconds)  ← Critical for HLS!
+  Preset: veryfast (for CPU encoder)
+  Profile: high
+  Tune: zerolatency
+
+Settings → Video:
+  Base Resolution: 1920x1080
+  Output Resolution: 1920x1080
+  FPS: 30</pre>
+      </div>
+      <div class="info-box warn">
+        <strong>Keyframe interval = 2 is mandatory</strong> for HLS. If OBS sends keyframes every 10 seconds, your HLS segments can't be split cleanly, and viewers will see artifacts and buffering.
+      </div>
+    </div>
+  </div>
+
+  <h3>Adaptive Bitrate (ABR)</h3>
+  <p>ABR means your server creates multiple quality versions of the stream (e.g. 360p, 480p, 720p, 1080p). The player automatically switches between them based on the viewer's internet speed. This is what Netflix, YouTube, and Twitch all do.</p>
+
+  <div class="flow-diagram">
+    <div style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:16px;">One RTMP input → FFmpeg creates 3 quality levels → Player picks the right one</div>
+    <div class="flow-row">
+      <div>
+        <div class="flow-box highlight">RTMP @ 4500 Kbps</div>
+        <div class="flow-label">From OBS (1 stream)</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-box amber">FFmpeg</div>
+        <div class="flow-label">Transcodes simultaneously</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div class="flow-box green" style="font-size:11px;">1080p @ 4000 Kbps</div>
+        <div class="flow-box green" style="font-size:11px;">720p @ 2500 Kbps</div>
+        <div class="flow-box green" style="font-size:11px;">480p @ 800 Kbps</div>
+        <div class="flow-box green" style="font-size:11px;">360p @ 400 Kbps</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-box blue">HLS.js player</div>
+        <div class="flow-label">Auto-switches quality</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="show('p1-server')">Next: Server types & DNS &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P1: SERVER TYPES & DNS ══════════════ -->
+<section class="page" id="p1-server">
+  <div class="page-header">
+    <span class="phase-badge p1">Phase 1 · Foundations</span>
+    <h2 class="page-title">Server types & DNS explained</h2>
+    <p class="page-subtitle">Which server to use, what KVM means, and how DNS connects your domain to your VPS.</p>
+  </div>
+
+  <h3>Server options compared</h3>
+
+  <div class="server-cards">
+    <div class="server-card">
+      <h4>Shared hosting</h4>
+      <div class="server-price">~$5<span>/mo</span></div>
+      <div class="server-specs">
+        Shared CPU/RAM with hundreds of others<br>
+        No root access<br>
+        Can't open port 1935<br>
+        No long-running processes<br>
+        Can't install Nginx-RTMP or FFmpeg
+      </div>
+      <span class="server-verdict verdict-no">Cannot use for streaming</span>
+    </div>
+
+    <div class="server-card">
+      <h4>OpenVZ VPS</h4>
+      <div class="server-price">~$3<span>/mo</span></div>
+      <div class="server-specs">
+        Container-based virtualization<br>
+        Shared kernel with host<br>
+        Can't load custom kernel modules<br>
+        Some restrictions on networking<br>
+        Cheaper but limited
+      </div>
+      <span class="server-verdict verdict-no">Avoid for streaming</span>
+    </div>
+
+    <div class="server-card recommended">
+      <div class="rec-badge">✓ Your choice</div>
+      <h4>KVM VPS</h4>
+      <div class="server-price">€4–15<span>/mo</span></div>
+      <div class="server-specs">
+        Full virtual machine<br>
+        Dedicated CPU cores + RAM<br>
+        Root access — install anything<br>
+        Open any port including 1935<br>
+        Run Nginx, FFmpeg, Node.js<br>
+        Reboot into your own kernel
+      </div>
+      <span class="server-verdict verdict-yes">Perfect for streaming</span>
+    </div>
+
+    <div class="server-card">
+      <h4>Dedicated server</h4>
+      <div class="server-price">€40+<span>/mo</span></div>
+      <div class="server-specs">
+        Physical server, all yours<br>
+        Maximum performance<br>
+        Great for 50+ concurrent streams<br>
+        No shared neighbors<br>
+        Overkill to start
+      </div>
+      <span class="server-verdict verdict-yes">Later, when you scale</span>
+    </div>
+  </div>
+
+  <h3>Recommended KVM providers</h3>
+
+  <table class="compare-table">
+    <tr><th>Provider</th><th>Plan</th><th>CPU</th><th>RAM</th><th>Bandwidth</th><th>Price</th></tr>
+    <tr><td><strong>Hetzner CX22</strong></td><td>KVM</td><td>2 vCPU</td><td>4 GB</td><td>20 TB/mo</td><td>€3.79/mo</td></tr>
+    <tr><td><strong>Hetzner CX32</strong></td><td>KVM</td><td>4 vCPU</td><td>8 GB</td><td>20 TB/mo</td><td>€7.49/mo</td></tr>
+    <tr><td><strong>Hostinger KVM 1</strong></td><td>KVM</td><td>1 vCPU</td><td>4 GB</td><td>4 TB/mo</td><td>~$5/mo</td></tr>
+    <tr><td><strong>Hostinger KVM 2</strong></td><td>KVM</td><td>2 vCPU</td><td>8 GB</td><td>8 TB/mo</td><td>~$8/mo</td></tr>
+    <tr><td><strong>DigitalOcean</strong></td><td>Droplet</td><td>2 vCPU</td><td>4 GB</td><td>4 TB/mo</td><td>$24/mo</td></tr>
+  </table>
+
+  <div class="info-box tip">
+    <strong>Start with Hetzner CX22 or your Hostinger KVM 2.</strong> Both are real KVM, both work perfectly for streaming. Hetzner has better value for European data centers. Hostinger works great from Bangladesh too.
+  </div>
+
+  <h3>How DNS works</h3>
+
+  <p>DNS (Domain Name System) converts <code>yoursite.com</code> into your server's IP address (e.g. <code>65.21.44.100</code>). Without DNS, viewers would have to type your IP address.</p>
+
+  <div class="accordion">
+    <div class="accordion-item open">
+      <button class="accordion-header" onclick="toggleAcc(this)">
+        DNS record types you'll use
+        <span class="accordion-chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="compare-table">
+          <tr><th>Record</th><th>What it does</th><th>Your example</th></tr>
+          <tr>
+            <td><strong>A record</strong></td>
+            <td>Maps domain/subdomain → IPv4 address</td>
+            <td><code>@ → 65.21.44.100</code> (main site)</td>
+          </tr>
+          <tr>
+            <td><strong>A record</strong></td>
+            <td>Maps subdomain → server IP</td>
+            <td><code>rtmp → 65.21.44.100</code> (ingest server, DNS-only!)</td>
+          </tr>
+          <tr>
+            <td><strong>CNAME</strong></td>
+            <td>Alias one domain to another</td>
+            <td><code>www → yoursite.com</code></td>
+          </tr>
+          <tr>
+            <td><strong>MX record</strong></td>
+            <td>Where to deliver email</td>
+            <td>Point to Mailgun or Resend later</td>
+          </tr>
+        </table>
+        <div class="info-box warn">
+          <strong>Critical:</strong> Your <code>rtmp.yoursite.com</code> A record must be set to DNS-only (gray cloud in Cloudflare). RTMP does NOT work through Cloudflare's HTTP proxy. Only web traffic goes through Cloudflare's proxy.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Ports to open on your VPS</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><span class="code-title">UFW firewall rules (Ubuntu)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="cm"># Install UFW (usually pre-installed)</span>
+sudo apt install ufw
+
+<span class="cm"># Set defaults</span>
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+<span class="cm"># Allow SSH (do this FIRST or you'll lock yourself out!)</span>
+sudo ufw allow <span class="num">22</span>/tcp
+
+<span class="cm"># Allow web traffic</span>
+sudo ufw allow <span class="num">80</span>/tcp    <span class="cm"># HTTP</span>
+sudo ufw allow <span class="num">443</span>/tcp   <span class="cm"># HTTPS</span>
+
+<span class="cm"># Allow RTMP ingest (this is the streaming port)</span>
+sudo ufw allow <span class="num">1935</span>/tcp
+
+<span class="cm"># Enable the firewall</span>
+sudo ufw enable
+
+<span class="cm"># Verify</span>
+sudo ufw status</pre>
+  </div>
+
+  <button class="next-btn" onclick="show('p2-stack')">Next: Choose your tech stack &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P2: STACK ══════════════ -->
+<section class="page" id="p2-stack">
+  <div class="page-header">
+    <span class="phase-badge p2">Phase 2 · Stack</span>
+    <h2 class="page-title">Tech stack decisions</h2>
+    <p class="page-subtitle">Every layer of your platform, and why you're choosing what you're choosing.</p>
+  </div>
+
+  <div class="flow-diagram">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div>
+        <div style="font-size:11px;color:var(--hint);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Frontend (browser)</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="flow-box highlight">Next.js 14 (React)</div>
+          <div class="flow-box">HLS.js — video player</div>
+          <div class="flow-box">Tailwind CSS — styling</div>
+          <div class="flow-box">Socket.io client — chat</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--hint);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Backend (server)</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="flow-box green">Node.js + Express</div>
+          <div class="flow-box green">Socket.io — WebSocket</div>
+          <div class="flow-box green">PostgreSQL — database</div>
+          <div class="flow-box green">Redis — real-time cache</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--hint);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Media layer</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="flow-box amber">Nginx + nginx-rtmp-module</div>
+          <div class="flow-box amber">FFmpeg — transcoding</div>
+          <div class="flow-box amber">BunnyCDN or CF Stream</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--hint);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Infrastructure</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="flow-box blue">KVM VPS (your server)</div>
+          <div class="flow-box blue">Cloudflare DNS + proxy</div>
+          <div class="flow-box blue">Let's Encrypt SSL</div>
+          <div class="flow-box blue">Cloudflare R2 (VOD storage)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Why each choice</h3>
+
+  <div class="accordion">
+    <div class="accordion-item open">
+      <button class="accordion-header" onclick="toggleAcc(this)">Next.js — why not plain React or Vue?<span class="accordion-chevron">&#9660;</span></button>
+      <div class="accordion-body">
+        <p>Next.js gives you Server-Side Rendering (SSR) out of the box. For a streaming site this matters because search engines need to crawl your stream pages. A plain React SPA (Single Page App) returns empty HTML to Google bots — your streams won't appear in search results.</p>
+        <p>Next.js also handles routing, API routes (you can write backend endpoints inside the same project), image optimization, and has the best deployment story (Vercel or self-hosted).</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-header" onclick="toggleAcc(this)">Nginx-RTMP vs SRS vs Wowza<span class="accordion-chevron">&#9660;</span></button>
+      <div class="accordion-body">
+        <p><strong>Nginx-RTMP:</strong> Open source, free, well-documented, works with any Nginx server. Best starting point. Limited to single-server without extra work.</p>
+        <p><strong>SRS (Simple Realtime Server):</strong> Better performance than Nginx-RTMP, supports LL-HLS, cluster mode. Good step up when you outgrow Nginx-RTMP.</p>
+        <p><strong>Wowza:</strong> Commercial, expensive ($95/mo), but enterprise-grade. Not for indie projects.</p>
+        <p><strong>Your choice: Nginx-RTMP to start.</strong> You can migrate to SRS when you need to scale.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-header" onclick="toggleAcc(this)">PostgreSQL vs MongoDB for streaming<span class="accordion-chevron">&#9660;</span></button>
+      <div class="accordion-body">
+        <p>Your streaming data is relational: users have stream keys, streams belong to channels, subscriptions belong to users. This is textbook SQL territory — relationships, joins, transactions.</p>
+        <p>MongoDB is great for unstructured data but adds complexity without benefit here. Use PostgreSQL. It's free, battle-tested, and Supabase gives you a managed PostgreSQL instance with a generous free tier.</p>
+        <p>Use Redis separately for high-frequency real-time data: viewer counts, live chat messages, stream status. Redis is an in-memory store — extremely fast but not for permanent data.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-header" onclick="toggleAcc(this)">CDN choice: BunnyCDN vs Cloudflare Stream vs AWS<span class="accordion-chevron">&#9660;</span></button>
+      <div class="accordion-body">
+        <p><strong>Cloudflare Stream:</strong> Easiest. $5/1000 min stored, $1/1000 min delivered. Handles transcoding too. No server needed. Best for launching quickly.</p>
+        <p><strong>BunnyCDN:</strong> Much cheaper at scale. ~$0.01/GB egress. You self-transcode with FFmpeg and push HLS to BunnyCDN. More control, lower cost at volume.</p>
+        <p><strong>AWS CloudFront:</strong> Most expensive egress but integrates with other AWS services. Only if you're already AWS-native.</p>
+        <p><strong>Your plan:</strong> Start with BunnyCDN (cheapest, full control). Add Cloudflare Stream later if you want to offload transcoding.</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="show('p2-vps')">Next: VPS setup &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P2: VPS SETUP ══════════════ -->
+<section class="page" id="p2-vps">
+  <div class="page-header">
+    <span class="phase-badge p2">Phase 2 · Stack</span>
+    <h2 class="page-title">KVM VPS initial setup</h2>
+    <p class="page-subtitle">From a fresh Ubuntu 22.04 server to a ready-to-deploy environment.</p>
+  </div>
+
+  <div class="steps">
+    <span class="step-pill done">1 · Create server</span>
+    <span class="step-pill done">2 · First SSH</span>
+    <span class="step-pill current">3 · Secure it</span>
+    <span class="step-pill">4 · Install stack</span>
+  </div>
+
+  <h3>Step 1 — First SSH login</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><span class="code-title">From your local machine</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="cm"># Connect to your VPS (Hetzner/Hostinger give you root + password on creation)</span>
+ssh root@YOUR_VPS_IP
+
+<span class="cm"># First thing: update everything</span>
+apt update && apt upgrade -y
+
+<span class="cm"># Set your timezone</span>
+timedatectl set-timezone Asia/Dhaka</pre>
+  </div>
+
+  <h3>Step 2 — Create a non-root user</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><span class="code-title">Never run your app as root</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="cm"># Create user (replace 'stream' with your preferred username)</span>
+adduser stream
+
+<span class="cm"># Give sudo privileges</span>
+usermod -aG sudo stream
+
+<span class="cm"># Switch to your new user</span>
+su - stream
+
+<span class="cm"># Verify</span>
+whoami  <span class="cm"># should print: stream</span></pre>
+  </div>
+
+  <h3>Step 3 — Install everything you need</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><span class="code-title">Full stack install on Ubuntu 22.04</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="cm"># Install Node.js 20 (LTS)</span>
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+<span class="cm"># Install FFmpeg (video transcoding)</span>
+sudo apt install -y ffmpeg
+
+<span class="cm"># Install Nginx with RTMP module</span>
+sudo apt install -y libnginx-mod-rtmp nginx
+
+<span class="cm"># Install PostgreSQL</span>
+sudo apt install -y postgresql postgresql-contrib
+
+<span class="cm"># Install Redis</span>
+sudo apt install -y redis-server
+
+<span class="cm"># Install certbot (for SSL)</span>
+sudo apt install -y certbot python3-certbot-nginx
+
+<span class="cm"># Install PM2 (process manager — keeps Node.js running)</span>
+sudo npm install -g pm2
+
+<span class="cm"># Verify installations</span>
+node --version    <span class="cm"># v20.x.x</span>
+ffmpeg -version   <span class="cm"># ffmpeg version 5.x</span>
+nginx -version    <span class="cm"># nginx/1.x.x</span>
+psql --version    <span class="cm"># psql (PostgreSQL) 14.x</span></pre>
+  </div>
+
+  <div class="info-box tip">
+    <strong>PM2</strong> is essential. It keeps your Node.js API running even after you log out, and auto-restarts it if it crashes. Think of it as a "forever" runner for your backend.
+  </div>
+
+  <button class="next-btn" onclick="show('p3-nginx')">Next: Nginx + RTMP setup &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P3: NGINX ══════════════ -->
+<section class="page" id="p3-nginx">
+  <div class="page-header">
+    <span class="phase-badge p3">Phase 3 · Infrastructure</span>
+    <h2 class="page-title">Nginx + RTMP configuration</h2>
+    <p class="page-subtitle">The full nginx.conf that powers your media server — explained line by line.</p>
+  </div>
+
+  <h3>How Nginx fits into your stack</h3>
+  <p>Nginx does double duty in your streaming setup: it serves web traffic (HTTP/HTTPS) AND handles RTMP ingest. Two jobs, one process.</p>
+
+  <div class="flow-diagram">
+    <div class="flow-row">
+      <div>
+        <div class="flow-box blue">Browser request</div>
+        <div class="flow-label">Port 443 (HTTPS)</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
+        <div class="flow-box highlight">Nginx</div>
+        <div class="flow-label">Reverse proxy + RTMP</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div>
+          <div class="flow-arrow" style="display:inline;">→</div>
+          <div class="flow-box green" style="display:inline-block;font-size:11px;">Next.js app :3000</div>
+        </div>
+        <div>
+          <div class="flow-arrow" style="display:inline;">→</div>
+          <div class="flow-box green" style="display:inline-block;font-size:11px;">Node.js API :4000</div>
+        </div>
+      </div>
+    </div>
+    <div class="flow-row" style="margin-top:12px;">
+      <div>
+        <div class="flow-box amber">OBS stream</div>
+        <div class="flow-label">Port 1935 (RTMP)</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box highlight">Nginx RTMP</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box amber">FFmpeg → HLS files</div>
+    </div>
+  </div>
+
+  <h3>Complete nginx.conf</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">nginx</span><span class="code-title">/etc/nginx/nginx.conf — complete working config</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>worker_processes auto;
+events {
+    worker_connections 1024;
+}
+
+<span class="cm">## ─── RTMP Block (port 1935) ─────────────────────────</span>
+rtmp {
+    server {
+        listen <span class="num">1935</span>;
+        chunk_size <span class="num">4096</span>;
+
+        application <span class="str">live</span> {
+            live on;
+            record off;
+
+            <span class="cm"># Verify the stream key with your API before allowing</span>
+            on_publish http://127.0.0.1:4000/api/stream/auth;
+            on_publish_done http://127.0.0.1:4000/api/stream/end;
+
+            <span class="cm"># Trigger FFmpeg to start HLS transcoding</span>
+            exec ffmpeg -i rtmp://127.0.0.1/live/$name
+                -map 0:v -map 0:a
+                -c:v libx264 -c:a aac
+                -b:v 2500k -s 1280x720 -f flv
+                rtmp://127.0.0.1/hls/$name_720p
+
+                -map 0:v -map 0:a
+                -c:v libx264 -c:a aac
+                -b:v 800k -s 854x480 -f flv
+                rtmp://127.0.0.1/hls/$name_480p
+
+                -map 0:v -map 0:a
+                -c:v libx264 -c:a aac
+                -b:v 400k -s 640x360 -f flv
+                rtmp://127.0.0.1/hls/$name_360p;
+        }
+
+        <span class="cm"># This application receives the transcoded streams from FFmpeg</span>
+        application <span class="str">hls</span> {
+            live on;
+            record off;
+
+            <span class="cm"># Convert to HLS segments</span>
+            hls on;
+            hls_path /var/www/hls;
+            hls_fragment 2s;          <span class="cm"># 2-second segments</span>
+            hls_playlist_length 10s;  <span class="cm"># Keep last 5 segments</span>
+
+            <span class="cm"># Create multi-quality master playlist</span>
+            hls_variant _720p BANDWIDTH=2628000,RESOLUTION=1280x720;
+            hls_variant _480p BANDWIDTH=864000,RESOLUTION=854x480;
+            hls_variant _360p BANDWIDTH=432000,RESOLUTION=640x360;
+        }
+    }
+}
+
+<span class="cm">## ─── HTTP Block (ports 80 + 443) ─────────────────────</span>
+http {
+    include mime.types;
+    default_type application/octet-stream;
+    sendfile on;
+    keepalive_timeout 65;
+
+    <span class="cm"># Allow large video file handling</span>
+    client_max_body_size 500M;
+
+    server {
+        listen <span class="num">80</span>;
+        server_name yoursite.com www.yoursite.com;
+
+        <span class="cm"># Redirect all HTTP → HTTPS</span>
+        return 301 https://$host$request_uri;
+    }
+
+    server {
+        listen <span class="num">443</span> ssl;
+        server_name yoursite.com www.yoursite.com;
+
+        <span class="cm"># SSL certs from Let's Encrypt (certbot fills these)</span>
+        ssl_certificate /etc/letsencrypt/live/yoursite.com/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/yoursite.com/privkey.pem;
+
+        <span class="cm"># Serve HLS files directly from disk</span>
+        location /hls {
+            types {
+                application/vnd.apple.mpegurl m3u8;
+                video/mp2t ts;
+            }
+            alias /var/www/hls;
+            add_header Cache-Control no-cache;
+            add_header Access-Control-Allow-Origin *;
+        }
+
+        <span class="cm"># Proxy Next.js app</span>
+        location / {
+            proxy_pass http://127.0.0.1:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+        }
+
+        <span class="cm"># Proxy Node.js API</span>
+        location /api {
+            proxy_pass http://127.0.0.1:4000;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+
+        <span class="cm"># WebSocket for live chat</span>
+        location /socket.io {
+            proxy_pass http://127.0.0.1:4000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+    }
+}
+</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><span class="code-title">Apply and test the config</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="cm"># Create HLS output directory</span>
+sudo mkdir -p /var/www/hls
+sudo chown -R www-data:www-data /var/www/hls
+sudo chmod 755 /var/www/hls
+
+<span class="cm"># Test nginx config for syntax errors</span>
+sudo nginx -t
+
+<span class="cm"># Reload nginx (no downtime)</span>
+sudo systemctl reload nginx
+
+<span class="cm"># If starting fresh:</span>
+sudo systemctl start nginx
+sudo systemctl enable nginx  <span class="cm"># auto-start on reboot</span></pre>
+  </div>
+
+  <button class="next-btn" onclick="show('p3-dns')">Next: DNS + Cloudflare &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P3: DNS ══════════════ -->
+<section class="page" id="p3-dns">
+  <div class="page-header">
+    <span class="phase-badge p3">Phase 3 · Infrastructure</span>
+    <h2 class="page-title">DNS + Cloudflare setup</h2>
+    <p class="page-subtitle">Connect your domain to your server and enable free DDoS protection.</p>
+  </div>
+
+  <h3>Step-by-step DNS setup</h3>
+
+  <div class="accordion">
+    <div class="accordion-item open">
+      <button class="accordion-header" onclick="toggleAcc(this)">1 · Buy a domain and point to Cloudflare<span class="accordion-chevron">&#9660;</span></button>
+      <div class="accordion-body">
+        <p>Buy your domain at Namecheap (~$8/yr) or Porkbun (~$10/yr). Then:</p>
+        <ul style="color:var(--muted);font-size:13px;padding-left:20px;line-height:2;">
+          <li>Create a free Cloudflare account at cloudflare.com</li>
+          <li>Click "Add a site" → enter your domain</li>
+          <li>Cloudflare scans existing DNS records</li>
+          <li>Cloudflare gives you two nameservers like: <code>nina.ns.cloudflare.com</code></li>
+          <li>Go to Namecheap → Domain → Nameservers → Custom → paste Cloudflare's nameservers</li>
+          <li>Wait 5–30 minutes for propagation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header" onclick="toggleAcc(this)">2 · Add DNS records in Cloudflare<span class="accordion-chevron">&#9660;</span></button>
+      <div class="accordion-body">
+        <p>In Cloudflare dashboard → DNS → Add records:</p>
+        <table class="compare-table">
+          <tr><th>Type</th><th>Name</th><th>Value</th><th>Proxy</th><th>Why</th></tr>
+          <tr>
+            <td>A</td>
+            <td><code>@</code></td>
+            <td>YOUR_VPS_IP</td>
+            <td class="tag-yes">&#9728; Proxied</td>
+            <td>Main site → VPS via Cloudflare</td>
+          </tr>
+          <tr>
+            <td>A</td>
+            <td><code>www</code></td>
+            <td>YOUR_VPS_IP</td>
+            <td class="tag-yes">&#9728; Proxied</td>
+            <td>www. redirect</td>
+          </tr>
+          <tr>
+            <td>A</td>
+            <td><code>rtmp</code></td>
+            <td>YOUR_VPS_IP</td>
+            <td class="tag-no">&#9729; DNS Only</td>
+            <td>RTMP must bypass CF proxy!</td>
+          </tr>
+        </table>
+        <div class="info-box danger">
+          <strong>The rtmp subdomain MUST be DNS-only (gray cloud).</strong> Cloudflare's proxy only handles HTTP/HTTPS traffic. RTMP on port 1935 will time out if proxied. Click the orange cloud icon to turn it gray.
+        </div>
+        <p>OBS broadcaster settings will be:<br>
+          <code>Server: rtmp://rtmp.yoursite.com/live</code><br>
+          <code>Stream key: [their unique key]</code>
+        </p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header" onclick="toggleAcc(this)">3 · Enable Cloudflare features<span class="accordion-chevron">&#9660;</span></button>
+      <div class="accordion-body">
+        <p><strong>SSL/TLS mode:</strong> Set to "Full (strict)" in Cloudflare SSL/TLS settings. This encrypts traffic from visitor → Cloudflare AND Cloudflare → your server.</p>
+        <p><strong>Always HTTPS:</strong> Enable "Always Use HTTPS" — redirects all HTTP requests to HTTPS automatically.</p>
+        <p><strong>DDoS protection:</strong> Free on all plans. Automatically blocks volumetric attacks.</p>
+        <p><strong>Caching:</strong> Set "Cache Level" to Standard. Static assets (JS, CSS, images) will be cached at Cloudflare's edge. HLS .ts files should NOT be cached long-term — they're live content.</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="show('p3-ssl')">Next: SSL + firewall &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P3: SSL ══════════════ -->
+<section class="page" id="p3-ssl">
+  <div class="page-header">
+    <span class="phase-badge p3">Phase 3 · Infrastructure</span>
+    <h2 class="page-title">SSL + firewall</h2>
+    <p class="page-subtitle">Free HTTPS with Let's Encrypt and a properly secured VPS.</p>
+  </div>
+
+  <h3>Get SSL certificate with certbot</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><span class="code-title">Let's Encrypt — free, auto-renewing SSL</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="cm"># Make sure your domain is pointing to your server first!</span>
+<span class="cm"># Then run certbot — it reads your nginx config automatically</span>
+
+sudo certbot --nginx -d yoursite.com -d www.yoursite.com
+
+<span class="cm"># Follow prompts:
+# - Enter your email
+# - Agree to terms
+# - Choose to redirect HTTP → HTTPS (option 2, recommended)
+
+# Test auto-renewal (cert expires every 90 days, auto-renewed)</span>
+sudo certbot renew --dry-run
+
+<span class="cm"># Verify certs are installed</span>
+sudo certbot certificates</pre>
+  </div>
+
+  <div class="info-box tip">
+    Certbot automatically edits your nginx config to add the SSL certificate paths and sets up a cron job to renew the certificate before it expires. You never need to manually renew.
+  </div>
+
+  <h3>Harden SSH access</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><span class="code-title">Secure SSH — disable password login, use keys</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="cm"># On your LOCAL machine — generate SSH key if you don't have one</span>
+ssh-keygen -t ed25519 -C "your@email.com"
+
+<span class="cm"># Copy public key to your server</span>
+ssh-copy-id stream@YOUR_VPS_IP
+
+<span class="cm"># Now on the VPS — disable password authentication</span>
+sudo nano /etc/ssh/sshd_config
+
+<span class="cm"># Change or add these lines:</span>
+PasswordAuthentication no
+PubkeyAuthentication yes
+PermitRootLogin no
+
+<span class="cm"># Restart SSH service</span>
+sudo systemctl restart sshd
+
+<span class="cm"># Test in a NEW terminal (don't close current session!) that SSH key works</span>
+ssh stream@YOUR_VPS_IP</pre>
+  </div>
+
+  <div class="info-box danger">
+    <strong>Test SSH key login in a NEW terminal window before closing your current session.</strong> If you close your only terminal and SSH key isn't working, you could lock yourself out of your server permanently.
+  </div>
+
+  <button class="next-btn" onclick="show('p4-ingest')">Next: Stream ingest pipeline &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P4: INGEST ══════════════ -->
+<section class="page" id="p4-ingest">
+  <div class="page-header">
+    <span class="phase-badge p4">Phase 4 · Build</span>
+    <h2 class="page-title">Stream ingest pipeline</h2>
+    <p class="page-subtitle">The backend API that validates stream keys and tracks live streams.</p>
+  </div>
+
+  <h3>How stream key auth works</h3>
+  <p>When OBS connects to Nginx, Nginx calls your API's <code>/api/stream/auth</code> endpoint. Your API checks the stream key against the database. Return 2xx = allow, 4xx = reject.</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">javascript</span><span class="code-title">server/routes/stream.js — stream auth + lifecycle</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="kw">const</span> <span class="var">express</span> = require(<span class="str">'express'</span>);
+<span class="kw">const</span> <span class="var">router</span> = express.<span class="fn">Router</span>();
+<span class="kw">const</span> { Pool } = require(<span class="str">'pg'</span>);
+<span class="kw">const</span> <span class="var">redis</span> = require(<span class="str">'../redis'</span>);
+
+<span class="kw">const</span> <span class="var">db</span> = <span class="kw">new</span> Pool({ connectionString: process.env.DATABASE_URL });
+
+<span class="cm">/**
+ * Called by Nginx when OBS connects and starts streaming.
+ * Nginx sends: POST /api/stream/auth with body: name=STREAM_KEY
+ */</span>
+router.<span class="fn">post</span>(<span class="str">'/stream/auth'</span>, <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> { name: streamKey } = req.body;
+
+  <span class="kw">if</span> (!streamKey) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">400</span>).<span class="fn">send</span>(<span class="str">'No stream key'</span>);
+
+  <span class="kw">try</span> {
+    <span class="cm">// Look up user by stream key</span>
+    <span class="kw">const</span> { rows } = <span class="kw">await</span> db.<span class="fn">query</span>(
+      <span class="str">'SELECT id, username FROM users WHERE stream_key = $1'</span>,
+      [streamKey]
+    );
+
+    <span class="kw">if</span> (rows.length === <span class="num">0</span>) {
+      console.<span class="fn">log</span>(<span class="str">`Rejected unknown key: ${streamKey}`</span>);
+      <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">401</span>).<span class="fn">send</span>(<span class="str">'Invalid stream key'</span>);
+    }
+
+    <span class="kw">const</span> <span class="var">user</span> = rows[<span class="num">0</span>];
+
+    <span class="cm">// Mark stream as live in Redis (fast, real-time)</span>
+    <span class="kw">await</span> redis.<span class="fn">set</span>(<span class="str">`stream:${user.id}:live`</span>, <span class="str">'true'</span>, <span class="str">'EX'</span>, <span class="num">86400</span>);
+    <span class="kw">await</span> redis.<span class="fn">set</span>(<span class="str">`stream:${user.id}:key`</span>, streamKey, <span class="str">'EX'</span>, <span class="num">86400</span>);
+
+    <span class="cm">// Update stream start time in PostgreSQL</span>
+    <span class="kw">await</span> db.<span class="fn">query</span>(
+      <span class="str">'UPDATE streams SET started_at = NOW(), is_live = true WHERE user_id = $1'</span>,
+      [user.id]
+    );
+
+    console.<span class="fn">log</span>(<span class="str">`✓ Stream started: @${user.username}`</span>);
+    res.<span class="fn">status</span>(<span class="num">200</span>).<span class="fn">send</span>(<span class="str">'OK'</span>);
+
+  } <span class="kw">catch</span> (err) {
+    console.error(<span class="str">'Stream auth error:'</span>, err);
+    res.<span class="fn">status</span>(<span class="num">500</span>).<span class="fn">send</span>(<span class="str">'Server error'</span>);
+  }
+});
+
+<span class="cm">/**
+ * Called by Nginx when OBS disconnects / stops streaming.
+ */</span>
+router.<span class="fn">post</span>(<span class="str">'/stream/end'</span>, <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> { name: streamKey } = req.body;
+
+  <span class="kw">try</span> {
+    <span class="kw">const</span> { rows } = <span class="kw">await</span> db.<span class="fn">query</span>(
+      <span class="str">'SELECT id FROM users WHERE stream_key = $1'</span>, [streamKey]
+    );
+
+    <span class="kw">if</span> (rows.length > <span class="num">0</span>) {
+      <span class="kw">const</span> userId = rows[<span class="num">0</span>].id;
+      <span class="kw">await</span> redis.<span class="fn">del</span>(<span class="str">`stream:${userId}:live`</span>);
+      <span class="kw">await</span> db.<span class="fn">query</span>(
+        <span class="str">'UPDATE streams SET ended_at = NOW(), is_live = false WHERE user_id = $1'</span>,
+        [userId]
+      );
+    }
+
+    res.<span class="fn">status</span>(<span class="num">200</span>).<span class="fn">send</span>(<span class="str">'OK'</span>);
+  } <span class="kw">catch</span> (err) {
+    res.<span class="fn">status</span>(<span class="num">500</span>).<span class="fn">send</span>(<span class="str">'Error'</span>);
+  }
+});
+
+module.exports = router;</pre>
+  </div>
+
+  <h3>Database schema</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">sql</span><span class="code-title">PostgreSQL schema — run in psql</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="kw">CREATE EXTENSION IF NOT EXISTS</span> <span class="str">"uuid-ossp"</span>;
+
+<span class="kw">CREATE TABLE</span> users (
+  id          UUID <span class="kw">PRIMARY KEY DEFAULT</span> uuid_generate_v4(),
+  username    TEXT <span class="kw">UNIQUE NOT NULL</span>,
+  email       TEXT <span class="kw">UNIQUE NOT NULL</span>,
+  password    TEXT <span class="kw">NOT NULL</span>,
+  stream_key  TEXT <span class="kw">UNIQUE DEFAULT</span> gen_random_uuid()::TEXT,
+  avatar_url  TEXT,
+  created_at  TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()
+);
+
+<span class="kw">CREATE TABLE</span> streams (
+  id          UUID <span class="kw">PRIMARY KEY DEFAULT</span> uuid_generate_v4(),
+  user_id     UUID <span class="kw">REFERENCES</span> users(id) <span class="kw">ON DELETE CASCADE</span>,
+  title       TEXT <span class="kw">DEFAULT</span> <span class="str">'Live Stream'</span>,
+  category    TEXT,
+  is_live     BOOLEAN <span class="kw">DEFAULT</span> false,
+  started_at  TIMESTAMPTZ,
+  ended_at    TIMESTAMPTZ,
+  viewer_peak INT <span class="kw">DEFAULT</span> 0
+);
+
+<span class="kw">CREATE TABLE</span> subscriptions (
+  id              UUID <span class="kw">PRIMARY KEY DEFAULT</span> uuid_generate_v4(),
+  user_id         UUID <span class="kw">REFERENCES</span> users(id),
+  stripe_customer TEXT,
+  stripe_sub_id   TEXT,
+  plan            TEXT,
+  status          TEXT,
+  created_at      TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()
+);</pre>
+  </div>
+
+  <button class="next-btn" onclick="show('p4-ffmpeg')">Next: FFmpeg transcoding &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P4: FFMPEG ══════════════ -->
+<section class="page" id="p4-ffmpeg">
+  <div class="page-header">
+    <span class="phase-badge p4">Phase 4 · Build</span>
+    <h2 class="page-title">FFmpeg transcoding</h2>
+    <p class="page-subtitle">The command that converts one RTMP stream into multiple quality HLS streams.</p>
+  </div>
+
+  <h3>The full FFmpeg command</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><span class="code-title">Multi-bitrate HLS transcoding command</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>ffmpeg \
+  -i rtmp://localhost/live/<span class="var">STREAM_KEY</span> \    <span class="cm"># Input: RTMP from Nginx</span>
+  
+  <span class="cm"># ── Quality 1: 1080p ──────────────────────────────</span>
+  -map 0:v -map 0:a                          \  <span class="cm"># Map video+audio</span>
+  -c:v libx264 -c:a aac                      \  <span class="cm"># H.264 video, AAC audio</span>
+  -b:v 4000k -s 1920x1080                    \  <span class="cm"># 4 Mbps, 1080p</span>
+  -preset veryfast                            \  <span class="cm"># Encode speed (faster = less CPU, lower quality)</span>
+  -profile:v high -level 4.1                 \  <span class="cm"># H.264 profile</span>
+  -g 60 -keyint_min 60                       \  <span class="cm"># Keyframe every 2s at 30fps</span>
+  -hls_time 2 -hls_list_size 5              \  <span class="cm"># 2s segments, keep last 5</span>
+  -hls_flags delete_segments                 \  <span class="cm"># Delete old segments</span>
+  -hls_segment_filename /var/www/hls/<span class="var">STREAM_KEY</span>/1080p_%04d.ts \
+  /var/www/hls/<span class="var">STREAM_KEY</span>/1080p.m3u8        \
+
+  <span class="cm"># ── Quality 2: 720p ───────────────────────────────</span>
+  -map 0:v -map 0:a                          \
+  -c:v libx264 -c:a aac                      \
+  -b:v 2500k -s 1280x720                     \
+  -preset veryfast -g 60 -keyint_min 60      \
+  -hls_time 2 -hls_list_size 5              \
+  -hls_flags delete_segments                 \
+  -hls_segment_filename /var/www/hls/<span class="var">STREAM_KEY</span>/720p_%04d.ts \
+  /var/www/hls/<span class="var">STREAM_KEY</span>/720p.m3u8         \
+
+  <span class="cm"># ── Quality 3: 480p ───────────────────────────────</span>
+  -map 0:v -map 0:a                          \
+  -c:v libx264 -c:a aac                      \
+  -b:v 800k -s 854x480                       \
+  -preset veryfast -g 60 -keyint_min 60      \
+  -hls_time 2 -hls_list_size 5              \
+  -hls_flags delete_segments                 \
+  -hls_segment_filename /var/www/hls/<span class="var">STREAM_KEY</span>/480p_%04d.ts \
+  /var/www/hls/<span class="var">STREAM_KEY</span>/480p.m3u8         \
+
+  <span class="cm"># ── Quality 4: 360p ───────────────────────────────</span>
+  -map 0:v -map 0:a                          \
+  -c:v libx264 -c:a aac                      \
+  -b:v 400k -s 640x360                       \
+  -preset veryfast -g 60 -keyint_min 60      \
+  -hls_time 2 -hls_list_size 5              \
+  -hls_flags delete_segments                 \
+  -hls_segment_filename /var/www/hls/<span class="var">STREAM_KEY</span>/360p_%04d.ts \
+  /var/www/hls/<span class="var">STREAM_KEY</span>/360p.m3u8</pre>
+  </div>
+
+  <h3>Generate the master playlist</h3>
+  <p>FFmpeg doesn't auto-generate the master playlist. Create it in Node.js when a stream starts:</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">javascript</span><span class="code-title">Generate master.m3u8 on stream start</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="kw">const</span> fs = require(<span class="str">'fs'</span>);
+<span class="kw">const</span> path = require(<span class="str">'path'</span>);
+
+<span class="kw">function</span> <span class="fn">createMasterPlaylist</span>(streamKey) {
+  <span class="kw">const</span> dir = <span class="str">`/var/www/hls/${streamKey}`</span>;
+  fs.<span class="fn">mkdirSync</span>(dir, { recursive: true });
+
+  <span class="kw">const</span> master = <span class="str">`#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=4200000,RESOLUTION=1920x1080,NAME="1080p"
+1080p.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=2628000,RESOLUTION=1280x720,NAME="720p"
+720p.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=864000,RESOLUTION=854x480,NAME="480p"
+480p.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=432000,RESOLUTION=640x360,NAME="360p"
+360p.m3u8`</span>;
+
+  fs.<span class="fn">writeFileSync</span>(path.<span class="fn">join</span>(dir, <span class="str">'master.m3u8'</span>), master);
+  console.<span class="fn">log</span>(<span class="str">`Master playlist created for ${streamKey}`</span>);
+}
+
+module.exports = { createMasterPlaylist };</pre>
+  </div>
+
+  <div class="info-box warn">
+    <strong>CPU usage:</strong> Each concurrent stream being transcoded to 4 quality levels uses roughly 1 full CPU core. A 2-core VPS can handle 2 concurrent streams. For more, either upgrade your VPS or use hardware encoding (NVENC on GPU servers).
+  </div>
+
+  <button class="next-btn" onclick="show('p4-player')">Next: HLS player frontend &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P4: PLAYER ══════════════ -->
+<section class="page" id="p4-player">
+  <div class="page-header">
+    <span class="phase-badge p4">Phase 4 · Build</span>
+    <h2 class="page-title">HLS player — frontend</h2>
+    <p class="page-subtitle">React component with HLS.js, quality selector, fullscreen, and stream stats.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><span class="code-title">Install dependencies in your Next.js project</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>npx create-next-app@latest streamsite --typescript --tailwind
+cd streamsite
+npm install hls.js socket.io-client</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">jsx</span><span class="code-title">components/VideoPlayer.jsx — full HLS player</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="str">'use client'</span>;
+<span class="kw">import</span> { useEffect, useRef, useState, useCallback } <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> Hls <span class="kw">from</span> <span class="str">'hls.js'</span>;
+
+<span class="kw">export default function</span> <span class="fn">VideoPlayer</span>({ streamKey, channelName }) {
+  <span class="kw">const</span> videoRef = useRef(<span class="kw">null</span>);
+  <span class="kw">const</span> hlsRef = useRef(<span class="kw">null</span>);
+  <span class="kw">const</span> [levels, setLevels] = useState([]);
+  <span class="kw">const</span> [currentLevel, setCurrentLevel] = useState(-<span class="num">1</span>); <span class="cm">// -1 = auto</span>
+  <span class="kw">const</span> [isPlaying, setIsPlaying] = useState(<span class="kw">false</span>);
+  <span class="kw">const</span> [isLive, setIsLive] = useState(<span class="kw">false</span>);
+  <span class="kw">const</span> [stats, setStats] = useState({ bandwidth: <span class="num">0</span>, latency: <span class="num">0</span> });
+
+  <span class="kw">const</span> src = <span class="str">`/hls/${streamKey}/master.m3u8`</span>;
+
+  useEffect(() => {
+    <span class="kw">if</span> (!videoRef.current) <span class="kw">return</span>;
+
+    <span class="kw">if</span> (Hls.<span class="fn">isSupported</span>()) {
+      <span class="kw">const</span> hls = <span class="kw">new</span> <span class="fn">Hls</span>({
+        enableWorker: <span class="kw">true</span>,
+        lowLatencyMode: <span class="kw">false</span>,     <span class="cm">// Set true for LL-HLS later</span>
+        backBufferLength: <span class="num">30</span>,
+        liveMaxLatencyDuration: <span class="num">30</span>,
+        liveSyncDuration: <span class="num">3</span>,
+      });
+
+      hlsRef.current = hls;
+      hls.<span class="fn">loadSource</span>(src);
+      hls.<span class="fn">attachMedia</span>(videoRef.current);
+
+      <span class="cm">// When HLS is ready to play</span>
+      hls.<span class="fn">on</span>(Hls.Events.MANIFEST_PARSED, (_, data) => {
+        <span class="fn">setLevels</span>(data.levels);
+        <span class="fn">setIsLive</span>(<span class="kw">true</span>);
+        videoRef.current.<span class="fn">play</span>().catch(console.error);
+      });
+
+      <span class="cm">// Track current quality level</span>
+      hls.<span class="fn">on</span>(Hls.Events.LEVEL_SWITCHED, (_, data) => {
+        <span class="fn">setCurrentLevel</span>(data.level);
+      });
+
+      <span class="cm">// Network stats</span>
+      hls.<span class="fn">on</span>(Hls.Events.FRAG_LOADED, (_, data) => {
+        <span class="fn">setStats</span>({
+          bandwidth: Math.<span class="fn">round</span>(data.frag.stats.bwEstimate / <span class="num">1000</span>),
+          latency: Math.<span class="fn">round</span>(data.frag.stats.loading.end - data.frag.stats.loading.start)
+        });
+      });
+
+    } <span class="kw">else if</span> (videoRef.current.canPlayType(<span class="str">'application/vnd.apple.mpegurl'</span>)) {
+      <span class="cm">// Safari native HLS support</span>
+      videoRef.current.src = src;
+    }
+
+    <span class="kw">return</span> () => hlsRef.current?.<span class="fn">destroy</span>();
+  }, [src]);
+
+  <span class="kw">const</span> <span class="fn">setQuality</span> = (level) => {
+    <span class="kw">if</span> (hlsRef.current) {
+      hlsRef.current.currentLevel = level;
+      <span class="fn">setCurrentLevel</span>(level);
+    }
+  };
+
+  <span class="kw">return</span> (
+    &lt;div className=<span class="str">"relative bg-black rounded-lg overflow-hidden"</span>&gt;
+      &lt;video
+        ref={videoRef}
+        className=<span class="str">"w-full aspect-video"</span>
+        controls
+        playsInline
+        onPlay={() => <span class="fn">setIsPlaying</span>(<span class="kw">true</span>)}
+        onPause={() => <span class="fn">setIsPlaying</span>(<span class="kw">false</span>)}
+      /&gt;
+
+      &lt;<span class="cm">{/* Live badge */}</span>&gt;
+      {isLive && (
+        &lt;div className=<span class="str">"absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded"</span>&gt;
+          &#11044; LIVE
+        &lt;/div&gt;
+      )}
+
+      &lt;<span class="cm">{/* Quality selector */}</span>&gt;
+      &lt;div className=<span class="str">"absolute top-3 right-3 flex gap-1"</span>&gt;
+        &lt;button
+          onClick={() => <span class="fn">setQuality</span>(-<span class="num">1</span>)}
+          className={<span class="str">`text-xs px-2 py-1 rounded ${currentLevel === -1 ? 'bg-purple-600' : 'bg-black/60'} text-white`</span>}
+        &gt;Auto&lt;/button&gt;
+        {levels.<span class="fn">map</span>((level, i) => (
+          &lt;button key={i} onClick={() => <span class="fn">setQuality</span>(i)}
+            className={<span class="str">`text-xs px-2 py-1 rounded ${currentLevel === i ? 'bg-purple-600' : 'bg-black/60'} text-white`</span>}
+          &gt;
+            {level.height}p
+          &lt;/button&gt;
+        ))}
+      &lt;/div&gt;
+
+      &lt;<span class="cm">{/* Stats bar */}</span>&gt;
+      &lt;div className=<span class="str">"absolute bottom-12 left-3 text-xs text-white/50"</span>&gt;
+        {stats.bandwidth &gt; 0 && <span class="str">`${stats.bandwidth} Kbps`</span>}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">jsx</span><span class="code-title">app/watch/[channel]/page.jsx — watch page</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="kw">import</span> VideoPlayer <span class="kw">from</span> <span class="str">'@/components/VideoPlayer'</span>;
+<span class="kw">import</span> LiveChat <span class="kw">from</span> <span class="str">'@/components/LiveChat'</span>;
+
+<span class="kw">export default async function</span> <span class="fn">WatchPage</span>({ params }) {
+  <span class="cm">// Fetch channel data server-side (SSR for SEO)</span>
+  <span class="kw">const</span> channel = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`${process.env.API_URL}/channels/${params.channel}`</span>)
+    .<span class="fn">then</span>(r => r.<span class="fn">json</span>());
+
+  <span class="kw">return</span> (
+    &lt;div className=<span class="str">"flex h-screen bg-gray-950"</span>&gt;
+      &lt;div className=<span class="str">"flex-1 flex flex-col"</span>&gt;
+        &lt;VideoPlayer streamKey={channel.stream_key} /&gt;
+        &lt;div className=<span class="str">"p-4"</span>&gt;
+          &lt;h1 className=<span class="str">"text-xl font-bold text-white"</span>&gt;{channel.stream_title}&lt;/h1&gt;
+          &lt;p className=<span class="str">"text-gray-400"</span>&gt;{channel.username}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;LiveChat channelId={channel.id} className=<span class="str">"w-80 border-l border-gray-800"</span> /&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+  </div>
+
+  <button class="next-btn" onclick="show('p4-chat')">Next: Live chat &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P4: CHAT ══════════════ -->
+<section class="page" id="p4-chat">
+  <div class="page-header">
+    <span class="phase-badge p4">Phase 4 · Build</span>
+    <h2 class="page-title">Live chat with WebSocket</h2>
+    <p class="page-subtitle">Real-time chat using Socket.io — viewer counts, messages, and moderation.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">javascript</span><span class="code-title">server/socket.js — Socket.io chat server</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="kw">const</span> { Server } = require(<span class="str">'socket.io'</span>);
+<span class="kw">const</span> redis = require(<span class="str">'./redis'</span>);
+
+<span class="kw">function</span> <span class="fn">initSocket</span>(httpServer) {
+  <span class="kw">const</span> io = <span class="kw">new</span> <span class="fn">Server</span>(httpServer, {
+    cors: { origin: <span class="str">'https://yoursite.com'</span>, methods: [<span class="str">'GET'</span>, <span class="str">'POST'</span>] }
+  });
+
+  io.<span class="fn">on</span>(<span class="str">'connection'</span>, <span class="kw">async</span> (socket) => {
+    <span class="kw">const</span> { channelId, username } = socket.handshake.query;
+    <span class="kw">const</span> room = <span class="str">`channel:${channelId}`</span>;
+
+    <span class="cm">// Join the channel room</span>
+    socket.<span class="fn">join</span>(room);
+
+    <span class="cm">// Increment viewer count in Redis</span>
+    <span class="kw">const</span> viewers = <span class="kw">await</span> redis.<span class="fn">incr</span>(<span class="str">`viewers:${channelId}`</span>);
+    io.<span class="fn">to</span>(room).<span class="fn">emit</span>(<span class="str">'viewerCount'</span>, viewers);
+
+    <span class="cm">// Send last 50 messages (from Redis list)</span>
+    <span class="kw">const</span> history = <span class="kw">await</span> redis.<span class="fn">lrange</span>(<span class="str">`chat:${channelId}`</span>, -<span class="num">50</span>, -<span class="num">1</span>);
+    socket.<span class="fn">emit</span>(<span class="str">'chatHistory'</span>, history.<span class="fn">map</span>(m => JSON.<span class="fn">parse</span>(m)));
+
+    <span class="cm">// Handle incoming chat message</span>
+    socket.<span class="fn">on</span>(<span class="str">'chat:message'</span>, <span class="kw">async</span> ({ message }) => {
+      <span class="kw">if</span> (!message || message.trim().<span class="fn">length</span> === <span class="num">0</span>) <span class="kw">return</span>;
+      <span class="kw">if</span> (message.length > <span class="num">200</span>) <span class="kw">return</span>; <span class="cm">// max message length</span>
+
+      <span class="kw">const</span> msg = {
+        id: Date.<span class="fn">now</span>(),
+        username: username || <span class="str">'Guest'</span>,
+        message: message.<span class="fn">trim</span>(),
+        timestamp: <span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">toISOString</span>()
+      };
+
+      <span class="cm">// Store in Redis (keep last 100 messages)</span>
+      <span class="kw">await</span> redis.<span class="fn">rpush</span>(<span class="str">`chat:${channelId}`</span>, JSON.<span class="fn">stringify</span>(msg));
+      <span class="kw">await</span> redis.<span class="fn">ltrim</span>(<span class="str">`chat:${channelId}`</span>, -<span class="num">100</span>, -<span class="num">1</span>);
+
+      <span class="cm">// Broadcast to everyone in the channel room</span>
+      io.<span class="fn">to</span>(room).<span class="fn">emit</span>(<span class="str">'chat:message'</span>, msg);
+    });
+
+    <span class="cm">// When viewer leaves</span>
+    socket.<span class="fn">on</span>(<span class="str">'disconnect'</span>, <span class="kw">async</span> () => {
+      <span class="kw">const</span> count = <span class="kw">await</span> redis.<span class="fn">decr</span>(<span class="str">`viewers:${channelId}`</span>);
+      io.<span class="fn">to</span>(room).<span class="fn">emit</span>(<span class="str">'viewerCount'</span>, Math.<span class="fn">max</span>(<span class="num">0</span>, count));
+    });
+  });
+
+  <span class="kw">return</span> io;
+}
+
+module.exports = initSocket;</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">jsx</span><span class="code-title">components/LiveChat.jsx — chat UI</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="str">'use client'</span>;
+<span class="kw">import</span> { useState, useEffect, useRef } <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> { io } <span class="kw">from</span> <span class="str">'socket.io-client'</span>;
+
+<span class="kw">export default function</span> <span class="fn">LiveChat</span>({ channelId }) {
+  <span class="kw">const</span> [messages, setMessages] = useState([]);
+  <span class="kw">const</span> [viewers, setViewers] = useState(<span class="num">0</span>);
+  <span class="kw">const</span> [input, setInput] = useState(<span class="str">''</span>);
+  <span class="kw">const</span> socketRef = useRef(<span class="kw">null</span>);
+  <span class="kw">const</span> bottomRef = useRef(<span class="kw">null</span>);
+
+  useEffect(() => {
+    <span class="kw">const</span> socket = <span class="fn">io</span>(process.env.NEXT_PUBLIC_API_URL, {
+      query: { channelId, username: <span class="str">'Viewer'</span> } <span class="cm">// Pass real username from auth</span>
+    });
+    socketRef.current = socket;
+
+    socket.<span class="fn">on</span>(<span class="str">'chatHistory'</span>, (history) => <span class="fn">setMessages</span>(history));
+    socket.<span class="fn">on</span>(<span class="str">'chat:message'</span>, (msg) => <span class="fn">setMessages</span>(prev => [...prev, msg]));
+    socket.<span class="fn">on</span>(<span class="str">'viewerCount'</span>, (count) => <span class="fn">setViewers</span>(count));
+
+    <span class="kw">return</span> () => socket.<span class="fn">disconnect</span>();
+  }, [channelId]);
+
+  useEffect(() => {
+    bottomRef.current?.<span class="fn">scrollIntoView</span>({ behavior: <span class="str">'smooth'</span> });
+  }, [messages]);
+
+  <span class="kw">const</span> <span class="fn">sendMessage</span> = () => {
+    <span class="kw">if</span> (!input.trim()) <span class="kw">return</span>;
+    socketRef.current?.<span class="fn">emit</span>(<span class="str">'chat:message'</span>, { message: input });
+    <span class="fn">setInput</span>(<span class="str">''</span>);
+  };
+
+  <span class="kw">return</span> (
+    &lt;div className=<span class="str">"flex flex-col h-full bg-gray-900"</span>&gt;
+      &lt;div className=<span class="str">"p-3 border-b border-gray-800 text-sm font-semibold text-gray-300"</span>&gt;
+        Live Chat · {viewers} viewers
+      &lt;/div&gt;
+      &lt;div className=<span class="str">"flex-1 overflow-y-auto p-3 space-y-2"</span>&gt;
+        {messages.<span class="fn">map</span>((msg) => (
+          &lt;div key={msg.id} className=<span class="str">"text-sm"</span>&gt;
+            &lt;span className=<span class="str">"font-semibold text-purple-400"</span>&gt;{msg.username}&lt;/span&gt;
+            &lt;span className=<span class="str">"text-gray-300 ml-2"</span>&gt;{msg.message}&lt;/span&gt;
+          &lt;/div&gt;
+        ))}
+        &lt;div ref={bottomRef} /&gt;
+      &lt;/div&gt;
+      &lt;div className=<span class="str">"p-3 border-t border-gray-800 flex gap-2"</span>&gt;
+        &lt;input
+          value={input}
+          onChange={e => <span class="fn">setInput</span>(e.target.value)}
+          onKeyDown={e => e.key === <span class="str">'Enter'</span> && <span class="fn">sendMessage</span>()}
+          placeholder=<span class="str">"Send a message..."</span>
+          className=<span class="str">"flex-1 bg-gray-800 text-white text-sm rounded px-3 py-2 outline-none"</span>
+        /&gt;
+        &lt;button onClick={<span class="fn">sendMessage</span>}
+          className=<span class="str">"bg-purple-600 text-white px-3 py-2 rounded text-sm font-semibold"</span>
+        &gt;Send&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+  </div>
+
+  <button class="next-btn" onclick="show('p5-auth')">Next: Auth + stream keys &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P5: AUTH ══════════════ -->
+<section class="page" id="p5-auth">
+  <div class="page-header">
+    <span class="phase-badge p5">Phase 5 · Platform</span>
+    <h2 class="page-title">Auth + stream keys</h2>
+    <p class="page-subtitle">User registration, login, and unique stream key generation.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><span class="code-title">Install auth dependencies</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>npm install next-auth bcryptjs jsonwebtoken uuid
+<span class="cm"># Or use Clerk for managed auth (much easier):</span>
+npm install @clerk/nextjs</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">javascript</span><span class="code-title">server/routes/auth.js — register + login</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="kw">const</span> bcrypt = require(<span class="str">'bcryptjs'</span>);
+<span class="kw">const</span> jwt = require(<span class="str">'jsonwebtoken'</span>);
+<span class="kw">const</span> { v4: uuidv4 } = require(<span class="str">'uuid'</span>);
+
+router.<span class="fn">post</span>(<span class="str">'/auth/register'</span>, <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> { username, email, password } = req.body;
+
+  <span class="cm">// Hash password — NEVER store plain text passwords</span>
+  <span class="kw">const</span> hashedPassword = <span class="kw">await</span> bcrypt.<span class="fn">hash</span>(password, <span class="num">12</span>);
+
+  <span class="cm">// Generate unique stream key</span>
+  <span class="kw">const</span> streamKey = uuidv4().<span class="fn">replace</span>(/-/g, <span class="str">''</span>).slice(<span class="num">0</span>, <span class="num">24</span>);
+
+  <span class="kw">const</span> { rows } = <span class="kw">await</span> db.<span class="fn">query</span>(
+    <span class="str">`INSERT INTO users (username, email, password, stream_key)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, username, stream_key`</span>,
+    [username, email, hashedPassword, streamKey]
+  );
+
+  <span class="kw">const</span> token = jwt.<span class="fn">sign</span>(
+    { userId: rows[<span class="num">0</span>].id },
+    process.env.JWT_SECRET,
+    { expiresIn: <span class="str">'30d'</span> }
+  );
+
+  res.<span class="fn">json</span>({ token, user: rows[<span class="num">0</span>] });
+});
+
+router.<span class="fn">post</span>(<span class="str">'/auth/regenerate-key'</span>, authenticate, <span class="kw">async</span> (req, res) => {
+  <span class="cm">// Broadcaster wants a new stream key (e.g. leaked their old one)</span>
+  <span class="kw">const</span> newKey = uuidv4().<span class="fn">replace</span>(/-/g, <span class="str">''</span>).slice(<span class="num">0</span>, <span class="num">24</span>);
+
+  <span class="kw">await</span> db.<span class="fn">query</span>(
+    <span class="str">'UPDATE users SET stream_key = $1 WHERE id = $2'</span>,
+    [newKey, req.user.id]
+  );
+
+  res.<span class="fn">json</span>({ stream_key: newKey });
+});</pre>
+  </div>
+
+  <div class="info-box tip">
+    <strong>Use Clerk if this is your first time building auth.</strong> Clerk is a managed auth service with a free tier. It handles email verification, OAuth (Google/GitHub login), session management, and UI components out of the box. You can always replace it with custom auth later.
+  </div>
+
+  <button class="next-btn" onclick="show('p5-payments')">Next: Subscriptions (Stripe) &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P5: PAYMENTS ══════════════ -->
+<section class="page" id="p5-payments">
+  <div class="page-header">
+    <span class="phase-badge p5">Phase 5 · Platform</span>
+    <h2 class="page-title">Subscriptions with Stripe</h2>
+    <p class="page-subtitle">Charge viewers monthly to access premium streams — Stripe Checkout + webhooks.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><span class="code-title">Install Stripe</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>npm install stripe
+<span class="cm"># Set env vars in .env:</span>
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">javascript</span><span class="code-title">server/routes/billing.js — create checkout + handle webhooks</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="kw">const</span> stripe = require(<span class="str">'stripe'</span>)(process.env.STRIPE_SECRET_KEY);
+
+<span class="cm">// Create a checkout session → redirect user to Stripe's payment page</span>
+router.<span class="fn">post</span>(<span class="str">'/billing/checkout'</span>, authenticate, <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> session = <span class="kw">await</span> stripe.checkout.sessions.<span class="fn">create</span>({
+    mode: <span class="str">'subscription'</span>,
+    customer_email: req.user.email,
+    line_items: [{
+      price: <span class="str">'price_YOUR_STRIPE_PRICE_ID'</span>,  <span class="cm">// Create in Stripe Dashboard</span>
+      quantity: <span class="num">1</span>,
+    }],
+    success_url: <span class="str">'https://yoursite.com/dashboard?subscribed=true'</span>,
+    cancel_url: <span class="str">'https://yoursite.com/pricing'</span>,
+    metadata: { userId: req.user.id }
+  });
+
+  res.<span class="fn">json</span>({ url: session.url }); <span class="cm">// Frontend redirects user here</span>
+});
+
+<span class="cm">// Stripe calls this webhook when subscription events happen</span>
+router.<span class="fn">post</span>(<span class="str">'/billing/webhook'</span>,
+  express.<span class="fn">raw</span>({ type: <span class="str">'application/json'</span> }),  <span class="cm">// Must be raw body!</span>
+  <span class="kw">async</span> (req, res) => {
+    <span class="kw">const</span> sig = req.headers[<span class="str">'stripe-signature'</span>];
+    <span class="kw">let</span> event;
+
+    <span class="kw">try</span> {
+      event = stripe.webhooks.<span class="fn">constructEvent</span>(
+        req.body, sig, process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } <span class="kw">catch</span> (err) {
+      <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">400</span>).<span class="fn">send</span>(<span class="str">`Webhook error: ${err.message}`</span>);
+    }
+
+    <span class="kw">switch</span> (event.type) {
+      <span class="kw">case</span> <span class="str">'checkout.session.completed'</span>:
+        <span class="kw">await</span> db.<span class="fn">query</span>(
+          <span class="str">'UPDATE users SET plan = $1 WHERE id = $2'</span>,
+          [<span class="str">'pro'</span>, event.data.object.metadata.userId]
+        );
+        <span class="kw">break</span>;
+
+      <span class="kw">case</span> <span class="str">'customer.subscription.deleted'</span>:
+        <span class="kw">await</span> db.<span class="fn">query</span>(
+          <span class="str">'UPDATE users SET plan = $1 WHERE stripe_customer = $2'</span>,
+          [<span class="str">'free'</span>, event.data.object.customer]
+        );
+        <span class="kw">break</span>;
+    }
+
+    res.<span class="fn">json</span>({ received: <span class="kw">true</span> });
+  }
+);</pre>
+  </div>
+
+  <button class="next-btn" onclick="show('p6-monitor')">Next: Monitoring + CI/CD &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P6: MONITORING ══════════════ -->
+<section class="page" id="p6-monitor">
+  <div class="page-header">
+    <span class="phase-badge p6">Phase 6 · Scale</span>
+    <h2 class="page-title">Monitoring + CI/CD</h2>
+    <p class="page-subtitle">Know when things break before your users do. Automate deployments.</p>
+  </div>
+
+  <h3>PM2 process management</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><span class="code-title">Run your apps with PM2</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="cm"># Start your Node.js API</span>
+pm2 start server/index.js --name api
+
+<span class="cm"># Start Next.js</span>
+pm2 start npm --name web -- start
+
+<span class="cm"># Save PM2 config (auto-restart after reboot)</span>
+pm2 save
+pm2 startup  <span class="cm"># Run the command it prints</span>
+
+<span class="cm"># Monitor</span>
+pm2 list
+pm2 logs api      <span class="cm"># Stream logs</span>
+pm2 monit         <span class="cm"># Live dashboard</span>
+
+<span class="cm"># Reload without downtime</span>
+pm2 reload api</pre>
+  </div>
+
+  <h3>GitHub Actions CI/CD</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">yaml</span><span class="code-title">.github/workflows/deploy.yml</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>name: Deploy to production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: stream
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/stream/streamsite
+            git pull origin main
+            npm ci --production
+            npm run build
+            pm2 reload web api
+            echo "✓ Deployed successfully"</pre>
+  </div>
+
+  <h3>Free monitoring tools</h3>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">&#128200;</div>
+      <h4>UptimeRobot</h4>
+      <p>Free uptime monitoring. Checks your site every 5 minutes. Sends email/SMS if it goes down.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">&#128202;</div>
+      <h4>Grafana + Prometheus</h4>
+      <p>Self-hosted metrics and dashboards. Track CPU, RAM, concurrent streams, viewer counts.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">&#128203;</div>
+      <h4>PM2 logs</h4>
+      <p>Built-in logging. <code>pm2 logs --lines 200</code> for recent errors. Rotate with pm2-logrotate.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">&#128241;</div>
+      <h4>Sentry</h4>
+      <p>Error tracking. Catches Node.js and React errors in production with full stack traces.</p>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="show('p6-scale')">Next: Scaling & cost &#8594;</button>
+</section>
+
+
+<!-- ══════════════ P6: SCALE ══════════════ -->
+<section class="page" id="p6-scale">
+  <div class="page-header">
+    <span class="phase-badge p6">Phase 6 · Scale</span>
+    <h2 class="page-title">Scaling & cost management</h2>
+    <p class="page-subtitle">When to upgrade, what costs to watch, and how the big platforms do it.</p>
+  </div>
+
+  <h3>Cost estimate at different scales</h3>
+
+  <table class="compare-table">
+    <tr><th>Scale</th><th>Concurrent streams</th><th>Viewers</th><th>Estimated cost</th></tr>
+    <tr>
+      <td>Startup</td>
+      <td>1–2</td>
+      <td>&lt;100</td>
+      <td>€10–20/mo (VPS + domain)</td>
+    </tr>
+    <tr>
+      <td>Small</td>
+      <td>2–5</td>
+      <td>100–1,000</td>
+      <td>€30–60/mo (bigger VPS + CDN)</td>
+    </tr>
+    <tr>
+      <td>Medium</td>
+      <td>5–20</td>
+      <td>1,000–10,000</td>
+      <td>€150–400/mo (dedicated + CDN)</td>
+    </tr>
+    <tr>
+      <td>Large</td>
+      <td>20+</td>
+      <td>10,000+</td>
+      <td>€1,000+/mo (cluster + managed CDN)</td>
+    </tr>
+  </table>
+
+  <h3>When to upgrade what</h3>
+
+  <div class="accordion">
+    <div class="accordion-item open">
+      <button class="accordion-header" onclick="toggleAcc(this)">CPU bottleneck — too many streams<span class="accordion-chevron">&#9660;</span></button>
+      <div class="accordion-body">
+        <p>FFmpeg transcoding is CPU-intensive. When you see CPU consistently above 80%, you have options:</p>
+        <ul style="color:var(--muted);font-size:13px;line-height:2;padding-left:18px;">
+          <li>Upgrade to a bigger VPS (4→8→16 vCPU)</li>
+          <li>Use hardware encoding: <code>-c:v h264_nvenc</code> (NVIDIA GPU) instead of <code>libx264</code> — 10x faster</li>
+          <li>Offload transcoding to a dedicated transcoding cluster</li>
+          <li>Use Mux or api.video — they handle transcoding for you</li>
+        </ul>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-header" onclick="toggleAcc(this)">Bandwidth — egress costs<span class="accordion-chevron">&#9660;</span></button>
+      <div class="accordion-body">
+        <p>The biggest scaling cost is bandwidth. Serving 1,000 viewers 720p video at 2.5 Mbps = 2.5 Gbps out. This is why CDNs exist.</p>
+        <p>Your CDN pays for egress at bulk rates. Without CDN, your VPS pays retail rates. Always serve HLS via CDN — never directly from your origin.</p>
+        <p>BunnyCDN at $0.01/GB is excellent value. At 10TB/month, that's $100. A VPS serving that traffic directly would be much more expensive or simply overloaded.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-header" onclick="toggleAcc(this)">Chat scaling — WebSocket limits<span class="accordion-chevron">&#9660;</span></button>
+      <div class="accordion-body">
+        <p>A single Node.js Socket.io server can handle ~10,000 concurrent connections. For more:</p>
+        <ul style="color:var(--muted);font-size:13px;line-height:2;padding-left:18px;">
+          <li>Use Socket.io with Redis adapter (pub/sub across multiple processes)</li>
+          <li>Migrate to a dedicated chat service like Stream (the chat API company)</li>
+          <li>Or use Ably/Pusher for managed WebSocket infrastructure</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>The full architecture when scaled</h3>
+
+  <div class="flow-diagram">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;font-size:12px;">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="color:var(--hint);font-size:10px;letter-spacing:1px;text-transform:uppercase;">Ingest layer</div>
+        <div class="flow-box amber" style="font-size:11px;">Nginx RTMP cluster</div>
+        <div class="flow-box amber" style="font-size:11px;">Multiple ingest nodes</div>
+        <div class="flow-box amber" style="font-size:11px;">Load balanced</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="color:var(--hint);font-size:10px;letter-spacing:1px;text-transform:uppercase;">Processing layer</div>
+        <div class="flow-box highlight" style="font-size:11px;">Transcoding workers</div>
+        <div class="flow-box highlight" style="font-size:11px;">GPU-accelerated</div>
+        <div class="flow-box highlight" style="font-size:11px;">Auto-scaling pool</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="color:var(--hint);font-size:10px;letter-spacing:1px;text-transform:uppercase;">Delivery layer</div>
+        <div class="flow-box green" style="font-size:11px;">Global CDN</div>
+        <div class="flow-box green" style="font-size:11px;">200+ edge nodes</div>
+        <div class="flow-box green" style="font-size:11px;">&lt;50ms to viewers</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box note">
+    <strong>You don't need this yet.</strong> Start with one VPS. Add complexity only when a specific bottleneck forces you to. Many successful streaming sites run on 3–4 servers for their first year.
+  </div>
+
+  <div style="margin-top:40px;padding:24px;background:var(--card);border:1px solid var(--border);border-radius:12px;">
+    <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px;">&#127942; You've completed the masterclass</div>
+    <p style="color:var(--muted);font-size:14px;">You now have the full knowledge stack from protocols to production. Start building — begin with Phase 1 locally, get OBS streaming to your own Nginx, see those HLS segments appear on disk. That moment is when everything clicks.</p>
+    <button class="next-btn" onclick="show('p1-concepts')" style="margin-top:16px;background:var(--accent2);">&#8617; Back to start</button>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+const pages = document.querySelectorAll('.page');
+const navItems = document.querySelectorAll('.nav-item');
+const totalPages = pages.length;
+let currentIndex = 0;
+
+function show(id) {
+  pages.forEach(p => p.classList.remove('active'));
+  navItems.forEach(n => n.classList.remove('active'));
+
+  const target = document.getElementById(id);
+  if (target) {
+    target.classList.add('active');
+    const idx = Array.from(pages).indexOf(target);
+    currentIndex = idx;
+    document.getElementById('topProgress').style.width = (((idx + 1) / totalPages) * 100) + '%';
+  }
+
+  navItems.forEach(btn => {
+    if (btn.getAttribute('onclick')?.includes(id)) btn.classList.add('active');
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function quiz(btn, correct) {
+  const parent = btn.closest('.quiz-box');
+  parent.querySelectorAll('.quiz-opt').forEach(b => {
+    b.disabled = true;
+    b.style.cursor = 'default';
+  });
+  const result = parent.querySelector('.quiz-result');
+  if (correct) {
+    btn.classList.add('correct');
+    result.textContent = '✓ Correct! OBS uses RTMP to send video to your media server.';
+    result.className = 'quiz-result show ok';
+  } else {
+    btn.classList.add('wrong');
+    result.textContent = '✗ Not quite. The correct answer is RTMP — Real-Time Messaging Protocol.';
+    result.className = 'quiz-result show fail';
+    parent.querySelectorAll('.quiz-opt').forEach(b => {
+      if (b.getAttribute('onclick')?.includes('true')) b.classList.add('correct');
+    });
+  }
+}
+
+function toggleAcc(btn) {
+  const item = btn.closest('.accordion-item');
+  item.classList.toggle('open');
+}
+
+function tab(btn, id) {
+  const container = btn.closest('.tabs');
+  container.querySelectorAll('.tab-head').forEach(b => b.classList.remove('active'));
+  container.querySelectorAll('.tab-body').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+const simSteps = {
+  idle: [
+    { time:'00:00:00', src:'SYSTEM', msg:'Waiting for broadcaster...', cls:'' }
+  ],
+  connect: [
+    { time:'00:00:01', src:'OBS', msg:'TCP handshake → rtmp://rtmp.yoursite.com:1935', cls:'rtmp' },
+    { time:'00:00:01', src:'NGINX', msg:'RTMP connection accepted. Calling /api/stream/auth...', cls:'' },
+    { time:'00:00:02', src:'API', msg:'Stream key valid. User: @broadcaster. Returning 200 OK.', cls:'' },
+    { time:'00:00:02', src:'NGINX', msg:'Auth passed. Stream "live/abc123" now ACTIVE.', cls:'rtmp' }
+  ],
+  stream: [
+    { time:'00:00:03', src:'OBS', msg:'Sending RTMP stream → H.264 video + AAC audio, 4500 Kbps', cls:'rtmp' },
+    { time:'00:00:03', src:'NGINX', msg:'Spawning FFmpeg process for stream abc123...', cls:'' },
+    { time:'00:00:05', src:'FFMPEG', msg:'Transcoding: 1080p@4000k + 720p@2500k + 480p@800k + 360p@400k', cls:'rtmp' },
+    { time:'00:00:07', src:'FFMPEG', msg:'HLS segment written: /var/www/hls/abc123/720p_0001.ts', cls:'hls' },
+    { time:'00:00:09', src:'FFMPEG', msg:'HLS segment written: /var/www/hls/abc123/720p_0002.ts', cls:'hls' },
+    { time:'00:00:09', src:'NGINX', msg:'master.m3u8 updated. Stream ready for viewers.', cls:'hls' }
+  ],
+  viewer: [
+    { time:'00:00:15', src:'BROWSER', msg:'GET https://yoursite.com/hls/abc123/master.m3u8', cls:'hls' },
+    { time:'00:00:15', src:'HLS.JS', msg:'Parsing master playlist. Found 4 quality levels.', cls:'hls' },
+    { time:'00:00:15', src:'HLS.JS', msg:'Network speed: 8 Mbps → selecting 720p', cls:'hls' },
+    { time:'00:00:16', src:'BROWSER', msg:'GET /hls/abc123/720p_0005.ts (fetching latest segment)', cls:'hls' },
+    { time:'00:00:16', src:'HLS.JS', msg:'Buffering 3 segments... Playback started! Latency: ~18s', cls:'hls' }
+  ],
+  chat: [
+    { time:'00:00:20', src:'VIEWER', msg:'WebSocket upgrade → wss://yoursite.com/socket.io', cls:'ws' },
+    { time:'00:00:20', src:'SOCKET', msg:'Connection established. Joined room: channel:xyz', cls:'ws' },
+    { time:'00:00:21', src:'SOCKET', msg:'Viewer count updated: 1 → 2 viewers', cls:'ws' },
+    { time:'00:00:25', src:'VIEWER', msg:'emit chat:message → "Great stream!"', cls:'ws' },
+    { time:'00:00:25', src:'SOCKET', msg:'Broadcast to room (2 viewers): { user: "Viewer", msg: "Great stream!" }', cls:'ws' }
+  ],
+  end: [
+    { time:'01:24:00', src:'OBS', msg:'Broadcaster stops stream. TCP connection closing...', cls:'rtmp' },
+    { time:'01:24:00', src:'NGINX', msg:'RTMP disconnect. Calling /api/stream/end...', cls:'' },
+    { time:'01:24:00', src:'API', msg:'Stream ended. DB updated: is_live=false, ended_at=NOW()', cls:'' },
+    { time:'01:24:01', src:'FFMPEG', msg:'FFmpeg process terminated. HLS segments stopped.', cls:'hls' },
+    { time:'01:24:01', src:'REDIS', msg:'stream:live deleted. Viewer count cleared.', cls:'' },
+    { time:'01:24:02', src:'SYSTEM', msg:'Stream archived. VOD upload to R2 starting...', cls:'' }
+  ]
+};
+
+function simStep(step) {
+  document.querySelectorAll('[id^="sbtn-"]').forEach(b => b.classList.remove('active'));
+  document.getElementById('sbtn-' + step)?.classList.add('active');
+
+  const display = document.getElementById('simDisplay');
+  display.innerHTML = '';
+  const lines = simSteps[step] || [];
+
+  lines.forEach((l, i) => {
+    setTimeout(() => {
+      const div = document.createElement('div');
+      div.className = 'sim-line';
+      div.innerHTML = `<span class="sim-time">${l.time}</span><span class="sim-src">${l.src}</span><span class="sim-msg ${l.cls}">${l.msg}</span>`;
+      display.appendChild(div);
+      display.scrollTop = display.scrollHeight;
+    }, i * 250);
+  });
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+simStep('idle');
+</script>
+
+</body>
+</html>

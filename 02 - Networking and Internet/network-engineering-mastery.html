@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Engineering Mastery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Source+Sans+3:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1c1917;--bg2:#211e1b;--surf:#292420;--surf2:#332d28;
+  --bdr:#403830;--bdr2:#302a25;
+  --cyan:#67e8f9;--cyan-d:rgba(103,232,249,.11);
+  --violet:#c4b5fd;--violet-d:rgba(196,181,253,.11);
+  --em:#6ee7b7;--em-d:rgba(110,231,183,.11);
+  --am:#fcd34d;--am-d:rgba(252,211,77,.11);
+  --co:#fda4af;--co-d:rgba(253,164,175,.11);
+  --tx:#d4cdc7;--txm:#7d7068;--hd:#f0ece8;--wh:#faf8f6;
+  --code:#131110;--code-b:#2a2420;
+  --fb:"Source Sans 3",system-ui,sans-serif;
+  --fd:"Lora",Georgia,serif;
+  --fm:"JetBrains Mono",Consolas,monospace;
+  --nav:288px;--r:10px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+
+/* ── MOBILE OVERLAY ── */
+#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:90;backdrop-filter:blur(2px)}
+#overlay.show{display:block}
+
+/* ── HAMBURGER ── */
+#ham{display:none;position:fixed;top:14px;left:14px;z-index:120;background:var(--surf2);border:1px solid var(--bdr);border-radius:9px;padding:10px 12px;cursor:pointer;flex-direction:column;gap:5px;align-items:center}
+#ham span{display:block;width:22px;height:2px;background:var(--tx);border-radius:2px;transition:all .25s}
+#ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+#ham.open span:nth-child(2){opacity:0}
+#ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* ── SIDEBAR ── */
+#sidebar{
+  position:fixed;top:0;left:0;width:var(--nav);height:100vh;
+  background:var(--surf);border-right:1px solid var(--bdr2);
+  display:flex;flex-direction:column;z-index:100;overflow:hidden;
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+}
+#sidebar.hidden{transform:translateX(-100%)}
+
+.nav-brand{padding:20px 20px 14px;border-bottom:1px solid var(--bdr2);flex-shrink:0}
+.nav-brand-title{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--cyan);letter-spacing:.04em;display:flex;align-items:center;gap:8px}
+.nav-brand-title::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cyan);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.nav-brand-sub{font-size:12px;color:var(--txm);margin-top:3px}
+
+/* SEARCH */
+.nav-srch-wrap{padding:10px 13px;border-bottom:1px solid var(--bdr2);flex-shrink:0;position:relative}
+.nav-srch-wrap input{
+  width:100%;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;
+  padding:8px 34px 8px 11px;color:var(--wh);font-family:var(--fb);font-size:13.5px;
+  outline:none;transition:border-color .2s
+}
+.nav-srch-wrap input::placeholder{color:var(--txm)}
+.nav-srch-wrap input:focus{border-color:var(--cyan)}
+.nav-srch-wrap .s-icon{position:absolute;right:22px;top:50%;transform:translateY(-50%);color:var(--txm);pointer-events:none;font-size:13px}
+.nav-srch-wrap .s-clear{position:absolute;right:22px;top:50%;transform:translateY(-50%);color:var(--txm);cursor:pointer;font-size:15px;display:none}
+.nav-srch-wrap.has-q .s-icon{display:none}
+.nav-srch-wrap.has-q .s-clear{display:block}
+
+/* Search results dropdown */
+#srch-results{
+  display:none;position:absolute;top:calc(100% + 2px);left:13px;right:13px;
+  background:var(--surf2);border:1px solid var(--bdr);border-radius:9px;
+  max-height:320px;overflow-y:auto;z-index:200;
+  box-shadow:0 8px 32px rgba(0,0,0,.4)
+}
+#srch-results.show{display:block}
+.srch-item{
+  display:flex;flex-direction:column;padding:11px 14px;cursor:pointer;
+  border-bottom:1px solid var(--bdr2);gap:3px;transition:background .12s
+}
+.srch-item:last-child{border-bottom:none}
+.srch-item:hover{background:rgba(103,232,249,.07)}
+.srch-item-title{font-size:13.5px;font-weight:600;color:var(--wh)}
+.srch-item-section{font-size:11px;color:var(--txm);text-transform:uppercase;letter-spacing:.07em}
+.srch-item-snippet{font-size:12.5px;color:var(--txm);line-height:1.5;margin-top:2px}
+.srch-hl{background:rgba(252,211,77,.25);color:var(--am);border-radius:2px;padding:0 2px}
+.srch-empty{padding:18px 14px;color:var(--txm);font-size:13.5px;text-align:center}
+
+#nav-scroll{flex:1;overflow-y:auto;padding-bottom:12px}
+#nav-scroll::-webkit-scrollbar{width:3px}
+#nav-scroll::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+
+.nav-group{padding:12px 0 2px}
+.nav-group+.nav-group{border-top:1px solid var(--bdr2)}
+.nav-group-label{
+  font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--txm);padding:0 17px 5px;display:flex;align-items:center;gap:8px
+}
+.sdot{width:20px;height:20px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+.s0{background:rgba(110,231,183,.14);color:var(--em)}
+.s1{background:rgba(103,232,249,.11);color:var(--cyan)}
+.s2{background:rgba(196,181,253,.11);color:var(--violet)}
+.s3{background:rgba(252,211,77,.10);color:var(--am)}
+.s4{background:rgba(253,164,175,.11);color:var(--co)}
+.s5{background:rgba(240,236,232,.06);color:var(--wh)}
+
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:6px 17px;
+  font-size:13.5px;color:var(--txm);text-decoration:none;cursor:pointer;
+  border-left:2px solid transparent;transition:all .14s;line-height:1.4
+}
+.nav-item:hover{color:var(--tx);background:rgba(255,255,255,.03)}
+.nav-item.active{color:var(--cyan);background:var(--cyan-d);border-left-color:var(--cyan);font-weight:600}
+.ndot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.4;flex-shrink:0}
+.nav-item.active .ndot{opacity:1}
+
+.nav-footer{padding:11px 15px;border-top:1px solid var(--bdr2);flex-shrink:0}
+.nf-label{font-size:10.5px;color:var(--txm);font-weight:500;margin-bottom:5px}
+.nf-bar{display:flex;height:4px;border-radius:4px;overflow:hidden;gap:2px}
+.nf-seg{height:100%;border-radius:2px}
+
+/* ── MAIN ── */
+#main{margin-left:var(--nav);min-height:100vh;transition:margin-left .28s}
+
+/* ── HERO ── */
+#hero{
+  padding:88px 72px 68px;
+  background:linear-gradient(150deg,#1c1917 0%,#221d18 55%,#1c1917 100%);
+  border-bottom:1px solid var(--bdr2);position:relative;overflow:hidden
+}
+#hero::before{content:"";position:absolute;top:-15%;left:-5%;width:600px;height:600px;background:radial-gradient(circle,rgba(103,232,249,.04) 0%,transparent 65%);pointer-events:none}
+.hero-pill{display:inline-flex;align-items:center;gap:7px;background:var(--cyan-d);border:1px solid rgba(103,232,249,.22);border-radius:20px;padding:5px 15px;font-size:11.5px;color:var(--cyan);font-weight:700;letter-spacing:.05em;margin-bottom:22px}
+.pill-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:blink 2s infinite}
+#hero h1{font-family:var(--fd);font-size:52px;font-weight:700;color:var(--wh);line-height:1.1;letter-spacing:-.01em;margin-bottom:20px}
+#hero h1 span{background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{font-size:18px;color:var(--txm);max-width:700px;line-height:1.75;margin-bottom:36px}
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap;margin-bottom:28px}
+.stat-n{font-family:var(--fd);font-size:32px;font-weight:700;color:var(--wh)}
+.stat-n em{color:var(--cyan);font-style:normal}
+.stat-l{font-size:13px;color:var(--txm);margin-top:3px;font-weight:500}
+.hero-bar{display:flex;height:5px;border-radius:5px;overflow:hidden;max-width:520px;gap:2px}
+
+/* ── SECTIONS ── */
+.section{padding:64px 72px;border-bottom:1px solid var(--bdr2);max-width:1140px}
+.section:last-of-type{border-bottom:none}
+
+.sec-hd{display:flex;gap:20px;align-items:flex-start;margin-bottom:36px}
+.sec-icon{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:25px;flex-shrink:0}
+.ig{background:rgba(110,231,183,.12)}.ib{background:rgba(103,232,249,.10)}
+.ip{background:rgba(196,181,253,.11)}.ia{background:rgba(252,211,77,.10)}
+.ir{background:rgba(253,164,175,.11)}.iw{background:rgba(240,236,232,.06)}
+
+.sec-meta{flex:1}
+.stag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:3px 10px;border-radius:5px;margin-bottom:9px}
+.tg{background:rgba(110,231,183,.12);color:var(--em)}
+.tb{background:rgba(103,232,249,.10);color:var(--cyan)}
+.tp{background:rgba(196,181,253,.11);color:var(--violet)}
+.ta{background:rgba(252,211,77,.10);color:var(--am)}
+.tr{background:rgba(253,164,175,.11);color:var(--co)}
+.tw{background:rgba(240,236,232,.06);color:var(--wh)}
+
+.sec-meta h2{font-family:var(--fd);font-size:30px;font-weight:700;color:var(--wh);line-height:1.2;letter-spacing:-.01em}
+.sec-sub{font-size:16px;color:var(--txm);margin-top:7px;line-height:1.65}
+
+h3{font-family:var(--fd);font-size:20px;font-weight:700;color:var(--wh);margin:40px 0 13px;padding-bottom:9px;border-bottom:1px solid var(--bdr2)}
+h4{font-size:16.5px;font-weight:700;color:var(--cyan);margin:24px 0 9px}
+p{margin-bottom:16px;color:var(--tx);font-size:17px}
+strong{color:var(--wh);font-weight:600}
+em.hl{color:var(--cyan);font-style:normal;font-weight:500}
+a{color:var(--cyan);text-decoration:none}
+ul,ol{padding-left:24px;margin:13px 0}
+li{margin-bottom:9px;font-size:17px;color:var(--tx);line-height:1.75}
+
+pre{background:var(--code);border:1px solid var(--code-b);border-radius:var(--r);padding:20px 22px;overflow-x:auto;margin:18px 0;position:relative}
+pre code{font-family:var(--fm);font-size:13.5px;line-height:1.75;color:#cdd6f4;background:none}
+code.ic{font-family:var(--fm);background:var(--code);border:1px solid var(--code-b);border-radius:5px;padding:2px 7px;font-size:14px;color:var(--cyan)}
+.kw{color:#c099ff}.fn{color:var(--cyan)}.str{color:var(--em)}.num{color:var(--am)}.cm{color:#4a4440;font-style:italic}.op{color:var(--co)}
+
+.callout{border-left:3px solid;border-radius:0 var(--r) var(--r) 0;padding:15px 19px;margin:20px 0;font-size:16px;line-height:1.75}
+.ct{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:6px}
+.ci{border-color:var(--cyan);background:var(--cyan-d)}.ci .ct{color:var(--cyan)}
+.co2{border-color:var(--em);background:var(--em-d)}.co2 .ct{color:var(--em)}
+.cw{border-color:var(--am);background:var(--am-d)}.cw .ct{color:var(--am)}
+.cd{border-color:var(--co);background:var(--co-d)}.cd .ct{color:var(--co)}
+
+.tw-wrap{overflow-x:auto;margin:20px 0;border-radius:var(--r);border:1px solid var(--bdr2)}
+table{width:100%;border-collapse:collapse;font-size:15px}
+thead tr{background:var(--surf2);border-bottom:1px solid var(--bdr)}
+th{padding:12px 16px;text-align:left;font-weight:700;color:var(--wh);font-size:13px;letter-spacing:.03em}
+td{padding:11px 16px;border-bottom:1px solid var(--bdr2);color:var(--tx);vertical-align:top;line-height:1.65}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.018)}
+
+.diag{background:var(--code);border:1px solid var(--code-b);border-radius:var(--r);padding:22px 24px;margin:18px 0;font-family:var(--fm);font-size:13px;line-height:1.65;color:#6b6360;overflow-x:auto;white-space:pre}
+.dc{color:var(--cyan)}.dg{color:var(--em)}.dv{color:var(--violet)}.da{color:var(--am)}.dr{color:var(--co)}.dw{color:var(--wh)}.dm{color:#4a4440;font-style:italic}
+
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:15px;margin:20px 0}
+.card{background:var(--surf2);border:1px solid var(--bdr2);border-radius:var(--r);padding:19px 21px;transition:border-color .2s,transform .15s}
+.card:hover{border-color:var(--cyan);transform:translateY(-1px)}
+.card-t{font-size:15px;font-weight:700;color:var(--wh);margin-bottom:7px}
+.card p{font-size:14.5px;margin:0;color:var(--txm);line-height:1.65}
+
+.steps{list-style:none;padding-left:0}
+.steps li{display:flex;gap:15px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--bdr2);margin:0}
+.steps li:last-child{border-bottom:none}
+.sn{width:30px;height:30px;background:var(--cyan-d);border:1px solid rgba(103,232,249,.28);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--cyan);flex-shrink:0;margin-top:3px;font-family:var(--fm)}
+.sb .st{font-weight:700;color:var(--wh);font-size:16px;margin-bottom:4px}
+.sb p{font-size:15.5px;margin:0}
+
+.accordion{margin:16px 0}
+.acc-item{border:1px solid var(--bdr2);border-radius:var(--r);margin-bottom:7px;overflow:hidden}
+.acc-head{padding:14px 19px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--surf2);font-weight:600;font-size:15px;color:var(--wh);user-select:none;transition:background .14s;gap:12px}
+.acc-head:hover{background:rgba(255,255,255,.04)}
+.acc-arr{color:var(--txm);font-size:12px;transition:transform .2s;flex-shrink:0}
+.acc-item.open .acc-arr{transform:rotate(90deg);color:var(--cyan)}
+.acc-item.open .acc-head{color:var(--cyan)}
+.acc-body{display:none;padding:19px 21px;font-size:16px;border-top:1px solid var(--bdr2);background:var(--bg2);line-height:1.8}
+.acc-item.open .acc-body{display:block}
+
+.scenario{background:linear-gradient(135deg,rgba(103,232,249,.04),rgba(196,181,253,.04));border:1px solid rgba(103,232,249,.16);border-radius:14px;padding:24px 27px;margin:24px 0}
+.sc-badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan);margin-bottom:9px}
+.scenario h4{font-size:17px;color:var(--wh);margin:0 0 11px}
+
+/* OSI stack */
+.osi-stack{margin:20px 0;display:flex;flex-direction:column;gap:5px}
+.osi-row{display:flex;align-items:center;gap:15px;padding:12px 17px;border-radius:9px;transition:transform .14s;cursor:default}
+.osi-row:hover{transform:translateX(5px)}
+.osi-n{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0}
+.osi-info{flex:1}
+.osi-name{font-weight:700;font-size:15px}
+.osi-desc{font-size:13px;color:var(--txm);margin-top:1px}
+.osi-proto{font-family:var(--fm);font-size:11.5px;margin-top:3px;opacity:.8}
+.osi-pdu{font-size:11px;font-weight:700;text-align:right;opacity:.55;flex-shrink:0}
+
+/* Subnet calc */
+.subcalc{background:var(--surf2);border:1px solid var(--bdr2);border-radius:var(--r);padding:20px 22px;margin:20px 0}
+.subcalc label{display:block;font-size:13.5px;font-weight:600;color:var(--txm);margin-bottom:6px}
+.subcalc input{width:100%;background:var(--code);border:1px solid var(--bdr);border-radius:7px;padding:10px 13px;color:var(--wh);font-family:var(--fm);font-size:15px;outline:none;margin-bottom:11px;transition:border-color .2s}
+.subcalc input:focus{border-color:var(--cyan)}
+.subcalc button{background:var(--cyan);color:#0d0b09;border:none;padding:10px 21px;border-radius:7px;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--fb);transition:opacity .15s}
+.subcalc button:hover{opacity:.85}
+.sub-out{display:none;margin-top:17px;border-top:1px solid var(--bdr2);padding-top:15px}
+.sub-row{display:flex;align-items:baseline;padding:4px 0;font-family:var(--fm);font-size:13.5px}
+.sub-k{color:var(--txm);width:200px;flex-shrink:0}
+.sub-v{color:var(--cyan);font-weight:600}
+
+/* Lab box */
+.lab-box{background:linear-gradient(135deg,rgba(252,211,77,.05),rgba(110,231,183,.04));border:1px solid rgba(252,211,77,.2);border-radius:14px;padding:24px 27px;margin:24px 0}
+.lab-badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--am);margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.lab-badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--am)}
+.lab-box h4{font-size:17px;color:var(--wh);margin:0 0 11px}
+
+/* Tags */
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:5px;text-transform:uppercase;letter-spacing:.05em;margin:2px 3px 2px 0}
+.tb2{background:var(--cyan-d);color:var(--cyan);border:1px solid rgba(103,232,249,.2)}
+.tg2{background:var(--em-d);color:var(--em);border:1px solid rgba(110,231,183,.2)}
+.tp2{background:var(--violet-d);color:var(--violet);border:1px solid rgba(196,181,253,.2)}
+
+/* Network Viz */
+#net-viz{background:var(--code);border:1px solid var(--code-b);border-radius:14px;margin:20px 0;overflow:hidden;user-select:none}
+#net-viz svg{display:block;width:100%;height:auto}
+.viz-tooltip{
+  position:absolute;background:var(--surf2);border:1px solid var(--bdr);
+  border-radius:9px;padding:12px 15px;font-size:13px;line-height:1.6;
+  max-width:240px;pointer-events:none;z-index:50;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);display:none
+}
+.viz-tooltip.show{display:block}
+.vt-label{font-weight:700;color:var(--wh);margin-bottom:5px;font-size:13.5px}
+.vt-row{display:flex;gap:8px;align-items:baseline}
+.vt-k{color:var(--txm);font-size:12px;width:80px;flex-shrink:0}
+.vt-v{color:var(--cyan);font-family:var(--fm);font-size:12px;font-weight:600}
+
+footer{background:var(--surf);border-top:1px solid var(--bdr2);padding:40px 72px;color:var(--txm);font-size:15px}
+.ft-inner{max-width:1140px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:22px}
+.ft-brand{font-family:var(--fd);font-size:17px;font-weight:700;color:var(--wh);margin-bottom:6px}
+
+/* ════════════════════════════════
+   MOBILE RESPONSIVE
+════════════════════════════════ */
+@media(max-width:768px){
+  :root{--nav:280px}
+  #ham{display:flex}
+  #sidebar{transform:translateX(-100%)}
+  #sidebar.open{transform:translateX(0)}
+  #main{margin-left:0}
+  .section{padding:44px 20px}
+  #hero{padding:64px 20px 48px}
+  #hero h1{font-size:34px}
+  .hero-desc{font-size:16px}
+  .hero-stats{gap:24px}
+  .stat-n{font-size:26px}
+  footer{padding:36px 20px}
+  .ft-inner{flex-direction:column}
+  .sec-hd{flex-direction:column;gap:12px}
+  .sec-icon{width:44px;height:44px;font-size:21px}
+  .sec-meta h2{font-size:24px}
+  h3{font-size:18px}
+  .card-grid{grid-template-columns:1fr}
+  pre{padding:15px 14px;font-size:12.5px}
+  pre code{font-size:12.5px}
+  .diag{font-size:11.5px;padding:16px 14px}
+  .tw-wrap{font-size:13.5px}
+  th,td{padding:9px 11px}
+  .osi-row{padding:10px 12px}
+  .osi-proto{display:none}
+  #srch-results{left:0;right:0;border-radius:0 0 9px 9px}
+}
+@media(max-width:400px){
+  #hero h1{font-size:28px}
+  .section{padding:36px 16px}
+}
+</style>
+</head>
+<body>
+<div id="overlay" onclick="closeSidebar()"></div>
+<button id="ham" onclick="toggleSidebar()" aria-label="Menu">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="nav-brand">
+    <div class="nav-brand-title">NetEng Mastery</div>
+    <div class="nav-brand-sub">Zero → 20-Year Expert Level</div>
+  </div>
+  <div class="nav-srch-wrap" id="srchWrap">
+    <input type="text" id="navSearch" placeholder="Search topics, concepts…" oninput="doSearch(this.value)" autocomplete="off" spellcheck="false">
+    <span class="s-icon">⌕</span>
+    <span class="s-clear" onclick="clearSearch()">✕</span>
+    <div id="srch-results"></div>
+  </div>
+  <div id="nav-scroll">
+    <div class="nav-group">
+      <div class="nav-group-label"><span class="sdot s0">0</span>Foundation</div>
+      <a class="nav-item" href="#what-is-networking"><span class="ndot"></span>What Is Networking?</a>
+      <a class="nav-item" href="#how-network-works"><span class="ndot"></span>How a Network Works Visually</a>
+      <a class="nav-item" href="#osi-model"><span class="ndot"></span>OSI Model — 7 Layers</a>
+      <a class="nav-item" href="#tcp-ip"><span class="ndot"></span>TCP/IP Stack</a>
+      <a class="nav-item" href="#hardware"><span class="ndot"></span>Network Hardware</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label"><span class="sdot s1">1</span>IP &amp; Addressing</div>
+      <a class="nav-item" href="#ipv4"><span class="ndot"></span>IPv4 Addressing</a>
+      <a class="nav-item" href="#subnetting"><span class="ndot"></span>Subnetting Mastery</a>
+      <a class="nav-item" href="#cidr-vlsm"><span class="ndot"></span>CIDR &amp; VLSM</a>
+      <a class="nav-item" href="#ipv6"><span class="ndot"></span>IPv6</a>
+      <a class="nav-item" href="#dhcp"><span class="ndot"></span>DHCP</a>
+      <a class="nav-item" href="#dns"><span class="ndot"></span>DNS</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label"><span class="sdot s2">2</span>Switching &amp; VLANs</div>
+      <a class="nav-item" href="#switching"><span class="ndot"></span>Layer 2 Switching</a>
+      <a class="nav-item" href="#vlans"><span class="ndot"></span>VLANs</a>
+      <a class="nav-item" href="#stp"><span class="ndot"></span>Spanning Tree Protocol</a>
+      <a class="nav-item" href="#inter-vlan"><span class="ndot"></span>Inter-VLAN Routing</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label"><span class="sdot s2">3</span>Routing</div>
+      <a class="nav-item" href="#routing-basics"><span class="ndot"></span>Routing Fundamentals</a>
+      <a class="nav-item" href="#static-routing"><span class="ndot"></span>Static Routing</a>
+      <a class="nav-item" href="#ospf"><span class="ndot"></span>OSPF</a>
+      <a class="nav-item" href="#eigrp"><span class="ndot"></span>EIGRP</a>
+      <a class="nav-item" href="#bgp"><span class="ndot"></span>BGP</a>
+      <a class="nav-item" href="#nat"><span class="ndot"></span>NAT &amp; PAT</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label"><span class="sdot s3">4</span>Network Design</div>
+      <a class="nav-item" href="#design-principles"><span class="ndot"></span>Design Principles</a>
+      <a class="nav-item" href="#school-network"><span class="ndot"></span>School Network</a>
+      <a class="nav-item" href="#college-network"><span class="ndot"></span>College / Campus</a>
+      <a class="nav-item" href="#enterprise-network"><span class="ndot"></span>Enterprise Network</a>
+      <a class="nav-item" href="#wan-isp"><span class="ndot"></span>WAN &amp; ISP</a>
+      <a class="nav-item" href="#wireless-design"><span class="ndot"></span>Wireless Design</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label"><span class="sdot s4">5</span>Security</div>
+      <a class="nav-item" href="#security-fundamentals"><span class="ndot"></span>Security Fundamentals</a>
+      <a class="nav-item" href="#firewalls"><span class="ndot"></span>Firewalls</a>
+      <a class="nav-item" href="#server-hardening"><span class="ndot"></span>Server Hardening</a>
+      <a class="nav-item" href="#acls"><span class="ndot"></span>ACLs</a>
+      <a class="nav-item" href="#vpn"><span class="ndot"></span>VPN</a>
+      <a class="nav-item" href="#dmz"><span class="ndot"></span>DMZ Architecture</a>
+      <a class="nav-item" href="#zero-trust"><span class="ndot"></span>Zero Trust &amp; SASE</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label"><span class="sdot s5">6</span>Monitoring &amp; Ops</div>
+      <a class="nav-item" href="#monitoring"><span class="ndot"></span>Monitoring &amp; SNMP</a>
+      <a class="nav-item" href="#packet-analysis"><span class="ndot"></span>Packet Analysis</a>
+      <a class="nav-item" href="#logging-siem"><span class="ndot"></span>Logging &amp; SIEM</a>
+      <a class="nav-item" href="#troubleshooting"><span class="ndot"></span>Troubleshooting</a>
+      <a class="nav-item" href="#automation"><span class="ndot"></span>Automation</a>
+      <a class="nav-item" href="#sdwan"><span class="ndot"></span>SD-WAN &amp; SDN</a>
+      <a class="nav-item" href="#certifications"><span class="ndot"></span>Career &amp; Certs</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label"><span class="sdot s5">🧪</span>Lab Practice</div>
+      <a class="nav-item" href="#lab-concepts"><span class="ndot"></span>Lab Concepts Overview</a>
+      <a class="nav-item" href="#lab-basic-lan"><span class="ndot"></span>Lab 1: Basic LAN</a>
+      <a class="nav-item" href="#lab-vlans"><span class="ndot"></span>Lab 2: VLANs &amp; Trunks</a>
+      <a class="nav-item" href="#lab-routing"><span class="ndot"></span>Lab 3: Inter-VLAN Routing</a>
+      <a class="nav-item" href="#lab-ospf"><span class="ndot"></span>Lab 4: OSPF</a>
+      <a class="nav-item" href="#lab-school"><span class="ndot"></span>Lab 5: Full School Network</a>
+    </div>
+  </div>
+  <div class="nav-footer">
+    <div class="nf-label">Learning Stages</div>
+    <div class="nf-bar">
+      <div class="nf-seg" style="width:14%;background:#6ee7b7"></div>
+      <div class="nf-seg" style="width:16%;background:#67e8f9"></div>
+      <div class="nf-seg" style="width:13%;background:#c4b5fd"></div>
+      <div class="nf-seg" style="width:13%;background:#818cf8"></div>
+      <div class="nf-seg" style="width:16%;background:#fcd34d"></div>
+      <div class="nf-seg" style="width:13%;background:#fda4af"></div>
+      <div class="nf-seg" style="width:15%;background:#f0ece8"></div>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-pill"><span class="pill-dot"></span>COMPLETE REFERENCE · VISUAL · INTERACTIVE · 2024–2025</div>
+  <h1>Network Engineering<br><span>Mastery</span></h1>
+  <p class="hero-desc">From absolute zero to designing real networks — with interactive diagrams, visual explanations, full configs, and hands-on labs. Learn it well enough to teach it to anyone.</p>
+  <div class="hero-stats">
+    <div><div class="stat-n">32<em>+</em></div><div class="stat-l">Topics</div></div>
+    <div><div class="stat-n">60<em>+</em></div><div class="stat-l">Configs</div></div>
+    <div><div class="stat-n">5</div><div class="stat-l">Labs</div></div>
+    <div><div class="stat-n">3</div><div class="stat-l">Full Designs</div></div>
+  </div>
+  <div class="hero-bar">
+    <div style="width:14%;background:#6ee7b7"></div><div style="width:16%;background:#67e8f9"></div>
+    <div style="width:13%;background:#c4b5fd"></div><div style="width:13%;background:#818cf8"></div>
+    <div style="width:16%;background:#fcd34d"></div><div style="width:13%;background:#fda4af"></div>
+    <div style="width:15%;background:#f0ece8"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     STAGE 0 — FOUNDATION
+════════════════════════════════════════════ -->
+
+<section class="section" id="what-is-networking">
+  <div class="sec-hd">
+    <div class="sec-icon ig">🌐</div>
+    <div class="sec-meta">
+      <span class="stag tg">Stage 0 · Foundation</span>
+      <h2>What Is Computer Networking?</h2>
+      <p class="sec-sub">The first principles — what networks are, why they exist, and the mental model you'll use forever</p>
+    </div>
+  </div>
+  <p>A network is any collection of devices that <strong>communicate and share resources</strong>. Your phone sending a message, a bank processing a payment, a student loading an e-learning page — all of it is networking, and all of it depends on the same core ideas you're about to learn.</p>
+  <div class="callout ci">
+    <div class="ct">🔑 The Expert Mental Model</div>
+    Every networking concept — routing, switching, firewalls, DNS — solves one problem: <strong>getting data from Point A to Point B reliably, securely, and efficiently.</strong> Keep this lens on everything you learn.
+  </div>
+  <h3>Network Types by Scale</h3>
+  <div class="card-grid">
+    <div class="card"><div class="card-t">🏠 PAN — Personal</div><p>Range ≤ 10 m. Bluetooth headphones, USB, NFC. Your personal device bubble.</p></div>
+    <div class="card"><div class="card-t">🏢 LAN — Local</div><p>Range: building/campus. Ethernet (Cat6A), Wi-Fi 6. 100 Mbps – 10 Gbps. The network you'll design most often.</p></div>
+    <div class="card"><div class="card-t">🏙️ MAN — Metro</div><p>Range: city. Multi-building campuses, fibre rings. Metro Ethernet, DWDM.</p></div>
+    <div class="card"><div class="card-t">🌍 WAN — Wide</div><p>Range: countries. The Internet. MPLS, SD-WAN, submarine fibre. Connects all other types.</p></div>
+  </div>
+</section>
+
+<!-- ════════ INTERACTIVE NETWORK DIAGRAM ════════ -->
+<section class="section" id="how-network-works">
+  <div class="sec-hd">
+    <div class="sec-icon ig">🖥️</div>
+    <div class="sec-meta">
+      <span class="stag tg">Stage 0 · Foundation</span>
+      <h2>How a Network Works — Visual Explainer</h2>
+      <p class="sec-sub">Click any device to see its IP address, MAC address, subnet mask, gateway, and role. Hover links to see what data they carry.</p>
+    </div>
+  </div>
+
+  <p>This diagram shows a real school network segment. Every element is labelled exactly as it would appear in a <code class="ic">ipconfig</code> output or switch config. Study it until you can explain every label to someone else — that is the test of real understanding.</p>
+
+  <div style="position:relative">
+    <div id="net-viz">
+      <svg id="netsvg" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg" style="font-family:'Source Sans 3',sans-serif">
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#4a4440"/>
+          </marker>
+          <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+
+        <!-- Background grid subtle -->
+        <rect width="900" height="560" fill="#131110" rx="14"/>
+        <g opacity="0.04" stroke="#67e8f9" stroke-width="0.5">
+          <line x1="0" y1="70" x2="900" y2="70"/><line x1="0" y1="140" x2="900" y2="140"/>
+          <line x1="0" y1="210" x2="900" y2="210"/><line x1="0" y1="280" x2="900" y2="280"/>
+          <line x1="0" y1="350" x2="900" y2="350"/><line x1="0" y1="420" x2="900" y2="420"/>
+          <line x1="0" y1="490" x2="900" y2="490"/>
+          <line x1="90" y1="0" x2="90" y2="560"/><line x1="180" y1="0" x2="180" y2="560"/>
+          <line x1="270" y1="0" x2="270" y2="560"/><line x1="360" y1="0" x2="360" y2="560"/>
+          <line x1="450" y1="0" x2="450" y2="560"/><line x1="540" y1="0" x2="540" y2="560"/>
+          <line x1="630" y1="0" x2="630" y2="560"/><line x1="720" y1="0" x2="720" y2="560"/>
+          <line x1="810" y1="0" x2="810" y2="560"/>
+        </g>
+
+        <!-- INTERNET CLOUD -->
+        <g id="dev-internet" class="dev-node" data-id="internet" style="cursor:pointer">
+          <ellipse cx="450" cy="52" rx="88" ry="34" fill="#1a2535" stroke="#3b5270" stroke-width="1.5"/>
+          <ellipse cx="420" cy="58" rx="55" ry="26" fill="#1a2535" stroke="#3b5270" stroke-width="1"/>
+          <ellipse cx="480" cy="56" rx="60" ry="28" fill="#1a2535" stroke="#3b5270" stroke-width="1"/>
+          <text x="450" y="53" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="700">INTERNET</text>
+          <text x="450" y="68" text-anchor="middle" fill="#4a5568" font-size="10">Public Network</text>
+        </g>
+
+        <!-- ISP LINK LINE -->
+        <line x1="450" y1="86" x2="450" y2="128" stroke="#3b5270" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="460" y="110" fill="#4a5568" font-size="10">WAN Link</text>
+        <text x="460" y="122" fill="#3b82f6" font-size="10" font-family="JetBrains Mono,monospace">203.0.113.0/30</text>
+
+        <!-- FIREWALL / ROUTER -->
+        <g id="dev-fw" class="dev-node" data-id="fw" style="cursor:pointer">
+          <rect x="370" y="130" width="160" height="70" rx="10" fill="#1e1a15" stroke="#fda4af" stroke-width="2"/>
+          <rect x="370" y="130" width="160" height="22" rx="10" fill="#fda4af" opacity="0.15"/>
+          <text x="450" y="146" text-anchor="middle" fill="#fda4af" font-size="12" font-weight="700">🔥 FIREWALL / ROUTER</text>
+          <text x="384" y="164" fill="#9ca3af" font-size="10" font-family="JetBrains Mono,monospace">WAN: 203.0.113.2</text>
+          <text x="384" y="177" fill="#67e8f9" font-size="10" font-family="JetBrains Mono,monospace">LAN: 10.1.0.1/16</text>
+          <text x="384" y="190" fill="#9ca3af" font-size="9">NAT · Stateful · ACLs</text>
+        </g>
+
+        <!-- TRUNK LINE DOWN -->
+        <line x1="450" y1="200" x2="450" y2="245" stroke="#c4b5fd" stroke-width="2.5"/>
+        <text x="460" y="225" fill="#c4b5fd" font-size="9" font-weight="700">TRUNK</text>
+        <text x="460" y="236" fill="#6b7280" font-size="9">802.1Q All VLANs</text>
+
+        <!-- CORE SWITCH (L3) -->
+        <g id="dev-l3sw" class="dev-node" data-id="l3sw" style="cursor:pointer">
+          <rect x="350" y="245" width="200" height="70" rx="10" fill="#1e1a15" stroke="#c4b5fd" stroke-width="2"/>
+          <rect x="350" y="245" width="200" height="22" rx="10" fill="#c4b5fd" opacity="0.12"/>
+          <text x="450" y="261" text-anchor="middle" fill="#c4b5fd" font-size="12" font-weight="700">⚡ L3 CORE SWITCH</text>
+          <text x="365" y="280" fill="#9ca3af" font-size="10" font-family="JetBrains Mono,monospace">IP: 10.1.99.1/28</text>
+          <text x="365" y="293" fill="#6ee7b7" font-size="10" font-family="JetBrains Mono,monospace">SVIs: V10·V20·V30·V40</text>
+          <text x="365" y="306" fill="#9ca3af" font-size="9">MAC: AA:BB:CC:11:22:33</text>
+        </g>
+
+        <!-- Lines from L3 to Access Switches -->
+        <line x1="390" y1="315" x2="200" y2="370" stroke="#6b7280" stroke-width="1.5"/>
+        <line x1="450" y1="315" x2="450" y2="370" stroke="#6b7280" stroke-width="1.5"/>
+        <line x1="510" y1="315" x2="700" y2="370" stroke="#6b7280" stroke-width="1.5"/>
+
+        <!-- ACCESS SWITCH 1 — STUDENTS -->
+        <g id="dev-sw1" class="dev-node" data-id="sw1" style="cursor:pointer">
+          <rect x="100" y="370" width="200" height="65" rx="9" fill="#1e1a15" stroke="#67e8f9" stroke-width="1.5"/>
+          <rect x="100" y="370" width="200" height="20" rx="9" fill="#67e8f9" opacity="0.10"/>
+          <text x="200" y="385" text-anchor="middle" fill="#67e8f9" font-size="11.5" font-weight="700">🔀 ACCESS SW-1</text>
+          <text x="113" y="401" fill="#9ca3af" font-size="9.5" font-family="JetBrains Mono,monospace">VLAN 10 — STUDENTS</text>
+          <text x="113" y="413" fill="#67e8f9" font-size="9.5" font-family="JetBrains Mono,monospace">Net: 10.1.10.0/24</text>
+          <text x="113" y="425" fill="#9ca3af" font-size="9">Gateway: 10.1.10.1 (SVI)</text>
+        </g>
+
+        <!-- ACCESS SWITCH 2 — TEACHERS -->
+        <g id="dev-sw2" class="dev-node" data-id="sw2" style="cursor:pointer">
+          <rect x="350" y="370" width="200" height="65" rx="9" fill="#1e1a15" stroke="#6ee7b7" stroke-width="1.5"/>
+          <rect x="350" y="370" width="200" height="20" rx="9" fill="#6ee7b7" opacity="0.10"/>
+          <text x="450" y="385" text-anchor="middle" fill="#6ee7b7" font-size="11.5" font-weight="700">🔀 ACCESS SW-2</text>
+          <text x="363" y="401" fill="#9ca3af" font-size="9.5" font-family="JetBrains Mono,monospace">VLAN 20 — TEACHERS</text>
+          <text x="363" y="413" fill="#6ee7b7" font-size="9.5" font-family="JetBrains Mono,monospace">Net: 10.1.20.0/26</text>
+          <text x="363" y="425" fill="#9ca3af" font-size="9">Gateway: 10.1.20.1 (SVI)</text>
+        </g>
+
+        <!-- ACCESS SWITCH 3 — SERVERS -->
+        <g id="dev-sw3" class="dev-node" data-id="sw3" style="cursor:pointer">
+          <rect x="600" y="370" width="200" height="65" rx="9" fill="#1e1a15" stroke="#fcd34d" stroke-width="1.5"/>
+          <rect x="600" y="370" width="200" height="20" rx="9" fill="#fcd34d" opacity="0.10"/>
+          <text x="700" y="385" text-anchor="middle" fill="#fcd34d" font-size="11.5" font-weight="700">🔀 ACCESS SW-3</text>
+          <text x="613" y="401" fill="#9ca3af" font-size="9.5" font-family="JetBrains Mono,monospace">VLAN 40 — SERVERS</text>
+          <text x="613" y="413" fill="#fcd34d" font-size="9.5" font-family="JetBrains Mono,monospace">Net: 10.1.40.0/27</text>
+          <text x="613" y="425" fill="#9ca3af" font-size="9">Gateway: 10.1.40.1 (SVI)</text>
+        </g>
+
+        <!-- DEVICES below SW1 -->
+        <line x1="150" y1="435" x2="140" y2="490" stroke="#374151" stroke-width="1.2"/>
+        <line x1="200" y1="435" x2="200" y2="490" stroke="#374151" stroke-width="1.2"/>
+        <line x1="250" y1="435" x2="260" y2="490" stroke="#374151" stroke-width="1.2"/>
+
+        <g id="dev-pc1" class="dev-node" data-id="pc1" style="cursor:pointer">
+          <rect x="100" y="490" width="80" height="52" rx="8" fill="#1e2530" stroke="#374151" stroke-width="1.2"/>
+          <text x="140" y="510" text-anchor="middle" fill="#9ca3af" font-size="18">💻</text>
+          <text x="140" y="528" text-anchor="middle" fill="#9ca3af" font-size="9" font-family="JetBrains Mono,monospace">10.1.10.50</text>
+          <text x="140" y="538" text-anchor="middle" fill="#6b7280" font-size="8.5">Student PC-1</text>
+        </g>
+        <g id="dev-ap1" class="dev-node" data-id="ap1" style="cursor:pointer">
+          <rect x="160" y="490" width="80" height="52" rx="8" fill="#1e2530" stroke="#374151" stroke-width="1.2"/>
+          <text x="200" y="510" text-anchor="middle" fill="#9ca3af" font-size="18">📡</text>
+          <text x="200" y="528" text-anchor="middle" fill="#9ca3af" font-size="9" font-family="JetBrains Mono,monospace">10.1.10.2</text>
+          <text x="200" y="538" text-anchor="middle" fill="#6b7280" font-size="8.5">Wi-Fi AP</text>
+        </g>
+        <g id="dev-cam" class="dev-node" data-id="cam" style="cursor:pointer">
+          <rect x="220" y="490" width="80" height="52" rx="8" fill="#1e2530" stroke="#374151" stroke-width="1.2"/>
+          <text x="260" y="510" text-anchor="middle" fill="#9ca3af" font-size="18">📷</text>
+          <text x="260" y="528" text-anchor="middle" fill="#9ca3af" font-size="9" font-family="JetBrains Mono,monospace">10.1.60.5</text>
+          <text x="260" y="538" text-anchor="middle" fill="#6b7280" font-size="8.5">Camera</text>
+        </g>
+
+        <!-- DEVICES below SW2 -->
+        <line x1="400" y1="435" x2="400" y2="490" stroke="#374151" stroke-width="1.2"/>
+        <line x1="500" y1="435" x2="500" y2="490" stroke="#374151" stroke-width="1.2"/>
+        <g id="dev-pc2" class="dev-node" data-id="pc2" style="cursor:pointer">
+          <rect x="360" y="490" width="80" height="52" rx="8" fill="#1e2530" stroke="#374151" stroke-width="1.2"/>
+          <text x="400" y="510" text-anchor="middle" fill="#9ca3af" font-size="18">💻</text>
+          <text x="400" y="528" text-anchor="middle" fill="#9ca3af" font-size="9" font-family="JetBrains Mono,monospace">10.1.20.10</text>
+          <text x="400" y="538" text-anchor="middle" fill="#6b7280" font-size="8.5">Teacher PC</text>
+        </g>
+        <g id="dev-phone" class="dev-node" data-id="phone" style="cursor:pointer">
+          <rect x="460" y="490" width="80" height="52" rx="8" fill="#1e2530" stroke="#374151" stroke-width="1.2"/>
+          <text x="500" y="510" text-anchor="middle" fill="#9ca3af" font-size="18">📞</text>
+          <text x="500" y="528" text-anchor="middle" fill="#9ca3af" font-size="9" font-family="JetBrains Mono,monospace">10.1.70.15</text>
+          <text x="500" y="538" text-anchor="middle" fill="#6b7280" font-size="8.5">VoIP Phone</text>
+        </g>
+
+        <!-- DEVICES below SW3 -->
+        <line x1="650" y1="435" x2="650" y2="490" stroke="#374151" stroke-width="1.2"/>
+        <line x1="750" y1="435" x2="750" y2="490" stroke="#374151" stroke-width="1.2"/>
+        <g id="dev-srv" class="dev-node" data-id="srv" style="cursor:pointer">
+          <rect x="610" y="490" width="80" height="52" rx="8" fill="#1e2530" stroke="#374151" stroke-width="1.2"/>
+          <text x="650" y="510" text-anchor="middle" fill="#9ca3af" font-size="18">🖥️</text>
+          <text x="650" y="528" text-anchor="middle" fill="#9ca3af" font-size="9" font-family="JetBrains Mono,monospace">10.1.40.2</text>
+          <text x="650" y="538" text-anchor="middle" fill="#6b7280" font-size="8.5">AD/DNS Server</text>
+        </g>
+        <g id="dev-nas" class="dev-node" data-id="nas" style="cursor:pointer">
+          <rect x="710" y="490" width="80" height="52" rx="8" fill="#1e2530" stroke="#374151" stroke-width="1.2"/>
+          <text x="750" y="510" text-anchor="middle" fill="#9ca3af" font-size="18">💾</text>
+          <text x="750" y="528" text-anchor="middle" fill="#9ca3af" font-size="9" font-family="JetBrains Mono,monospace">10.1.40.4</text>
+          <text x="750" y="538" text-anchor="middle" fill="#6b7280" font-size="8.5">File Server</text>
+        </g>
+
+        <!-- Legend -->
+        <rect x="14" y="14" width="160" height="90" rx="7" fill="#1a1714" stroke="#302a25" stroke-width="1"/>
+        <text x="24" y="30" fill="#9ca3af" font-size="10" font-weight="700">LEGEND</text>
+        <circle cx="28" cy="44" r="4" fill="#fda4af"/><text x="38" y="48" fill="#9ca3af" font-size="9">Firewall / Edge</text>
+        <circle cx="28" cy="58" r="4" fill="#c4b5fd"/><text x="38" y="62" fill="#9ca3af" font-size="9">L3 Core Switch</text>
+        <circle cx="28" cy="72" r="4" fill="#67e8f9"/><text x="38" y="76" fill="#9ca3af" font-size="9">Access Switch + VLAN</text>
+        <circle cx="28" cy="86" r="4" fill="#6b7280"/><text x="38" y="90" fill="#9ca3af" font-size="9">End Device</text>
+        <text x="24" y="100" fill="#6b7280" font-size="8.5">Click any device for details</text>
+      </svg>
+    </div>
+    <div id="viz-tooltip" class="viz-tooltip"></div>
+  </div>
+
+  <h3>What Every Label Means — Explained for Teaching</h3>
+  <div class="tw-wrap">
+    <table>
+      <thead><tr><th>Label/Concept</th><th>What It Is</th><th>Example from Diagram</th><th>How to Explain It Simply</th></tr></thead>
+      <tbody>
+        <tr><td><strong>IP Address</strong></td><td>A logical address assigned to every network interface — Layer 3</td><td><code class="ic">10.1.10.50</code> on Student PC-1</td><td>"Your house address — tells packets where to go"</td></tr>
+        <tr><td><strong>MAC Address</strong></td><td>A hardware address burned into the NIC at manufacture — Layer 2. Never changes.</td><td><code class="ic">AA:BB:CC:11:22:33</code> on L3 Switch</td><td>"Your fingerprint — permanent, unique to that specific card"</td></tr>
+        <tr><td><strong>Subnet Mask / CIDR</strong></td><td>Defines which part of the IP is the network vs the host. Written as /24, /26, etc.</td><td><code class="ic">10.1.10.0/24</code> — first 24 bits = network</td><td>"Your neighbourhood boundaries — who's local vs who's across town"</td></tr>
+        <tr><td><strong>Default Gateway</strong></td><td>The router/SVI IP that your device sends all traffic to when the destination is outside the local subnet</td><td><code class="ic">10.1.10.1</code> — the L3 Switch SVI for VLAN 10</td><td>"The gate out of your neighbourhood — every packet leaving goes here first"</td></tr>
+        <tr><td><strong>Network IP</strong></td><td>The first address in a subnet — identifies the subnet itself. Cannot be assigned to a device.</td><td><code class="ic">10.1.10.0</code> (network), <code class="ic">10.1.10.255</code> (broadcast)</td><td>"The neighbourhood name — not a house, just the zone's label"</td></tr>
+        <tr><td><strong>VLAN</strong></td><td>A logical isolation layer on a switch. VLAN 10 = Students, VLAN 20 = Teachers. Devices in different VLANs can't communicate without routing.</td><td>SW-1 ports in VLAN 10, SW-2 ports in VLAN 20</td><td>"Walls inside the building — departments separated even though they share the same physical switch"</td></tr>
+        <tr><td><strong>SVI (Switch Virtual Interface)</strong></td><td>A virtual Layer 3 interface on a L3 switch — acts as the gateway for a VLAN</td><td><code class="ic">interface Vlan10, ip address 10.1.10.1/24</code></td><td>"The virtual router port that speaks for VLAN 10 — it's the gateway, not a physical port"</td></tr>
+        <tr><td><strong>Trunk Link</strong></td><td>A switch link that carries multiple VLANs tagged with 802.1Q headers</td><td>The purple link between L3 switch and access switches</td><td>"A motorway with multiple lanes — one cable but many VLANs share it with labels"</td></tr>
+        <tr><td><strong>NAT</strong></td><td>The firewall translates private IPs (10.x.x.x) to the public WAN IP for internet access</td><td>Firewall: LAN 10.1.0.1 → WAN 203.0.113.2</td><td>"One public post box number for the whole school — inside, everyone has their own room number"</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>How Student PC-1 Loads a Website — Step by Step</h3>
+  <ol class="steps">
+    <li><div class="sn">1</div><div class="sb"><div class="st">Student opens browser → types school.edu</div><p>PC-1 (<code class="ic">10.1.10.50</code>) checks: Is school.edu's IP in my local subnet 10.1.10.0/24? No → must send to default gateway <code class="ic">10.1.10.1</code>.</p></div></li>
+    <li><div class="sn">2</div><div class="sb"><div class="st">DNS Query — Layer 7 → 3</div><p>PC sends UDP port 53 to DNS server (<code class="ic">10.1.40.2</code>). This crosses VLAN boundary: packet goes to gateway 10.1.10.1 (SVI), L3 switch routes it to VLAN 40, arrives at DNS server.</p></div></li>
+    <li><div class="sn">3</div><div class="sb"><div class="st">ARP — Layer 2</div><p>PC doesn't know the gateway's MAC. It broadcasts "Who has 10.1.10.1?". L3 switch responds with MAC <code class="ic">AA:BB:CC:11:22:33</code>. Now PC can build an Ethernet frame addressed to that MAC.</p></div></li>
+    <li><div class="sn">4</div><div class="sb"><div class="st">Packet leaves LAN — Layer 3</div><p>DNS resolved. PC builds IP packet to 203.0.113.10 (school.edu server). Frame goes: PC → access switch SW-1 → trunk → L3 switch → firewall → ISP → internet.</p></div></li>
+    <li><div class="sn">5</div><div class="sb"><div class="st">NAT at Firewall</div><p>Firewall replaces source IP <code class="ic">10.1.10.50</code> with public IP <code class="ic">203.0.113.2</code> and records the mapping. On the return trip, it reverses this translation.</p></div></li>
+    <li><div class="sn">6</div><div class="sb"><div class="st">Response returns</div><p>Website data arrives at 203.0.113.2, firewall un-NATs it to 10.1.10.50, routes back through switch to SW-1, and PC renders the page. Total time: &lt;100ms.</p></div></li>
+  </ol>
+</section>
+
+<section class="section" id="osi-model">
+  <div class="sec-hd"><div class="sec-icon ig">📦</div><div class="sec-meta"><span class="stag tg">Stage 0 · Foundation</span><h2>The OSI Model — 7 Layers</h2><p class="sec-sub">The universal diagnostic framework every engineer lives by</p></div></div>
+  <div class="callout cw"><div class="ct">⚡ Why This Matters Every Day</div>When a network problem occurs, experts ask: "At which OSI layer is this failing?" L1=cable. L3=routing. L7=app/DNS. This replaces random guessing with a structured path to the root cause.</div>
+  <div class="osi-stack">
+    <div class="osi-row" style="background:rgba(253,164,175,.08);border:1px solid rgba(253,164,175,.2)"><div class="osi-n" style="background:rgba(253,164,175,.2);color:#fda4af">7</div><div class="osi-info"><div class="osi-name" style="color:#fda4af">Application</div><div class="osi-desc">End-user services. Where your apps talk to the network.</div><div class="osi-proto" style="color:#fda4af">HTTP · HTTPS · FTP · SSH · DNS · DHCP · SMTP · IMAP · SNMP · RDP · SIP</div></div><div class="osi-pdu" style="color:#fda4af">DATA</div></div>
+    <div class="osi-row" style="background:rgba(252,211,77,.07);border:1px solid rgba(252,211,77,.18)"><div class="osi-n" style="background:rgba(252,211,77,.18);color:#fcd34d">6</div><div class="osi-info"><div class="osi-name" style="color:#fcd34d">Presentation</div><div class="osi-desc">Translation, encryption/decryption, compression.</div><div class="osi-proto" style="color:#fcd34d">SSL/TLS · JPEG · MPEG · ASCII · Unicode · Base64</div></div><div class="osi-pdu" style="color:#fcd34d">DATA</div></div>
+    <div class="osi-row" style="background:rgba(110,231,183,.07);border:1px solid rgba(110,231,183,.18)"><div class="osi-n" style="background:rgba(110,231,183,.18);color:#6ee7b7">5</div><div class="osi-info"><div class="osi-name" style="color:#6ee7b7">Session</div><div class="osi-desc">Establishes, manages, terminates communication sessions.</div><div class="osi-proto" style="color:#6ee7b7">NetBIOS · RPC · SMB sessions · SIP sessions</div></div><div class="osi-pdu" style="color:#6ee7b7">DATA</div></div>
+    <div class="osi-row" style="background:rgba(103,232,249,.07);border:1px solid rgba(103,232,249,.18)"><div class="osi-n" style="background:rgba(103,232,249,.15);color:#67e8f9">4</div><div class="osi-info"><div class="osi-name" style="color:#67e8f9">Transport</div><div class="osi-desc">End-to-end delivery, reliability, flow control. <strong style="color:#67e8f9">Port numbers live here.</strong></div><div class="osi-proto" style="color:#67e8f9">TCP (reliable, ordered) · UDP (fast, connectionless) · Ports 80/443/22/53…</div></div><div class="osi-pdu" style="color:#67e8f9">SEGMENT</div></div>
+    <div class="osi-row" style="background:rgba(196,181,253,.08);border:1px solid rgba(196,181,253,.2)"><div class="osi-n" style="background:rgba(196,181,253,.18);color:#c4b5fd">3</div><div class="osi-info"><div class="osi-name" style="color:#c4b5fd">Network</div><div class="osi-desc">Logical addressing and path selection. <strong style="color:#c4b5fd">IP addresses live here. Routers operate here.</strong></div><div class="osi-proto" style="color:#c4b5fd">IPv4 · IPv6 · ICMP · ARP · OSPF · BGP · EIGRP</div></div><div class="osi-pdu" style="color:#c4b5fd">PACKET</div></div>
+    <div class="osi-row" style="background:rgba(99,130,246,.07);border:1px solid rgba(99,130,246,.18)"><div class="osi-n" style="background:rgba(99,130,246,.18);color:#93c5fd">2</div><div class="osi-info"><div class="osi-name" style="color:#93c5fd">Data Link</div><div class="osi-desc">Node-to-node on same segment, CRC error detection. <strong style="color:#93c5fd">MAC addresses here. Switches operate here.</strong></div><div class="osi-proto" style="color:#93c5fd">Ethernet 802.3 · Wi-Fi 802.11 · VLANs 802.1Q · STP 802.1D · ARP</div></div><div class="osi-pdu" style="color:#93c5fd">FRAME</div></div>
+    <div class="osi-row" style="background:rgba(107,114,128,.07);border:1px solid rgba(107,114,128,.18)"><div class="osi-n" style="background:rgba(107,114,128,.18);color:#9ca3af">1</div><div class="osi-info"><div class="osi-name" style="color:#9ca3af">Physical</div><div class="osi-desc">Raw bits on the medium. Cables, connectors, voltage, light, radio.</div><div class="osi-proto" style="color:#9ca3af">Ethernet cable · Fibre optic · Wi-Fi radio · USB · Hubs</div></div><div class="osi-pdu" style="color:#9ca3af">BIT</div></div>
+  </div>
+  <div class="callout co2"><div class="ct">🧠 Mnemonic (7→1)</div><strong>"All People Seem To Need Data Processing"</strong> — Application, Presentation, Session, Transport, Network, Data Link, Physical</div>
+</section>
+
+<section class="section" id="tcp-ip">
+  <div class="sec-hd"><div class="sec-icon ig">🔗</div><div class="sec-meta"><span class="stag tg">Stage 0 · Foundation</span><h2>TCP/IP Stack</h2><p class="sec-sub">OSI is theory — TCP/IP is what every OS, router, and switch actually runs</p></div></div>
+  <div class="tw-wrap"><table><thead><tr><th>TCP/IP Layer</th><th>OSI Layers</th><th>Key Protocols</th><th>Function</th></tr></thead><tbody>
+    <tr><td><strong>Application</strong></td><td>5, 6, 7</td><td>HTTP/S, DNS, FTP, SMTP, IMAP, SSH, DHCP, SNMP, RDP</td><td>End-user services</td></tr>
+    <tr><td><strong>Transport</strong></td><td>4</td><td>TCP, UDP, SCTP</td><td>Reliable (TCP) or fast (UDP) end-to-end delivery</td></tr>
+    <tr><td><strong>Internet</strong></td><td>3</td><td>IPv4, IPv6, ICMP, ARP, OSPF, BGP, EIGRP</td><td>Logical addressing and routing between networks</td></tr>
+    <tr><td><strong>Network Access</strong></td><td>1, 2</td><td>Ethernet, Wi-Fi (802.11), PPP, HDLC</td><td>Physical transmission and framing on local links</td></tr>
+  </tbody></table></div>
+  <h3>TCP vs UDP</h3>
+  <div class="tw-wrap"><table><thead><tr><th>Feature</th><th>TCP</th><th>UDP</th></tr></thead><tbody>
+    <tr><td>Connection</td><td>3-way handshake required first</td><td>Fire and forget — no setup</td></tr>
+    <tr><td>Reliability</td><td>Guaranteed delivery, retransmission on loss</td><td>No guarantee — packets may be lost</td></tr>
+    <tr><td>Order</td><td>Segments reassembled in sequence</td><td>May arrive out of order</td></tr>
+    <tr><td>Speed</td><td>Slower — reliability overhead</td><td>Faster — 8-byte header vs 20-byte TCP</td></tr>
+    <tr><td>Use Cases</td><td>Web, email, file transfer, SSH, databases</td><td>Video streaming, gaming, DNS, VoIP, DHCP</td></tr>
+  </tbody></table></div>
+  <h4>TCP 3-Way Handshake — How Connections Are Established</h4>
+  <div class="diag"><span class="dg">Client</span>                                     <span class="dc">Server</span>
+  |── <span class="dc">SYN</span> (seq=1000) ─────────────────────────────► |  <span class="dm">"I want to connect, my seq=1000"</span>
+  |◄── <span class="dc">SYN-ACK</span> (seq=5000, ack=1001) ────────────── |  <span class="dm">"OK! My seq=5000, got your 1000"</span>
+  |── <span class="dc">ACK</span> (ack=5001) ─────────────────────────────► |  <span class="dm">"Acknowledged — connection open"</span>
+  |════════════════ DATA FLOWS ════════════════════ |
+  |── <span class="dr">FIN</span> ───────────────────────────────────────► |  <span class="dm">4-way teardown to close connection</span>
+  |◄── <span class="dc">FIN-ACK</span> ──────────────────────────────────── |
+  |── <span class="dc">ACK</span> ───────────────────────────────────────► |  <span class="dm">Connection closed</span></div>
+  <h3>Port Numbers — Know These Cold</h3>
+  <div class="tw-wrap"><table><thead><tr><th>Port</th><th>Protocol</th><th>Service</th><th>Note</th></tr></thead><tbody>
+    <tr><td>22</td><td>SSH</td><td>Secure remote shell</td><td>✅ Always use for device access</td></tr>
+    <tr><td>23</td><td>Telnet</td><td>Unencrypted remote</td><td>🚫 Never — cleartext credentials</td></tr>
+    <tr><td>53</td><td>DNS</td><td>Name resolution</td><td>UDP for queries, TCP for zone transfers</td></tr>
+    <tr><td>67/68</td><td>DHCP</td><td>IP assignment</td><td>Rogue DHCP attacks → use snooping</td></tr>
+    <tr><td>80</td><td>HTTP</td><td>Unencrypted web</td><td>⚠️ Redirect to 443</td></tr>
+    <tr><td>443</td><td>HTTPS</td><td>Encrypted web (TLS)</td><td>✅ Required for all web services</td></tr>
+    <tr><td>161/162</td><td>SNMP</td><td>Network monitoring</td><td>Use SNMPv3 only</td></tr>
+    <tr><td>3389</td><td>RDP</td><td>Windows remote desktop</td><td>⚠️ Restrict to VPN only</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="section" id="hardware">
+  <div class="sec-hd"><div class="sec-icon ig">🔧</div><div class="sec-meta"><span class="stag tg">Stage 0 · Foundation</span><h2>Network Hardware</h2><p class="sec-sub">Every physical device in a network — what it does, how it differs, when to use it</p></div></div>
+  <div class="accordion">
+    <div class="acc-item open"><div class="acc-head" onclick="acc(this)">🔀 Switch — Layer 2 Traffic Director <span class="acc-arr">▶</span></div><div class="acc-body">
+      <p>A switch learns which MAC address is on which port (CAM table), then forwards frames <em>only</em> to the correct port — not to everyone like a hub. Creates collision-free, full-duplex segments.</p>
+      <p><strong>Key operations:</strong> Learn (record src MAC + port) → Flood (unknown dest) → Forward (known dest) → Filter (same-port traffic)</p>
+      <pre><code>Switch# <span class="fn">show mac address-table</span>   <span class="cm"># Who's on which port</span>
+Switch# <span class="fn">show interfaces</span> Gi0/1 <span class="kw">status</span>  <span class="cm"># Speed/duplex/VLAN</span></code></pre>
+    </div></div>
+    <div class="acc-item"><div class="acc-head" onclick="acc(this)">🌐 Router — Layer 3 Path-Finder <span class="acc-arr">▶</span></div><div class="acc-body">
+      <p>A router connects <em>different IP networks</em> using a routing table. It performs NAT, runs routing protocols (OSPF, BGP), applies ACLs, and acts as the DHCP server or relay.</p>
+      <pre><code>Router# <span class="fn">show ip route</span>            <span class="cm"># The routing table</span>
+Router# <span class="fn">show ip interface brief</span>  <span class="cm"># Interface status</span>
+Router# <span class="fn">ping</span> 8.8.8.8 <span class="kw">source</span> Lo0  <span class="cm"># Test from specific source</span></code></pre>
+    </div></div>
+    <div class="acc-item"><div class="acc-head" onclick="acc(this)">🔥 Firewall — Security Gatekeeper L3–L7 <span class="acc-arr">▶</span></div><div class="acc-body">
+      <p><strong>Gen 1 — Packet Filter:</strong> Source/Dest IP + port only. Fast but stateless.<br><strong>Gen 2 — Stateful:</strong> Tracks TCP connection state — far more secure.<br><strong>Gen 3 — NGFW:</strong> Deep Packet Inspection, App-ID, User-ID, URL filtering, IPS, SSL decryption. Current enterprise standard.</p>
+      <p><strong>Leading products:</strong> Palo Alto PA, Fortinet FortiGate, Cisco FTD, pfSense/OPNsense (free)</p>
+    </div></div>
+    <div class="acc-item"><div class="acc-head" onclick="acc(this)">⚡ Layer 3 Switch — Router + Switch in ASIC Hardware <span class="acc-arr">▶</span></div><div class="acc-body">
+      <p>Combines L2 switching and L3 routing in hardware ASICs — routes inter-VLAN traffic at <em>wire speed</em>. Always use at the Distribution layer. Reserve dedicated routers for WAN edge.</p>
+      <p><strong>Key config:</strong> <code class="ic">ip routing</code> enables routing. SVIs act as per-VLAN gateways.</p>
+    </div></div>
+    <div class="acc-item"><div class="acc-head" onclick="acc(this)">📡 Wireless Access Point — Wi-Fi Extension <span class="acc-arr">▶</span></div><div class="acc-body">
+      <div class="tw-wrap"><table><thead><tr><th>Standard</th><th>Max Speed</th><th>Key Feature</th></tr></thead><tbody>
+        <tr><td>Wi-Fi 5 (802.11ac)</td><td>3.5 Gbps</td><td>MU-MIMO, 5 GHz only</td></tr>
+        <tr><td>Wi-Fi 6 (802.11ax)</td><td>9.6 Gbps</td><td>OFDMA, BSS Colouring — dense environments</td></tr>
+        <tr><td>Wi-Fi 6E</td><td>9.6 Gbps</td><td>6 GHz uncongested band</td></tr>
+        <tr><td>Wi-Fi 7 (802.11be)</td><td>46 Gbps</td><td>Multi-Link Operation — bleeding edge</td></tr>
+      </tbody></table></div>
+    </div></div>
+  </div>
+  <h3>Cable Selection Guide</h3>
+  <div class="tw-wrap"><table><thead><tr><th>Cable</th><th>Speed</th><th>Distance</th><th>Use</th></tr></thead><tbody>
+    <tr><td>Cat 5e</td><td>1 Gbps (up to 2.5G/5G with NBASE-T on ≤30m)</td><td>100 m</td><td>Legacy — fine for 1G, NBASE-T can push higher speeds short distances</td></tr>
+    <tr><td><strong>Cat 6A</strong></td><td>10 Gbps</td><td>100 m</td><td>✅ Recommended for all new installs</td></tr>
+    <tr><td>Single-Mode Fibre</td><td>100 Gbps+</td><td>100 km</td><td>Building-to-building, WAN, ISP backbone</td></tr>
+    <tr><td>Multi-Mode Fibre</td><td>10–100 Gbps</td><td>2 km</td><td>MDF-to-IDF within buildings</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="section" id="ipv4">
+  <div class="sec-hd"><div class="sec-icon ib">🏷️</div><div class="sec-meta"><span class="stag tb">Stage 1 · IP &amp; Addressing</span><h2>IPv4 Addressing</h2><p class="sec-sub">The single most important practical skill. Everything builds on this.</p></div></div>
+  <div class="callout ci"><div class="ct">Teaching Tip</div>Start with the analogy: IP = postal address. Subnet mask = the boundary of your neighbourhood. Gateway = the road out. MAC = your fingerprint on your front door.</div>
+  <h3>Private vs Public Ranges</h3>
+  <div class="tw-wrap"><table><thead><tr><th>Range</th><th>CIDR</th><th>Addresses</th><th>Typical Use</th></tr></thead><tbody>
+    <tr><td>10.0.0.0 – 10.255.255.255</td><td>/8</td><td>16.7 M</td><td>Large enterprises, this guide uses 10.1.x.x</td></tr>
+    <tr><td>172.16.0.0 – 172.31.255.255</td><td>/12</td><td>1 M</td><td>Medium organisations</td></tr>
+    <tr><td>192.168.0.0 – 192.168.255.255</td><td>/16</td><td>65,536</td><td>Home, small office — most common</td></tr>
+    <tr><td>127.0.0.1</td><td>/8</td><td>—</td><td>Loopback — "this device"</td></tr>
+    <tr><td>169.254.x.x</td><td>/16</td><td>—</td><td>⚠️ APIPA — DHCP failed! Investigate immediately.</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="section" id="subnetting">
+  <div class="sec-hd"><div class="sec-icon ib">✂️</div><div class="sec-meta"><span class="stag tb">Stage 1 · IP &amp; Addressing</span><h2>Subnetting Mastery</h2><p class="sec-sub">When this clicks, network design becomes logical and elegant</p></div></div>
+  <h3>CIDR Prefix Reference</h3>
+  <div class="tw-wrap"><table><thead><tr><th>CIDR</th><th>Subnet Mask</th><th>Usable Hosts</th><th>Use</th></tr></thead><tbody>
+    <tr><td>/16</td><td>255.255.0.0</td><td>65,534</td><td>Large org / campus</td></tr>
+    <tr><td>/23</td><td>255.255.254.0</td><td>510</td><td>500+ hosts (student pool)</td></tr>
+    <tr><td>/24</td><td>255.255.255.0</td><td>254</td><td>Standard LAN — most common</td></tr>
+    <tr><td>/26</td><td>255.255.255.192</td><td>62</td><td>~50 host department</td></tr>
+    <tr><td>/27</td><td>255.255.255.224</td><td>30</td><td>Small team ~25 hosts</td></tr>
+    <tr><td>/28</td><td>255.255.255.240</td><td>14</td><td>Server segment, management</td></tr>
+    <tr><td>/30</td><td>255.255.255.252</td><td>2</td><td>Router-to-router WAN links</td></tr>
+    <tr><td>/32</td><td>255.255.255.255</td><td>1</td><td>Host route, loopback</td></tr>
+  </tbody></table></div>
+  <h3>🧮 Subnet Calculator</h3>
+  <div class="subcalc">
+    <label>Enter IP/CIDR prefix (e.g. 10.1.10.0/26)</label>
+    <input type="text" id="subIn" value="10.1.10.0/26" placeholder="192.168.1.0/24">
+    <button onclick="calcSub()">Calculate</button>
+    <div class="sub-out" id="subOut"></div>
+  </div>
+</section>
+
+<section class="section" id="cidr-vlsm">
+  <div class="sec-hd"><div class="sec-icon ib">📐</div><div class="sec-meta"><span class="stag tb">Stage 1 · IP &amp; Addressing</span><h2>CIDR &amp; VLSM</h2><p class="sec-sub">Allocate exactly the right size for each subnet — no wasted addresses</p></div></div>
+  <div class="scenario"><div class="sc-badge">📋 VLSM Worked Example</div><h4>School: 192.168.1.0/24 → 5 departments</h4>
+  <div class="diag"><span class="dg">Sort biggest first. Assign smallest fitting subnet.</span>
+
+Students (100) → <span class="dc">/25</span> → 192.168.1.0/25    (126 usable, .1–.126)
+Teachers  (50) → <span class="dc">/26</span> → 192.168.1.128/26  (62 usable, .129–.190)
+Admin     (25) → <span class="dc">/27</span> → 192.168.1.192/27  (30 usable, .193–.222)
+IT Lab    (12) → <span class="dc">/28</span> → 192.168.1.224/28  (14 usable, .225–.238)
+Servers    (6) → <span class="dc">/29</span> → 192.168.1.240/29  (6 usable,  .241–.246)
+Spare:              192.168.1.248–.255</div></div>
+</section>
+
+<section class="section" id="ipv6">
+  <div class="sec-hd"><div class="sec-icon ib">🔮</div><div class="sec-meta"><span class="stag tb">Stage 1 · IP &amp; Addressing</span><h2>IPv6</h2><p class="sec-sub">IPv4 is exhausted. IPv6 = 340 undecillion addresses. Mandatory knowledge now.</p></div></div>
+  <div class="diag"><span class="dg">Full:   </span>2001:0db8:0000:0000:0000:0000:0000:0001
+<span class="dg">Step 1: </span>2001:db8:0:0:0:0:0:1      <span class="dm">(drop leading zeros per group)</span>
+<span class="dg">Step 2: </span><span class="dc">2001:db8::1</span>              <span class="dm">(replace ONE run of all-zero groups with ::)</span></div>
+  <div class="tw-wrap"><table><thead><tr><th>Type</th><th>Prefix</th><th>Purpose</th><th>IPv4 Equiv</th></tr></thead><tbody>
+    <tr><td>Global Unicast</td><td>2000::/3</td><td>Public routable</td><td>Public IPv4</td></tr>
+    <tr><td>Link-Local</td><td>fe80::/10</td><td>Same-link only, auto-configured</td><td>169.254.x.x</td></tr>
+    <tr><td>Unique Local</td><td>fc00::/7</td><td>Private, not internet-routed</td><td>RFC1918</td></tr>
+    <tr><td>Loopback</td><td>::1/128</td><td>"This device"</td><td>127.0.0.1</td></tr>
+    <tr><td>Multicast</td><td>ff00::/8</td><td>Replaces broadcast entirely</td><td>224.0.0.0/4</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="section" id="dhcp">
+  <div class="sec-hd"><div class="sec-icon ib">⚙️</div><div class="sec-meta"><span class="stag tb">Stage 1 · IP &amp; Addressing</span><h2>DHCP</h2><p class="sec-sub">Automates IP assignment. Understanding it deeply prevents a whole class of outages.</p></div></div>
+  <h4>DORA — The 4 Steps of Getting an IP</h4>
+  <div class="diag"><span class="dg">Client</span>                                            <span class="dc">DHCP Server</span>
+  <span class="dm">All DHCP uses UDP (ports 67/68) — no TCP handshake — broadcast-based discovery</span>
+  |── <span class="dg">D</span>ISCOVER (broadcast) ─────────────────────────► |  <span class="dm">"Anyone? I need an IP!"</span>
+  |◄── <span class="dc">O</span>FFER (10.1.10.55, lease 24h) ─────────────── |  <span class="dm">"Here, take 10.1.10.55"</span>
+  |── <span class="dg">R</span>EQUEST (broadcast "I want 10.1.10.55") ──────► |  <span class="dm">"I'll take it"</span>
+  |◄── <span class="dc">A</span>CK (IP + mask + gateway + DNS + lease) ───── |  <span class="dm">"Done! Full config enclosed."</span></div>
+  <pre><code><span class="cm">! DHCP Server on Cisco</span>
+Router(config)# <span class="kw">ip dhcp excluded-address</span> <span class="num">10.1.10.1</span> <span class="num">10.1.10.20</span>
+Router(config)# <span class="kw">ip dhcp pool</span> STUDENTS_V10
+Router(dhcp-config)# <span class="fn">network</span>         <span class="num">10.1.10.0 255.255.255.0</span>
+Router(dhcp-config)# <span class="fn">default-router</span> <span class="num">10.1.10.1</span>
+Router(dhcp-config)# <span class="fn">dns-server</span>     <span class="num">10.1.40.2</span>
+Router(dhcp-config)# <span class="fn">lease</span>          <span class="num">0 8</span>   <span class="cm">! 8-hour lease
+
+! DHCP Snooping — blocks rogue DHCP servers</span>
+Switch(config)# <span class="kw">ip dhcp snooping</span>
+Switch(config)# <span class="kw">ip dhcp snooping vlan</span> <span class="num">10,20,30</span>
+Switch(config-if)# <span class="fn">ip dhcp snooping trust</span>  <span class="cm">! Uplink only</span></code></pre>
+</section>
+
+<section class="section" id="dns">
+  <div class="sec-hd"><div class="sec-icon ib">🔍</div><div class="sec-meta"><span class="stag tb">Stage 1 · IP &amp; Addressing</span><h2>DNS</h2><p class="sec-sub">The internet's phonebook and a major security surface</p></div></div>
+  <div class="diag">Browser: "IP for <span class="dc">www.school.edu</span>?"
+  → Browser cache miss → OS cache miss → Local DNS miss
+  → Root Server: "Ask .edu TLD"
+  → .edu TLD: "Ask school.edu NS"
+  → school.edu NS: "<span class="dg">203.0.113.10</span>"
+  → Local DNS caches + returns answer → browser connects</div>
+  <div class="tw-wrap"><table><thead><tr><th>Record</th><th>Purpose</th><th>Example</th></tr></thead><tbody>
+    <tr><td><strong>A</strong></td><td>Hostname → IPv4</td><td>www → 203.0.113.10</td></tr>
+    <tr><td><strong>AAAA</strong></td><td>Hostname → IPv6</td><td>www → 2001:db8::1</td></tr>
+    <tr><td><strong>CNAME</strong></td><td>Alias → another hostname</td><td>mail → smtp.school.edu</td></tr>
+    <tr><td><strong>MX</strong></td><td>Mail server for domain</td><td>school.edu → mail, priority 10</td></tr>
+    <tr><td><strong>PTR</strong></td><td>Reverse DNS (IP → hostname)</td><td>10.40.1.10.in-addr.arpa → srv</td></tr>
+    <tr><td><strong>TXT</strong></td><td>SPF, DKIM, DMARC, verification</td><td>v=spf1 include:... ~all</td></tr>
+  </tbody></table></div>
+</section>
+
+<!-- SWITCHING & VLANs -->
+<section class="section" id="switching">
+  <div class="sec-hd"><div class="sec-icon ip">🔀</div><div class="sec-meta"><span class="stag tp">Stage 2 · Switching</span><h2>Layer 2 Switching</h2><p class="sec-sub">Every device in your building communicates through switches</p></div></div>
+  <p>Switches build a <strong>CAM table</strong> (MAC → port). Unknown destinations are <em>flooded</em>; known destinations are <em>forwarded</em> only to the correct port.</p>
+  <pre><code><span class="cm">! Port Security — limit MACs, prevent rogue devices</span>
+Switch(config-if)# <span class="fn">switchport port-security</span>
+Switch(config-if)# <span class="fn">switchport port-security maximum</span> <span class="num">2</span>
+Switch(config-if)# <span class="fn">switchport port-security violation</span> restrict
+Switch(config-if)# <span class="fn">switchport port-security mac-address sticky</span>
+
+<span class="cm">! Dynamic ARP Inspection — prevent ARP spoofing MITM</span>
+Switch(config)# <span class="kw">ip arp inspection vlan</span> <span class="num">10,20,30</span>
+Switch(config-if)# <span class="fn">ip arp inspection trust</span>   <span class="cm">! Uplink port
+
+! Verification</span>
+Switch# <span class="fn">show mac address-table</span>
+Switch# <span class="fn">show interfaces</span> Gi0/1 <span class="kw">status</span></code></pre>
+</section>
+
+<section class="section" id="vlans">
+  <div class="sec-hd"><div class="sec-icon ip">🏗️</div><div class="sec-meta"><span class="stag tp">Stage 2 · Switching</span><h2>VLANs — Logical Segmentation</h2><p class="sec-sub">Create multiple isolated networks on a single physical switch</p></div></div>
+  <div class="callout co2"><div class="ct">✅ Why VLANs Are Non-Negotiable</div>Security: different departments can't see each other's traffic. Performance: broadcasts stay within their VLAN. Flexibility: change a user's department by changing a port — no rewiring.</div>
+  <pre><code><span class="cm">! Create VLANs</span>
+Switch(config)# <span class="kw">vlan</span> <span class="num">10</span>
+Switch(config-vlan)# <span class="fn">name</span> <span class="str">STUDENTS</span>
+Switch(config)# <span class="kw">vlan</span> <span class="num">20</span>
+Switch(config-vlan)# <span class="fn">name</span> <span class="str">TEACHERS</span>
+Switch(config)# <span class="kw">vlan</span> <span class="num">40</span>
+Switch(config-vlan)# <span class="fn">name</span> <span class="str">SERVERS</span>
+
+<span class="cm">! Access port — end devices</span>
+Switch(config-if)# <span class="fn">switchport mode access</span>
+Switch(config-if)# <span class="fn">switchport access vlan</span> <span class="num">10</span>
+Switch(config-if)# <span class="fn">spanning-tree portfast</span>
+Switch(config-if)# <span class="fn">spanning-tree bpduguard enable</span>
+
+<span class="cm">! Trunk port — carries multiple VLANs to core switch</span>
+Switch(config-if)# <span class="fn">switchport trunk encapsulation dot1q</span>
+Switch(config-if)# <span class="fn">switchport mode trunk</span>
+Switch(config-if)# <span class="fn">switchport trunk allowed vlan</span> <span class="num">10,20,30,40,99</span>
+Switch(config-if)# <span class="fn">switchport trunk native vlan</span> <span class="num">99</span>
+
+Switch# <span class="fn">show vlan brief</span>
+Switch# <span class="fn">show interfaces trunk</span></code></pre>
+</section>
+
+<section class="section" id="stp">
+  <div class="sec-hd"><div class="sec-icon ip">🔄</div><div class="sec-meta"><span class="stag tp">Stage 2 · Switching</span><h2>STP — Spanning Tree Protocol</h2><p class="sec-sub">Prevents Layer 2 loops while keeping redundant links in standby</p></div></div>
+  <div class="diag"><span class="dr">WITHOUT STP:</span> Broadcast loops forever → switch CPU 100% → complete outage in seconds
+<span class="dg">WITH RSTP (802.1w):</span> Root Bridge elected → blocked ports on redundant paths
+  If primary fails → standby unblocked in 1–3 seconds (vs 30–50s for original STP)</div>
+  <h4>STP Port States (802.1D / PVST+)</h4>
+  <div class="tw-wrap"><table><thead><tr><th>State</th><th>Duration</th><th>What Happens</th><th>RSTP Equivalent</th></tr></thead><tbody>
+    <tr><td><strong>Blocking</strong></td><td>Until change</td><td>Receives BPDUs only — no data frames</td><td>Discarding</td></tr>
+    <tr><td><strong>Listening</strong></td><td>15 s (Forward Delay)</td><td>Processes BPDUs, builds active topology</td><td>Discarding</td></tr>
+    <tr><td><strong>Learning</strong></td><td>15 s (Forward Delay)</td><td>Builds MAC table, no user data forwarded</td><td>Learning</td></tr>
+    <tr><td><strong>Forwarding</strong></td><td>Stable</td><td>Fully operational — forwards data frames</td><td>Forwarding</td></tr>
+    <tr><td><strong>Disabled</strong></td><td>Admin-down</td><td>Port shut down — not participating in STP</td><td>Discarding</td></tr>
+  </tbody></table></div>
+  <p>RSTP (802.1w) eliminates Listening state and uses proposal/agreement instead of timers, achieving much faster convergence.</p>
+  <pre><code>CoreSwitch(config)# <span class="fn">spanning-tree mode rapid-pvst</span>
+CoreSwitch(config)# <span class="fn">spanning-tree vlan</span> <span class="num">10,20,30,40</span> <span class="fn">root primary</span>
+BackupSW(config)#  <span class="fn">spanning-tree vlan</span> <span class="num">10,20,30,40</span> <span class="fn">root secondary</span>
+Switch# <span class="fn">show spanning-tree summary</span></code></pre>
+</section>
+
+<section class="section" id="inter-vlan">
+  <div class="sec-hd"><div class="sec-icon ip">↔️</div><div class="sec-meta"><span class="stag tp">Stage 2 · Switching</span><h2>Inter-VLAN Routing</h2><p class="sec-sub">Traffic between VLANs must be routed — either by a router or L3 switch</p></div></div>
+  <div class="accordion">
+    <div class="acc-item open"><div class="acc-head" onclick="acc(this)">Method 1: Router-on-a-Stick (small networks) <span class="acc-arr">▶</span></div><div class="acc-body">
+      <pre><code>Router(config)# <span class="kw">interface</span> Gi0/0<span class="num">.10</span>
+Router(config-subif)# <span class="fn">encapsulation dot1q</span> <span class="num">10</span>
+Router(config-subif)# <span class="fn">ip address</span> <span class="num">10.1.10.1 255.255.255.0</span>
+
+Router(config)# <span class="kw">interface</span> Gi0/0<span class="num">.20</span>
+Router(config-subif)# <span class="fn">encapsulation dot1q</span> <span class="num">20</span>
+Router(config-subif)# <span class="fn">ip address</span> <span class="num">10.1.20.1 255.255.255.192</span></code></pre>
+    </div></div>
+    <div class="acc-item"><div class="acc-head" onclick="acc(this)">Method 2: L3 Switch SVIs — Enterprise Standard <span class="acc-arr">▶</span></div><div class="acc-body">
+      <pre><code>L3SW(config)# <span class="kw">ip routing</span>
+
+L3SW(config)# <span class="kw">interface</span> Vlan<span class="num">10</span>
+L3SW(config-if)# <span class="fn">ip address</span> <span class="num">10.1.10.1 255.255.255.0</span>
+L3SW(config-if)# <span class="fn">ip helper-address</span> <span class="num">10.1.40.3</span>  <span class="cm">! DHCP relay</span>
+L3SW(config-if)# <span class="fn">no shutdown</span>
+
+L3SW(config)# <span class="kw">interface</span> Vlan<span class="num">20</span>
+L3SW(config-if)# <span class="fn">ip address</span> <span class="num">10.1.20.1 255.255.255.192</span>
+L3SW(config-if)# <span class="fn">no shutdown</span>
+
+L3SW(config)# <span class="kw">ip route</span> <span class="num">0.0.0.0 0.0.0.0</span> <span class="num">10.1.99.254</span>  <span class="cm">! Default to FW</span></code></pre>
+    </div></div>
+  </div>
+</section>
+
+<!-- ROUTING -->
+<section class="section" id="routing-basics">
+  <div class="sec-hd"><div class="sec-icon ip">🗺️</div><div class="sec-meta"><span class="stag tp">Stage 3 · Routing</span><h2>Routing Fundamentals</h2><p class="sec-sub">The intelligence that gets a packet anywhere on earth</p></div></div>
+  <div class="diag">Router# show ip route
+<span class="dg">C</span>  <span class="dc">10.1.10.0/24</span>  directly connected, Vlan10
+<span class="dv">S</span>  <span class="dc">172.16.0.0/24</span> [1/0] via 10.1.99.2      <span class="dm">← static, AD=1</span>
+<span class="da">O</span>  <span class="dc">10.2.0.0/16</span>   [110/30] via 10.1.99.3  <span class="dm">← OSPF, AD=110</span>
+<span class="dg">S*</span> <span class="dc">0.0.0.0/0</span>     [1/0] via 203.0.113.1   <span class="dm">← default route to internet</span>
+
+Format: [Administrative Distance / Metric]  Lower = preferred</div>
+  <div class="tw-wrap"><table><thead><tr><th>Source</th><th>AD</th><th>Trust Level</th></tr></thead><tbody>
+    <tr><td>Directly Connected</td><td>0</td><td>Perfect — we are on that network</td></tr>
+    <tr><td>Static</td><td>1</td><td>Admin-configured — very trusted</td></tr>
+    <tr><td>eBGP</td><td>20</td><td>External BGP</td></tr>
+    <tr><td>EIGRP Internal</td><td>90</td><td>Cisco proprietary</td></tr>
+    <tr><td>EIGRP Summary Route</td><td>5</td><td>Cisco EIGRP — summary only</td></tr>
+    <tr><td>OSPF</td><td>110</td><td>Open standard — most enterprise</td></tr>
+    <tr><td>IS-IS</td><td>115</td><td>Used by ISPs and service providers</td></tr>
+    <tr><td>RIP</td><td>120</td><td>Legacy — avoid</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="section" id="static-routing">
+  <div class="sec-hd"><div class="sec-icon ip">📍</div><div class="sec-meta"><span class="stag tp">Stage 3 · Routing</span><h2>Static Routing</h2><p class="sec-sub">Simple, predictable, zero overhead — right for small or specific cases</p></div></div>
+  <pre><code><span class="cm">! Standard route</span>
+Router(config)# <span class="kw">ip route</span> <span class="num">10.20.0.0</span> <span class="num">255.255.0.0</span> <span class="num">192.168.1.2</span>
+
+<span class="cm">! Default route to ISP</span>
+Router(config)# <span class="kw">ip route</span> <span class="num">0.0.0.0</span> <span class="num">0.0.0.0</span> <span class="num">203.0.113.1</span>
+
+<span class="cm">! Floating static (backup, AD=200, only active if primary fails)</span>
+Router(config)# <span class="kw">ip route</span> <span class="num">10.20.0.0</span> <span class="num">255.255.0.0</span> <span class="num">192.168.2.2</span> <span class="num">200</span>
+
+Router# <span class="fn">show ip route static</span></code></pre>
+</section>
+
+<section class="section" id="ospf">
+  <div class="sec-hd"><div class="sec-icon ip">⭕</div><div class="sec-meta"><span class="stag tp">Stage 3 · Routing</span><h2>OSPF — Open Shortest Path First</h2><p class="sec-sub">Industry-standard IGP. Every enterprise network runs OSPF.</p></div></div>
+  <p>OSPF is <strong>link-state</strong>: every router builds a full topology map (LSDB) and runs Dijkstra's algorithm independently. Changes propagate instantly — convergence in seconds.</p>
+  <pre><code>Router(config)# <span class="kw">router ospf</span> <span class="num">1</span>
+Router(config-router)# <span class="fn">router-id</span> <span class="num">1.1.1.1</span>
+Router(config-router)# <span class="fn">auto-cost reference-bandwidth</span> <span class="num">10000</span>  <span class="cm">! 10G ref</span>
+Router(config-router)# <span class="fn">network</span> <span class="num">10.1.0.0</span> <span class="num">0.0.255.255</span> <span class="kw">area</span> <span class="num">0</span>
+Router(config-router)# <span class="fn">passive-interface default</span>
+Router(config-router)# <span class="fn">no passive-interface</span> Gi1/1
+Router(config-router)# <span class="fn">default-information originate</span>
+
+<span class="cm">! OSPF Timer defaults (Ethernet/broadcast): hello=10s dead=40s
+! OSPF Timer defaults (Serial/NBMA):       hello=30s dead=120s
+! Neighbours MUST match timers or adjacency fails</span>
+
+Router# <span class="fn">show ip ospf neighbor</span>     <span class="cm">! Should show FULL state</span>
+Router# <span class="fn">show ip route ospf</span>        <span class="cm">! OSPF-learned routes</span></code></pre>
+</section>
+
+<section class="section" id="eigrp">
+  <div class="sec-hd"><div class="sec-icon ip">⚡</div><div class="sec-meta"><span class="stag tp">Stage 3 · Routing</span><h2>EIGRP</h2><p class="sec-sub">Cisco's hybrid protocol — fast convergence via DUAL algorithm and Feasible Successors</p></div></div>
+  <pre><code>Router(config)# <span class="kw">router eigrp</span> SCHOOL
+Router(config-router)# <span class="fn">address-family ipv4 unicast autonomous-system</span> <span class="num">100</span>
+Router(config-router-af)# <span class="fn">network</span> <span class="num">10.1.0.0</span> <span class="num">0.0.255.255</span>
+Router(config-router-af)# <span class="fn">eigrp router-id</span> <span class="num">1.1.1.1</span>
+
+Router# <span class="fn">show ip eigrp neighbors</span>
+Router# <span class="fn">show ip eigrp topology</span>   <span class="cm">! Successors + feasible successors</span></code></pre>
+</section>
+
+<section class="section" id="bgp">
+  <div class="sec-hd"><div class="sec-icon ip">🌍</div><div class="sec-meta"><span class="stag tp">Stage 3 · Routing</span><h2>BGP — Border Gateway Protocol</h2><p class="sec-sub">Routes every packet on the public internet. Policy-based, not speed-based.</p></div></div>
+  <pre><code><span class="cm">! eBGP to ISP (your AS=65001, ISP AS=100)
+! Private AS range: 64512–65534 (2-byte, RFC 6996)
+! Use private AS for internal/lab; real orgs need ARIN/APNIC-assigned AS</span>
+Router(config)# <span class="kw">router bgp</span> <span class="num">65001</span>
+Router(config-router)# <span class="fn">neighbor</span> <span class="num">203.0.113.1</span> <span class="kw">remote-as</span> <span class="num">100</span>
+Router(config-router)# <span class="fn">network</span> <span class="num">203.0.114.0</span> <span class="fn">mask</span> <span class="num">255.255.255.0</span>
+
+Router# <span class="fn">show bgp summary</span>   <span class="cm">! State must show "Established"</span></code></pre>
+</section>
+
+<section class="section" id="nat">
+  <div class="sec-hd"><div class="sec-icon ip">🔃</div><div class="sec-meta"><span class="stag tp">Stage 3 · Routing</span><h2>NAT &amp; PAT</h2><p class="sec-sub">Many private IPs share one public IP. In every router on earth.</p></div></div>
+  <pre><code><span class="cm">! PAT — all devices share one public IP</span>
+Router(config-if)# <span class="fn">ip nat inside</span>     <span class="cm">! LAN interface</span>
+Router(config-if)# <span class="fn">ip nat outside</span>    <span class="cm">! WAN interface</span>
+Router(config)# <span class="kw">access-list</span> <span class="num">1</span> <span class="fn">permit</span> <span class="num">10.0.0.0</span> <span class="num">0.255.255.255</span>
+Router(config)# <span class="kw">ip nat inside source list</span> <span class="num">1</span> <span class="kw">interface</span> Gi0/1 <span class="fn">overload</span>
+
+<span class="cm">! Static NAT — fixed public IP for web server</span>
+Router(config)# <span class="kw">ip nat inside source static</span> <span class="num">10.1.40.5</span> <span class="num">203.0.113.10</span>
+
+Router# <span class="fn">show ip nat translations</span></code></pre>
+</section>
+
+<!-- DESIGN -->
+<section class="section" id="design-principles">
+  <div class="sec-hd"><div class="sec-icon ia">🏛️</div><div class="sec-meta"><span class="stag ta">Stage 4 · Network Design</span><h2>Design Principles &amp; Hierarchy</h2><p class="sec-sub">The 3-tier model and 10 commandments that every good network follows</p></div></div>
+  <div class="diag">                ┌─────────────────────────────────────┐
+                │         <span class="dc">CORE LAYER</span>                   │  10/40/100 G, pure speed
+                └──────────┬────────────────┬────────────┘
+                ┌──────────┴──────┐  ┌──────┴──────────┐
+                │  <span class="dg">DISTRIBUTION</span>  │  │  <span class="dg">DISTRIBUTION</span>  │  L3 switch, ACL, VLAN routing
+                └──┬──────────┬──┘  └──┬──────────┬──┘
+               ┌───┴──┐  ┌───┴──┐  ┌───┴──┐  ┌────┴──┐
+               │<span class="da">ACCESS</span>│  │<span class="da">ACCESS</span>│  │<span class="da">ACCESS</span>│  │<span class="da">ACCESS</span>│  L2 switch, VLANs, PoE
+               └──┬───┘  └──┬───┘  └──┬───┘  └───┬───┘
+              PCs APs   PCs APs   PCs APs     Servers</div>
+  <ol class="steps">
+    <li><div class="sn">1</div><div class="sb"><div class="st">Document before you touch anything</div><p>Diagrams, IP spreadsheet, VLAN table. Undocumented networks are liabilities.</p></div></li>
+    <li><div class="sn">2</div><div class="sb"><div class="st">Design for 3–5× current scale</div><p>Use larger subnets than today needs. Re-numbering is 10× the cost.</p></div></li>
+    <li><div class="sn">3</div><div class="sb"><div class="st">Eliminate every single point of failure</div><p>Dual uplinks, redundant core, UPS on IDFs, redundant ISP.</p></div></li>
+    <li><div class="sn">4</div><div class="sb"><div class="st">Segment by security zone without exception</div><p>Guests, users, servers, IoT, VoIP — each its own VLAN with ACL policies.</p></div></li>
+    <li><div class="sn">5</div><div class="sb"><div class="st">Consistent IP addressing scheme</div><p>VLAN 10 → 10.10.10.0/24. VLAN 20 → 10.10.20.0/24. Readable = maintainable.</p></div></li>
+    <li><div class="sn">6</div><div class="sb"><div class="st">Security in every design decision</div><p>SSH only, strong passwords, MFA, 802.1X, disable unused ports. Zero exceptions.</p></div></li>
+    <li><div class="sn">7</div><div class="sb"><div class="st">Monitor from day one</div><p>SNMP, NetFlow, syslog. Finding outages from user complaints = failure.</p></div></li>
+    <li><div class="sn">8</div><div class="sb"><div class="st">Always have a rollback plan</div><p>Test in lab. Change ticket. Pre-written rollback commands. Maintenance window.</p></div></li>
+    <li><div class="sn">9</div><div class="sb"><div class="st">Simplicity is a feature</div><p>The simplest design meeting all requirements is the best design.</p></div></li>
+  </ol>
+</section>
+
+<section class="section" id="school-network">
+  <div class="sec-hd"><div class="sec-icon ia">🏫</div><div class="sec-meta"><span class="stag ta">Stage 4 · Network Design</span><h2>Complete School Network Design</h2><p class="sec-sub">Full VLAN plan, IP addressing, topology, and firewall policy for 600 users</p></div></div>
+  <div class="tw-wrap"><table><thead><tr><th>VLAN</th><th>Name</th><th>Subnet</th><th>Gateway</th><th>Usable</th></tr></thead><tbody>
+    <tr><td>10</td><td>STUDENTS</td><td>10.1.10.0/23</td><td>10.1.10.1</td><td>510</td></tr>
+    <tr><td>20</td><td>TEACHERS</td><td>10.1.20.0/26</td><td>10.1.20.1</td><td>62</td></tr>
+    <tr><td>30</td><td>ADMIN</td><td>10.1.30.0/28</td><td>10.1.30.1</td><td>14</td></tr>
+    <tr><td>40</td><td>SERVERS</td><td>10.1.40.0/27</td><td>10.1.40.1</td><td>30 (static)</td></tr>
+    <tr><td>50</td><td>GUEST_WIFI</td><td>10.1.50.0/24</td><td>10.1.50.1</td><td>254</td></tr>
+    <tr><td>60</td><td>CAMERAS</td><td>10.1.60.0/27</td><td>10.1.60.1</td><td>30</td></tr>
+    <tr><td>70</td><td>VOIP</td><td>10.1.70.0/26</td><td>10.1.70.1</td><td>62</td></tr>
+    <tr><td>99</td><td>MGMT</td><td>10.1.99.0/28</td><td>10.1.99.1</td><td>14 (static)</td></tr>
+  </tbody></table></div>
+  <h3>Firewall Policy</h3>
+  <div class="tw-wrap"><table><thead><tr><th>Source</th><th>Destination</th><th>Port</th><th>Action</th></tr></thead><tbody>
+    <tr><td>STUDENTS</td><td>DNS 10.1.40.2</td><td>UDP 53</td><td>ALLOW</td></tr>
+    <tr><td>STUDENTS</td><td>Moodle 10.1.40.5</td><td>TCP 443</td><td>ALLOW</td></tr>
+    <tr><td>STUDENTS</td><td>ANY internal</td><td>ANY</td><td>DENY + LOG</td></tr>
+    <tr><td>TEACHERS</td><td>File Server</td><td>TCP 445</td><td>ALLOW</td></tr>
+    <tr><td>TEACHERS</td><td>Internet</td><td>80, 443</td><td>ALLOW</td></tr>
+    <tr><td>GUEST</td><td>Internet</td><td>80, 443</td><td>ALLOW</td></tr>
+    <tr><td>GUEST</td><td>ANY internal</td><td>ANY</td><td>DENY + LOG</td></tr>
+    <tr><td>CAMERAS</td><td>NVR 10.1.40.7</td><td>TCP 554</td><td>ALLOW</td></tr>
+    <tr><td>CAMERAS</td><td>ANY other</td><td>ANY</td><td>DENY</td></tr>
+    <tr><td>Internet</td><td>ANY internal</td><td>ANY</td><td>DENY (stateful)</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="section" id="college-network">
+  <div class="sec-hd"><div class="sec-icon ia">🎓</div><div class="sec-meta"><span class="stag ta">Stage 4 · Network Design</span><h2>College / Campus Network</h2><p class="sec-sub">Multi-building, 5000 users, dual ISP, HA core with vPC</p></div></div>
+  <div class="card-grid">
+    <div class="card"><div class="card-t">⚡ HSRP/VRRP</div><p>Two distribution switches share a virtual gateway IP. Failover in &lt;3s. Users never change their gateway.</p></div>
+    <div class="card"><div class="card-t">🔗 EtherChannel/LACP</div><p>Bundle 2–8 links into one logical channel — more bandwidth + automatic failover on link break.</p></div>
+    <div class="card"><div class="card-t">🌐 Cisco vPC</div><p>Two core switches appear as one. Both uplinks from access switches are active — true active-active, no STP blocking.</p></div>
+    <div class="card"><div class="card-t">💡 Dual Power + UPS</div><p>Core/distribution switches need dual PSUs on separate circuits. Generator with &lt;20ms transfer for data centres.</p></div>
+  </div>
+</section>
+
+<section class="section" id="enterprise-network">
+  <div class="sec-hd"><div class="sec-icon ia">🏢</div><div class="sec-meta"><span class="stag ta">Stage 4 · Network Design</span><h2>Enterprise Network</h2><p class="sec-sub">2000+ users, full HA, QoS, branch offices via SD-WAN</p></div></div>
+  <div class="tw-wrap"><table><thead><tr><th>Traffic Class</th><th>DSCP</th><th>Priority</th><th>Max Latency</th></tr></thead><tbody>
+    <tr><td>VoIP (RTP)</td><td>EF 46</td><td>Highest</td><td>&lt;150ms one-way</td></tr>
+    <tr><td>Video Conferencing</td><td>AF41 34</td><td>High</td><td>&lt;200ms</td></tr>
+    <tr><td>Business Apps</td><td>AF31 26</td><td>Medium-High</td><td>&lt;500ms</td></tr>
+    <tr><td>Web / Email</td><td>BE 0</td><td>Default</td><td>Best effort</td></tr>
+    <tr><td>Bulk / Backup</td><td>AF11 10</td><td>Low</td><td>Best effort</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="section" id="wan-isp">
+  <div class="sec-hd"><div class="sec-icon ia">🌐</div><div class="sec-meta"><span class="stag ta">Stage 4 · Network Design</span><h2>WAN &amp; ISP Connectivity</h2><p class="sec-sub">Technologies, redundancy strategies, and real-world tradeoffs</p></div></div>
+  <div class="tw-wrap"><table><thead><tr><th>Technology</th><th>Speed</th><th>Cost</th><th>Best For</th></tr></thead><tbody>
+    <tr><td>Dedicated Fibre</td><td>100M–100G</td><td>High</td><td>HQ, data centres</td></tr>
+    <tr><td>MPLS</td><td>2M–10G</td><td>High</td><td>Branch WAN SLA</td></tr>
+    <tr><td>SD-WAN + Broadband</td><td>100M–1G</td><td>Low</td><td>Branch cost-saving</td></tr>
+    <tr><td>4G/5G</td><td>50M–1G</td><td>Medium</td><td>Backup, temporary</td></tr>
+    <tr><td>Starlink LEO</td><td>50–300M</td><td>Medium</td><td>Remote sites</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="section" id="wireless-design">
+  <div class="sec-hd"><div class="sec-icon ia">📶</div><div class="sec-meta"><span class="stag ta">Stage 4 · Network Design</span><h2>Wireless Network Design</h2><p class="sec-sub">Capacity, not just coverage — the difference between enterprise and home Wi-Fi thinking</p></div></div>
+  <div class="callout ci"><div class="ct">Key Insight</div>Dense environments (classrooms) need <strong>low transmit power + more APs</strong> — so users connect to the nearest one. A single powerful AP serving 80 students is always wrong.</div>
+  <div class="tw-wrap"><table><thead><tr><th>Decision</th><th>Recommendation</th></tr></thead><tbody>
+    <tr><td>AP density</td><td>1 per room, ceiling-mounted, centre of zone</td></tr>
+    <tr><td>Transmit power</td><td>5–15 dBm in dense areas</td></tr>
+    <tr><td>2.4 GHz channels</td><td>1, 6, 11 ONLY — strictly non-overlapping</td></tr>
+    <tr><td>Corp SSID auth</td><td>WPA3-Enterprise 802.1X against RADIUS/AD</td></tr>
+    <tr><td>Guest SSID auth</td><td>WPA2-Personal + captive portal</td></tr>
+  </tbody></table></div>
+</section>
+
+<!-- SECURITY -->
+<section class="section" id="security-fundamentals">
+  <div class="sec-hd"><div class="sec-icon ir">🔒</div><div class="sec-meta"><span class="stag tr">Stage 5 · Security</span><h2>Security Fundamentals</h2><p class="sec-sub">Security is baked into every design decision — not bolted on after</p></div></div>
+  <div class="card-grid">
+    <div class="card"><div class="card-t">🔒 Confidentiality</div><p>Only authorised parties can read data. Encryption (TLS, VPN, AES), VLANs, ACLs, MFA.</p></div>
+    <div class="card"><div class="card-t">✅ Integrity</div><p>Data cannot be altered undetected. SHA-256 hashing, digital signatures, file integrity monitoring.</p></div>
+    <div class="card"><div class="card-t">⚡ Availability</div><p>Systems accessible when needed. Redundancy, DDoS protection, tested backups, monitoring.</p></div>
+  </div>
+  <div class="tw-wrap"><table><thead><tr><th>Attack</th><th>What Happens</th><th>Mitigation</th></tr></thead><tbody>
+    <tr><td>ARP Spoofing</td><td>Fake ARP replies → MITM — all traffic intercepted</td><td>Dynamic ARP Inspection (DAI)</td></tr>
+    <tr><td>VLAN Hopping</td><td>Double-tagged frames escape VLAN boundary</td><td>Native VLAN 999, disable DTP, explicit trunks</td></tr>
+    <tr><td>MAC Flooding</td><td>Fill CAM table → switch floods everything → attacker sees all</td><td>Port security with MAC limits</td></tr>
+    <tr><td>Rogue DHCP</td><td>Attacker's DHCP gives wrong gateway → MITM</td><td>DHCP Snooping</td></tr>
+    <tr><td>BPDU Spoofing</td><td>Attacker becomes STP root → intercepts traffic</td><td>BPDU Guard on access ports</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="section" id="firewalls">
+  <div class="sec-hd"><div class="sec-icon ir">🔥</div><div class="sec-meta"><span class="stag tr">Stage 5 · Security</span><h2>Firewalls</h2><p class="sec-sub">Your most important security control — understand it deeply</p></div></div>
+  <pre><code><span class="cm"># FortiGate — essential debug commands</span>
+<span class="fn">diagnose sys session list</span>                        <span class="cm"># Active sessions</span>
+<span class="fn">diagnose firewall iprope lookup</span> <span class="num">10.1.10.50</span> <span class="num">10.1.40.5</span> 6 0 <span class="num">443</span>  <span class="cm"># Test policy</span>
+<span class="fn">diagnose debug flow filter addr</span> <span class="num">10.1.10.50</span>
+<span class="fn">diagnose debug flow trace start</span> <span class="num">100</span>
+<span class="fn">diagnose debug enable</span>
+<span class="fn">get router info routing-table all</span></code></pre>
+</section>
+
+<section class="section" id="server-hardening">
+  <div class="sec-hd"><div class="sec-icon ir">🛡️</div><div class="sec-meta"><span class="stag tr">Stage 5 · Security</span><h2>Server Hardening</h2><p class="sec-sub">Apply this checklist to every Linux server you deploy</p></div></div>
+  <pre><code><span class="cm">## 1. Update first</span>
+<span class="fn">apt update</span> &amp;&amp; <span class="fn">apt upgrade</span> -y
+
+<span class="cm">## 2. SSH — /etc/ssh/sshd_config</span>
+<span class="kw">PermitRootLogin</span>          <span class="str">no</span>
+<span class="kw">PasswordAuthentication</span>   <span class="str">no</span>       <span class="cm"># Keys only</span>
+<span class="kw">Port</span>                     <span class="num">2222</span>
+<span class="kw">AllowUsers</span>               <span class="str">netadmin</span>
+
+<span class="cm">## 3. Firewall</span>
+<span class="fn">ufw default deny incoming</span>
+<span class="fn">ufw allow from</span> <span class="num">10.1.99.0/28</span> to any port <span class="num">2222</span>
+<span class="fn">ufw enable</span>
+
+<span class="cm">## 4. Fail2Ban</span>
+<span class="fn">apt install</span> fail2ban -y
+<span class="cm"># maxretry=3, bantime=3600</span>
+
+<span class="cm">## 5. Kernel hardening — /etc/sysctl.d/99-harden.conf</span>
+net.ipv4.tcp_syncookies = <span class="num">1</span>
+net.ipv4.conf.all.rp_filter = <span class="num">1</span>
+net.ipv4.conf.all.log_martians = <span class="num">1</span>
+
+<span class="cm">## 6. Verify open ports</span>
+<span class="fn">ss</span> -tlnp</code></pre>
+</section>
+
+<section class="section" id="acls">
+  <div class="sec-hd"><div class="sec-icon ir">📋</div><div class="sec-meta"><span class="stag tr">Stage 5 · Security</span><h2>ACLs — Access Control Lists</h2><p class="sec-sub">Ordered traffic filtering — the foundation of network security policy</p></div></div>
+  <div class="callout cd"><div class="ct">🚨 Golden Rules</div>1. Top-to-bottom, first match wins — order matters enormously.<br>2. Implicit deny-all at end — unmatched traffic is silently dropped.<br>3. Apply inbound at the VLAN SVI closest to the source.</div>
+  <pre><code>Router(config)# <span class="kw">ip access-list extended</span> STUDENTS_POLICY
+Router(config-ext-nacl)# <span class="num">10</span> <span class="fn">permit udp</span> <span class="num">10.1.10.0 0.0.1.255</span> <span class="kw">host</span> <span class="num">10.1.40.2</span> <span class="fn">eq</span> <span class="num">53</span>
+Router(config-ext-nacl)# <span class="num">20</span> <span class="fn">permit tcp</span> <span class="num">10.1.10.0 0.0.1.255</span> <span class="kw">host</span> <span class="num">10.1.40.5</span> <span class="fn">eq</span> <span class="num">443</span>
+Router(config-ext-nacl)# <span class="num">50</span> <span class="fn">deny ip</span>  <span class="num">10.1.10.0 0.0.1.255</span> <span class="num">10.0.0.0 0.255.255.255</span> <span class="fn">log</span>
+Router(config-ext-nacl)# <span class="num">100</span> <span class="fn">permit ip</span> <span class="num">10.1.10.0 0.0.1.255</span> any
+Router(config)# <span class="kw">interface</span> Vlan<span class="num">10</span>
+Router(config-if)# <span class="fn">ip access-group</span> STUDENTS_POLICY in</code></pre>
+</section>
+
+<section class="section" id="vpn">
+  <div class="sec-hd"><div class="sec-icon ir">🔐</div><div class="sec-meta"><span class="stag tr">Stage 5 · Security</span><h2>VPN — Secure Tunnels</h2><p class="sec-sub">Encrypts traffic over untrusted networks for branch and remote access</p></div></div>
+  <pre><code><span class="cm">! IKEv2 Site-to-Site IPsec VPN — modern config</span>
+Router(config)# <span class="kw">crypto ikev2 proposal</span> STRONG
+Router(config-ikev2-proposal)# <span class="fn">encryption aes-cbc-256</span>
+Router(config-ikev2-proposal)# <span class="fn">integrity sha256</span>
+Router(config-ikev2-proposal)# <span class="fn">group</span> <span class="num">20</span>
+
+Router(config)# <span class="kw">interface</span> Tunnel<span class="num">1</span>
+Router(config-if)# <span class="fn">ip address</span> <span class="num">172.16.0.1 255.255.255.252</span>
+Router(config-if)# <span class="fn">tunnel source</span>  Gi0/1
+Router(config-if)# <span class="fn">tunnel destination</span> <span class="num">198.51.100.1</span>
+
+Router# <span class="fn">show crypto ikev2 sa</span>
+Router# <span class="fn">show crypto ipsec sa</span></code></pre>
+</section>
+
+<section class="section" id="dmz">
+  <div class="sec-hd"><div class="sec-icon ir">🏰</div><div class="sec-meta"><span class="stag tr">Stage 5 · Security</span><h2>DMZ Architecture</h2><p class="sec-sub">Public services go here — accessible from outside, strictly blocked from reaching inside</p></div></div>
+  <div class="diag">Internet → Firewall → <span class="dc">DMZ</span> (web, mail, DNS servers)
+                  ↕ Strictly limited
+            Firewall → <span class="dg">Internal LAN</span>
+
+If DMZ server is pwned: it CANNOT reach internal systems.
+Block DMZ→LAN except specific DB port. This limits blast radius.</div>
+</section>
+
+<section class="section" id="zero-trust">
+  <div class="sec-hd"><div class="sec-icon ir">🛡️</div><div class="sec-meta"><span class="stag tr">Stage 5 · Security</span><h2>Zero Trust &amp; SASE</h2><p class="sec-sub">"Never trust, always verify" — the cloud-era security architecture</p></div></div>
+  <p>Traditional perimeter model: "inside = trusted." Zero Trust rejects this. Every user, device, and app must prove authorisation continuously — regardless of network location.</p>
+  <div class="tw-wrap"><table><thead><tr><th>SASE Component</th><th>Function</th><th>Replaces</th></tr></thead><tbody>
+    <tr><td>SD-WAN</td><td>Intelligent multi-link WAN</td><td>MPLS, WAN routers</td></tr>
+    <tr><td>ZTNA</td><td>Per-app access by identity + device posture</td><td>Traditional VPN</td></tr>
+    <tr><td>SWG</td><td>Web filtering, malware scanning</td><td>On-prem web proxy</td></tr>
+    <tr><td>CASB</td><td>SaaS visibility and control</td><td>Nothing — new capability</td></tr>
+    <tr><td>FWaaS</td><td>Cloud-delivered NGFW</td><td>Branch NGFW appliances</td></tr>
+  </tbody></table></div>
+</section>
+
+<!-- MONITORING & OPS -->
+<section class="section" id="monitoring">
+  <div class="sec-hd"><div class="sec-icon iw">📊</div><div class="sec-meta"><span class="stag tw">Stage 6 · Ops</span><h2>Network Monitoring &amp; SNMP</h2><p class="sec-sub">You cannot manage what you cannot measure</p></div></div>
+  <pre><code><span class="cm">! SNMPv3 — always use in production</span>
+Router(config)# <span class="kw">snmp-server group</span>   NETOPS v3 priv
+Router(config)# <span class="kw">snmp-server user</span>    nmsuser NETOPS v3 <span class="fn">auth</span> sha <span class="str">Auth!</span> <span class="fn">priv</span> aes <span class="num">128</span> <span class="str">Priv!</span>
+Router(config)# <span class="kw">snmp-server host</span>    <span class="num">10.1.99.10</span> traps version 3 priv nmsuser
+Router(config)# <span class="kw">snmp-server enable traps</span></code></pre>
+  <div class="card-grid">
+    <div class="card"><div class="card-t">📡 LibreNMS</div><p>Free, auto-discovers all SNMP devices, excellent dashboards and alerting. Install on one Linux VM.</p></div>
+    <div class="card"><div class="card-t">📊 Grafana + Prometheus</div><p>Beautiful time-series dashboards. Pair with SNMP Exporter. DevOps standard.</p></div>
+    <div class="card"><div class="card-t">🔍 Zabbix</div><p>Enterprise open-source. Active/passive checks, auto-discovery, templates for all major vendors.</p></div>
+  </div>
+</section>
+
+<section class="section" id="packet-analysis">
+  <div class="sec-hd"><div class="sec-icon iw">🔬</div><div class="sec-meta"><span class="stag tw">Stage 6 · Ops</span><h2>Packet Capture &amp; Analysis</h2><p class="sec-sub">Wireshark and tcpdump — see every byte on the wire</p></div></div>
+  <pre><code><span class="cm"># tcpdump essential filters</span>
+<span class="fn">tcpdump</span> -i eth0 host <span class="num">10.1.10.50</span>       <span class="cm"># Filter by IP</span>
+<span class="fn">tcpdump</span> -i eth0 -n udp port <span class="num">53</span>        <span class="cm"># DNS only</span>
+<span class="fn">tcpdump</span> -i eth0 -w capture.pcap       <span class="cm"># Save for Wireshark</span>
+<span class="fn">tcpdump</span> -i eth0 <span class="str">'tcp[tcpflags]==tcp-syn'</span>  <span class="cm"># New connections only</span>
+<span class="fn">tcpdump</span> -i eth0 -n arp                <span class="cm"># ARP — watch for spoofing</span>
+
+<span class="cm">// Wireshark display filters</span>
+ip.addr == <span class="num">10.1.10.50</span>
+tcp.port == <span class="num">443</span>
+dns.qry.name contains <span class="str">"suspicious"</span>
+tcp.analysis.retransmission          <span class="cm">// Network congestion</span>
+arp                                   <span class="cm">// Watch for duplicate replies = ARP spoofing</span></code></pre>
+</section>
+
+<section class="section" id="logging-siem">
+  <div class="sec-hd"><div class="sec-icon iw">📋</div><div class="sec-meta"><span class="stag tw">Stage 6 · Ops</span><h2>Logging &amp; SIEM</h2><p class="sec-sub">Logs are your evidence and early warning system</p></div></div>
+  <pre><code><span class="cm">! Syslog to central server</span>
+Router(config)# <span class="kw">logging host</span>            <span class="num">10.1.99.20</span>
+Router(config)# <span class="kw">logging trap</span>            informational
+Router(config)# <span class="kw">service timestamps log datetime msec</span>
+Router# <span class="fn">show logging</span></code></pre>
+  <div class="callout ci"><div class="ct">SIEM Detection Examples</div>
+  <strong>Brute force:</strong> &gt;5 failed logins from same IP in 60s → alert + block<br>
+  <strong>Data exfiltration:</strong> Workstation sending &gt;1GB outbound after midnight → quarantine<br>
+  <strong>Lateral movement:</strong> Workstation connecting to &gt;5 servers via SMB:445 in 5 min → isolate (ransomware indicator)</div>
+</section>
+
+<section class="section" id="troubleshooting">
+  <div class="sec-hd"><div class="sec-icon iw">🔍</div><div class="sec-meta"><span class="stag tw">Stage 6 · Ops</span><h2>Troubleshooting Methodology</h2><p class="sec-sub">The systematic approach that solves 95% of problems faster than guessing</p></div></div>
+  <ol class="steps">
+    <li><div class="sn">1</div><div class="sb"><div class="st">Define precisely</div><p>"Internet is broken" ≠ useful. "VLAN 10 users cannot reach 10.1.40.5:443 since 14:30 after a switch config push — all other VLANs fine." That is actionable.</p></div></li>
+    <li><div class="sn">2</div><div class="sb"><div class="st">Scope it</div><p>One user or all? One VLAN? One building? Constant or intermittent? Scope eliminates 90% of the search space.</p></div></li>
+    <li><div class="sn">3</div><div class="sb"><div class="st">Walk OSI bottom-up</div><p>L1: cable/LED. L2: VLAN/trunk/MAC. L3: IP/gateway/route. L4: port open?. L7: DNS/app running?</p></div></li>
+    <li><div class="sn">4</div><div class="sb"><div class="st">One change at a time</div><p>Test, observe, then next step. Changing multiple things simultaneously means you'll never know what fixed it.</p></div></li>
+    <li><div class="sn">5</div><div class="sb"><div class="st">Document root cause</div><p>What was it? Why? How long? Update runbooks, monitoring thresholds, and design decisions to prevent recurrence.</p></div></li>
+  </ol>
+  <pre><code><span class="cm">## Windows</span>
+<span class="fn">ipconfig</span> /all             <span class="cm"># IP, MAC, gateway, DNS, DHCP server</span>
+<span class="fn">ping</span> -n 20 10.1.10.1      <span class="cm"># Gateway test</span>
+<span class="fn">tracert</span> 8.8.8.8           <span class="cm"># Hop-by-hop trace</span>
+<span class="fn">nslookup</span> school.edu       <span class="cm"># DNS resolution</span>
+
+<span class="cm">## Linux</span>
+<span class="fn">ip address show</span> ; <span class="fn">ip route show</span>
+<span class="fn">dig</span> school.edu +short
+<span class="fn">curl</span> -v https://10.1.40.5
+
+<span class="cm">## Cisco IOS</span>
+Router# <span class="fn">show ip interface brief</span>
+Router# <span class="fn">show interfaces</span> Gi0/1   <span class="cm"># Error counters!</span>
+Router# <span class="fn">ping</span> 10.1.40.5 <span class="kw">source</span> Vlan<span class="num">10</span>
+Switch# <span class="fn">show vlan brief</span>
+Switch# <span class="fn">show interfaces trunk</span>
+Switch# <span class="fn">show mac address-table</span></code></pre>
+</section>
+
+<section class="section" id="automation">
+  <div class="sec-hd"><div class="sec-icon iw">🤖</div><div class="sec-meta"><span class="stag tw">Stage 6 · Ops</span><h2>Automation with Python</h2><p class="sec-sub">One script can configure 100 switches in minutes instead of hours</p></div></div>
+  <pre><code><span class="cm">#!/usr/bin/env python3
+# Netmiko — SSH automation for Cisco</span>
+<span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+
+switches = [<span class="str">'10.1.99.10'</span>, <span class="str">'10.1.99.11'</span>, <span class="str">'10.1.99.12'</span>]
+vlan_cmds = [<span class="str">'vlan 10'</span>, <span class="str">'name STUDENTS'</span>, <span class="str">'vlan 20'</span>, <span class="str">'name TEACHERS'</span>]
+
+<span class="kw">for</span> ip <span class="kw">in</span> switches:
+    conn = ConnectHandler(device_type=<span class="str">'cisco_ios'</span>, host=ip,
+                          username=<span class="str">'netadmin'</span>, password=<span class="str">'Secret!'</span>)
+    conn.enable()
+    conn.send_config_set(vlan_cmds)
+    conn.save_config()
+    conn.disconnect()
+    <span class="fn">print</span>(<span class="str">f"{ip}: VLANs configured ✓"</span>)</code></pre>
+</section>
+
+<section class="section" id="sdwan">
+  <div class="sec-hd"><div class="sec-icon iw">🌐</div><div class="sec-meta"><span class="stag tw">Stage 6 · Ops</span><h2>SD-WAN &amp; SDN</h2><p class="sec-sub">Software-defined networking — decoupling intelligence from hardware</p></div></div>
+  <div class="tw-wrap"><table><thead><tr><th>Feature</th><th>Traditional WAN</th><th>SD-WAN</th></tr></thead><tbody>
+    <tr><td>Path selection</td><td>Static routes / OSPF</td><td>Dynamic per-app across 2–4 links</td></tr>
+    <tr><td>Cost</td><td>Expensive MPLS only</td><td>Broadband + 4G/5G instead</td></tr>
+    <tr><td>Management</td><td>CLI per device</td><td>Centralised GUI — deploy to all branches instantly</td></tr>
+    <tr><td>Visibility</td><td>Per-interface counters</td><td>Per-app per-user analytics</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="section" id="certifications">
+  <div class="sec-hd"><div class="sec-icon iw">🏆</div><div class="sec-meta"><span class="stag tw">Stage 6 · Career</span><h2>Career Path &amp; Certifications</h2><p class="sec-sub">The structured path from zero to senior expert</p></div></div>
+  <div class="tw-wrap"><table><thead><tr><th>Level</th><th>Title</th><th>Certifications</th><th>Focus</th></tr></thead><tbody>
+    <tr><td><span class="tag tg2">Entry</span></td><td>Junior Network Engineer</td><td>CompTIA Network+, CCNA</td><td>Monitoring, basic troubleshooting, change execution</td></tr>
+    <tr><td><span class="tag tb2">Mid</span></td><td>Network Engineer</td><td>CCNP Enterprise, NSE4</td><td>Design, implementation, complex troubleshooting</td></tr>
+    <tr><td><span class="tag tp2">Senior</span></td><td>Senior Network Engineer</td><td>CCIE, NSE7, CISSP</td><td>Architecture, mentoring, security design</td></tr>
+    <tr><td><span class="tag tp2">Expert</span></td><td>Network Architect</td><td>CCIE, AWS/Azure Networking</td><td>Enterprise strategy, technology roadmap</td></tr>
+  </tbody></table></div>
+  <div class="accordion">
+    <div class="acc-item open"><div class="acc-head" onclick="acc(this)">Cisco CCNA (200-301) — The Golden Ticket <span class="acc-arr">▶</span></div><div class="acc-body"><p>Most recognised networking cert globally. One exam. Covers routing/switching, VLANs, OSPF, ACLs, wireless, security, automation. Opens most networking job doors.</p><p><strong>Study time:</strong> 3–6 months | <strong>Cost:</strong> ~$330 | <strong>Key resource:</strong> Cisco Packet Tracer (free) — lab every concept immediately after reading.</p></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="acc(this)">Fortinet NSE (1–7) — Security Track <span class="acc-arr">▶</span></div><div class="acc-body"><p>#1 firewall vendor by market share. NSE 1–4 are <strong>FREE</strong> via Fortinet NSE Institute. NSE 4 covers FortiGate firewall admin — highly sought after.</p></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="acc(this)">CCNP Enterprise — Senior Level <span class="acc-arr">▶</span></div><div class="acc-body"><p>Two exams: ENCOR (core) + one concentration. Covers advanced BGP, OSPF, SD-WAN, wireless architecture. Substantial pay jump from CCNA level.</p></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="acc(this)">CCIE — The Expert Pinnacle <span class="acc-arr">▶</span></div><div class="acc-body"><p>Written + 8-hour hands-on lab exam. Pass rate ~20% on first attempt. Salary: $130,000–$250,000+ globally. Career-defining credential.</p></div></div>
+  </div>
+  <div class="card-grid">
+    <div class="card"><div class="card-t">🖥️ Cisco Packet Tracer</div><p>Free from Cisco NetAcad. Simulates routers, switches, servers. Perfect for CCNA and all configs in this guide.</p></div>
+    <div class="card"><div class="card-t">⚡ GNS3</div><p>Runs real IOS images. Connects to internet. Industry standard for CCNA/CCNP practice.</p></div>
+    <div class="card"><div class="card-t">🌐 EVE-NG</div><p>Multi-vendor emulator in browser. Cisco + Juniper + Palo Alto + Fortinet. CCIE lab training standard.</p></div>
+    <div class="card"><div class="card-t">🐧 pfSense + VMs</div><p>Free firewall + Linux VMs in VirtualBox. Real firewall rules, VPN, DNS, server hardening — zero hardware cost.</p></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     LAB SECTION
+════════════════════════════════════════════ -->
+
+<section class="section" id="lab-concepts">
+  <div class="sec-hd"><div class="sec-icon ia">🧪</div><div class="sec-meta"><span class="stag ta">Lab Practice</span><h2>Lab Concepts Overview</h2><p class="sec-sub">Hands-on practice is non-negotiable. Reading without labbing is like reading about swimming without water.</p></div></div>
+  <div class="callout cw"><div class="ct">⚡ The Lab Rule</div>Every concept in this guide should be practiced in a lab before you consider it learned. Understanding it intellectually and being able to configure it under pressure are very different skills.</div>
+  <h3>Lab Tools — What to Use</h3>
+  <div class="card-grid">
+    <div class="card"><div class="card-t">🖥️ Cisco Packet Tracer</div><p><strong>Free, zero hardware.</strong> Simulates Cisco routers, switches, PCs, servers. Download at netacad.com. Perfect for Labs 1–5 in this guide. Recommended starting point.</p></div>
+    <div class="card"><div class="card-t">⚡ GNS3</div><p><strong>Free + real IOS.</strong> Requires Cisco IOS images (ask your institution). Connects to real internet. More realistic than PT. Good for CCNP-level labs.</p></div>
+    <div class="card"><div class="card-t">🌐 EVE-NG Community</div><p><strong>Free browser-based.</strong> Supports Cisco + Fortinet + Juniper + Palo Alto. Industry standard for CCIE preparation. Best for security labs.</p></div>
+    <div class="card"><div class="card-t">🐧 VirtualBox Free</div><p><strong>Free, any OS.</strong> Run pfSense firewall + Ubuntu servers. Practice server hardening, DHCP, DNS, real firewall rules. No Cisco needed.</p></div>
+  </div>
+  <h3>Lab Progression — The Right Order</h3>
+  <ol class="steps">
+    <li><div class="sn">1</div><div class="sb"><div class="st">Basic LAN (Lab 1)</div><p>Get two PCs communicating. Understand IP, subnet mask, and ping. This is the foundation everything else builds on.</p></div></li>
+    <li><div class="sn">2</div><div class="sb"><div class="st">VLANs and Trunks (Lab 2)</div><p>Segment a switch. Prove devices in different VLANs can't ping each other. Add a trunk. This teaches you the core of network segmentation.</p></div></li>
+    <li><div class="sn">3</div><div class="sb"><div class="st">Inter-VLAN Routing (Lab 3)</div><p>Add a router or L3 switch. Make VLANs communicate through it. This is the most common thing you'll configure in real networks.</p></div></li>
+    <li><div class="sn">4</div><div class="sb"><div class="st">OSPF Routing (Lab 4)</div><p>Two routers running OSPF, automatically learning each other's routes. Break a link — watch it reconverge. This proves you understand dynamic routing.</p></div></li>
+    <li><div class="sn">5</div><div class="sb"><div class="st">Full School Network (Lab 5)</div><p>Build the complete school design from Stage 4: 4 VLANs, L3 switch, DHCP, ACLs, and a simulated firewall. This is the capstone.</p></div></li>
+  </ol>
+</section>
+
+<section class="section" id="lab-basic-lan">
+  <div class="sec-hd"><div class="sec-icon ia">🧪</div><div class="sec-meta"><span class="stag ta">Lab 1</span><h2>Basic LAN — Two PCs Communicating</h2><p class="sec-sub">The simplest possible network. Get this solid before anything else.</p></div></div>
+  <div class="lab-box"><div class="lab-badge">LAB OBJECTIVE</div><h4>Make PC-A ping PC-B through a switch</h4><p>You will understand: IP addresses, subnet mask, default gateway (none needed here — same subnet), and how a switch builds its MAC table.</p></div>
+  <h3>Topology</h3>
+  <div class="diag"><span class="dg">PC-A</span>  ──────────  <span class="dc">Switch-1</span>  ──────────  <span class="dg">PC-B</span>
+IP: 192.168.1.10/24           IP: 192.168.1.20/24
+GW: 192.168.1.1               GW: 192.168.1.1
+Mask: 255.255.255.0           Mask: 255.255.255.0</div>
+  <h3>Step-by-Step</h3>
+  <pre><code><span class="cm">! Step 1: Add a switch (Cisco 2960) and two PCs in Packet Tracer
+! Step 2: Connect PC-A to Gi0/1, PC-B to Gi0/2 with straight-through cables
+! Step 3: Assign IPs on each PC (Desktop → IP Configuration)
+!   PC-A: IP 192.168.1.10  Mask 255.255.255.0
+!   PC-B: IP 192.168.1.20  Mask 255.255.255.0
+
+! Step 4: Verify from PC-A command prompt</span>
+C:\&gt; <span class="fn">ping</span> 192.168.1.20      <span class="cm">! Should get 4 replies</span>
+
+<span class="cm">! Step 5: On the switch, verify MAC learning</span>
+Switch# <span class="fn">show mac address-table</span>
+<span class="cm">!   You should see both PC MACs mapped to Gi0/1 and Gi0/2</span>
+
+<span class="cm">! Step 6: Explain what happened:
+! - PC-A didn't know PC-B's MAC → ARP broadcast
+! - Switch flooded ARP to all ports
+! - PC-B replied → switch learned PC-B MAC on Gi0/2
+! - Subsequent pings go directly Gi0/1 → Gi0/2</span></code></pre>
+  <div class="callout co2"><div class="ct">✅ Success Criteria</div>Ping from PC-A to PC-B: 4/4 replies, 0% loss. <code class="ic">show mac address-table</code> shows both MACs. You can explain the ARP process step by step without looking at notes.</div>
+</section>
+
+<section class="section" id="lab-vlans">
+  <div class="sec-hd"><div class="sec-icon ia">🧪</div><div class="sec-meta"><span class="stag ta">Lab 2</span><h2>VLANs &amp; Trunks</h2><p class="sec-sub">Prove that VLANs isolate traffic — even on the same physical switch</p></div></div>
+  <div class="lab-box"><div class="lab-badge">LAB OBJECTIVE</div><h4>Four PCs on one switch: two in VLAN 10 (Students), two in VLAN 20 (Teachers)</h4><p>Prove: PC in VLAN 10 cannot ping PC in VLAN 20. Prove: PCs in the same VLAN can ping each other. Add a second switch connected via a trunk — prove VLANs extend across trunk.</p></div>
+  <pre><code><span class="cm">! Create VLANs</span>
+Switch1(config)# <span class="kw">vlan</span> <span class="num">10</span>
+Switch1(config-vlan)# <span class="fn">name</span> <span class="str">STUDENTS</span>
+Switch1(config)# <span class="kw">vlan</span> <span class="num">20</span>
+Switch1(config-vlan)# <span class="fn">name</span> <span class="str">TEACHERS</span>
+
+<span class="cm">! Assign ports</span>
+Switch1(config)# <span class="kw">interface</span> Gi0/1   <span class="cm">! PC-A (Student)</span>
+Switch1(config-if)# <span class="fn">switchport mode access</span>
+Switch1(config-if)# <span class="fn">switchport access vlan</span> <span class="num">10</span>
+
+Switch1(config)# <span class="kw">interface</span> Gi0/2   <span class="cm">! PC-B (Student)</span>
+Switch1(config-if)# <span class="fn">switchport mode access</span>
+Switch1(config-if)# <span class="fn">switchport access vlan</span> <span class="num">10</span>
+
+Switch1(config)# <span class="kw">interface</span> Gi0/3   <span class="cm">! PC-C (Teacher)</span>
+Switch1(config-if)# <span class="fn">switchport mode access</span>
+Switch1(config-if)# <span class="fn">switchport access vlan</span> <span class="num">20</span>
+
+<span class="cm">! Configure trunk to Switch2</span>
+Switch1(config)# <span class="kw">interface</span> Gi1/1
+Switch1(config-if)# <span class="fn">switchport trunk encapsulation dot1q</span>
+Switch1(config-if)# <span class="fn">switchport mode trunk</span>
+Switch1(config-if)# <span class="fn">switchport trunk allowed vlan</span> <span class="num">10,20</span>
+
+<span class="cm">! Verify</span>
+Switch1# <span class="fn">show vlan brief</span>
+Switch1# <span class="fn">show interfaces trunk</span></code></pre>
+  <div class="callout co2"><div class="ct">✅ Success Criteria</div>PC-A pings PC-B (same VLAN 10): success. PC-A pings PC-C (different VLAN 20): fails. PC on Switch2 VLAN 10 pings PC on Switch1 VLAN 10: success. You can explain 802.1Q tagging.</div>
+</section>
+
+<section class="section" id="lab-routing">
+  <div class="sec-hd"><div class="sec-icon ia">🧪</div><div class="sec-meta"><span class="stag ta">Lab 3</span><h2>Inter-VLAN Routing with L3 Switch</h2><p class="sec-sub">Make VLANs communicate through a Layer 3 switch using SVIs</p></div></div>
+  <div class="lab-box"><div class="lab-badge">LAB OBJECTIVE</div><h4>Students (VLAN 10) and Teachers (VLAN 20) can now ping each other — through the L3 switch</h4><p>Add a Layer 3 switch. Configure SVIs. Enable <code class="ic">ip routing</code>. Add DHCP relay. Verify routing table shows both subnets.</p></div>
+  <pre><code><span class="cm">! L3 Switch Configuration</span>
+L3SW(config)# <span class="kw">ip routing</span>
+
+L3SW(config)# <span class="kw">vlan</span> <span class="num">10</span>
+L3SW(config-vlan)# <span class="fn">name</span> <span class="str">STUDENTS</span>
+L3SW(config)# <span class="kw">vlan</span> <span class="num">20</span>
+L3SW(config-vlan)# <span class="fn">name</span> <span class="str">TEACHERS</span>
+
+L3SW(config)# <span class="kw">interface</span> Vlan<span class="num">10</span>
+L3SW(config-if)# <span class="fn">ip address</span> <span class="num">10.1.10.1 255.255.255.0</span>
+L3SW(config-if)# <span class="fn">no shutdown</span>
+
+L3SW(config)# <span class="kw">interface</span> Vlan<span class="num">20</span>
+L3SW(config-if)# <span class="fn">ip address</span> <span class="num">10.1.20.1 255.255.255.192</span>
+L3SW(config-if)# <span class="fn">no shutdown</span>
+
+<span class="cm">! Verify — you should see both networks in routing table</span>
+L3SW# <span class="fn">show ip route</span>
+L3SW# <span class="fn">ping</span> <span class="num">10.1.20.10</span> <span class="kw">source</span> Vlan<span class="num">10</span>
+
+<span class="cm">! On PC-A (VLAN 10): set gateway to 10.1.10.1
+! On PC-C (VLAN 20): set gateway to 10.1.20.1
+! PC-A ping PC-C: should now SUCCEED</span></code></pre>
+  <div class="callout co2"><div class="ct">✅ Success Criteria</div>PC in VLAN 10 can ping PC in VLAN 20. <code class="ic">show ip route</code> shows C 10.1.10.0/24 and C 10.1.20.0/26 as connected. You can trace the packet path hop by hop verbally.</div>
+</section>
+
+<section class="section" id="lab-ospf">
+  <div class="sec-hd"><div class="sec-icon ia">🧪</div><div class="sec-meta"><span class="stag ta">Lab 4</span><h2>OSPF Dynamic Routing</h2><p class="sec-sub">Two routers automatically learn each other's routes — and reconverge when a link fails</p></div></div>
+  <div class="lab-box"><div class="lab-badge">LAB OBJECTIVE</div><h4>Three subnets, two routers — OSPF automatically populates routing tables on both</h4><p>Topology: PC-A (10.1.0.0/24) → Router-1 → (Link 10.0.0.0/30) → Router-2 → PC-B (10.2.0.0/24). Remove the link manually → observe convergence.</p></div>
+  <pre><code><span class="cm">! Router-1</span>
+R1(config)# <span class="kw">router ospf</span> <span class="num">1</span>
+R1(config-router)# <span class="fn">router-id</span> <span class="num">1.1.1.1</span>
+R1(config-router)# <span class="fn">network</span> <span class="num">10.1.0.0</span> <span class="num">0.0.0.255</span> <span class="kw">area</span> <span class="num">0</span>   <span class="cm">! LAN</span>
+R1(config-router)# <span class="fn">network</span> <span class="num">10.0.0.0</span> <span class="num">0.0.0.3</span>   <span class="kw">area</span> <span class="num">0</span>   <span class="cm">! Link to R2</span>
+
+<span class="cm">! Router-2</span>
+R2(config)# <span class="kw">router ospf</span> <span class="num">1</span>
+R2(config-router)# <span class="fn">router-id</span> <span class="num">2.2.2.2</span>
+R2(config-router)# <span class="fn">network</span> <span class="num">10.2.0.0</span> <span class="num">0.0.0.255</span> <span class="kw">area</span> <span class="num">0</span>
+R2(config-router)# <span class="fn">network</span> <span class="num">10.0.0.0</span> <span class="num">0.0.0.3</span>   <span class="kw">area</span> <span class="num">0</span>
+
+<span class="cm">! Verify both routers see each other's routes</span>
+R1# <span class="fn">show ip ospf neighbor</span>          <span class="cm">! State = FULL</span>
+R1# <span class="fn">show ip route ospf</span>             <span class="cm">! Should see O 10.2.0.0/24</span>
+R2# <span class="fn">show ip route ospf</span>             <span class="cm">! Should see O 10.1.0.0/24</span>
+
+<span class="cm">! Test convergence: shut down the link interface on R1
+! Watch 'show ip ospf neighbor' — neighbour disappears after dead interval (40s default)
+! Routes via OSPF disappear → network unreachable
+! Re-enable interface → reconverges in seconds</span></code></pre>
+  <div class="callout co2"><div class="ct">✅ Success Criteria</div>Both routers show FULL OSPF neighbour. PC-A can ping PC-B. Shutdown the link — routing table loses OSPF routes. Re-enable — reconverges. You can explain DR/BDR election.</div>
+</section>
+
+<section class="section" id="lab-school">
+  <div class="sec-hd"><div class="sec-icon ia">🧪</div><div class="sec-meta"><span class="stag ta">Lab 5 — Capstone</span><h2>Full School Network</h2><p class="sec-sub">Build the complete design from Stage 4 — the capstone lab that ties everything together</p></div></div>
+  <div class="lab-box"><div class="lab-badge">CAPSTONE LAB — Allow 2–3 Hours</div><h4>Complete school network: ISP → Firewall → L3 Core Switch → 3 Access Switches → Students, Teachers, Servers</h4>
+  <p>This lab covers: VLANs, trunks, SVIs, DHCP server, DHCP relay, ACLs, NAT, OSPF, and firewall policies — everything from Stages 0–5.</p></div>
+  <h3>Full Topology</h3>
+  <div class="diag">Cloud (ISP) ─── <span class="dr">Firewall-1</span> (203.0.113.2/30 WAN, 10.1.99.254 LAN)
+                         │ Trunk (all VLANs)
+                   <span class="dv">L3-Core-SW</span> (SVIs: V10=.10.1, V20=.20.1, V30=.30.1, V40=.40.1, V99=.99.1)
+                    /     |     \
+            <span class="dc">SW-Floor1</span>  <span class="dc">SW-Floor2</span>  <span class="dc">SW-Servers</span>
+              │                       │
+         PCs (V10)              Servers (V40)
+         AP  (V10,V50)          DHCP: 10.1.40.3</div>
+  <h3>Build Order</h3>
+  <ol>
+    <li>Add and connect all devices (Packet Tracer or GNS3)</li>
+    <li>Create all VLANs (10, 20, 30, 40, 50, 99) on all switches</li>
+    <li>Configure trunk ports (switch-to-switch, switch-to-L3-switch)</li>
+    <li>Configure access ports on floor switches</li>
+    <li>Configure L3 switch: <code class="ic">ip routing</code>, all SVIs, DHCP relay to 10.1.40.3</li>
+    <li>Configure DHCP server (10.1.40.3) with pools for each VLAN</li>
+    <li>Configure firewall: NAT, default route, firewall policies</li>
+    <li>Add ACL on L3 switch: students can't reach admin/servers except Moodle + DNS</li>
+    <li>Test: Student PC gets DHCP. Pings gateway. Reaches Moodle. Cannot ping Admin PC.</li>
+    <li>Test: Admin PC can reach everything. Guest PC can only reach internet.</li>
+  </ol>
+  <div class="callout co2"><div class="ct">✅ Success Criteria — You Pass When You Can</div>
+  1. Explain every IP in the network and why it was chosen.<br>
+  2. Trace a student's packet from click to server response, naming every device it passes through.<br>
+  3. Add a new VLAN 80 (IoT) with 10.1.80.0/24 from scratch without consulting notes.<br>
+  4. Teach the OSI model using your network diagram as the visual aid.
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div>
+      <div class="ft-brand">⚡ Network Engineering Mastery</div>
+      <div>From absolute zero to designing real networks — visual, interactive, lab-driven</div>
+      <div style="margin-top:8px;color:var(--txm);font-size:13.5px">OSI · TCP/IP · IPv4/IPv6 · Subnetting · VLANs · OSPF · BGP · School/College/Enterprise Design · Firewalls · ACLs · VPN · Zero Trust · SIEM · Automation · Labs 1–5</div>
+    </div>
+    <div style="text-align:right">
+      <div>Lab every concept. Teach what you learn.</div>
+      <div style="margin-top:4px;color:var(--txm);font-size:13.5px">Document everything · Monitor everything · Automate the rest</div>
+    </div>
+  </div>
+</footer>
+</main>
+
+<script>
+// ═══════════════════════════════════════════════
+// MOBILE SIDEBAR
+// ═══════════════════════════════════════════════
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ham = document.getElementById('ham');
+  const ov = document.getElementById('overlay');
+  const open = sb.classList.toggle('open');
+  ham.classList.toggle('open', open);
+  ov.classList.toggle('show', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('ham').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+// Close on nav item click (mobile)
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    if (window.innerWidth <= 768) closeSidebar();
+  });
+});
+
+// ═══════════════════════════════════════════════
+// ACCORDION
+// ═══════════════════════════════════════════════
+function acc(header) {
+  const item = header.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.acc-item.open').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// ═══════════════════════════════════════════════
+// SCROLL SYNC — NAV ACTIVE HIGHLIGHT
+// ═══════════════════════════════════════════════
+(function initScrollSync() {
+  const navItems = document.querySelectorAll('#nav-scroll .nav-item[href]');
+  const idToNav = {};
+  navItems.forEach(item => {
+    const href = item.getAttribute('href');
+    if (href && href.startsWith('#')) idToNav[href.slice(1)] = item;
+  });
+  const sections = document.querySelectorAll('section[id]');
+  let current = null;
+
+  function setActive(id) {
+    const nav = idToNav[id];
+    if (!nav || nav === current) return;
+    if (current) current.classList.remove('active');
+    nav.classList.add('active');
+    current = nav;
+    // Scroll into view within the sidebar scroll area
+    const scr = document.getElementById('nav-scroll');
+    const navTop = nav.offsetTop - scr.scrollTop;
+    const navBot = navTop + nav.offsetHeight;
+    if (navTop < 30) scr.scrollBy({ top: navTop - 30, behavior: 'smooth' });
+    else if (navBot > scr.clientHeight - 20) scr.scrollBy({ top: navBot - scr.clientHeight + 20, behavior: 'smooth' });
+  }
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
+  }, { rootMargin: '-15% 0px -60% 0px', threshold: 0 });
+
+  sections.forEach(s => obs.observe(s));
+
+  // Set initial on load
+  function setInitial() {
+    const mid = window.scrollY + window.innerHeight * 0.25;
+    let best = null;
+    sections.forEach(s => { if (s.offsetTop <= mid) best = s; });
+    if (best) setActive(best.id);
+  }
+  setInitial();
+})();
+
+// ═══════════════════════════════════════════════
+// FULL-TEXT SEARCH WITH SNIPPET HIGHLIGHTING
+// ═══════════════════════════════════════════════
+// Build search index from page content
+const searchIndex = [];
+
+function buildIndex() {
+  const sectionEls = document.querySelectorAll('section.section[id], section#hero[id]');
+  sectionEls.forEach(sec => {
+    const id = sec.id;
+    const navLink = document.querySelector(`#nav-scroll a[href="#${id}"]`);
+    const title = sec.querySelector('h2')?.textContent?.trim() || navLink?.textContent?.trim() || id;
+    const stag = sec.querySelector('.stag')?.textContent?.trim() || '';
+    // Get all text nodes from paragraphs, list items, table cells
+    const textNodes = sec.querySelectorAll('p, li, td, h3, h4, .callout');
+    const bodyText = Array.from(textNodes).map(n => n.textContent).join(' ').replace(/\s+/g, ' ').trim();
+    searchIndex.push({ id, title, section: stag, text: bodyText });
+  });
+}
+
+function highlight(text, query) {
+  if (!query) return text;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<span class="srch-hl">$1</span>');
+}
+
+function getSnippet(text, query, len = 120) {
+  const lower = text.toLowerCase();
+  const idx = lower.indexOf(query.toLowerCase());
+  if (idx === -1) return text.slice(0, len) + (text.length > len ? '…' : '');
+  const start = Math.max(0, idx - 40);
+  const end = Math.min(text.length, idx + query.length + 80);
+  return (start > 0 ? '…' : '') + text.slice(start, end) + (end < text.length ? '…' : '');
+}
+
+function doSearch(val) {
+  const wrap = document.getElementById('srchWrap');
+  const resultsEl = document.getElementById('srch-results');
+  const q = val.trim();
+
+  wrap.classList.toggle('has-q', q.length > 0);
+
+  if (q.length < 2) {
+    resultsEl.classList.remove('show');
+    resultsEl.innerHTML = '';
+    return;
+  }
+
+  const lower = q.toLowerCase();
+  const results = searchIndex
+    .filter(item =>
+      item.title.toLowerCase().includes(lower) ||
+      item.text.toLowerCase().includes(lower)
+    )
+    .slice(0, 8);
+
+  if (results.length === 0) {
+    resultsEl.innerHTML = `<div class="srch-empty">No results for "<strong>${q}</strong>"</div>`;
+    resultsEl.classList.add('show');
+    return;
+  }
+
+  resultsEl.innerHTML = results.map(r => {
+    const snippet = getSnippet(r.text, q);
+    return `<div class="srch-item" onclick="goTo('${r.id}')">
+      <div class="srch-item-title">${highlight(r.title, q)}</div>
+      ${r.section ? `<div class="srch-item-section">${r.section}</div>` : ''}
+      <div class="srch-item-snippet">${highlight(snippet, q)}</div>
+    </div>`;
+  }).join('');
+  resultsEl.classList.add('show');
+}
+
+function goTo(id) {
+  clearSearch();
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.style.animation = 'none';
+    el.offsetHeight; // reflow
+    el.style.animation = 'secPulse 1.5s ease';
+  }
+  if (window.innerWidth <= 768) closeSidebar();
+}
+
+function clearSearch() {
+  document.getElementById('navSearch').value = '';
+  document.getElementById('srch-results').classList.remove('show');
+  document.getElementById('srch-results').innerHTML = '';
+  document.getElementById('srchWrap').classList.remove('has-q');
+}
+
+// Close results when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('.nav-srch-wrap')) {
+    document.getElementById('srch-results').classList.remove('show');
+  }
+});
+
+// Keyboard navigation in results
+document.getElementById('navSearch').addEventListener('keydown', e => {
+  const items = document.querySelectorAll('.srch-item');
+  const focused = document.querySelector('.srch-item:focus');
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    (focused ? focused.nextElementSibling : items[0])?.focus();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    (focused ? focused.previousElementSibling : null)?.focus();
+  } else if (e.key === 'Escape') clearSearch();
+  else if (e.key === 'Enter' && items.length > 0) {
+    e.preventDefault();
+    items[0].click();
+  }
+});
+
+// Make search result items keyboard focusable
+document.getElementById('srch-results').addEventListener('keydown', e => {
+  if (e.key === 'Enter') e.target.click();
+  else if (e.key === 'Escape') clearSearch();
+});
+
+// ═══════════════════════════════════════════════
+// INTERACTIVE NETWORK DIAGRAM — TOOLTIPS
+// ═══════════════════════════════════════════════
+const deviceData = {
+  internet: {
+    label: 'Public Internet',
+    rows: [
+      ['Type', 'WAN / Public Network'],
+      ['Protocol', 'BGP between ASes'],
+      ['IP Block', '203.0.113.0/30 (link)'],
+      ['Note', 'Never use private IPs here'],
+    ]
+  },
+  fw: {
+    label: '🔥 Firewall / Edge Router',
+    rows: [
+      ['WAN IP', '203.0.113.2/30'],
+      ['LAN IP', '10.1.0.1 (gateway)'],
+      ['Function', 'NAT · Stateful · ACLs · NGFW'],
+      ['MAC', 'AA:BB:CC:00:00:01'],
+      ['Default Route', '0.0.0.0/0 via 203.0.113.1'],
+    ]
+  },
+  l3sw: {
+    label: '⚡ L3 Core Switch (Distribution)',
+    rows: [
+      ['MGMT IP', '10.1.99.1/28'],
+      ['MAC', 'AA:BB:CC:11:22:33'],
+      ['SVI V10', '10.1.10.1 — Students gateway'],
+      ['SVI V20', '10.1.20.1 — Teachers gateway'],
+      ['SVI V40', '10.1.40.1 — Servers gateway'],
+      ['Role', 'Inter-VLAN routing at wire speed'],
+    ]
+  },
+  sw1: {
+    label: '🔀 Access Switch 1 — Students',
+    rows: [
+      ['VLAN', '10 — STUDENTS'],
+      ['Network', '10.1.10.0/24'],
+      ['Gateway', '10.1.10.1 (L3 Switch SVI)'],
+      ['DHCP Range', '10.1.10.50 – 10.1.10.200'],
+      ['Uplink', 'Trunk to L3 Core Switch'],
+    ]
+  },
+  sw2: {
+    label: '🔀 Access Switch 2 — Teachers',
+    rows: [
+      ['VLAN', '20 — TEACHERS'],
+      ['Network', '10.1.20.0/26'],
+      ['Gateway', '10.1.20.1 (L3 Switch SVI)'],
+      ['Usable', '62 hosts (.1–.62)'],
+      ['Policy', 'Can reach file server, internet'],
+    ]
+  },
+  sw3: {
+    label: '🔀 Access Switch 3 — Servers',
+    rows: [
+      ['VLAN', '40 — SERVERS'],
+      ['Network', '10.1.40.0/27'],
+      ['Gateway', '10.1.40.1 (L3 Switch SVI)'],
+      ['Note', 'All IPs static — no DHCP'],
+      ['Policy', 'Strict ACL inbound from students'],
+    ]
+  },
+  pc1: {
+    label: '💻 Student PC-1',
+    rows: [
+      ['IP Address', '10.1.10.50/24'],
+      ['Subnet Mask', '255.255.255.0'],
+      ['Default Gateway', '10.1.10.1'],
+      ['DNS Server', '10.1.40.2'],
+      ['MAC', 'DC:A6:32:11:22:44'],
+      ['VLAN', '10 (STUDENTS)'],
+    ]
+  },
+  ap1: {
+    label: '📡 Wi-Fi Access Point',
+    rows: [
+      ['Wired IP', '10.1.10.2/24'],
+      ['SSIDs', 'SCHOOL (V10), GUEST (V50)'],
+      ['Standard', 'Wi-Fi 6 (802.11ax)'],
+      ['Auth Corp', 'WPA3-Enterprise + 802.1X'],
+      ['Auth Guest', 'WPA2-PSK + captive portal'],
+      ['Trunk port', 'VLANs 10 + 50 tagged'],
+    ]
+  },
+  cam: {
+    label: '📷 IP Camera',
+    rows: [
+      ['IP Address', '10.1.60.5/27'],
+      ['VLAN', '60 — CAMERAS (isolated)'],
+      ['Allowed to reach', 'NVR at 10.1.40.7 only'],
+      ['Protocol', 'RTSP (TCP 554)'],
+      ['Note', 'Cannot access internet or LAN'],
+    ]
+  },
+  pc2: {
+    label: '💻 Teacher PC',
+    rows: [
+      ['IP Address', '10.1.20.10/26'],
+      ['Subnet Mask', '255.255.255.192'],
+      ['Default Gateway', '10.1.20.1'],
+      ['DNS Server', '10.1.40.2'],
+      ['VLAN', '20 (TEACHERS)'],
+      ['Access', 'Internet + file server'],
+    ]
+  },
+  phone: {
+    label: '📞 VoIP Phone',
+    rows: [
+      ['IP Address', '10.1.70.15/26'],
+      ['VLAN', '70 — VOIP (separate)'],
+      ['QoS DSCP', 'EF (46) — highest priority'],
+      ['Protocol', 'SIP (port 5060)'],
+      ['Note', 'Separate VLAN prevents jitter'],
+    ]
+  },
+  srv: {
+    label: '🖥️ Active Directory / DNS Server',
+    rows: [
+      ['IP Address', '10.1.40.2/27'],
+      ['Static IP', 'Yes — never DHCP for servers'],
+      ['Services', 'AD DS, DNS, LDAP port 389'],
+      ['VLAN', '40 (SERVERS)'],
+      ['Purpose', 'Auth for all users + name resolution'],
+    ]
+  },
+  nas: {
+    label: '💾 File Server (NAS)',
+    rows: [
+      ['IP Address', '10.1.40.4/27'],
+      ['Static IP', 'Yes'],
+      ['Protocol', 'SMB (TCP 445)'],
+      ['VLAN', '40 (SERVERS)'],
+      ['Access', 'Teachers VLAN only (firewall policy)'],
+    ]
+  },
+};
+
+const tooltip = document.getElementById('viz-tooltip');
+const vizWrap = tooltip?.parentElement;
+
+document.querySelectorAll('.dev-node').forEach(node => {
+  node.addEventListener('click', function(e) {
+    const id = this.dataset.id;
+    const data = deviceData[id];
+    if (!data) return;
+
+    tooltip.innerHTML = `<div class="vt-label">${data.label}</div>` +
+      data.rows.map(([k,v]) => `<div class="vt-row"><span class="vt-k">${k}</span><span class="vt-v">${v}</span></div>`).join('');
+
+    const rect = vizWrap.getBoundingClientRect();
+    const svgRect = document.getElementById('netsvg').getBoundingClientRect();
+    const clickX = e.clientX - svgRect.left;
+    const clickY = e.clientY - svgRect.top;
+    // Position tooltip relative to vizWrap
+    let left = e.clientX - rect.left + 12;
+    let top = e.clientY - rect.top + 12;
+    tooltip.style.display = 'block';
+    const tw = tooltip.offsetWidth;
+    const th = tooltip.offsetHeight;
+    if (left + tw > rect.width - 10) left = left - tw - 24;
+    if (top + th > rect.height - 10) top = top - th - 24;
+    tooltip.style.left = Math.max(5, left) + 'px';
+    tooltip.style.top = Math.max(5, top) + 'px';
+    tooltip.classList.add('show');
+
+    // Highlight the clicked node
+    document.querySelectorAll('.dev-node').forEach(n => n.style.opacity = '0.6');
+    this.style.opacity = '1';
+
+    e.stopPropagation();
+  });
+});
+
+document.addEventListener('click', () => {
+  tooltip.classList.remove('show');
+  document.querySelectorAll('.dev-node').forEach(n => n.style.opacity = '1');
+});
+
+// ═══════════════════════════════════════════════
+// SUBNET CALCULATOR
+// ═══════════════════════════════════════════════
+function calcSub() {
+  const input = document.getElementById('subIn').value.trim();
+  const out = document.getElementById('subOut');
+  try {
+    const [ipStr, prefStr] = input.split('/');
+    if (!prefStr) throw new Error('Format: 192.168.1.0/24');
+    const prefix = parseInt(prefStr);
+    if (isNaN(prefix) || prefix < 0 || prefix > 32) throw new Error('Prefix must be 0–32');
+    const oct = ipStr.trim().split('.').map(Number);
+    if (oct.length !== 4 || oct.some(o => isNaN(o) || o < 0 || o > 255)) throw new Error('Invalid IP');
+    const ipInt = ((oct[0]<<24)|(oct[1]<<16)|(oct[2]<<8)|oct[3])>>>0;
+    const mask = prefix === 0 ? 0 : (0xFFFFFFFF << (32-prefix))>>>0;
+    const wild = (~mask)>>>0;
+    const net = (ipInt & mask)>>>0;
+    const bcast = (net | wild)>>>0;
+    const first = prefix >= 31 ? net : (net+1)>>>0;
+    const last = prefix >= 31 ? bcast : (bcast-1)>>>0;
+    const total = Math.pow(2, 32-prefix);
+    const usable = prefix >= 31 ? total : Math.max(0, total-2);
+    const n2ip = n => [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+    const toBin = n => ('00000000000000000000000000000000' + n.toString(2)).slice(-32).match(/.{8}/g).join('.');
+
+    out.style.display = 'block';
+    out.innerHTML = [
+      ['Network Address', n2ip(net)],
+      ['Subnet Mask', n2ip(mask)],
+      ['Wildcard Mask', n2ip(wild)],
+      ['CIDR Prefix', '/'+prefix],
+      ['Broadcast', n2ip(bcast)],
+      ['First Host', prefix>=32?'N/A (host route)':n2ip(first)],
+      ['Last Host', prefix>=32?'N/A':n2ip(last)],
+      ['Total IPs', total.toLocaleString()],
+      ['Usable Hosts', usable.toLocaleString()],
+      ['Binary Mask', toBin(mask)],
+    ].map(([k,v])=>`<div class="sub-row"><span class="sub-k">${k}</span><span class="sub-v">${v}</span></div>`).join('');
+  } catch(e) {
+    out.style.display = 'block';
+    out.innerHTML = `<div style="color:var(--co);font-family:var(--fm);font-size:14px">⚠ ${e.message}</div>`;
+  }
+}
+document.getElementById('subIn').addEventListener('keypress', e => { if(e.key==='Enter') calcSub(); });
+
+// ═══════════════════════════════════════════════
+// SECTION PULSE ANIMATION (on search jump)
+// ═══════════════════════════════════════════════
+const style = document.createElement('style');
+style.textContent = `@keyframes secPulse { 0%{background:rgba(103,232,249,.06)} 100%{background:transparent} }`;
+document.head.appendChild(style);
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  buildIndex();
+});
+</script>
+</body>
+</html>

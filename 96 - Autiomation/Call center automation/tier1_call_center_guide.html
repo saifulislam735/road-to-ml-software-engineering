@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tier 1 — Build Your Own Call Center</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --bg2: #13161e;
+    --bg3: #1a1e28;
+    --border: #252938;
+    --accent: #4f8ef7;
+    --accent2: #7c6af7;
+    --green: #3ecf8e;
+    --yellow: #f5c842;
+    --red: #f76e6e;
+    --text: #e2e4ec;
+    --text2: #8b90a8;
+    --text3: #555b72;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  .sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .sidebar-sub {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: var(--mono);
+  }
+
+  .nav-section {
+    padding: 14px 12px 6px;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 0 8px;
+    margin-bottom: 4px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text2);
+    transition: all .15s;
+    border: 1px solid transparent;
+  }
+
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active { background: rgba(79,142,247,.12); color: var(--accent); border-color: rgba(79,142,247,.2); }
+
+  .nav-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    min-width: 18px;
+  }
+
+  .nav-item.active .nav-num { color: var(--accent); }
+
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text3);
+    min-width: 6px;
+  }
+
+  .nav-item.active .nav-dot { background: var(--accent); }
+  .nav-item.done .nav-dot { background: var(--green); }
+  .nav-item.warn .nav-dot { background: var(--yellow); }
+
+  /* PROGRESS */
+  .progress-bar {
+    margin: 16px 20px;
+    background: var(--bg3);
+    border-radius: 4px;
+    height: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 4px;
+    transition: width .3s ease;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    padding: 0 20px;
+    margin-top: 6px;
+  }
+
+  /* MAIN */
+  #main {
+    margin-left: 260px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    position: sticky;
+    top: 0;
+    background: rgba(13,15,20,.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 50;
+  }
+
+  .topbar-step {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  .topbar-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .topbar-nav {
+    display: flex;
+    gap: 8px;
+  }
+
+  .topbar-btn {
+    padding: 5px 14px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    color: var(--text2);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: var(--sans);
+  }
+
+  .topbar-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .topbar-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .topbar-btn.primary:hover { opacity: .85; }
+
+  /* CONTENT */
+  .content {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 40px 80px;
+    width: 100%;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* TYPOGRAPHY */
+  .page-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-family: var(--mono);
+    margin-bottom: 12px;
+  }
+
+  .page-title {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    letter-spacing: -.02em;
+  }
+
+  .page-lead {
+    font-size: 17px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 640px;
+    font-weight: 300;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 40px 0 12px;
+    color: var(--text);
+    letter-spacing: -.01em;
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 28px 0 8px;
+    color: var(--text);
+  }
+
+  p { margin-bottom: 16px; color: var(--text2); }
+
+  strong { color: var(--text); font-weight: 500; }
+
+  /* CODE */
+  pre {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 16px 0 24px;
+    position: relative;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--bg3);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--accent);
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    color: var(--text);
+  }
+
+  .code-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-family: var(--mono);
+    margin-bottom: 8px;
+  }
+
+  /* CALLOUTS */
+  .callout {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    border-left: 3px solid;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .callout-info { background: rgba(79,142,247,.08); border-color: var(--accent); }
+  .callout-warn { background: rgba(245,200,66,.08); border-color: var(--yellow); }
+  .callout-danger { background: rgba(247,110,110,.08); border-color: var(--red); }
+  .callout-success { background: rgba(62,207,142,.08); border-color: var(--green); }
+
+  .callout-title {
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .callout-info .callout-title { color: var(--accent); }
+  .callout-warn .callout-title { color: var(--yellow); }
+  .callout-danger .callout-title { color: var(--red); }
+  .callout-success .callout-title { color: var(--green); }
+
+  /* PIPELINE DIAGRAM */
+  .pipeline {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px;
+    margin: 24px 0;
+  }
+
+  .pipeline-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 6px 0;
+    flex-wrap: wrap;
+  }
+
+  .pipe-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-family: var(--mono);
+    white-space: nowrap;
+  }
+
+  .pipe-box.highlight { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,.1); }
+  .pipe-box.green { border-color: var(--green); color: var(--green); background: rgba(62,207,142,.1); }
+  .pipe-box.yellow { border-color: var(--yellow); color: var(--yellow); background: rgba(245,200,66,.1); }
+  .pipe-box.purple { border-color: var(--accent2); color: var(--accent2); background: rgba(124,106,247,.1); }
+
+  .pipe-arrow {
+    color: var(--text3);
+    font-family: var(--mono);
+    padding: 0 8px;
+    font-size: 14px;
+  }
+
+  .pipe-label {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    margin-left: 12px;
+  }
+
+  /* STEPS */
+  .step-list {
+    counter-reset: steps;
+    list-style: none;
+    margin: 20px 0;
+  }
+
+  .step-list li {
+    counter-increment: steps;
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    color: var(--text2);
+  }
+
+  .step-list li::before {
+    content: counter(steps);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 13px;
+  }
+
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text3);
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  td.mono { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--mono);
+  }
+
+  .badge-green { background: rgba(62,207,142,.15); color: var(--green); }
+  .badge-yellow { background: rgba(245,200,66,.15); color: var(--yellow); }
+  .badge-red { background: rgba(247,110,110,.15); color: var(--red); }
+  .badge-blue { background: rgba(79,142,247,.15); color: var(--accent); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* INSTALL CARD */
+  .install-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0 24px;
+  }
+
+  .install-card-header {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .install-card-title {
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .install-card-tag {
+    font-size: 10px;
+    font-family: var(--mono);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .install-card-body { padding: 16px 20px; }
+
+  /* FLOW ANIMATION */
+  .flow-diagram {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 32px 24px;
+    margin: 24px 0;
+    text-align: center;
+  }
+
+  .flow-node {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: var(--mono);
+    margin: 4px;
+  }
+
+  .flow-arrow-v {
+    display: block;
+    text-align: center;
+    color: var(--text3);
+    font-size: 18px;
+    margin: 4px 0;
+    line-height: 1;
+  }
+
+  .flow-label {
+    display: block;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    margin: 2px 0 8px;
+  }
+
+  /* CONSTRAINT BOX */
+  .constraint-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .constraint-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .constraint-card.red { border-color: rgba(247,110,110,.3); }
+  .constraint-card.yellow { border-color: rgba(245,200,66,.3); }
+
+  .constraint-value {
+    font-family: var(--mono);
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .constraint-card.red .constraint-value { color: var(--red); }
+  .constraint-card.yellow .constraint-value { color: var(--yellow); }
+
+  .constraint-label {
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Tier 1 Build Guide</div>
+    <div class="sidebar-sub">own stack · fully local · free</div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:8%"></div></div>
+  <div class="progress-label" id="progressLabel">1 / 12 sections</div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Foundation</div>
+    <div class="nav-item active" onclick="goTo(0)"><span class="nav-num">00</span><span class="nav-dot"></span>The Full Picture</div>
+    <div class="nav-item" onclick="goTo(1)"><span class="nav-num">01</span><span class="nav-dot"></span>What You Are Building</div>
+    <div class="nav-item" onclick="goTo(2)"><span class="nav-num">02</span><span class="nav-dot"></span>The 2-Second Rule</div>
+    <div class="nav-item" onclick="goTo(3)"><span class="nav-num">03</span><span class="nav-dot"></span>Free Local Stack</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">The Pieces</div>
+    <div class="nav-item" onclick="goTo(4)"><span class="nav-num">04</span><span class="nav-dot"></span>WebSockets</div>
+    <div class="nav-item" onclick="goTo(5)"><span class="nav-num">05</span><span class="nav-dot"></span>Phone Layer</div>
+    <div class="nav-item" onclick="goTo(6)"><span class="nav-num">06</span><span class="nav-dot"></span>STT — Faster-Whisper</div>
+    <div class="nav-item" onclick="goTo(7)"><span class="nav-num">07</span><span class="nav-dot"></span>LLM Brain — Ollama</div>
+    <div class="nav-item" onclick="goTo(8)"><span class="nav-num">08</span><span class="nav-dot"></span>TTS — Piper</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">The System</div>
+    <div class="nav-item" onclick="goTo(9)"><span class="nav-num">09</span><span class="nav-dot"></span>Node.js Orchestrator</div>
+    <div class="nav-item warn" onclick="goTo(10)"><span class="nav-num">10</span><span class="nav-dot"></span>Hard Parts & Traps</div>
+    <div class="nav-item" onclick="goTo(11)"><span class="nav-num">11</span><span class="nav-dot"></span>Build Order & Milestones</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-step" id="topbarStep">Section 00</div>
+      <div class="topbar-title" id="topbarTitle">The Full Picture</div>
+    </div>
+    <div class="topbar-nav">
+      <button class="topbar-btn" onclick="prev()">← Prev</button>
+      <button class="topbar-btn primary" onclick="next()">Next →</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- PAGE 0: THE FULL PICTURE -->
+    <div class="page active" id="page-0">
+      <div class="page-eyebrow">Section 00 — Foundation</div>
+      <div class="page-title">The Full Picture</div>
+      <div class="page-lead">Before you write a single line, you need to see the entire system in your head. Here it is — every piece, every connection, every direction data flows.</div>
+
+      <div class="flow-diagram">
+        <div class="flow-node pipe-box yellow">Caller speaks</div>
+        <span class="flow-arrow-v">↓</span>
+        <span class="flow-label">raw audio (PCM bytes, 20ms chunks)</span>
+        <div class="flow-node pipe-box highlight">Browser Mic / SIP softphone</div>
+        <span class="flow-arrow-v">↓</span>
+        <span class="flow-label">WebSocket — audio stream</span>
+        <div class="flow-node pipe-box" style="border-color:#555b72;color:#8b90a8">Node.js Orchestrator</div>
+        <span class="flow-arrow-v">↓</span>
+        <span class="flow-label">audio chunks → subprocess pipe</span>
+        <div class="flow-node pipe-box green">Faster-Whisper (STT)</div>
+        <span class="flow-arrow-v">↓</span>
+        <span class="flow-label">text transcript</span>
+        <div class="flow-node pipe-box purple">Ollama / Llama3 (LLM)</div>
+        <span class="flow-arrow-v">↓</span>
+        <span class="flow-label">response text</span>
+        <div class="flow-node pipe-box yellow">Piper TTS</div>
+        <span class="flow-arrow-v">↓</span>
+        <span class="flow-label">audio bytes (WAV)</span>
+        <div class="flow-node pipe-box" style="border-color:#555b72;color:#8b90a8">Node.js Orchestrator</div>
+        <span class="flow-arrow-v">↓</span>
+        <span class="flow-label">WebSocket — audio stream back</span>
+        <div class="flow-node pipe-box yellow">Caller hears Riya</div>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-title">The one thing to hold in your head</div>
+        Your Node.js server is not the star. It is the wiring. Every piece above is independent. Your server just connects them in the right order at the right time. If you understand the connections, you understand the whole system.
+      </div>
+
+      <h2>The Loop That Runs Continuously</h2>
+      <p>This is not a request-response system like a web API. It is a <strong>continuous loop</strong> that runs for the entire duration of the call — firing every time the caller finishes a sentence.</p>
+
+      <div class="pipeline">
+        <div class="pipeline-row">
+          <div class="pipe-box green">caller speaks</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box highlight">audio captured</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box">STT fires</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box purple">LLM thinks</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box yellow">TTS speaks</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box green">caller listens</div>
+        </div>
+        <div style="margin-top:16px; font-size:12px; color:var(--text3); font-family:var(--mono)">↑ this loop fires on every caller utterance, for the entire call duration</div>
+      </div>
+
+      <h2>What You Are NOT Building</h2>
+      <p>You are not building a chatbot. You are not building a phone app. You are not building a voice recorder. You are building a <strong>real-time audio processing pipeline</strong> that happens to feel like a phone conversation.</p>
+
+      <p>The distinction matters because it shapes every decision — latency over accuracy, streaming over batching, stateful over stateless.</p>
+    </div>
+
+    <!-- PAGE 1: WHAT YOU ARE BUILDING -->
+    <div class="page" id="page-1">
+      <div class="page-eyebrow">Section 01 — Foundation</div>
+      <div class="page-title">What You Are Building</div>
+      <div class="page-lead">Tier 1 is your own stack — not a SaaS platform, not Vapi.ai. You own every piece. This is the version that teaches you everything.</div>
+
+      <h2>The 5 Pieces — Expanded</h2>
+
+      <table>
+        <thead><tr><th>#</th><th>Piece</th><th>Job</th><th>Tool (local/free)</th><th>Tool (production)</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="mono">01</td>
+            <td><strong>Phone Layer</strong></td>
+            <td>Give you a way to receive a call and stream audio to your server</td>
+            <td class="mono">Browser mic + SIP.js</td>
+            <td class="mono">Twilio / Telnyx</td>
+          </tr>
+          <tr>
+            <td class="mono">02</td>
+            <td><strong>STT</strong></td>
+            <td>Convert caller audio bytes → text in real time</td>
+            <td class="mono">Faster-Whisper</td>
+            <td class="mono">Deepgram Nova-2</td>
+          </tr>
+          <tr>
+            <td class="mono">03</td>
+            <td><strong>LLM Brain</strong></td>
+            <td>Understand intent, decide what to say, call tools</td>
+            <td class="mono">Ollama + Llama3</td>
+            <td class="mono">Claude API (Sonnet)</td>
+          </tr>
+          <tr>
+            <td class="mono">04</td>
+            <td><strong>TTS</strong></td>
+            <td>Convert response text → audio the caller hears</td>
+            <td class="mono">Piper TTS</td>
+            <td class="mono">ElevenLabs Turbo</td>
+          </tr>
+          <tr>
+            <td class="mono">05</td>
+            <td><strong>Orchestrator</strong></td>
+            <td>Wire all 4 pieces together, manage state, handle errors</td>
+            <td class="mono">Node.js / TypeScript</td>
+            <td class="mono">Same — you own this always</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-success">
+        <div class="callout-title">The key insight</div>
+        The Orchestrator (piece 5) is the only piece you write from scratch. The other 4 are tools you connect. When you go to production, you swap the tools — not the Orchestrator. This means everything you learn building the Orchestrator is permanent knowledge that survives every tier.
+      </div>
+
+      <h2>What Tier 1 Does — Feature by Feature</h2>
+
+      <table>
+        <thead><tr><th>Feature</th><th>What happens</th><th>Status in Tier 1</th></tr></thead>
+        <tbody>
+          <tr><td>Inbound call receive</td><td>Browser mic connects, call begins</td><td><span class="badge badge-green">✓ build it</span></td></tr>
+          <tr><td>Caller speech → text</td><td>Faster-Whisper transcribes audio</td><td><span class="badge badge-green">✓ build it</span></td></tr>
+          <tr><td>Intent classification</td><td>LLM decides what caller wants</td><td><span class="badge badge-green">✓ build it</span></td></tr>
+          <tr><td>Order status lookup</td><td>LLM calls your order API tool</td><td><span class="badge badge-green">✓ build it</span></td></tr>
+          <tr><td>Response → voice</td><td>Piper TTS speaks back to caller</td><td><span class="badge badge-green">✓ build it</span></td></tr>
+          <tr><td>Conversation memory</td><td>State stored in memory per call</td><td><span class="badge badge-green">✓ build it</span></td></tr>
+          <tr><td>Human escalation</td><td>Detect anger → hand off</td><td><span class="badge badge-blue">simplified</span></td></tr>
+          <tr><td>OTP verification</td><td>Send and confirm OTP before actions</td><td><span class="badge badge-yellow">Tier 2</span></td></tr>
+          <tr><td>Bengali language</td><td>Full bilingual handling</td><td><span class="badge badge-yellow">Tier 2</span></td></tr>
+          <tr><td>50+ concurrent calls</td><td>Horizontal scaling</td><td><span class="badge badge-yellow">Tier 2</span></td></tr>
+          <tr><td>Self-hosted telephony</td><td>FreeSWITCH + SIP trunk</td><td><span class="badge badge-red">Tier 3</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">Scope discipline</div>
+        Do not try to build everything at once. Tier 1 has one job: prove the loop works end-to-end. Caller speaks → AI understands → AI responds in voice. That is the milestone. Everything else comes after.
+      </div>
+    </div>
+
+    <!-- PAGE 2: THE 2-SECOND RULE -->
+    <div class="page" id="page-2">
+      <div class="page-eyebrow">Section 02 — Foundation</div>
+      <div class="page-title">The 2-Second Rule</div>
+      <div class="page-lead">This is the single constraint that governs every technical decision you will make. Understand it before you touch a line of code.</div>
+
+      <h2>Why 2 Seconds</h2>
+      <p>When you are talking to a person and they pause for more than 2 seconds before responding, you think one of three things: the call dropped, they did not hear you, or something is wrong. Your instinct is to say "hello?" or hang up.</p>
+      <p>Callers behave identically with an AI voice agent. <strong>Beyond 2 seconds of silence, abandonment rate spikes sharply.</strong> Your entire architecture must fit inside this window.</p>
+
+      <h2>Breaking Down the Budget</h2>
+
+      <div class="constraint-grid">
+        <div class="constraint-card yellow">
+          <div class="constraint-value">&lt; 300ms</div>
+          <div class="constraint-label">STT — speech to text<br><small style="opacity:.6">Faster-Whisper (learning) / Deepgram (production)</small></div>
+        </div>
+        <div class="constraint-card yellow">
+          <div class="constraint-value">&lt; 600ms</div>
+          <div class="constraint-label">LLM first token<br><small style="opacity:.6">Ollama (learning) / Claude API (production)</small></div>
+        </div>
+        <div class="constraint-card yellow">
+          <div class="constraint-value">&lt; 200ms</div>
+          <div class="constraint-label">TTS first audio chunk<br><small style="opacity:.6">Piper (learning) / ElevenLabs Turbo (production)</small></div>
+        </div>
+        <div class="constraint-card red">
+          <div class="constraint-value">~900ms</div>
+          <div class="constraint-label">Network + overhead budget<br><small style="opacity:.6">WebSocket round trips, buffer processing</small></div>
+        </div>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">Local stack reality check</div>
+        On your local machine with Ollama (CPU), the LLM alone may take 2–5 seconds. This breaks the 2-second rule. <strong>That is fine for learning.</strong> You are not serving real callers. The architecture is correct even if the latency is not. When you switch Ollama for Claude API in production, latency drops to under 600ms automatically.
+      </div>
+
+      <h2>The Technique That Saves You: Streaming + Interleaving</h2>
+      <p>You do not have to wait for the entire LLM response before starting TTS. The moment the LLM returns the <strong>first complete sentence</strong>, you start converting it to audio and playing it — while the LLM is still generating the rest.</p>
+
+      <div class="pipeline">
+        <div style="font-size:12px; color:var(--text3); font-family:var(--mono); margin-bottom:12px">timeline →</div>
+        <div class="pipeline-row" style="margin-bottom:8px">
+          <div class="pipe-box" style="min-width:100px">LLM starts</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box green">sentence 1 done</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box highlight">TTS starts sentence 1</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box green">sentence 2 done</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box highlight">TTS starts sentence 2</div>
+        </div>
+        <div style="font-size:12px; color:var(--green); font-family:var(--mono); margin-top:8px">↑ caller hears first words while LLM is still generating. Perceived latency drops dramatically.</div>
+      </div>
+
+      <p>This technique — <strong>sentence-level streaming interleave</strong> — is what makes real-time voice AI feel natural. You will implement this in the Orchestrator.</p>
+
+      <h2>End-to-End Detection: Where to Add Silence</h2>
+      <p>You also need to know <em>when</em> the caller has finished speaking before you send audio to STT. This is called <strong>Voice Activity Detection (VAD)</strong>. The simplest version: if there is 800ms of silence after the last detected speech, the caller has finished their utterance. Send what you have to Whisper.</p>
+
+      <div class="callout callout-info">
+        <div class="callout-title">VAD library for Node.js</div>
+        Use <code>@ricky0123/vad-node</code> — a lightweight VAD that runs in Node.js and fires a callback when speech ends. This is your end-of-utterance trigger.
+      </div>
+    </div>
+
+    <!-- PAGE 3: FREE LOCAL STACK -->
+    <div class="page" id="page-3">
+      <div class="page-eyebrow">Section 03 — Foundation</div>
+      <div class="page-title">Your Free Local Stack</div>
+      <div class="page-lead">Zero cost. Zero internet dependency (mostly). Runs entirely on your machine. The architecture you build here is identical to production — only the tools swap.</div>
+
+      <h2>What to Install — The Complete List</h2>
+
+      <div class="install-card">
+        <div class="install-card-header">
+          <div class="install-card-title">
+            <span style="color:var(--accent)">01</span> Ollama
+            <span class="install-card-tag badge badge-green">LLM brain</span>
+          </div>
+        </div>
+        <div class="install-card-body">
+          <p style="margin-bottom:10px;font-size:13px">Runs local LLMs on your machine. One installer. Works on Linux, Mac, Windows.</p>
+          <div class="code-label">Install + pull model</div>
+          <pre><code># Install from ollama.ai (or apt on Ubuntu)
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Pull a fast model for learning
+ollama pull llama3.2:3b
+
+# Test it works
+ollama run llama3.2:3b "You are a call center agent. Say hello."</code></pre>
+          <div class="callout callout-info" style="margin-top:8px">
+            <div class="callout-title">Model choice</div>
+            <strong>llama3.2:3b</strong> — fastest, 2GB, good for testing the pipeline. When you want better reasoning during integration testing, try <strong>llama3.1:8b</strong> (needs 8GB RAM).
+          </div>
+        </div>
+      </div>
+
+      <div class="install-card">
+        <div class="install-card-header">
+          <div class="install-card-title">
+            <span style="color:var(--green)">02</span> Faster-Whisper
+            <span class="install-card-tag badge badge-blue">STT</span>
+          </div>
+        </div>
+        <div class="install-card-body">
+          <p style="margin-bottom:10px;font-size:13px">Open source STT. 4x faster than original Whisper on CPU. Python package.</p>
+          <div class="code-label">Install</div>
+          <pre><code># Requires Python 3.9+
+pip install faster-whisper
+
+# Or in a venv (recommended)
+python -m venv whisper-env
+source whisper-env/bin/activate
+pip install faster-whisper</code></pre>
+          <div class="callout callout-warn" style="margin-top:8px">
+            <div class="callout-title">First run downloads model</div>
+            First time you run Faster-Whisper, it downloads the model (~150MB for base, ~500MB for small). Needs internet once, then runs fully offline.
+          </div>
+        </div>
+      </div>
+
+      <div class="install-card">
+        <div class="install-card-header">
+          <div class="install-card-title">
+            <span style="color:var(--yellow)">03</span> Piper TTS
+            <span class="install-card-tag badge badge-yellow">TTS</span>
+          </div>
+        </div>
+        <div class="install-card-body">
+          <p style="margin-bottom:10px;font-size:13px">Extremely fast local TTS. Single binary. No install needed. Has English and Bengali voices.</p>
+          <div class="code-label">Download binary (Linux x86_64)</div>
+          <pre><code># Download from GitHub releases
+wget https://github.com/rhasspy/piper/releases/latest/download/piper_linux_x86_64.tar.gz
+tar -xzf piper_linux_x86_64.tar.gz
+
+# Download a voice model (English)
+wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx
+wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx.json
+
+# Test it
+echo "Hello, my name is Riya." | ./piper --model en_US-lessac-medium.onnx --output_file test.wav</code></pre>
+        </div>
+      </div>
+
+      <div class="install-card">
+        <div class="install-card-header">
+          <div class="install-card-title">
+            <span style="color:var(--accent2)">04</span> Node.js Dependencies
+            <span class="install-card-tag badge badge-blue">orchestrator</span>
+          </div>
+        </div>
+        <div class="install-card-body">
+          <div class="code-label">packages you will use</div>
+          <pre><code>npm init -y
+npm install ws                    # WebSocket server
+npm install @ricky0123/vad-node   # Voice activity detection
+npm install node-fetch            # HTTP calls to Ollama API
+npm install typescript ts-node @types/node @types/ws</code></pre>
+        </div>
+      </div>
+
+      <h2>Your Machine Requirements</h2>
+      <table>
+        <thead><tr><th>Requirement</th><th>Minimum</th><th>Recommended</th></tr></thead>
+        <tbody>
+          <tr><td>RAM</td><td>8GB</td><td>16GB (for llama3.1:8b)</td></tr>
+          <tr><td>CPU</td><td>4 cores</td><td>8 cores (faster Whisper)</td></tr>
+          <tr><td>Disk</td><td>10GB free</td><td>20GB free</td></tr>
+          <tr><td>OS</td><td colspan="2">Ubuntu 20+ / macOS / WSL2 on Windows</td></tr>
+          <tr><td>Python</td><td colspan="2">3.9+ (for Faster-Whisper)</td></tr>
+          <tr><td>Node.js</td><td colspan="2">18+ (you already have this)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PAGE 4: WEBSOCKETS -->
+    <div class="page" id="page-4">
+      <div class="page-eyebrow">Section 04 — The Pieces</div>
+      <div class="page-title">WebSockets</div>
+      <div class="page-lead">The pipe that carries everything. Audio in, audio out. You cannot build this system without understanding how this pipe works.</div>
+
+      <h2>HTTP vs WebSocket — The One Comparison That Matters</h2>
+
+      <div class="pipeline">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+          <div>
+            <div style="font-size:12px;color:var(--red);font-family:var(--mono);margin-bottom:12px">HTTP — wrong for audio</div>
+            <div class="pipeline-row" style="flex-direction:column;gap:6px;align-items:flex-start">
+              <div class="pipe-box" style="font-size:12px">client sends request</div>
+              <div style="color:var(--text3);font-size:12px;padding-left:8px">↓ open TCP connection</div>
+              <div class="pipe-box" style="font-size:12px">server sends response</div>
+              <div style="color:var(--text3);font-size:12px;padding-left:8px">↓ connection closes</div>
+              <div style="color:var(--red);font-size:11px;font-family:var(--mono)">× repeat 3000 times per call</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--green);font-family:var(--mono);margin-bottom:12px">WebSocket — correct</div>
+            <div class="pipeline-row" style="flex-direction:column;gap:6px;align-items:flex-start">
+              <div class="pipe-box" style="font-size:12px">client connects once</div>
+              <div style="color:var(--text3);font-size:12px;padding-left:8px">↓ connection stays open</div>
+              <div class="pipe-box green" style="font-size:12px">both sides send freely</div>
+              <div style="color:var(--text3);font-size:12px;padding-left:8px">↓ 3000 audio chunks, 1 connection</div>
+              <div style="color:var(--green);font-size:11px;font-family:var(--mono)">✓ one connection per call, forever</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2>How a WebSocket Connection Starts</h2>
+      <p>A WebSocket always starts as a normal HTTP request — then it upgrades. This handshake happens once. After that, HTTP is gone and it is a raw persistent pipe.</p>
+
+      <pre><code>// Client side (browser)
+const ws = new WebSocket('ws://localhost:3000');
+
+ws.onopen = () => {
+  console.log('connected — pipe is open');
+};
+
+ws.onmessage = (event) => {
+  // server pushed data to us — could be audio bytes, text, anything
+  console.log('received:', event.data);
+};
+
+ws.send('hello from browser');   // send anytime, no request needed</code></pre>
+
+      <pre><code>// Server side (Node.js with 'ws' package)
+import { WebSocketServer } from 'ws';
+
+const wss = new WebSocketServer({ port: 3000 });
+
+wss.on('connection', (socket) => {
+  console.log('caller connected');
+
+  socket.on('message', (data) => {
+    // data is what the client sent — could be audio bytes
+    console.log('received from caller:', data);
+
+    // push something back — no request needed from client
+    socket.send('hello from server');
+  });
+
+  socket.on('close', () => {
+    console.log('caller disconnected — call ended');
+  });
+});</code></pre>
+
+      <div class="callout callout-info">
+        <div class="callout-title">Audio is just bytes</div>
+        When the browser sends microphone audio over a WebSocket, it is sending raw <strong>PCM bytes</strong> — just numbers representing air pressure at a point in time. 16,000 numbers per second (16kHz sample rate). 16 bits per number. Your server receives a <code>Buffer</code> object. Faster-Whisper reads that buffer. That is it.
+      </div>
+
+      <h2>Binary Messages — What Audio Actually Looks Like</h2>
+      <p>Text WebSocket messages are strings. Audio messages are <strong>binary frames</strong> — raw bytes. You need to tell the WebSocket to send and receive binary:</p>
+
+      <pre><code>// Server: handle binary messages (audio chunks)
+socket.on('message', (data: Buffer) => {
+  if (data instanceof Buffer) {
+    // this is audio — pipe it to Whisper
+    processAudioChunk(data);
+  }
+});
+
+// Server: send binary audio back to caller
+socket.send(audioBuffer, { binary: true });</code></pre>
+
+      <h2>The Two WebSocket Connections in Your System</h2>
+
+      <table>
+        <thead><tr><th>Connection</th><th>Between</th><th>Direction</th><th>What flows</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-blue">WS-1</span></td>
+            <td>Browser ↔ Node.js server</td>
+            <td>Both ways</td>
+            <td>Caller audio IN → AI audio OUT</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-green">WS-2</span></td>
+            <td>Node.js server ↔ Deepgram (production)</td>
+            <td>Both ways</td>
+            <td>Audio IN → Transcript OUT (streaming)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>In your local stack, WS-2 is replaced by a <strong>subprocess pipe</strong> to Faster-Whisper (a Python process running locally). In production, you swap it for Deepgram's WebSocket API. The Node.js orchestrator code changes minimally — just the transport layer.</p>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">The hardest part of WebSockets in practice</div>
+        Connections drop. Networks are unreliable. Your server must handle <code>socket.on('error')</code> and <code>socket.on('close')</code> gracefully — cleaning up state, releasing resources, not crashing. Build this from day one, not as an afterthought.
+      </div>
+    </div>
+
+    <!-- PAGE 5: PHONE LAYER -->
+    <div class="page" id="page-5">
+      <div class="page-eyebrow">Section 05 — The Pieces</div>
+      <div class="page-title">Phone Layer</div>
+      <div class="page-lead">How does a real phone call reach your Node.js server? In learning, you use a browser. In production, Twilio or FreeSWITCH. The server code is the same either way.</div>
+
+      <h2>For Learning: Browser Microphone</h2>
+      <p>The simplest possible phone layer. A single HTML page with a "Start Call" button that captures your microphone and streams audio to your WebSocket server over the browser's built-in <code>AudioWorklet</code> API.</p>
+
+      <div class="callout callout-success">
+        <div class="callout-title">Why this is the right starting point</div>
+        You control both ends. You can open browser DevTools, see exactly what audio bytes are being sent, pause, debug, replay. No SIP configuration. No account. No cost. When the pipeline works in the browser, you know your server is correct — then you add Twilio on top.
+      </div>
+
+      <h2>How Browser Audio Capture Works</h2>
+      <ol class="step-list">
+        <li>Browser calls <code>navigator.mediaDevices.getUserMedia({ audio: true })</code> — asks for mic permission</li>
+        <li>You get a <code>MediaStream</code> — raw audio from the microphone</li>
+        <li>You connect it to an <code>AudioWorklet</code> — a background thread that processes audio in 128-sample chunks</li>
+        <li>Each chunk is sent as binary over the WebSocket to your server</li>
+        <li>Your server receives audio chunks at ~16kHz, 16-bit PCM</li>
+      </ol>
+
+      <h2>Audio Format — What Faster-Whisper Expects</h2>
+      <table>
+        <thead><tr><th>Property</th><th>Value</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Sample rate</td><td class="mono">16000 Hz</td><td>Whisper was trained on 16kHz audio</td></tr>
+          <tr><td>Channels</td><td class="mono">1 (mono)</td><td>Whisper expects mono — stereo wastes bandwidth</td></tr>
+          <tr><td>Bit depth</td><td class="mono">16-bit integer</td><td>Standard telephony format</td></tr>
+          <tr><td>Encoding</td><td class="mono">PCM (raw)</td><td>No compression overhead</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">Browser default is float32, not int16</div>
+        The browser's <code>AudioWorklet</code> gives you 32-bit float samples. Whisper wants 16-bit integer. You must convert in the AudioWorklet before sending. This is a common gotcha — if you skip it, Whisper gets garbage and returns garbage transcripts.
+      </div>
+
+      <h2>For Later: Twilio Media Streams</h2>
+      <p>When you move to production with Twilio, the phone layer changes but your server does not. Twilio receives the real phone call and opens a WebSocket connection to your server — streaming audio in the exact same binary format. Your server code handles it identically.</p>
+
+      <div class="pipeline">
+        <div class="pipeline-row">
+          <div class="pipe-box highlight">Learning</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box">Browser mic</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box">AudioWorklet</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box green">WebSocket → your server</div>
+        </div>
+        <div style="height:12px"></div>
+        <div class="pipeline-row">
+          <div class="pipe-box highlight">Production</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box">Caller dials</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box">Twilio</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box green">WebSocket → your server</div>
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:var(--green);font-family:var(--mono)">↑ your server receives identical binary audio in both cases</div>
+      </div>
+    </div>
+
+    <!-- PAGE 6: STT -->
+    <div class="page" id="page-6">
+      <div class="page-eyebrow">Section 06 — The Pieces</div>
+      <div class="page-title">STT — Faster-Whisper</div>
+      <div class="page-lead">Speech to text. Turns the caller's voice into words your LLM can read. In learning, this is Faster-Whisper running locally. The interface you build here works identically with Deepgram in production.</div>
+
+      <h2>How Faster-Whisper Works in Your Pipeline</h2>
+      <p>Faster-Whisper is a Python library. Your Node.js orchestrator cannot call Python libraries directly. You solve this by running Faster-Whisper as a <strong>child process</strong> — a small Python server that your Node.js server communicates with via stdin/stdout or a local HTTP port.</p>
+
+      <div class="pipeline">
+        <div class="pipeline-row">
+          <div class="pipe-box highlight">Node.js (audio buffer)</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box">spawn Python process</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box green">Faster-Whisper</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box purple">transcript text</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box highlight">Node.js (text ready)</div>
+        </div>
+      </div>
+
+      <h2>Two Ways to Connect Node.js to Faster-Whisper</h2>
+
+      <table>
+        <thead><tr><th>Method</th><th>How</th><th>Best for</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Child process + pipe</strong></td>
+            <td>Node spawns a Python script, sends audio via stdin, reads transcript from stdout</td>
+            <td>Simple, no extra dependencies</td>
+          </tr>
+          <tr>
+            <td><strong>Local HTTP server</strong></td>
+            <td>Python runs a Flask/FastAPI server on port 8001. Node calls it via HTTP POST with audio data</td>
+            <td>Cleaner separation, easier to swap for Deepgram later</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-success">
+        <div class="callout-title">Recommended: local HTTP server</div>
+        Build Faster-Whisper as a local HTTP microservice on port 8001. Your Node.js orchestrator sends a POST request with the audio buffer and receives JSON with the transcript. When you move to production, you change the URL from <code>localhost:8001</code> to <code>api.deepgram.com</code> — the rest of your code does not change. This is good architecture.
+      </div>
+
+      <h2>The VAD Problem — Knowing When to Send</h2>
+      <p>Whisper is not a streaming transcriber. It transcribes a complete audio segment — not individual chunks as they arrive. You need to collect audio chunks until the caller finishes speaking, then send the whole utterance to Whisper.</p>
+
+      <p>This is where <strong>Voice Activity Detection (VAD)</strong> comes in. VAD listens to the incoming audio stream and tells you: <em>"speech started"</em> and <em>"speech ended."</em> On "speech ended" — you have your complete utterance. Send it to Whisper.</p>
+
+      <div class="callout callout-info">
+        <div class="callout-title">Simple VAD rule for learning</div>
+        If you want to skip a VAD library initially, implement a simple energy-based detector: calculate the RMS of each audio chunk. If RMS drops below a threshold for 800ms consecutively, speech has ended. It is crude but works well enough to learn the pipeline.
+      </div>
+
+      <h2>Whisper Model Selection</h2>
+      <table>
+        <thead><tr><th>Model</th><th>Size</th><th>Speed (CPU)</th><th>Accuracy</th><th>Use for</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">tiny</td><td>75MB</td><td>~100ms</td><td>low</td><td>Testing pipeline speed</td></tr>
+          <tr><td class="mono">base</td><td>145MB</td><td>~300ms</td><td>good</td><td>Learning — start here</td></tr>
+          <tr><td class="mono">small</td><td>460MB</td><td>~600ms</td><td>better</td><td>Integration testing</td></tr>
+          <tr><td class="mono">large-v3</td><td>2.9GB</td><td>2-4s</td><td>best</td><td>Tier 3 self-hosted production</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">Bengali language note</div>
+        Whisper supports Bengali natively — it was trained on multilingual data. You do not need a separate Bengali model. Just pass <code>language="bn"</code> when initializing. For code-switching (Bengali + English in same sentence), use <code>language=None</code> and let Whisper auto-detect — it handles it surprisingly well.
+      </div>
+    </div>
+
+    <!-- PAGE 7: LLM -->
+    <div class="page" id="page-7">
+      <div class="page-eyebrow">Section 07 — The Pieces</div>
+      <div class="page-title">LLM Brain — Ollama</div>
+      <div class="page-lead">The brain that understands what the caller wants and decides what to say. In learning, this is Ollama. The system prompt, conversation history, and tool calls you design here are permanent — they carry into Claude API in production unchanged.</div>
+
+      <h2>How Your Orchestrator Talks to Ollama</h2>
+      <p>Ollama exposes a local REST API on port 11434. Your Node.js server sends a POST request with the conversation history and gets a response back. The API is intentionally similar to OpenAI's chat completions format — so switching to Claude API later is a small change.</p>
+
+      <pre><code>// Talking to Ollama from Node.js
+const response = await fetch('http://localhost:11434/api/chat', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    model: 'llama3.2:3b',
+    messages: conversationHistory,   // full history every time
+    stream: true,                    // stream tokens as they arrive
+  })
+});
+
+// Stream handling — get tokens as they come
+for await (const chunk of response.body) {
+  const token = JSON.parse(chunk).message.content;
+  // collect tokens, detect sentence boundary, trigger TTS
+}</code></pre>
+
+      <h2>Conversation History — The Most Important Thing</h2>
+      <p>The LLM has no memory between requests. Every single call to Ollama must include the <strong>entire conversation history</strong> — every message from the start of the call. Your orchestrator maintains this array in memory, appending each new caller utterance and AI response.</p>
+
+      <pre><code>// Conversation state — lives in memory for the call duration
+const conversation = [
+  {
+    role: 'system',
+    content: `You are Riya, a customer support agent for ShopBD.
+You speak Bengali and English.
+You help callers with order status, returns, and tracking.
+Always be brief. One question at a time. Never make up order data.
+When you need to look up an order, call the get_order_status tool.`
+  },
+  // caller and AI turns added dynamically:
+  { role: 'user', content: 'আমার অর্ডার কোথায়?' },  // caller
+  { role: 'assistant', content: 'অর্ডার নম্বরটা বলুন।' }, // AI
+  { role: 'user', content: 'Order 4521' },              // caller
+  // ... and so on
+];</code></pre>
+
+      <h2>Tool Calls — How the AI Looks Up Real Data</h2>
+      <p>When the caller asks for their order status, the AI does not guess. It <strong>calls a tool</strong> — a function you define that queries your order database. Ollama supports tool calling natively.</p>
+
+      <div class="callout callout-info">
+        <div class="callout-title">Tool calling flow</div>
+        <ol class="step-list" style="margin-top:8px">
+          <li>Caller: "Where is my order 4521?"</li>
+          <li>LLM decides it needs order data → returns a tool_call response instead of text</li>
+          <li>Your orchestrator sees tool_call → runs your actual function → queries order DB</li>
+          <li>You send the tool result back to LLM as a new message</li>
+          <li>LLM now has the data → generates the final spoken response</li>
+        </ol>
+      </div>
+
+      <h2>The System Prompt — Where Your Business Logic Lives</h2>
+      <p>The system prompt is the most important thing you write. It is the AI's complete instruction manual. For a call center agent it must cover:</p>
+
+      <table>
+        <thead><tr><th>Section</th><th>What it defines</th></tr></thead>
+        <tbody>
+          <tr><td>Identity</td><td>Name, language, tone — "You are Riya, speak in Bangla and English"</td></tr>
+          <tr><td>Scope</td><td>What you can and cannot help with</td></tr>
+          <tr><td>Constraints</td><td>"Never make up data. Never promise what you cannot deliver."</td></tr>
+          <tr><td>Style</td><td>"Be brief. One question at a time. Always confirm before taking action."</td></tr>
+          <tr><td>Tools</td><td>Which tools exist and when to use them</td></tr>
+          <tr><td>Escalation</td><td>"If caller expresses anger or says 'manager', say you will transfer them."</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">Local model limitation</div>
+        Llama3.2:3b follows instructions reasonably but inconsistently. You will find it sometimes ignores the system prompt, breaks character, or hallucinates order data. This is a model quality issue, not an architecture issue. When you swap in Claude API, these problems largely disappear. Build the architecture correctly now — tolerate imperfect LLM behavior in learning mode.
+      </div>
+    </div>
+
+    <!-- PAGE 8: TTS -->
+    <div class="page" id="page-8">
+      <div class="page-eyebrow">Section 08 — The Pieces</div>
+      <div class="page-title">TTS — Piper</div>
+      <div class="page-lead">Converts the AI's text response back into audio the caller hears. The voice, speed, and quality live here. In learning, Piper runs locally and produces a WAV file in milliseconds.</div>
+
+      <h2>How Piper Works in Your Pipeline</h2>
+      <p>Piper is a command-line binary. You pipe text into it and it outputs a WAV audio file. Your Node.js orchestrator calls Piper as a child process, reads the audio output, and streams it back over the WebSocket to the caller.</p>
+
+      <div class="pipeline">
+        <div class="pipeline-row">
+          <div class="pipe-box purple">LLM response text</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box highlight">Node.js spawns Piper</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box yellow">WAV audio bytes</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-box green">WebSocket → caller</div>
+        </div>
+      </div>
+
+      <h2>Sentence-Level Streaming With Piper</h2>
+      <p>Remember the 2-second rule. You do not wait for the LLM to finish the entire response before starting TTS. You detect sentence boundaries in the LLM token stream and run Piper on each sentence immediately.</p>
+
+      <ol class="step-list">
+        <li>LLM streams tokens: <code>"Your"</code> <code>"order"</code> <code>"will"</code> <code>"arrive"</code> <code>"tomorrow."</code></li>
+        <li>Your orchestrator sees the period → sentence 1 complete</li>
+        <li>Immediately spawn Piper with "Your order will arrive tomorrow."</li>
+        <li>Piper returns audio in ~80ms → stream to caller immediately</li>
+        <li>LLM continues generating sentence 2 while caller is hearing sentence 1</li>
+      </ol>
+
+      <div class="callout callout-success">
+        <div class="callout-title">This is the single biggest latency win</div>
+        Without sentence streaming, a 3-sentence response takes: LLM full generation (2s) + TTS full conversion (300ms) = 2.3s before the caller hears a word. With sentence streaming, the caller hears the first word in ~700ms. Same content, dramatically better perceived experience.
+      </div>
+
+      <h2>Audio Format Compatibility</h2>
+      <p>Piper outputs WAV at 22050Hz by default. Your browser expects audio at 16000Hz or 44100Hz. You need to resample — either configure Piper to match, or use a lightweight resampler like <code>sox</code> as a pipe step.</p>
+
+      <pre><code># Tell Piper to output at 16kHz (matches browser audio)
+echo "Hello caller" | ./piper \
+  --model en_US-lessac-medium.onnx \
+  --output_raw \       # raw PCM, no WAV header
+  --noise_scale 0.667 \
+  --length_scale 1.0 | sox -t raw -r 22050 -e signed -b 16 -c 1 - \
+                           -t raw -r 16000 -e signed -b 16 -c 1 -</code></pre>
+
+      <h2>Bengali TTS</h2>
+      <p>Piper has a Bengali voice model: <code>bn_BD-multi-medium.onnx</code>. Download it from the Piper voices repository on HuggingFace. Voice quality is acceptable for learning but not production-grade yet.</p>
+
+      <p>For production Bengali TTS, ElevenLabs is currently the best option — it has a natural-sounding female Bengali voice. This is one area where the local learning stack and production stack diverge in quality significantly.</p>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">Code-switching TTS challenge</div>
+        Bengali callers mix Bengali and English in the same sentence: "আমার order 4521 কোথায়?" Your TTS must handle this gracefully. Piper's Bengali model will mispronounce "order 4521". The production solution is ElevenLabs' multilingual model. For learning, this is an acceptable limitation — note it and move on.
+      </div>
+    </div>
+
+    <!-- PAGE 9: ORCHESTRATOR -->
+    <div class="page" id="page-9">
+      <div class="page-eyebrow">Section 09 — The System</div>
+      <div class="page-title">Node.js Orchestrator</div>
+      <div class="page-lead">The central nervous system. Everything else is a component. This is the code you write — the thing that makes them work together as a single system.</div>
+
+      <h2>The Orchestrator's Responsibilities</h2>
+      <table>
+        <thead><tr><th>Responsibility</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>Accept WebSocket connections</td><td>One connection per call. Start a new call session.</td></tr>
+          <tr><td>Buffer audio chunks</td><td>Collect incoming audio bytes until VAD says "utterance complete"</td></tr>
+          <tr><td>Pipe to STT</td><td>Send complete utterance buffer to Faster-Whisper, get transcript</td></tr>
+          <tr><td>Maintain conversation history</td><td>Append each transcript + AI response to the history array</td></tr>
+          <tr><td>Call LLM</td><td>Send full history to Ollama, stream response tokens</td></tr>
+          <tr><td>Detect sentence boundaries</td><td>Buffer tokens, fire TTS on each complete sentence</td></tr>
+          <tr><td>Call TTS</td><td>Pipe sentence text to Piper, get audio back</td></tr>
+          <tr><td>Stream audio back</td><td>Send WAV bytes over WebSocket to the caller</td></tr>
+          <tr><td>Handle tool calls</td><td>Detect LLM tool_call response, run the function, return result</td></tr>
+          <tr><td>Handle escalation</td><td>Detect escalation trigger words, close AI loop, connect human</td></tr>
+          <tr><td>Clean up on disconnect</td><td>When WebSocket closes, flush state, log call summary</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Call Session State</h2>
+      <p>For each active call, your orchestrator holds a session object in memory:</p>
+
+      <pre><code>interface CallSession {
+  id: string;                     // unique call ID
+  socket: WebSocket;              // the caller's connection
+  startTime: Date;
+  conversation: Message[];        // full conversation history
+  audioBuffer: Buffer[];          // accumulating audio chunks
+  isProcessing: boolean;          // true while STT/LLM/TTS is running
+  callerPhone?: string;           // from Twilio in production
+  orderId?: string;               // extracted during conversation
+  escalated: boolean;             // true if handed to human
+}</code></pre>
+
+      <h2>The Processing Lock</h2>
+      <p>This is a subtle but important detail: while the AI is processing (STT → LLM → TTS), the caller may continue speaking. You need a lock to prevent processing two utterances simultaneously, which would create chaos in the conversation history.</p>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">The isProcessing flag</div>
+        Set <code>isProcessing = true</code> when you send audio to STT. Set it back to <code>false</code> when TTS audio is fully sent. While <code>isProcessing</code> is true, either: (a) buffer incoming audio and process it after, or (b) discard it and rely on barge-in detection. For learning, discarding is simpler. Barge-in is a Tier 2 feature.
+      </div>
+
+      <h2>File Structure</h2>
+
+      <pre><code>call-center/
+├── src/
+│   ├── server.ts           # WebSocket server, entry point
+│   ├── session.ts          # CallSession class, state management
+│   ├── stt.ts              # STT client (Faster-Whisper local or Deepgram)
+│   ├── llm.ts              # LLM client (Ollama local or Claude API)
+│   ├── tts.ts              # TTS client (Piper local or ElevenLabs)
+│   ├── vad.ts              # Voice activity detection
+│   ├── tools/
+│   │   ├── getOrderStatus.ts   # order lookup tool
+│   │   └── index.ts            # tool registry
+│   └── prompts/
+│       └── system.ts           # system prompt for Riya
+├── client/
+│   └── index.html          # browser mic test client
+├── whisper-server/
+│   └── server.py           # local Faster-Whisper HTTP server
+└── package.json</code></pre>
+
+      <div class="callout callout-success">
+        <div class="callout-title">Design principle: thin interfaces</div>
+        Each of <code>stt.ts</code>, <code>llm.ts</code>, and <code>tts.ts</code> exports a single function with a fixed interface. <code>stt.ts</code> exports <code>transcribe(audioBuffer: Buffer): Promise&lt;string&gt;</code>. Nothing else. When you move to Deepgram, you rewrite only the inside of that function — the interface stays identical. The session manager never changes.
+      </div>
+    </div>
+
+    <!-- PAGE 10: HARD PARTS -->
+    <div class="page" id="page-10">
+      <div class="page-eyebrow">Section 10 — The System</div>
+      <div class="page-title">The Hard Parts & Traps</div>
+      <div class="page-lead">These are the walls you will hit. Knowing they exist before you hit them saves you days of confusion. Each one has a solution — but only if you know to look for it.</div>
+
+      <h2>Trap 1 — Audio Format Mismatch</h2>
+      <p><strong>What happens:</strong> Whisper returns garbage transcripts or errors. The audio plays back distorted.</p>
+      <p><strong>Why:</strong> Your browser sends float32 audio. Whisper needs int16 at 16kHz. You forgot to convert in the AudioWorklet.</p>
+      <p><strong>Solution:</strong> Always convert float32 → int16 in the AudioWorklet before sending over WebSocket. Log the first 20 bytes of every audio message during development to confirm the format.</p>
+
+      <div class="callout callout-danger">
+        <div class="callout-title">Most common first blocker</div>
+        80% of people building this for the first time spend 2–3 days on this exact issue without knowing what to search for. Now you know. If Whisper gives you wrong transcripts — check the audio format first.
+      </div>
+
+      <h2>Trap 2 — VAD Cutoff Too Early</h2>
+      <p><strong>What happens:</strong> The AI keeps interrupting the caller mid-sentence. Transcripts are cut off: "where is my" instead of "where is my order 4521".</p>
+      <p><strong>Why:</strong> Your silence threshold is too aggressive (300ms). Normal human speech has natural pauses within a sentence — a 300ms gap after "where is my" looks like end-of-speech to the VAD.</p>
+      <p><strong>Solution:</strong> Start with 800ms silence threshold. Tune upward if callers are still being cut off. Never go below 500ms for conversational speech.</p>
+
+      <h2>Trap 3 — Conversation History Grows Unbounded</h2>
+      <p><strong>What happens:</strong> After 10–15 turns, Ollama slows down dramatically or throws a context length error.</p>
+      <p><strong>Why:</strong> You are appending every turn to the history and sending the whole thing every time. Local models have small context windows (~4K tokens for 3b models).</p>
+      <p><strong>Solution:</strong> Keep the last 6–8 turns in active history. Summarize older turns into a single system message. In production with Claude API, the context window is huge — this problem goes away.</p>
+
+      <h2>Trap 4 — WebSocket Closes Unexpectedly</h2>
+      <p><strong>What happens:</strong> The browser tab refreshes. Network blips. The call drops but your server has no cleanup logic — the session leaks, the child processes keep running, memory builds up.</p>
+      <p><strong>Why:</strong> You handled <code>socket.on('message')</code> but forgot <code>socket.on('close')</code> and <code>socket.on('error')</code>.</p>
+      <p><strong>Solution:</strong> Always implement all three handlers. On close/error: kill any running child processes (Whisper, Piper), release the session from your sessions Map, log the call summary.</p>
+
+      <h2>Trap 5 — Sentence Boundary Detection is Wrong</h2>
+      <p><strong>What happens:</strong> The AI says something like "Your order — order 4521 — will arrive tomorrow." Your sentence splitter fires on the em-dash, sending "Your order" to TTS as a complete sentence. Sounds weird.</p>
+      <p><strong>Why:</strong> Naive sentence splitting on periods and commas breaks on abbreviations, numbers, and pauses within a sentence.</p>
+      <p><strong>Solution:</strong> Use a proper sentence boundary detection library. For Node.js, <code>sentence-splitter</code> or a simple regex that splits on <code>[.!?]</code> followed by a space and capital letter handles 90% of cases. For the remaining 10%, tolerate it in learning mode.</p>
+
+      <h2>Trap 6 — Piper Startup Latency</h2>
+      <p><strong>What happens:</strong> TTS latency is 1–2 seconds instead of 80ms. The call feels laggy even when STT and LLM are fast.</p>
+      <p><strong>Why:</strong> You are spawning a new Piper process for every sentence. Process startup overhead is ~500ms each time.</p>
+      <p><strong>Solution:</strong> Spawn Piper once at server startup in streaming mode, keep stdin open, and pipe text to the running process. This reduces per-sentence TTS latency to under 100ms.</p>
+
+      <h2>Trap 7 — The LLM Hallucinates Order Data</h2>
+      <p><strong>What happens:</strong> The AI tells the caller their order is in Dhaka even though it is in Chittagong. Or invents a tracking number.</p>
+      <p><strong>Why:</strong> The system prompt says "call the tool to get order data" but local models (llama3.2:3b) sometimes ignore tool call instructions and generate a plausible-sounding answer instead.</p>
+      <p><strong>Solution:</strong> Add a validator in your orchestrator: if the LLM response contains an order number or tracking number but did not make a tool call, reject it and re-prompt with "You must use the get_order_status tool before answering." In production with Claude API this almost never happens.</p>
+
+      <div class="callout callout-success">
+        <div class="callout-title">The meta-lesson</div>
+        Every single one of these traps has a clean solution. None of them require you to rebuild the architecture. They are integration details — the kind you can only learn by hitting them. Now you have a head start on all seven.
+      </div>
+    </div>
+
+    <!-- PAGE 11: BUILD ORDER -->
+    <div class="page" id="page-11">
+      <div class="page-eyebrow">Section 11 — The System</div>
+      <div class="page-title">Build Order & Milestones</div>
+      <div class="page-lead">The sequence matters. Build in this order and each step builds on the last. Skip the order and you will debug three things at once and not know which is broken.</div>
+
+      <h2>The Rule: One Pipe at a Time</h2>
+      <p>Never connect two new pieces simultaneously. Test each piece works in isolation before connecting it to the next. A call center pipeline has 5 pieces. If you wire all 5 at once and it does not work, you have 5 places to debug. If you wire them one at a time, you always know exactly where the problem is.</p>
+
+      <h2>The 12-Step Build Order</h2>
+
+      <ol class="step-list">
+        <li>
+          <div>
+            <strong>WebSocket echo server</strong><br>
+            <span style="font-size:13px;color:var(--text3)">Server that receives a text message and echoes it back. No audio. No AI. Just confirm the pipe works. ✓ when: browser sends "hello" and receives "hello".</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Browser mic capture</strong><br>
+            <span style="font-size:13px;color:var(--text3)">Add the HTML page that captures microphone and sends binary audio over WebSocket. Log received bytes on the server. ✓ when: you see binary buffer logs in the server console while speaking.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Audio format validation</strong><br>
+            <span style="font-size:13px;color:var(--text3)">Confirm audio is 16kHz, int16, mono before sending to Whisper. Save a raw PCM file to disk and play it back. ✓ when: saved audio sounds like your voice.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Faster-Whisper standalone</strong><br>
+            <span style="font-size:13px;color:var(--text3)">Run Faster-Whisper on a pre-recorded WAV file. Get a transcript. No Node.js yet — just Python. ✓ when: transcript matches what you said.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>VAD + Whisper integration</strong><br>
+            <span style="font-size:13px;color:var(--text3)">Add VAD to the Node.js server. Collect audio until silence. Send to Whisper HTTP server. Log the transcript. ✓ when: you speak a sentence into the browser and see the correct transcript in server logs.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Ollama standalone</strong><br>
+            <span style="font-size:13px;color:var(--text3)">Call Ollama directly from Node.js with a hardcoded message. Get a response. No STT or TTS yet. ✓ when: "Where is my order?" returns a coherent response in the logs.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>STT → LLM pipeline</strong><br>
+            <span style="font-size:13px;color:var(--text3)">Connect STT output to LLM input. Speak into browser → transcript → LLM response in logs. ✓ when: you ask about your order and see a relevant AI response in the terminal.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Piper TTS standalone</strong><br>
+            <span style="font-size:13px;color:var(--text3)">Run Piper on a hardcoded string. Save and play the audio. ✓ when: you hear "Your order will arrive tomorrow" from your speakers.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>TTS → WebSocket audio playback</strong><br>
+            <span style="font-size:13px;color:var(--text3)">Send Piper audio over WebSocket to browser. Browser plays it. ✓ when: browser plays audio streamed from the server.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Full loop — first end-to-end test</strong><br>
+            <span style="font-size:13px;color:var(--text3)">Connect all pieces. Speak → transcript → LLM → TTS → hear response. ✓ when: you have a real voice conversation with the AI, even with latency.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Add tool calls — order status</strong><br>
+            <span style="font-size:13px;color:var(--text3)">Add a mock order DB. Add the get_order_status tool. Ask "Where is order 4521?" and hear the AI respond with actual mock data. ✓ when: the AI reads real data from your DB, not hallucinated data.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Add escalation detection</strong><br>
+            <span style="font-size:13px;color:var(--text3)">Detect escalation keywords. When triggered, AI says "Transferring you now" and logs the escalation. ✓ when: saying "I want to speak to a manager" triggers the escalation path.</span>
+          </div>
+        </li>
+      </ol>
+
+      <h2>What Success Looks Like at the End of Tier 1</h2>
+
+      <div class="callout callout-success">
+        <div class="callout-title">Tier 1 milestone</div>
+        You open a browser tab. You click "Start Call." You say: <em>"Amar order 4521 kothay?"</em> — The AI responds in voice with the correct order status from your mock database. You say "I want to speak to a manager" — the AI says "Transferring you now" and logs the escalation. The whole loop works. Latency is high on local models — that is fine. The architecture is production-ready. Swapping the tools makes it production-fast.
+      </div>
+
+      <h2>When to Stop Tier 1 and Move to Tier 2</h2>
+      <p>Stop when all 12 steps work end-to-end, even if imperfectly. You do not need perfect Bengali. You do not need sub-2s latency on local models. You do not need 50 concurrent calls. You need the <strong>loop to work</strong>. That is the milestone.</p>
+
+      <p>The moment you have a working loop — come back here. We drill into each piece in depth: conversation state management, real tool call patterns, VAD tuning, sentence streaming optimization, and the path to Tier 2.</p>
+
+      <hr class="divider">
+
+      <div style="text-align:center;padding:24px 0">
+        <div style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:12px">you have the full picture</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:8px">Go build it. Break things. Come back.</div>
+        <div style="font-size:14px;color:var(--text2)">Every question you have after trying will be a real question. That is when the deep learning happens.</div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+  const pages = document.querySelectorAll('.page');
+  const navItems = document.querySelectorAll('.nav-item');
+  const titles = [
+    'The Full Picture',
+    'What You Are Building',
+    'The 2-Second Rule',
+    'Your Free Local Stack',
+    'WebSockets',
+    'Phone Layer',
+    'STT — Faster-Whisper',
+    'LLM Brain — Ollama',
+    'TTS — Piper',
+    'Node.js Orchestrator',
+    'Hard Parts & Traps',
+    'Build Order & Milestones'
+  ];
+
+  let current = 0;
+
+  function goTo(idx) {
+    pages[current].classList.remove('active');
+    navItems[current].classList.remove('active');
+    current = idx;
+    pages[current].classList.add('active');
+    navItems[current].classList.add('active');
+    document.getElementById('topbarStep').textContent = `Section ${String(idx).padStart(2,'0')}`;
+    document.getElementById('topbarTitle').textContent = titles[idx];
+    const pct = Math.round(((idx + 1) / pages.length) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = `${idx + 1} / ${pages.length} sections`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('main').scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function next() { if (current < pages.length - 1) goTo(current + 1); }
+  function prev() { if (current > 0) goTo(current - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowLeft') prev();
+  });
+</script>
+</body>
+</html>
+ENDOFFILE

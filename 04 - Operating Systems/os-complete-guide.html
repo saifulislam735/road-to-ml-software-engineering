@@ -1,0 +1,2344 @@
+<!DOC
+<div class="main-content" id="mainContent">
+TYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operating Systems — Complete Mastery Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0b0d14;--bg2:#11141f;--bg3:#181d2e;--bg4:#1f2438;--bg5:#252b42;
+  --border:#252b42;--border2:#323a58;
+  --text:#eef0f6;--text2:#a0a8c0;--text3:#626b8a;
+  --purple:#8b85f0;--purple2:#6c64e8;--purple-bg:#1a1740;--purple-lt:#cdc9fa;
+  --teal:#35d99a;--teal-bg:#063825;--teal-lt:#9ef5d1;
+  --amber:#f7c35a;--amber-bg:#2e1e00;--amber-lt:#fce4a3;
+  --red:#f0706c;--red-bg:#2a0a0a;--red-lt:#fbb8b6;
+  --blue:#5aabf7;--blue-bg:#0c2240;--blue-lt:#b3d9fd;
+  --green:#52de82;--green-bg:#072515;--green-lt:#b0f5cb;
+  --coral:#f27ba0;--coral-bg:#2d0717;--coral-lt:#fbb9ce;
+  --pink:#e06ef0;--pink-bg:#24063a;--pink-lt:#efb4fa;
+  --orange:#f7935a;--orange-bg:#2a1000;--orange-lt:#fedfc9;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono','Cascadia Code','Fira Code',monospace;
+  --r:8px;--rl:14px;--rxl:20px;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* NAV */
+
+
+
+.topnav a:hover{color:var(--text);background:var(--bg3);}
+
+/* HERO */
+.hero{text-align:center;padding:72px 24px 56px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 900px 500px at 50% -10%,rgba(139,133,240,.12) 0%,transparent 65%);pointer-events:none;}
+.hero-eye{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);background:var(--purple-bg);border:1px solid rgba(139,133,240,.3);padding:5px 14px;border-radius:20px;margin-bottom:22px;}
+.hero h1{font-size:clamp(34px,6vw,66px);font-weight:800;letter-spacing:-2px;line-height:1.06;background:linear-gradient(135deg,#eef0f6 0%,#8b85f0 45%,#35d99a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:18px;color:var(--text2);margin-top:18px;max-width:620px;margin-left:auto;margin-right:auto;line-height:1.65;}
+.hero-tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px;}
+.htag{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid;}
+.hp{background:var(--purple-bg);color:var(--purple-lt);border-color:rgba(139,133,240,.35);}
+.ht{background:var(--teal-bg);color:var(--teal-lt);border-color:rgba(53,217,154,.35);}
+.ha{background:var(--amber-bg);color:var(--amber-lt);border-color:rgba(247,195,90,.35);}
+
+/* LAYOUT */
+.page{max-width:1080px;margin:0 auto;padding:0 28px 100px;}
+
+/* TOC */
+.toc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rxl);padding:30px 34px;margin:38px 0 52px;}
+.toc-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:18px;}
+.toc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:8px;}
+.toc-link{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg3);color:var(--text2);text-decoration:none;font-size:14px;font-weight:500;transition:all .15s;}
+.toc-link:hover{border-color:var(--purple);color:var(--purple-lt);background:var(--purple-bg);}
+.toc-n{font-size:11px;font-weight:700;color:var(--purple);min-width:24px;}
+
+/* CHAPTER */
+.chapter{margin-top:68px;}
+.chap-hd{display:flex;align-items:flex-start;gap:20px;padding:30px 34px;border-radius:var(--rxl);border:1px solid var(--border);margin-bottom:30px;background:var(--bg2);position:relative;overflow:hidden;}
+.chap-hd::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
+.cp::before{background:linear-gradient(180deg,var(--purple),var(--purple2));}
+.ct2::before{background:linear-gradient(180deg,var(--teal),#1a9e6a);}
+.ca::before{background:linear-gradient(180deg,var(--amber),#c88d20);}
+.cr::before{background:linear-gradient(180deg,var(--red),#b84040);}
+.cb::before{background:linear-gradient(180deg,var(--blue),#2a72c8);}
+.cg::before{background:linear-gradient(180deg,var(--green),#28a858);}
+.cc2::before{background:linear-gradient(180deg,var(--coral),#c04472);}
+.cpk::before{background:linear-gradient(180deg,var(--pink),#a030d0);}
+.co::before{background:linear-gradient(180deg,var(--orange),#c05020);}
+.chap-icon{font-size:38px;flex-shrink:0;line-height:1;margin-top:2px;}
+.chap-ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:5px;}
+.chap-title{font-size:25px;font-weight:700;color:var(--text);line-height:1.15;}
+.chap-desc{font-size:15px;color:var(--text2);margin-top:9px;line-height:1.65;max-width:700px;}
+.analogy{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;background:rgba(53,217,154,.1);border:1px solid rgba(53,217,154,.25);color:var(--teal-lt);}
+
+/* SECTION LABEL */
+.sl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin:34px 0 13px;display:flex;align-items:center;gap:10px;}
+.sl::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* CALLOUTS */
+.callout{padding:15px 19px;border-radius:var(--r);border-left:4px solid;margin-bottom:16px;font-size:15px;line-height:1.65;}
+.callout strong{font-weight:700;}
+.ci{background:var(--blue-bg);border-color:var(--blue);color:var(--blue-lt);}
+.ctip{background:var(--teal-bg);border-color:var(--teal);color:var(--teal-lt);}
+.cw{background:var(--amber-bg);border-color:var(--amber);color:var(--amber-lt);}
+.cd{background:var(--red-bg);border-color:var(--red);color:var(--red-lt);}
+.cpp{background:var(--purple-bg);border-color:var(--purple);color:var(--purple-lt);}
+
+/* CARDS */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(228px,1fr));gap:11px;margin-bottom:16px;}
+.cc{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:17px;cursor:pointer;transition:border-color .15s;}
+.cc:hover{border-color:var(--border2);}
+.cc.open{border-color:var(--purple);}
+.cc-title{font-size:14px;font-weight:600;color:var(--text);}
+.cc-sub{font-size:13px;color:var(--text3);margin-top:4px;line-height:1.5;}
+.cc-detail{display:none;font-size:14px;color:var(--text2);margin-top:11px;padding-top:11px;border-top:1px solid var(--border);line-height:1.65;}
+.cc.open .cc-detail{display:block;}
+.cc-hint{font-size:12px;color:var(--purple);margin-top:7px;}
+.cc.open .cc-hint{display:none;}
+
+/* TABLES */
+.tbl-wrap{overflow-x:auto;margin-bottom:16px;border-radius:var(--rl);border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:14px;}
+th{padding:11px 15px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);background:var(--bg3);border-bottom:1px solid var(--border);}
+td{padding:11px 15px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.55;}
+tr:last-child td{border-bottom:none;}
+tr.hl td{background:rgba(139,133,240,.06);}
+tr:hover td{background:var(--bg3);}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600;}
+.bp{background:var(--purple-bg);color:var(--purple-lt);}
+.bt{background:var(--teal-bg);color:var(--teal-lt);}
+.ba{background:var(--amber-bg);color:var(--amber-lt);}
+.br{background:var(--red-bg);color:var(--red-lt);}
+.bb{background:var(--blue-bg);color:var(--blue-lt);}
+
+/* CODE */
+.code{background:#080b12;border:1px solid var(--border);border-radius:var(--rl);padding:19px 22px;font-family:var(--mono);font-size:13.5px;line-height:1.75;overflow-x:auto;margin-bottom:16px;white-space:pre;position:relative;}
+.code-label{position:absolute;top:10px;right:14px;font-size:11px;color:var(--text3);font-family:var(--font);}
+.ck{color:#c792ea;}.cs{color:#c3e88d;}.cn{color:#f78c6c;}.cc3{color:#4a5580;font-style:italic;}.cf{color:#82aaff;}.cv{color:#f07178;}.cop{color:#89ddff;}.ct3{color:#ffcb6b;}
+
+/* DIAGRAMS */
+.diagram{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:22px;margin-bottom:16px;overflow-x:auto;}
+.diagram svg{display:block;max-width:100%;height:auto;}
+
+/* SIM */
+.sim{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:21px 24px;margin-bottom:16px;}
+.sim-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;flex-wrap:wrap;gap:9px;}
+.sim-title{font-size:15px;font-weight:600;color:var(--text);}
+.btn-group{display:flex;gap:6px;flex-wrap:wrap;}
+.btn{padding:8px 15px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg3);font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:var(--font);transition:all .15s;white-space:nowrap;}
+.btn:hover{border-color:var(--purple);color:var(--purple-lt);}
+.btn-p{background:var(--purple-bg);border-color:var(--purple);color:var(--purple-lt);}
+.btn-p:hover{background:rgba(139,133,240,.25);}
+.btn-sm{padding:5px 10px;font-size:12px;}
+.btn-d{background:var(--red-bg);border-color:var(--red);color:var(--red-lt);}
+
+/* MEMORY */
+.mem-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin:11px 0;}
+.mc{height:34px;border-radius:5px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;transition:all .3s;font-family:var(--mono);}
+.mc-free{background:var(--bg3);color:var(--text3);}
+.mc-k{background:#3124a8;color:#c7d2fe;}
+.mc-p1{background:#064e3b;color:#a7f3d0;}
+.mc-p2{background:#7c2d12;color:#fed7aa;}
+.mc-p3{background:#4a1d96;color:#ddd6fe;}
+.mc-p4{background:#0c4a6e;color:#bae6fd;}
+.mc-sw{background:#450a0a;color:#fca5a5;}
+.mem-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:9px;}
+.ml-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);}
+.ml-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+
+/* PROCESS TABLE */
+.proc-tbl{width:100%;border-collapse:collapse;font-size:14px;}
+.proc-tbl th{padding:9px 12px;text-align:left;color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--bg3);}
+.proc-tbl td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text2);}
+.proc-tbl tr.run td{background:rgba(53,217,154,.06);}
+.proc-tbl tr:hover td{background:var(--bg4);}
+.sdot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;flex-shrink:0;}
+.srun{background:var(--teal);}.sslp{background:var(--text3);}.swat{background:var(--amber);}.szom{background:var(--red);box-shadow:0 0 6px var(--red);}
+
+/* CPU TRACK */
+.cpu-track{display:flex;gap:3px;flex-wrap:wrap;margin:10px 0;min-height:32px;}
+.cpu-slot{width:34px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:var(--mono);}
+.cpu-idle{background:var(--bg3);border:1px solid var(--border);color:var(--text3);}
+
+/* LOGS */
+.irq-log{font-family:var(--mono);font-size:13px;background:#080b12;padding:13px 15px;border-radius:var(--r);min-height:110px;max-height:200px;overflow-y:auto;line-height:1.8;border:1px solid var(--border);}
+.strace{font-family:var(--mono);font-size:13px;background:#080b12;padding:13px 15px;border-radius:var(--r);min-height:100px;max-height:220px;overflow-y:auto;line-height:1.8;border:1px solid var(--border);}
+
+/* RINGS */
+.ring-stack{display:flex;flex-direction:column;gap:8px;margin:13px 0;}
+.ring-row{padding:13px 19px;border-radius:var(--r);border:1px solid;font-size:15px;font-weight:500;display:flex;align-items:flex-start;gap:13px;}
+.ring-row .rl{font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.07);color:var(--text2);flex-shrink:0;margin-top:1px;}
+.rm1{background:rgba(240,112,108,.09);border-color:rgba(240,112,108,.4);color:var(--red-lt);}
+.r0{background:rgba(139,133,240,.1);border-color:rgba(139,133,240,.4);color:var(--purple-lt);}
+.r12{background:rgba(90,171,247,.08);border-color:rgba(90,171,247,.3);color:var(--blue-lt);opacity:.7;}
+.r3{background:rgba(53,217,154,.08);border-color:rgba(53,217,154,.3);color:var(--teal-lt);}
+
+/* SHUTDOWN */
+.sh-steps{display:flex;flex-direction:column;gap:0;margin:13px 0;}
+.sh-step{display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}
+.sh-step:last-child{border-bottom:none;}
+.sh-num{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:var(--red-bg);border:1px solid var(--red);color:var(--red-lt);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.sh-title{font-size:15px;font-weight:600;color:var(--text);}
+.sh-desc{font-size:14px;color:var(--text2);margin-top:5px;line-height:1.65;}
+
+/* LIFECYCLE */
+.lifecycle{display:flex;flex-direction:column;margin:16px 0;}
+.lc-item{display:flex;align-items:stretch;}
+.lc-spine{display:flex;flex-direction:column;align-items:center;width:42px;flex-shrink:0;}
+.lc-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:2px solid;margin-top:6px;}
+.lc-line{width:2px;flex:1;min-height:14px;}
+.lc-content{flex:1;padding:2px 0 24px 16px;}
+.lc-time{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.lc-title{font-size:15px;font-weight:600;color:var(--text);}
+.lc-desc{font-size:14px;color:var(--text2);margin-top:4px;line-height:1.6;}
+
+/* SYSCALL */
+.syscall-row{display:flex;align-items:flex-start;gap:12px;padding:10px 13px;border-radius:var(--r);border:1px solid var(--border);margin-bottom:6px;background:var(--bg3);transition:border-color .15s;}
+.syscall-row:hover{border-color:var(--border2);}
+.sc-num{font-family:var(--mono);font-size:12px;color:var(--amber);min-width:34px;font-weight:600;margin-top:2px;}
+.sc-name{font-family:var(--mono);font-size:14px;color:var(--blue-lt);min-width:128px;font-weight:600;}
+.sc-desc{font-size:14px;color:var(--text2);line-height:1.5;}
+
+/* VS COMPARE */
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:16px;}
+@media(max-width:600px){.vs-grid{grid-template-columns:1fr;}}
+.vs-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:17px;}
+.vs-head{font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;}
+.vs-item{font-size:14px;color:var(--text2);padding:6px 0;border-bottom:1px solid var(--border);line-height:1.5;}
+.vs-item:last-child{border-bottom:none;}
+
+/* INFO BOX */
+.info-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:19px 23px;margin-bottom:16px;}
+.info-box-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.info-box p{font-size:15px;color:var(--text2);line-height:1.7;}
+
+/* FOOTER */
+.footer{text-align:center;padding:60px 24px;border-top:1px solid var(--border);margin-top:80px;}
+.footer h3{font-size:22px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.footer p{font-size:15px;color:var(--text2);max-width:500px;margin:0 auto 14px;}
+.footer small{font-size:12px;color:var(--text3);}
+
+@media(max-width:640px){
+  .chap-hd{flex-direction:column;gap:12px;padding:20px;}
+  .chap-title{font-size:21px;}
+  body{font-size:15px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+/* ─── NAV ACTIVE LINK ────────────────────────── */
+
+
+
+/* scroll-margin-top so headings aren't hidden behind sticky nav */
+.chapter { scroll-margin-top: 62px; }
+
+/* ════════════════════════════════════════════════
+   LAYOUT — SIDEBAR + CONTENT
+════════════════════════════════════════════════ */
+:root {
+  --sidebar-w: 256px;
+  --mobile-bar-h: 54px;
+}
+
+/* Global layout wrapper */
+body {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── MOBILE TOP BAR ─────────────────────────── */
+.mobile-bar {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--mobile-bar-h);
+  background: rgba(11,13,20,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  z-index: 200;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+}
+.mobile-logo {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--purple);
+}
+.hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 6px;
+  border-radius: var(--r);
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text2);
+  border-radius: 2px;
+  transition: all 0.25s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── OVERLAY (mobile) ───────────────────────── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 150;
+}
+.sidebar-overlay.visible { display: block; }
+
+/* ── SIDEBAR ────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 160;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+  padding: 0 0 32px 0;
+}
+
+/* Sidebar Logo */
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 18px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-logo-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+.sidebar-logo-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+.sidebar-logo-sub {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+/* Section labels */
+.sidebar-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  padding: 16px 18px 6px;
+}
+
+/* Nav links */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 18px;
+  text-decoration: none;
+  color: var(--text2);
+  font-size: 13.5px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  border-radius: 0 var(--r) var(--r) 0;
+  margin: 1px 10px 1px 0;
+  position: relative;
+}
+.nav-link:hover {
+  color: var(--text);
+  background: var(--bg3);
+  border-left-color: var(--border2);
+}
+.nav-link.active {
+  color: var(--purple-lt) !important;
+  background: var(--purple-bg) !important;
+  border-left-color: var(--purple) !important;
+  font-weight: 600;
+}
+.nav-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text3);
+  min-width: 22px;
+  font-family: var(--mono);
+  transition: color 0.15s;
+}
+.nav-link.active .nav-num {
+  color: var(--purple);
+}
+.nav-text {
+  line-height: 1.3;
+}
+
+/* Progress bar */
+.progress-bar-wrap {
+  margin: 8px 18px 4px;
+  height: 4px;
+  background: var(--bg4);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), var(--teal));
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+.progress-label {
+  font-size: 11px;
+  color: var(--text3);
+  padding: 0 18px;
+  text-align: center;
+}
+
+/* ── MAIN CONTENT AREA ──────────────────────── */
+.main-content {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── CHAPTER DIVIDER ────────────────────────── */
+.chapter-divider {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 64px 0 0;
+  position: relative;
+}
+.chapter-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+.chapter-divider-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+.chapter-divider-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--purple);
+}
+.chapter-divider-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border2);
+}
+
+/* Chapter scroll margin */
+.chapter {
+  scroll-margin-top: 24px;
+}
+
+/* ── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 900px) {
+  .mobile-bar { display: flex; }
+  .sidebar {
+    transform: translateX(-100%);
+    top: 0;
+    box-shadow: 4px 0 32px rgba(0,0,0,0.5);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; padding-top: var(--mobile-bar-h); }
+  .page { padding: 0 16px 80px; }
+  .chap-hd { flex-direction: column; gap: 10px; padding: 18px; }
+  .chap-title { font-size: 20px; }
+  .chap-desc { font-size: 14px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .vs-grid { grid-template-columns: 1fr; }
+  .toc { padding: 20px; }
+  .toc-grid { grid-template-columns: 1fr; }
+  .hero { padding: 48px 16px 36px; }
+  .hero h1 { font-size: clamp(28px, 8vw, 48px); }
+  .hero-sub { font-size: 15px; }
+  table { font-size: 13px; }
+  th, td { padding: 9px 11px; }
+  .code { font-size: 12px; padding: 14px 16px; }
+  .sim { padding: 16px; }
+  .diagram { padding: 14px; }
+  .diagram svg { min-width: 420px; }
+  .ring-row { font-size: 14px; }
+  .sh-step { gap: 12px; }
+  .sh-title { font-size: 14px; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 26px; letter-spacing: -1px; }
+  .chap-title { font-size: 18px; }
+  .hero-tags { gap: 6px; }
+  .htag { font-size: 12px; padding: 5px 10px; }
+  .btn { padding: 7px 12px; font-size: 12px; }
+  .btn-group { gap: 5px; }
+  .mem-grid { grid-template-columns: repeat(8,1fr); gap: 2px; }
+  .mc { height: 28px; font-size: 9px; }
+  .cpu-slot { width: 28px; height: 24px; font-size: 9px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ MOBILE TOPBAR ═══ -->
+<div class="mobile-bar" id="mobileBar">
+  <div class="mobile-logo">🖥 OS Mastery</div>
+  <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle navigation">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+
+<!-- ═══ SIDEBAR OVERLAY ═══ -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ═══ SIDEBAR NAV ═══ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <span class="sidebar-logo-icon">🖥</span>
+    <div>
+      <div class="sidebar-logo-title">OS Mastery</div>
+      <div class="sidebar-logo-sub">RUET ETE · First Principles</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section-label">Chapters</div>
+
+  <a href="#ch0"  data-ch="ch0"  class="nav-link" onclick="closeSidebar()"><span class="nav-num">00</span><span class="nav-text">Full Lifecycle Map</span></a>
+  <a href="#ch1"  data-ch="ch1"  class="nav-link" onclick="closeSidebar()"><span class="nav-num">01</span><span class="nav-text">Power ON</span></a>
+  <a href="#ch2"  data-ch="ch2"  class="nav-link" onclick="closeSidebar()"><span class="nav-num">02</span><span class="nav-text">Bootloader</span></a>
+  <a href="#ch3"  data-ch="ch3"  class="nav-link" onclick="closeSidebar()"><span class="nav-num">03</span><span class="nav-text">Privilege Rings &amp; Syscalls</span></a>
+  <a href="#ch4"  data-ch="ch4"  class="nav-link" onclick="closeSidebar()"><span class="nav-num">04</span><span class="nav-text">Hypervisors &amp; Ring −1</span></a>
+  <a href="#ch5"  data-ch="ch5"  class="nav-link" onclick="closeSidebar()"><span class="nav-num">05</span><span class="nav-text">Virtual Memory &amp; MMU</span></a>
+  <a href="#ch6"  data-ch="ch6"  class="nav-link" onclick="closeSidebar()"><span class="nav-num">06</span><span class="nav-text">File Systems &amp; Inodes</span></a>
+  <a href="#ch7"  data-ch="ch7"  class="nav-link" onclick="closeSidebar()"><span class="nav-num">07</span><span class="nav-text">Drivers &amp; Interrupts</span></a>
+  <a href="#ch8"  data-ch="ch8"  class="nav-link" onclick="closeSidebar()"><span class="nav-num">08</span><span class="nav-text">Processes &amp; Threads</span></a>
+  <a href="#ch9"  data-ch="ch9"  class="nav-link" onclick="closeSidebar()"><span class="nav-num">09</span><span class="nav-text">CPU Scheduling</span></a>
+  <a href="#ch10" data-ch="ch10" class="nav-link" onclick="closeSidebar()"><span class="nav-num">10</span><span class="nav-text">I/O &amp; Networking</span></a>
+  <a href="#ch11" data-ch="ch11" class="nav-link" onclick="closeSidebar()"><span class="nav-num">11</span><span class="nav-text">Shutdown</span></a>
+
+  <div class="sidebar-section-label" style="margin-top:20px;">Reading Progress</div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">Scroll to track progress</div>
+</nav>
+<div class="main-content" id="mainContent">
+
+
+<div class="hero">
+  <div class="hero-eye">Complete Self-Study Guide · RUET ETE · First Principles</div>
+  <h1>Operating Systems</h1>
+  <p class="hero-sub">The complete journey — from the moment you press <strong>Power&nbsp;ON</strong> to the machine going dark. Every concept, every layer, every <em>"why"</em> — with interactive simulations.</p>
+  <div class="hero-tags">
+    <span class="htag hp">🎓 12 Chapters · Zero to Pro</span>
+    <span class="htag ht">🧪 Live Simulations</span>
+    <span class="htag ha">📢 Teach-Ready Notes</span>
+  </div>
+</div>
+
+<div class="page">
+
+<div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <div class="toc-grid">
+    <a class="toc-link" href="#ch0"><span class="toc-n">00</span>Full PC Lifecycle Map</a>
+    <a class="toc-link" href="#ch1"><span class="toc-n">01</span>Power ON — First Milliseconds</a>
+    <a class="toc-link" href="#ch2"><span class="toc-n">02</span>Bootloader (GRUB / iBoot)</a>
+    <a class="toc-link" href="#ch3"><span class="toc-n">03</span>Privilege Rings &amp; Syscalls</a>
+    <a class="toc-link" href="#ch4"><span class="toc-n">04</span>Hypervisors &amp; Ring&nbsp;−1</a>
+    <a class="toc-link" href="#ch5"><span class="toc-n">05</span>Virtual Memory &amp; MMU</a>
+    <a class="toc-link" href="#ch6"><span class="toc-n">06</span>File Systems &amp; Inodes</a>
+    <a class="toc-link" href="#ch7"><span class="toc-n">07</span>Device Drivers &amp; Interrupts</a>
+    <a class="toc-link" href="#ch8"><span class="toc-n">08</span>Processes, Threads &amp; PCB</a>
+    <a class="toc-link" href="#ch9"><span class="toc-n">09</span>CPU Scheduling (EEVDF/CFS)</a>
+    <a class="toc-link" href="#ch10"><span class="toc-n">10</span>I/O, Networking &amp; io_uring</a>
+    <a class="toc-link" href="#ch11"><span class="toc-n">11</span>Shutdown — Reverse Journey</a>
+  </div>
+</div>
+
+<!-- ═══════════════ CH0: LIFECYCLE MAP ═══════════════ -->
+<div class="chapter" id="ch0" style="margin-top:8px;">
+  <div class="chap-hd cp">
+    <div class="chap-icon">🗺️</div>
+    <div>
+      <div class="chap-ey">Chapter 00</div>
+      <div class="chap-title">Full PC Lifecycle — Power ON to Shutdown</div>
+      <div class="chap-desc">See the entire OS journey in one place before diving deep. When teaching, always draw this map first. Let people see the whole city before walking the streets.</div>
+    </div>
+  </div>
+  <div class="lifecycle" id="lifecycleEl"></div>
+  <div class="callout ci"><strong>Teaching tip:</strong> Draw this timeline on a whiteboard from memory after reading. Every row is a full chapter below. The entire document is just this map — expanded.</div>
+</div>
+
+<!-- ═══════════════ CH1: POWER ON ═══════════════ -->
+
+<div class="chapter-divider">
+  <div class="chapter-divider-line"></div>
+  <div class="chapter-divider-badge">
+    <span class="chapter-divider-num">01</span>
+    <span class="chapter-divider-dot"></span>
+    <span>Power ON — First Milliseconds</span>
+  </div>
+  <div class="chapter-divider-line"></div>
+</div>
+<div class="chapter" id="ch1">
+  <div class="chap-hd ct2">
+    <div class="chap-icon">⚡</div>
+    <div>
+      <div class="chap-ey">Chapter 01</div>
+      <div class="chap-title">Power ON — The First Milliseconds</div>
+      <div class="chap-desc">Before any OS, before any file, before any process — the CPU wakes in a completely primitive state. No memory management, no filesystem, no concept of a "program". Just raw electricity and one chip executing bytes burned into ROM.</div>
+      <div class="analogy">🔍 A newborn baby: no memories, no language — only reflexes burned into DNA at birth</div>
+    </div>
+  </div>
+
+  <div class="sl">Sequence of events — first 500 ms</div>
+  <div class="card-grid">
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">⚡ PSU & power sequencing</div>
+      <div class="cc-sub">Voltage rails come up in order</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">The PSU sends 12V, 5V, 3.3V rails. A power-sequencing circuit holds CPU RESET# pin LOW until all voltages stabilise (~100–300 ms). Components power in order: voltage regulators → chipset → PCIe slots → CPU. The CPU cannot execute anything while RESET# is asserted.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">🧠 First instruction from ROM</div>
+      <div class="cc-sub">Address 0xFFFFFFF0 on x86</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">After reset, x86 EIP is hardwired to 0xFFFFFFF0 — mapped to UEFI/BIOS ROM, not RAM. CPU is in 16-bit Real Mode. First instruction is a far JMP into firmware. RAM hasn't been initialised yet — the CPU reads code off the ROM chip on the motherboard.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">🔬 POST — Power-On Self Test</div>
+      <div class="cc-sub">Hardware validation</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">POST tests: CPU registers (internal), RAM (write pattern → read back at every address), storage controllers, and enough GPU for error output. RAM failure → beep codes (display not ready). Motherboards with debug LEDs show hex POST codes (0x19 = PCI init, 0x64 = memory done). Entirely pre-OS.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">📋 Hardware enumeration</div>
+      <div class="cc-sub">UEFI builds ACPI & SMBIOS tables</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">UEFI scans PCI/PCIe bus, assigns IRQ numbers and MMIO addresses to each device (GPU, NVMe, USB, NIC). Builds ACPI tables (power management description the OS will use) and SMBIOS tables (CPU model, RAM size — what <code>dmidecode</code> reads on Linux).</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">🔒 Secure Boot check</div>
+      <div class="cc-sub">Cryptographic signature verification</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">UEFI holds a DB (allowed signing certificates) and DBX (revoked) in NVRAM. Before loading any EFI binary it verifies RSA-2048 + SHA-256 signature. Fail → boot refused. Prevents bootkits. Linux distros ship a "shim" signed by Microsoft's key, which then verifies GRUB's signature. You can add own keys with <code>mokutil</code>.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">🚀 Bootloader handed control</div>
+      <div class="cc-sub">UEFI to OS territory</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">UEFI finds EFI System Partition (GPT GUID C12A7328…), reads boot entry from NVRAM, loads grubx64.efi / bootmgfw.efi into RAM, jumps to it. Firmware stays in memory but yields control. GRUB is now running.</div>
+    </div>
+  </div>
+
+  <div class="sl">CPU mode transitions during boot (x86-64)</div>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 800 120" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#626b8a" stroke-width="1.8" stroke-linecap="round"/></marker></defs>
+      <rect x="6" y="22" width="148" height="68" rx="10" fill="#11141f" stroke="#8b85f0" stroke-width="1.2"/>
+      <text x="80" y="50" text-anchor="middle" fill="#cdc9fa" font-size="14" font-weight="700" font-family="Inter,system-ui">Real Mode</text>
+      <text x="80" y="68" text-anchor="middle" fill="#8b85f0" font-size="12" font-family="Inter,system-ui">16-bit · 1 MB RAM</text>
+      <text x="80" y="84" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">RESET → early UEFI</text>
+      <line x1="154" y1="56" x2="178" y2="56" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar1)"/>
+      <text x="166" y="48" text-anchor="middle" fill="#626b8a" font-size="10" font-family="Inter,system-ui">CR0.PE=1</text>
+
+      <rect x="178" y="22" width="166" height="68" rx="10" fill="#11141f" stroke="#6c64e8" stroke-width="1.2"/>
+      <text x="261" y="50" text-anchor="middle" fill="#cdc9fa" font-size="14" font-weight="700" font-family="Inter,system-ui">Protected Mode</text>
+      <text x="261" y="68" text-anchor="middle" fill="#8b85f0" font-size="12" font-family="Inter,system-ui">32-bit · 4 GB RAM</text>
+      <text x="261" y="84" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">GDT + segmentation</text>
+      <line x1="344" y1="56" x2="368" y2="56" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar1)"/>
+      <text x="356" y="48" text-anchor="middle" fill="#626b8a" font-size="10" font-family="Inter,system-ui">EFER.LME=1</text>
+
+      <rect x="368" y="22" width="160" height="68" rx="10" fill="#11141f" stroke="#35d99a" stroke-width="1.2"/>
+      <text x="448" y="50" text-anchor="middle" fill="#9ef5d1" font-size="14" font-weight="700" font-family="Inter,system-ui">Long Mode</text>
+      <text x="448" y="68" text-anchor="middle" fill="#35d99a" font-size="12" font-family="Inter,system-ui">64-bit · 16 EB RAM</text>
+      <text x="448" y="84" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">Modern kernels live here</text>
+      <line x1="528" y1="56" x2="552" y2="56" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar1)"/>
+      <text x="540" y="48" text-anchor="middle" fill="#626b8a" font-size="10" font-family="Inter,system-ui">kernel entry</text>
+
+      <rect x="552" y="14" width="240" height="84" rx="10" fill="#063825" stroke="#35d99a" stroke-width="1.2"/>
+      <text x="672" y="44" text-anchor="middle" fill="#9ef5d1" font-size="14" font-weight="700" font-family="Inter,system-ui">Kernel running</text>
+      <text x="672" y="62" text-anchor="middle" fill="#35d99a" font-size="12" font-family="Inter,system-ui">Ring 0 · paging ON · MMU active</text>
+      <text x="672" y="80" text-anchor="middle" fill="#35d99a" font-size="12" font-family="Inter,system-ui">Full hardware control</text>
+    </svg>
+  </div>
+
+  <div class="sl">UEFI vs Legacy BIOS</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Feature</th><th>Legacy BIOS</th><th>UEFI</th><th>Why it matters</th></tr></thead>
+    <tbody>
+      <tr><td>Disk size limit</td><td><span class="badge br">2 TB (MBR 32-bit LBA)</span></td><td><span class="badge bt">9.4 ZB (GPT 64-bit LBA)</span></td><td>MBR cannot address disks &gt; 2 TB</td></tr>
+      <tr><td>Partitions</td><td>4 primary (MBR)</td><td>128 partitions (GPT)</td><td>GPT stores backup partition table at disk end</td></tr>
+      <tr><td>Boot entry</td><td>First 512 bytes (MBR sector)</td><td>EFI System Partition (.efi files)</td><td>UEFI bootloaders are full programs, not 512-byte blobs</td></tr>
+      <tr><td>CPU mode at handoff</td><td>16-bit Real Mode</td><td>32 or 64-bit Protected/Long</td><td>BIOS bootloaders must do mode-switch dance</td></tr>
+      <tr><td>Security</td><td>None</td><td>Secure Boot (PKI, RSA-2048)</td><td>Prevents bootkits from loading pre-OS</td></tr>
+      <tr class="hl"><td>Boot speed</td><td>Sequential, slow</td><td>Parallel init — 3–5× faster</td><td>UEFI parallelises device init</td></tr>
+      <tr><td>Network boot</td><td>PXE only</td><td>iSCSI, HTTP, HTTPS, PXE</td><td>UEFI can boot from an HTTPS URL</td></tr>
+      <tr><td>Interface</td><td>Text, keyboard only</td><td>Full GUI, mouse, networking</td><td>UEFI is itself a mini-OS with filesystem drivers &amp; shell</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout ctip"><strong>Key insight for teaching:</strong> UEFI is a full mini-operating system with its own filesystem drivers, network stack, keyboard/mouse input, and even a shell. When you enter the firmware menu, you are running a program — not reading hardwired values from a chip.</div>
+</div>
+
+<!-- ═══════════════ CH2: BOOTLOADER ═══════════════ -->
+
+<div class="chapter-divider">
+  <div class="chapter-divider-line"></div>
+  <div class="chapter-divider-badge">
+    <span class="chapter-divider-num">02</span>
+    <span class="chapter-divider-dot"></span>
+    <span>Bootloader</span>
+  </div>
+  <div class="chapter-divider-line"></div>
+</div>
+<div class="chapter" id="ch2">
+  <div class="chap-hd cp">
+    <div class="chap-icon">🚀</div>
+    <div>
+      <div class="chap-ey">Chapter 02 — Bootloader</div>
+      <div class="chap-title">The Bootloader — Relay Runner</div>
+      <div class="chap-desc">The bootloader has one job: find the OS kernel on disk, load it into RAM, and jump to it. It does NOT start the OS. It does NOT initialise hardware. It finds, loads, and jumps — then vanishes entirely from memory.</div>
+      <div class="analogy">🔍 A librarian who finds the right book, opens it to page 1, hands it to you — then leaves the room permanently</div>
+    </div>
+  </div>
+
+  <div class="sl">GRUB2 boot sequence — Linux</div>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 820 230" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#626b8a" stroke-width="1.8" stroke-linecap="round"/></marker></defs>
+      <rect x="6"   y="16" width="128" height="66" rx="10" fill="#1a1740" stroke="#8b85f0" stroke-width="1.2"/>
+      <text x="70"  y="44" text-anchor="middle" fill="#cdc9fa" font-size="13" font-weight="700" font-family="Inter,system-ui">UEFI</text>
+      <text x="70"  y="61" text-anchor="middle" fill="#8b85f0" font-size="12" font-family="Inter,system-ui">Finds EFI partition</text>
+      <text x="70"  y="76" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">Secure Boot check</text>
+      <line x1="134" y1="49" x2="156" y2="49" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+      <rect x="156" y="16" width="144" height="66" rx="10" fill="#1a1740" stroke="#8b85f0" stroke-width="1.2"/>
+      <text x="228" y="44" text-anchor="middle" fill="#cdc9fa" font-size="13" font-weight="700" font-family="Inter,system-ui">GRUB Stage 1</text>
+      <text x="228" y="61" text-anchor="middle" fill="#8b85f0" font-size="12" font-family="Inter,system-ui">Tiny EFI binary</text>
+      <text x="228" y="76" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">Loads Stage 2 from /boot</text>
+      <line x1="300" y1="49" x2="322" y2="49" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+      <rect x="322" y="16" width="144" height="66" rx="10" fill="#1a1740" stroke="#8b85f0" stroke-width="1.2"/>
+      <text x="394" y="44" text-anchor="middle" fill="#cdc9fa" font-size="13" font-weight="700" font-family="Inter,system-ui">GRUB Stage 2</text>
+      <text x="394" y="61" text-anchor="middle" fill="#8b85f0" font-size="12" font-family="Inter,system-ui">Has FS drivers</text>
+      <text x="394" y="76" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">Reads grub.cfg, shows menu</text>
+      <line x1="466" y1="49" x2="488" y2="49" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+      <rect x="488" y="8"  width="150" height="82" rx="10" fill="#063825" stroke="#35d99a" stroke-width="1.2"/>
+      <text x="563" y="36" text-anchor="middle" fill="#9ef5d1" font-size="13" font-weight="700" font-family="Inter,system-ui">Kernel + initrd</text>
+      <text x="563" y="53" text-anchor="middle" fill="#35d99a" font-size="12" font-family="Inter,system-ui">vmlinuz → RAM</text>
+      <text x="563" y="69" text-anchor="middle" fill="#35d99a" font-size="12" font-family="Inter,system-ui">initrd.img → RAM</text>
+      <text x="563" y="83" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">JMP to kernel entry</text>
+      <line x1="638" y1="49" x2="660" y2="49" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+      <rect x="660" y="16" width="152" height="66" rx="10" fill="#2e1e00" stroke="#f7c35a" stroke-width="1.2"/>
+      <text x="736" y="44" text-anchor="middle" fill="#fce4a3" font-size="13" font-weight="700" font-family="Inter,system-ui">OS boots</text>
+      <text x="736" y="61" text-anchor="middle" fill="#f7c35a" font-size="12" font-family="Inter,system-ui">Kernel decompresses</text>
+      <text x="736" y="76" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">start_kernel() called</text>
+
+      <rect x="6"   y="108" width="390" height="112" rx="10" fill="#080b12" stroke="#252b42" stroke-width="1"/>
+      <text x="18" y="128" fill="#626b8a" font-size="11" font-family="Inter,system-ui">/boot/grub/grub.cfg (simplified)</text>
+      <text x="18" y="149" fill="#c792ea" font-size="13" font-family="JetBrains Mono,monospace">menuentry </text>
+      <text x="118" y="149" fill="#c3e88d" font-size="13" font-family="JetBrains Mono,monospace">"Ubuntu 24.04 LTS" </text>
+      <text x="18" y="170" fill="#82aaff" font-size="13" font-family="JetBrains Mono,monospace">  linux  </text>
+      <text x="90" y="170" fill="#c3e88d" font-size="13" font-family="JetBrains Mono,monospace">/vmlinuz-6.8.0 root=/dev/sda2 quiet</text>
+      <text x="18" y="191" fill="#82aaff" font-size="13" font-family="JetBrains Mono,monospace">  initrd </text>
+      <text x="90" y="191" fill="#c3e88d" font-size="13" font-family="JetBrains Mono,monospace">/initrd.img-6.8.0</text>
+      <text x="18" y="212" fill="#4a5580" font-size="12" font-family="JetBrains Mono,monospace">  # ↑ GRUB is gone once kernel runs</text>
+
+      <rect x="414" y="108" width="398" height="112" rx="10" fill="#11141f" stroke="#252b42" stroke-width="1"/>
+      <text x="428" y="130" fill="#f7c35a" font-size="13" font-weight="700" font-family="Inter,system-ui">⚠️ Why initrd? (Chicken-and-egg problem)</text>
+      <text x="428" y="152" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">Kernel needs disk drivers to read root FS.</text>
+      <text x="428" y="170" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">But drivers are ON root FS. Deadlock!</text>
+      <text x="428" y="192" fill="#35d99a" font-size="13" font-family="Inter,system-ui">Solution: initrd = small pre-boot RAM filesystem</text>
+      <text x="428" y="210" fill="#35d99a" font-size="13" font-family="Inter,system-ui">with just enough drivers to mount real root.</text>
+    </svg>
+  </div>
+
+  <div class="sl">Bootloaders compared</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>OS</th><th>Bootloader</th><th>Config</th><th>Key feature</th></tr></thead>
+    <tbody>
+      <tr class="hl"><td><strong>Linux</strong></td><td><span class="badge bp">GRUB2</span></td><td>/boot/grub/grub.cfg</td><td>Multi-OS chainloading, LUKS disk encryption, scriptable shell</td></tr>
+      <tr><td><strong>Windows</strong></td><td><span class="badge ba">Bootmgr + BCD</span></td><td>Binary BCD store</td><td>BitLocker TPM integration, Driver Signature Enforcement, ELAM</td></tr>
+      <tr><td><strong>macOS</strong></td><td><span class="badge bt">iBoot</span></td><td>Apple-internal</td><td>Apple Silicon: Secure Enclave verifies signature; only Apple-signed XNU kernel allowed</td></tr>
+      <tr><td><strong>Android</strong></td><td><span class="badge ba">ABL / LK</span></td><td>bootloader partition</td><td>A/B slot OTA: updates slot B while booting A; switches on next boot — cannot brick</td></tr>
+      <tr><td><strong>Embedded</strong></td><td><span class="badge bt">U-Boot</span></td><td>/etc/u-boot.env</td><td>Supports 500+ ARM boards, TFTP, NFS boot, FIT image format</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout cw"><strong>Critical misconception:</strong> GRUB does NOT "start" or "run" Linux. It only finds vmlinuz, decompresses it into RAM, and does a CPU JMP to its entry point. GRUB is completely erased from memory by the time the kernel runs. The kernel builds everything from scratch.</div>
+</div>
+
+<!-- ═══════════════ CH3: PRIVILEGE RINGS ═══════════════ -->
+
+<div class="chapter-divider">
+  <div class="chapter-divider-line"></div>
+  <div class="chapter-divider-badge">
+    <span class="chapter-divider-num">03</span>
+    <span class="chapter-divider-dot"></span>
+    <span>Privilege Rings & Syscalls</span>
+  </div>
+  <div class="chapter-divider-line"></div>
+</div>
+<div class="chapter" id="ch3">
+  <div class="chap-hd ca">
+    <div class="chap-icon">🔐</div>
+    <div>
+      <div class="chap-ey">Chapter 03 — Privilege Rings &amp; Syscalls</div>
+      <div class="chap-title">Privilege Rings &amp; System Calls</div>
+      <div class="chap-desc">The CPU enforces security levels <em>in hardware</em> — the chip itself physically refuses certain instructions unless you're at the right privilege level. This is not a software check. It is the entire foundation of OS security.</div>
+      <div class="analogy">🔍 A hospital: janitors, nurses, doctors, and surgeons each physically cannot enter restricted areas — the door locks enforce it, not a policy document</div>
+    </div>
+  </div>
+
+  <div class="sl">x86-64 ring architecture</div>
+  <div class="ring-stack">
+    <div class="ring-row rm1">
+      <span class="rl">Ring −1</span>
+      <div><strong>Hypervisor — VMX root mode</strong> (Intel VT-x / AMD-V). Sits below everything. Controls all physical hardware across VMs. Can silently intercept any Ring 0 instruction from a guest OS. Only exists on machines with virtualisation extensions active. (Chapter 04 covers this fully.)</div>
+    </div>
+    <div class="ring-row r0">
+      <span class="rl">Ring 0</span>
+      <div><strong>Kernel — full hardware access.</strong> Can: write any physical address, execute HLT/LGDT/LIDT/WRMSR/IN/OUT, modify page tables (CR3), enable/disable interrupts (CLI/STI), manage the MMU. Zero safety net above Ring 0. One bad pointer = entire machine panic. <em>This is exactly why CrowdStrike crashed 8.5 million machines in 2024.</em></div>
+    </div>
+    <div class="ring-row r12">
+      <span class="rl">Ring 1/2</span>
+      <div><strong>Unused on modern x86</strong> — originally for OS services and device drivers. Linux and Windows run all drivers in Ring 0 for performance. Some microkernels (L4, seL4) use Ring 1. ARM uses EL0/EL1/EL2/EL3 instead of x86 rings, same concept.</div>
+    </div>
+    <div class="ring-row r3">
+      <span class="rl">Ring 3</span>
+      <div><strong>User space — every app you run.</strong> Can: execute code, do arithmetic, read own memory. Cannot: access hardware directly, read another process's memory, modify page tables, disable interrupts. The CPU raises a General Protection Fault (GPF) if Ring 3 code tries a privileged instruction. Kernel catches GPF → sends SIGSEGV → process dies.</div>
+    </div>
+  </div>
+
+  <div class="sl">System call — crossing the ring boundary</div>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 820 178" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ar3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#8b85f0" stroke-width="1.8" stroke-linecap="round"/></marker>
+        <marker id="ar3b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#35d99a" stroke-width="1.8" stroke-linecap="round"/></marker>
+      </defs>
+      <rect x="6" y="6" width="340" height="76" rx="10" fill="rgba(53,217,154,.06)" stroke="rgba(53,217,154,.3)" stroke-width="1" stroke-dasharray="5 3"/>
+      <text x="16" y="24" fill="#35d99a" font-size="12" font-weight="600" font-family="Inter,system-ui">Ring 3 — User Space</text>
+      <rect x="18" y="32" width="106" height="38" rx="7" fill="#063825" stroke="#35d99a" stroke-width="1"/>
+      <text x="71" y="55" text-anchor="middle" fill="#9ef5d1" font-size="13" font-weight="600" font-family="Inter,system-ui">printf("hi")</text>
+      <text x="136" y="55" text-anchor="middle" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">→ write(1,…)</text>
+      <text x="224" y="55" text-anchor="middle" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">→ syscall #1</text>
+      <text x="310" y="55" text-anchor="middle" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">→ CPU trap</text>
+      <line x1="354" y1="2" x2="354" y2="176" stroke="#252b42" stroke-width="2" stroke-dasharray="6 4"/>
+      <text x="354" y="173" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">BOUNDARY</text>
+      <path d="M338 52 Q356 52 356 96 Q356 132 376 132" stroke="#8b85f0" stroke-width="2" fill="none" marker-end="url(#ar3a)"/>
+      <text x="356" y="90" fill="#8b85f0" font-size="12" font-weight="600" font-family="Inter,system-ui">syscall↓</text>
+      <path d="M376 150 Q356 150 356 112 Q356 74 338 70" stroke="#35d99a" stroke-width="2" fill="none" marker-end="url(#ar3b)" stroke-dasharray="5 3"/>
+      <text x="346" y="118" fill="#35d99a" font-size="12" font-weight="600" font-family="Inter,system-ui">return↑</text>
+      <rect x="372" y="88" width="438" height="78" rx="10" fill="rgba(139,133,240,.07)" stroke="rgba(139,133,240,.3)" stroke-width="1" stroke-dasharray="5 3"/>
+      <text x="382" y="106" fill="#8b85f0" font-size="12" font-weight="600" font-family="Inter,system-ui">Ring 0 — Kernel</text>
+      <rect x="382" y="112" width="114" height="40" rx="7" fill="#1a1740" stroke="#8b85f0" stroke-width="1"/>
+      <text x="439" y="129" text-anchor="middle" fill="#cdc9fa" font-size="12" font-family="Inter,system-ui">Save registers</text>
+      <text x="439" y="145" text-anchor="middle" fill="#8b85f0" font-size="11" font-family="Inter,system-ui">(kernel stack)</text>
+      <line x1="496" y1="132" x2="514" y2="132" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar3a)"/>
+      <rect x="514" y="112" width="110" height="40" rx="7" fill="#1a1740" stroke="#8b85f0" stroke-width="1"/>
+      <text x="569" y="129" text-anchor="middle" fill="#cdc9fa" font-size="12" font-family="Inter,system-ui">sys_write()</text>
+      <text x="569" y="145" text-anchor="middle" fill="#8b85f0" font-size="11" font-family="Inter,system-ui">do the work</text>
+      <line x1="624" y1="132" x2="642" y2="132" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar3a)"/>
+      <rect x="642" y="112" width="154" height="40" rx="7" fill="#1a1740" stroke="#8b85f0" stroke-width="1"/>
+      <text x="719" y="129" text-anchor="middle" fill="#cdc9fa" font-size="12" font-family="Inter,system-ui">Restore registers</text>
+      <text x="719" y="145" text-anchor="middle" fill="#8b85f0" font-size="11" font-family="Inter,system-ui">sysret → Ring 3</text>
+    </svg>
+  </div>
+
+  <div class="sl">x86-64 assembly — what printf() actually runs</div>
+  <div class="code"><span class="cc3">; User-space: what printf("hello\n") compiles to at the lowest level</span>
+<span class="ck">mov</span>  <span class="cv">rax</span>, <span class="cn">1</span>          <span class="cc3">; syscall number for write() on Linux x86-64</span>
+<span class="ck">mov</span>  <span class="cv">rdi</span>, <span class="cn">1</span>          <span class="cc3">; arg1: file descriptor = 1 (stdout)</span>
+<span class="ck">mov</span>  <span class="cv">rsi</span>, <span class="cf">msg_ptr</span>    <span class="cc3">; arg2: pointer to "hello\n" string</span>
+<span class="ck">mov</span>  <span class="cv">rdx</span>, <span class="cn">6</span>          <span class="cc3">; arg3: length in bytes</span>
+<span class="ck">syscall</span>               <span class="cc3">; TRAP → CPU switches to Ring 0</span>
+                       <span class="cc3">; Kernel: sys_write(1, msg_ptr, 6)</span>
+                       <span class="cc3">; On return: rax = bytes written (6) or -errno</span>
+
+<span class="cc3">; ARM64 equivalent — same concept, different instructions</span>
+<span class="ck">mov</span>  <span class="cv">x8</span>,  <span class="cn">64</span>          <span class="cc3">; syscall number for write() on AArch64</span>
+<span class="ck">svc</span>  <span class="cn">#0</span>               <span class="cc3">; Supervisor Call — exactly like syscall on x86</span>
+
+<span class="cc3">; The C library (libc) wraps these in portable functions:
+;   write(1, "hello\n", 6)  →  assembly above  →  kernel
+;   read(), open(), fork()  all work the same way.</span></div>
+
+  <div class="sl">Most important Linux syscalls (learn these 20)</div>
+  <div id="syscallListEl"></div>
+
+  <div class="sl">Interactive strace simulator</div>
+  <div class="sim">
+    <div class="sim-head">
+      <div class="sim-title">strace — see every syscall a program makes (run in terminal: <code style="font-family:var(--mono);font-size:12px">strace ls</code>)</div>
+      <div class="btn-group">
+        <button class="btn" onclick="runStrace('ls')">strace ls</button>
+        <button class="btn" onclick="runStrace('cat')">strace cat file.txt</button>
+        <button class="btn" onclick="runStrace('curl')">strace curl https://…</button>
+        <button class="btn" onclick="runStrace('fork')">strace ./server (fork)</button>
+        <button class="btn btn-sm" onclick="document.getElementById('straceEl').innerHTML=''">clear</button>
+      </div>
+    </div>
+    <div class="strace" id="straceEl"></div>
+  </div>
+  <div class="callout cd"><strong>Security — seccomp-BPF:</strong> Docker, Chrome renderer, and systemd services whitelist syscalls using seccomp (Secure Computing Mode). The kernel blocks any syscall not on the whitelist. If a compromised process tries <code>execve()</code> when disallowed → kernel kills it instantly. <code>strace -e trace=execve,open curl …</code> shows only those calls.</div>
+</div>
+
+<!-- ═══════════════ CH4: HYPERVISORS ═══════════════ -->
+
+<div class="chapter-divider">
+  <div class="chapter-divider-line"></div>
+  <div class="chapter-divider-badge">
+    <span class="chapter-divider-num">04</span>
+    <span class="chapter-divider-dot"></span>
+    <span>Hypervisors & Ring −1</span>
+  </div>
+  <div class="chapter-divider-line"></div>
+</div>
+<div class="chapter" id="ch4">
+  <div class="chap-hd cr">
+    <div class="chap-icon">🖥️</div>
+    <div>
+      <div class="chap-ey">Chapter 04 — Hypervisors</div>
+      <div class="chap-title">Hypervisors &amp; Ring −1 (VMX Root Mode)</div>
+      <div class="chap-desc">A hypervisor creates and manages virtual machines. To sit below the OS kernel it needs a privilege level lower than Ring 0. Intel (VT-x) and AMD (AMD-V) added this in hardware: VMX root mode — informally Ring −1.</div>
+      <div class="analogy">🔍 A theatre director: each actor (VM) believes they're in a real play, but the director controls the stage, lights, props — and can pause/resume any scene without the actors knowing</div>
+    </div>
+  </div>
+
+  <div class="sl">Ring −1 — how it's implemented in hardware</div>
+  <div class="info-box">
+    <div class="info-box-title">Intel VT-x — the five key instructions</div>
+    <p><strong>VMXON</strong> — enters VMX root mode (Ring −1 activated). Hypervisor must run this first. <strong>VMCLEAR / VMPTRLD</strong> — prepare and activate a VMCS (VM Control Structure, 4 KB) that describes a VM's full state including which operations cause VMEXIT. <strong>VMLAUNCH / VMRESUME</strong> — start or continue a VM. CPU switches from VMX root → VMX non-root. <strong>VMEXIT</strong> — triggered when guest does something the VMCS intercepts. CPU saves guest state, returns to hypervisor. <strong>VMXOFF</strong> — disable virtualisation, return to normal Ring 0.</p>
+  </div>
+
+  <div class="ring-stack">
+    <div class="ring-row rm1">
+      <span class="rl">VMX Root · Ring −1</span>
+      <div><strong>Hypervisor (KVM, VMware ESXi, Hyper-V, Xen)</strong> — controls physical hardware. Each VM has a VMCS defining what causes VMEXIT. On VMEXIT the hypervisor decides: emulate the operation, pass through to real hardware, or inject a virtual interrupt into the guest.</div>
+    </div>
+    <div class="ring-row r0">
+      <span class="rl">VMX Non-Root · Ring 0</span>
+      <div><strong>Guest OS kernel</strong> — believes it's in Ring 0. When it writes CR3 (page tables) or accesses hardware, the CPU may silently intercept via EPT (Extended Page Tables) or trigger VMEXIT. The guest kernel has no idea it's virtualised unless it queries CPUID leaf 0x40000000 ("KVMKVMKVM" or "VMwareVMware").</div>
+    </div>
+    <div class="ring-row r3">
+      <span class="rl">VMX Non-Root · Ring 3</span>
+      <div><strong>Guest user applications</strong> — fully virtualised Ring 3. Identical to bare metal from the app's perspective. Syscalls go to the guest kernel in VMX non-root Ring 0.</div>
+    </div>
+  </div>
+
+  <div class="sl">Type 1 vs Type 2 hypervisors</div>
+  <div class="vs-grid">
+    <div class="vs-card">
+      <div class="vs-head" style="color:var(--purple-lt)">⚡ Type 1 — Bare Metal</div>
+      <div class="vs-item">✅ Runs directly on hardware — IS the OS</div>
+      <div class="vs-item">✅ Near-native performance (1–3% overhead)</div>
+      <div class="vs-item">✅ Full hardware control, direct device access</div>
+      <div class="vs-item">📦 KVM (AWS, GCP), VMware ESXi, Hyper-V (Azure), Xen</div>
+      <div class="vs-item">🎯 Every cloud VM you've ever used</div>
+    </div>
+    <div class="vs-card">
+      <div class="vs-head" style="color:var(--teal-lt)">🖥️ Type 2 — Hosted</div>
+      <div class="vs-item">Runs as a process inside host OS</div>
+      <div class="vs-item">10–20% performance overhead</div>
+      <div class="vs-item">Easy to install and use</div>
+      <div class="vs-item">📦 VirtualBox, VMware Workstation, QEMU, Parallels</div>
+      <div class="vs-item">🎯 Developer VMs, testing, Windows-on-Mac</div>
+    </div>
+  </div>
+
+  <div class="sl">VMEXIT triggers — when the hypervisor takes control</div>
+  <div class="card-grid">
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">📝 CPUID instruction</div>
+      <div class="cc-sub">Guest queries CPU features</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">Every CPUID in the guest causes VMEXIT. The hypervisor returns virtualised values. AWS EC2 can claim "Intel Xeon" even if the physical CPU differs. Hypervisors hide features (TSX, SGX) or expose virtual ones. Leaf 0x40000000 returns "KVMKVMKVM" or "VMwareVMware" — how software detects virtualisation.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">💾 Page table ops (EPT/NPT)</div>
+      <div class="cc-sub">CR3 writes, TLB flushes</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">Without EPT (Intel) / NPT (AMD), every guest page-table modification causes VMEXIT — catastrophic performance. EPT adds a second translation level: Guest Virtual → Guest Physical → Host Physical. Hardware MMU does both transparently. VMEXITs only on actual EPT violations (guest accessing unallocated host memory).</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">🔌 I/O port access</div>
+      <div class="cc-sub">IN/OUT instructions</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">Guest accesses I/O ports → hypervisor intercepts. Options: emulate in software (slow), PCI passthrough (give guest direct HW access, near-native speed), or VirtIO (paravirtualised driver — guest and host cooperate to avoid VMEXITs entirely, used for network/disk in most cloud VMs).</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">⏱️ Timer &amp; interrupt virtualisation</div>
+      <div class="cc-sub">vAPIC, HPET virtualisation</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">The hypervisor multiplexes the physical APIC timer across VMs. Each VM gets a virtual APIC (vAPIC) so it thinks it has its own interrupt controller. Intel APICv lets the guest vAPIC handle interrupts without VMEXITs for most cases — dramatically improving interrupt-heavy workloads. The hypervisor injects virtual interrupts via VMCS interrupt-injection fields.</div>
+    </div>
+  </div>
+  <div class="callout ctip"><strong>Real-world:</strong> Every AWS EC2 instance runs inside KVM (AWS Nitro hypervisor). Your "Ring 0" kernel is VMX non-root Ring 0. Live migration works because the hypervisor pauses a VM, serialises its VMCS + RAM to another physical host over the network, and resumes. The VM never notices. This is virtualisation's superpower.</div>
+</div>
+
+<!-- ═══════════════ CH5: VIRTUAL MEMORY ═══════════════ -->
+
+<div class="chapter-divider">
+  <div class="chapter-divider-line"></div>
+  <div class="chapter-divider-badge">
+    <span class="chapter-divider-num">05</span>
+    <span class="chapter-divider-dot"></span>
+    <span>Virtual Memory</span>
+  </div>
+  <div class="chapter-divider-line"></div>
+</div>
+<div class="chapter" id="ch5">
+  <div class="chap-hd cb">
+    <div class="chap-icon">🧩</div>
+    <div>
+      <div class="chap-ey">Chapter 05 — Virtual Memory</div>
+      <div class="chap-title">Virtual Memory — The Kernel's Greatest Illusion</div>
+      <div class="chap-desc">Every program thinks it owns the entire 64-bit address space. This is a hardware-enforced lie. Your browser at virtual address 0x400000 and your editor at virtual address 0x400000 are at completely different physical RAM locations. The MMU handles the translation in hardware, transparently, thousands of times per second.</div>
+      <div class="analogy">🔍 Every apartment in a city has "Room 101" on its door — but each Room 101 is physically in a different building at a different location</div>
+    </div>
+  </div>
+
+  <div class="sl">Virtual → Physical address translation with TLB</div>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 820 240" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ar5g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#35d99a" stroke-width="1.8" stroke-linecap="round"/></marker>
+        <marker id="ar5r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#f0706c" stroke-width="1.8" stroke-linecap="round"/></marker>
+        <marker id="ar5n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#626b8a" stroke-width="1.8" stroke-linecap="round"/></marker>
+      </defs>
+      <rect x="6" y="78" width="132" height="66" rx="10" fill="#1a1740" stroke="#8b85f0" stroke-width="1.2"/>
+      <text x="72" y="104" text-anchor="middle" fill="#cdc9fa" font-size="13" font-weight="700" font-family="Inter,system-ui">Program</text>
+      <text x="72" y="121" text-anchor="middle" fill="#8b85f0" font-size="12" font-family="Inter,system-ui">access 0x400000</text>
+      <text x="72" y="137" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">(virtual address)</text>
+      <line x1="138" y1="111" x2="160" y2="111" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar5n)"/>
+
+      <rect x="160" y="58" width="154" height="106" rx="10" fill="#2e1e00" stroke="#f7c35a" stroke-width="1.2"/>
+      <text x="237" y="84" text-anchor="middle" fill="#fce4a3" font-size="13" font-weight="700" font-family="Inter,system-ui">TLB</text>
+      <text x="237" y="102" text-anchor="middle" fill="#f7c35a" font-size="12" font-family="Inter,system-ui">Translation Lookaside</text>
+      <text x="237" y="118" text-anchor="middle" fill="#f7c35a" font-size="12" font-family="Inter,system-ui">Buffer (CPU cache)</text>
+      <text x="237" y="136" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">~1024 entries</text>
+      <text x="237" y="152" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">lookup ~1 extra cycle</text>
+
+      <line x1="314" y1="94" x2="340" y2="94" stroke="#35d99a" stroke-width="2" marker-end="url(#ar5g)"/>
+      <text x="327" y="86" text-anchor="middle" fill="#35d99a" font-size="11" font-weight="600" font-family="Inter,system-ui">HIT ✓</text>
+      <rect x="340" y="66" width="148" height="66" rx="10" fill="#063825" stroke="#35d99a" stroke-width="1.2"/>
+      <text x="414" y="92" text-anchor="middle" fill="#9ef5d1" font-size="13" font-weight="700" font-family="Inter,system-ui">Physical RAM</text>
+      <text x="414" y="109" text-anchor="middle" fill="#35d99a" font-size="12" font-family="Inter,system-ui">0x1A3F4000</text>
+      <text x="414" y="125" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">~1 extra CPU cycle total</text>
+
+      <path d="M237 164 L237 208 L556 208 L556 168" stroke="#f0706c" stroke-width="1.8" fill="none" marker-end="url(#ar5r)" stroke-dasharray="6 3"/>
+      <text x="390" y="203" text-anchor="middle" fill="#f0706c" font-size="12" font-weight="600" font-family="Inter,system-ui">MISS → page table walk (~50–200 cycles)</text>
+
+      <rect x="506" y="58" width="162" height="100" rx="10" fill="#2a0a0a" stroke="#f0706c" stroke-width="1.2"/>
+      <text x="587" y="84" text-anchor="middle" fill="#fbb8b6" font-size="13" font-weight="700" font-family="Inter,system-ui">Page Table</text>
+      <text x="587" y="102" text-anchor="middle" fill="#f0706c" font-size="12" font-family="Inter,system-ui">kernel-managed</text>
+      <text x="587" y="118" text-anchor="middle" fill="#f0706c" font-size="12" font-family="Inter,system-ui">one per process</text>
+      <text x="587" y="136" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">4-level on x86-64:</text>
+      <text x="587" y="150" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">PGD→PUD→PMD→PTE</text>
+
+      <rect x="686" y="66" width="126" height="80" rx="10" fill="#11141f" stroke="#252b42" stroke-width="1" stroke-dasharray="4 3"/>
+      <text x="749" y="91" text-anchor="middle" fill="#eef0f6" font-size="13" font-weight="700" font-family="Inter,system-ui">Page Fault</text>
+      <text x="749" y="109" text-anchor="middle" fill="#a0a8c0" font-size="12" font-family="Inter,system-ui">page not in RAM</text>
+      <text x="749" y="126" text-anchor="middle" fill="#a0a8c0" font-size="12" font-family="Inter,system-ui">kernel loads from</text>
+      <text x="749" y="142" text-anchor="middle" fill="#35d99a" font-size="12" font-family="Inter,system-ui">disk → RAM</text>
+      <line x1="668" y1="106" x2="684" y2="106" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar5n)"/>
+    </svg>
+  </div>
+
+  <div class="sl">Interactive physical RAM simulator</div>
+  <div class="sim">
+    <div class="sim-head">
+      <div class="sim-title">Physical RAM — 32 frames · Each = 4 KB page</div>
+      <div class="btn-group">
+        <button class="btn" onclick="doAllocMem()">Allocate process</button>
+        <button class="btn" onclick="doFreeMem()">Free a process</button>
+        <button class="btn" onclick="doSwapMem()">Swap to disk</button>
+        <button class="btn btn-d btn-sm" onclick="doResetMem()">Reset</button>
+      </div>
+    </div>
+    <div class="mem-grid" id="memGridEl"></div>
+    <div class="mem-legend">
+      <div class="ml-item"><div class="ml-dot" style="background:#3124a8"></div>Kernel</div>
+      <div class="ml-item"><div class="ml-dot" style="background:#064e3b"></div>Process 1</div>
+      <div class="ml-item"><div class="ml-dot" style="background:#7c2d12"></div>Process 2</div>
+      <div class="ml-item"><div class="ml-dot" style="background:#4a1d96"></div>Process 3</div>
+      <div class="ml-item"><div class="ml-dot" style="background:#0c4a6e"></div>Process 4</div>
+      <div class="ml-item"><div class="ml-dot" style="background:#450a0a"></div>Swapped to disk</div>
+      <div class="ml-item"><div class="ml-dot" style="background:var(--bg3);border:1px solid var(--border)"></div>Free</div>
+    </div>
+    <div id="memMsgEl" style="font-size:14px;color:var(--text2);margin-top:11px;min-height:20px;"></div>
+  </div>
+
+  <div class="sl">64-bit Linux virtual address space layout</div>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 820 310" xmlns="http://www.w3.org/2000/svg">
+      <rect x="58" y="6"   width="224" height="40" rx="0" fill="#1a1740" stroke="#8b85f0" stroke-width="0.8"/>
+      <text x="170" y="30" text-anchor="middle" fill="#cdc9fa" font-size="13" font-weight="600" font-family="Inter,system-ui">Kernel space (128 TB)</text>
+      <text x="292" y="22" fill="#8b85f0" font-size="12" font-family="Inter,system-ui">0xFFFF800000000000 — Ring 3 access → segfault</text>
+
+      <rect x="58" y="46"  width="224" height="38" rx="0" fill="#063825" stroke="#35d99a" stroke-width="0.8"/>
+      <text x="170" y="68" text-anchor="middle" fill="#9ef5d1" font-size="13" font-weight="600" font-family="Inter,system-ui">Stack (grows downward ↓)</text>
+      <text x="292" y="62" fill="#35d99a" font-size="12" font-family="Inter,system-ui">local variables, function frames, recursion</text>
+      <text x="292" y="78" fill="#626b8a" font-size="11" font-family="Inter,system-ui">grows from high address downward</text>
+
+      <rect x="58" y="84"  width="224" height="30" rx="0" fill="#181d2e" stroke="#252b42" stroke-width="0.8"/>
+      <text x="170" y="103" text-anchor="middle" fill="#626b8a" font-size="12" font-family="Inter,system-ui">… large unallocated gap …</text>
+
+      <rect x="58" y="114" width="224" height="38" rx="0" fill="#2e1e00" stroke="#f7c35a" stroke-width="0.8"/>
+      <text x="170" y="136" text-anchor="middle" fill="#fce4a3" font-size="13" font-weight="600" font-family="Inter,system-ui">mmap() region</text>
+      <text x="292" y="128" fill="#f7c35a" font-size="12" font-family="Inter,system-ui">anonymous mappings, file-backed maps</text>
+      <text x="292" y="144" fill="#626b8a" font-size="11" font-family="Inter,system-ui">grows downward from top of this region</text>
+
+      <rect x="58" y="152" width="224" height="36" rx="0" fill="#072515" stroke="#52de82" stroke-width="0.8"/>
+      <text x="170" y="173" text-anchor="middle" fill="#b0f5cb" font-size="13" font-weight="600" font-family="Inter,system-ui">Shared libraries (.so)</text>
+      <text x="292" y="167" fill="#52de82" font-size="12" font-family="Inter,system-ui">libc.so.6 · libpthread.so · libm.so</text>
+      <text x="292" y="183" fill="#626b8a" font-size="11" font-family="Inter,system-ui">one physical copy, CoW-mapped to many processes</text>
+
+      <rect x="58" y="188" width="224" height="40" rx="0" fill="#2a1000" stroke="#f7935a" stroke-width="0.8"/>
+      <text x="170" y="212" text-anchor="middle" fill="#fedfc9" font-size="13" font-weight="600" font-family="Inter,system-ui">Heap (grows upward ↑)</text>
+      <text x="292" y="204" fill="#f7935a" font-size="12" font-family="Inter,system-ui">malloc() / new() / brk() / mmap()</text>
+      <text x="292" y="220" fill="#626b8a" font-size="11" font-family="Inter,system-ui">dynamic allocations at runtime</text>
+
+      <rect x="58" y="228" width="224" height="28" rx="0" fill="#181d2e" stroke="#8b85f0" stroke-width="0.8"/>
+      <text x="170" y="246" text-anchor="middle" fill="#cdc9fa" font-size="12" font-family="Inter,system-ui">BSS — uninitialised globals (zero-filled)</text>
+
+      <rect x="58" y="256" width="224" height="26" rx="0" fill="#181d2e" stroke="#5aabf7" stroke-width="0.8"/>
+      <text x="170" y="273" text-anchor="middle" fill="#b3d9fd" font-size="12" font-family="Inter,system-ui">Data — initialised globals &amp; statics</text>
+
+      <rect x="58" y="282" width="224" height="24" rx="0" fill="#1a1740" stroke="#6c64e8" stroke-width="0.8"/>
+      <text x="170" y="298" text-anchor="middle" fill="#cdc9fa" font-size="12" font-family="Inter,system-ui">Text (code) — r-x only · starts at 0x400000</text>
+
+      <text x="48" y="24"  text-anchor="end" fill="#626b8a" font-size="11" font-family="Inter,system-ui">high</text>
+      <text x="48" y="300" text-anchor="end" fill="#626b8a" font-size="11" font-family="Inter,system-ui">low</text>
+      <line x1="56" y1="6" x2="56" y2="306" stroke="#252b42" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="sl">Key memory tricks — demand paging, CoW, swap</div>
+  <div class="card-grid">
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">📖 Demand paging</div>
+      <div class="cc-sub">Pages load only when touched</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">Launching a 50 MB binary: kernel maps ELF sections into virtual address space, marks every page "not present", points them at the file on disk. When CPU executes code on a not-present page → page fault → kernel loads that 4 KB page from disk → resumes. A typical app uses only ~30% of its code. Launch is nearly instant because almost nothing actually loads upfront.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">🔄 Copy-on-Write (CoW)</div>
+      <div class="cc-sub">fork() without copying memory</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">fork() naively copies all parent RAM — a 500 MB process would take ~500 ms. Instead: parent and child share the same physical pages, all marked read-only. First write by either → page fault → kernel allocates new frame, copies just that 4 KB page, marks writable, resumes. fork() of a 2 GB process takes microseconds. CoW is also how APFS, Btrfs, and ZFS implement instant snapshots.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">💾 Swap space</div>
+      <div class="cc-sub">Evict pages to disk when RAM fills</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">RAM full + new page needed → page reclaim runs. Selects victim page via LRU / clock algorithm, writes to swap partition/file, marks page table entry "swapped" (stores disk offset). Frame is now free. Next access → page fault → kernel reads from swap → fills new frame → resumes. Repeated swap = "thrashing" → everything slows. This is why opening 100 Chrome tabs degrades performance.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">🔒 Address space isolation</div>
+      <div class="cc-sub">Processes truly cannot read each other</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">Each process has its own page table (pointed to by CR3, switched on context switch). Virtual address 0x400000 in Chrome → physical frame 47. Same virtual address in VS Code → physical frame 831. MMU uses Chrome's page table — frame 831 simply doesn't appear in Chrome's page table. Any attempt → page fault → SIGSEGV. Chrome crashes, not VS Code. Hardware-enforced, not software-checked.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ CH6: FILESYSTEM ═══════════════ -->
+
+<div class="chapter-divider">
+  <div class="chapter-divider-line"></div>
+  <div class="chapter-divider-badge">
+    <span class="chapter-divider-num">06</span>
+    <span class="chapter-divider-dot"></span>
+    <span>File Systems & Inodes</span>
+  </div>
+  <div class="chapter-divider-line"></div>
+</div>
+<div class="chapter" id="ch6">
+  <div class="chap-hd cg">
+    <div class="chap-icon">📁</div>
+    <div>
+      <div class="chap-ey">Chapter 06 — File System</div>
+      <div class="chap-title">File Systems &amp; Inodes</div>
+      <div class="chap-desc">Your disk at the lowest level is a long sequence of numbered sectors. A file system builds the abstraction of files and folders on top. The most important insight: <strong>the filename is NOT stored with the file's data</strong> — they are completely separate structures.</div>
+      <div class="analogy">🔍 A library catalogue: the catalogue (directory) lists book titles (filenames) and shelf numbers (inode numbers). The books themselves (data blocks) are on the shelves. Catalogue and books are separate things.</div>
+    </div>
+  </div>
+
+  <div class="sl">The inode — anatomy of a file</div>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 820 262" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ar6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#626b8a" stroke-width="1.8" stroke-linecap="round"/></marker></defs>
+      <rect x="6" y="8" width="192" height="188" rx="10" fill="#1a1740" stroke="#8b85f0" stroke-width="1.2"/>
+      <text x="102" y="32" text-anchor="middle" fill="#cdc9fa" font-size="13" font-weight="700" font-family="Inter,system-ui">Directory /home/user/</text>
+      <text x="102" y="50" text-anchor="middle" fill="#8b85f0" font-size="11" font-family="Inter,system-ui">(it's just a special file!)</text>
+      <line x1="16" y1="58" x2="188" y2="58" stroke="#252b42" stroke-width="0.8"/>
+      <text x="16"  y="80"  fill="#a0a8c0" font-size="13" font-family="JetBrains Mono,monospace">"resume.pdf"  </text>
+      <text x="176" y="80"  text-anchor="end" fill="#f7c35a" font-size="13" font-family="JetBrains Mono,monospace">→ 142</text>
+      <text x="16"  y="103" fill="#a0a8c0" font-size="13" font-family="JetBrains Mono,monospace">"photo.jpg"   </text>
+      <text x="176" y="103" text-anchor="end" fill="#f7c35a" font-size="13" font-family="JetBrains Mono,monospace">→ 143</text>
+      <text x="16"  y="126" fill="#a0a8c0" font-size="13" font-family="JetBrains Mono,monospace">"resume-v2.pdf"</text>
+      <text x="176" y="126" text-anchor="end" fill="#35d99a" font-size="13" font-family="JetBrains Mono,monospace">→ 142</text>
+      <text x="16"  y="149" fill="#a0a8c0" font-size="13" font-family="JetBrains Mono,monospace">"notes.txt"   </text>
+      <text x="176" y="149" text-anchor="end" fill="#f7c35a" font-size="13" font-family="JetBrains Mono,monospace">→ 144</text>
+      <text x="102" y="178" text-anchor="middle" fill="#35d99a" font-size="11" font-family="Inter,system-ui">↑ hard link! same inode #142</text>
+
+      <line x1="198" y1="92" x2="222" y2="92" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar6)"/>
+      <text x="210" y="84" text-anchor="middle" fill="#626b8a" font-size="10" font-family="Inter,system-ui">lookup</text>
+
+      <rect x="222" y="8" width="202" height="246" rx="10" fill="#2e1e00" stroke="#f7c35a" stroke-width="1.2"/>
+      <text x="323" y="32" text-anchor="middle" fill="#fce4a3" font-size="13" font-weight="700" font-family="Inter,system-ui">inode #142</text>
+      <text x="323" y="50" text-anchor="middle" fill="#f7c35a" font-size="11" font-family="Inter,system-ui">(NO filename stored here!)</text>
+      <line x1="232" y1="58" x2="414" y2="58" stroke="#78350f" stroke-width="0.8"/>
+      <text x="232" y="78"  fill="#fce4a3" font-size="13" font-family="Inter,system-ui">type: regular file</text>
+      <text x="232" y="98"  fill="#fce4a3" font-size="13" font-family="Inter,system-ui">size: 2,457,623 bytes</text>
+      <text x="232" y="118" fill="#fce4a3" font-size="13" font-family="Inter,system-ui">uid:1000  gid:1000</text>
+      <text x="232" y="138" fill="#fce4a3" font-size="13" font-family="Inter,system-ui">mode: 0644 (rw-r--r--)</text>
+      <text x="232" y="158" fill="#fce4a3" font-size="13" font-family="Inter,system-ui">atime: 2025-03-10</text>
+      <text x="232" y="178" fill="#fce4a3" font-size="13" font-family="Inter,system-ui">mtime: 2025-01-05</text>
+      <text x="232" y="198" fill="#fce4a3" font-size="13" font-family="Inter,system-ui">nlink: 2  (two names!)</text>
+      <text x="232" y="222" fill="#f7935a" font-size="13" font-weight="700" font-family="Inter,system-ui">blocks: [504, 505, 506]</text>
+      <text x="232" y="242" fill="#78350f" font-size="11" font-family="Inter,system-ui">direct + indirect ptrs</text>
+
+      <line x1="424" y1="198" x2="448" y2="142" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar6)"/>
+      <line x1="424" y1="212" x2="448" y2="198" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar6)"/>
+      <line x1="424" y1="226" x2="448" y2="250" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar6)"/>
+      <rect x="448" y="112" width="110" height="56" rx="8" fill="#063825" stroke="#35d99a" stroke-width="1"/>
+      <text x="503" y="136" text-anchor="middle" fill="#9ef5d1" font-size="13" font-weight="700" font-family="Inter,system-ui">Block 504</text>
+      <text x="503" y="153" text-anchor="middle" fill="#35d99a" font-size="12" font-family="Inter,system-ui">4 KB raw data</text>
+      <rect x="448" y="174" width="110" height="56" rx="8" fill="#063825" stroke="#35d99a" stroke-width="1"/>
+      <text x="503" y="198" text-anchor="middle" fill="#9ef5d1" font-size="13" font-weight="700" font-family="Inter,system-ui">Block 505</text>
+      <text x="503" y="215" text-anchor="middle" fill="#35d99a" font-size="12" font-family="Inter,system-ui">4 KB raw data</text>
+      <rect x="448" y="238" width="110" height="22" rx="6" fill="#063825" stroke="#35d99a" stroke-width="1"/>
+      <text x="503" y="253" text-anchor="middle" fill="#35d99a" font-size="11" font-family="Inter,system-ui">Block 506 (partial)</text>
+
+      <rect x="574" y="8" width="238" height="254" rx="10" fill="#0b0d14" stroke="#252b42" stroke-width="1"/>
+      <text x="693" y="34" text-anchor="middle" fill="#eef0f6" font-size="14" font-weight="700" font-family="Inter,system-ui">Key Insights</text>
+      <line x1="584" y1="44" x2="802" y2="44" stroke="#252b42" stroke-width="0.8"/>
+      <text x="584" y="66"  fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">① Filename in directory,</text>
+      <text x="584" y="84"  fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">   NOT in the inode.</text>
+      <text x="584" y="110" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">② Hard link = two filenames</text>
+      <text x="584" y="128" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">   → same inode. Same data.</text>
+      <text x="584" y="154" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">③ rm decrements nlink.</text>
+      <text x="584" y="172" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">   Data freed when nlink=0.</text>
+      <text x="584" y="198" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">④ Symlink = file whose</text>
+      <text x="584" y="216" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">   data IS a path string.</text>
+      <text x="584" y="242" fill="#35d99a" font-size="13" font-family="Inter,system-ui">  stat file.txt → inode #</text>
+    </svg>
+  </div>
+
+  <div class="sl">Filesystem types — full comparison</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>FS</th><th>OS</th><th>Journal</th><th>Max file</th><th>Strength</th><th>Weakness</th></tr></thead>
+    <tbody>
+      <tr><td><strong>ext4</strong></td><td>Linux</td><td>Write-ahead</td><td>16 TB</td><td>Very stable, extents reduce fragmentation</td><td>No snapshots, limited scalability</td></tr>
+      <tr><td><strong>NTFS</strong></td><td>Windows</td><td>Log file</td><td>16 EB</td><td>ACLs, transparent compression, EFS encryption</td><td>Complex, slow on Linux</td></tr>
+      <tr class="hl"><td><strong>APFS</strong></td><td>macOS / iOS</td><td>Copy-on-write</td><td>8 EB</td><td>Instant snapshots, clones, space sharing, native encryption</td><td>Not open source, no Linux write support</td></tr>
+      <tr><td><strong>Btrfs</strong></td><td>Linux</td><td>Copy-on-write</td><td>16 EB</td><td>Snapshots, RAID 0/1/10, checksums, subvolumes</td><td>RAID 5/6 still unreliable in 2025</td></tr>
+      <tr><td><strong>ZFS</strong></td><td>Linux/BSD</td><td>Copy-on-write</td><td>256 ZB</td><td>Self-healing checksums, dedup, enterprise reliability</td><td>High RAM usage, Oracle licensing history</td></tr>
+      <tr><td><strong>XFS</strong></td><td>Linux (RHEL)</td><td>Journal</td><td>8 EB</td><td>Excellent large-file + high-throughput perf</td><td>Cannot shrink filesystem</td></tr>
+      <tr><td><strong>FAT32</strong></td><td>USB/legacy</td><td>None</td><td>4 GB</td><td>Universal compatibility</td><td>4 GB file limit, no permissions, no journal</td></tr>
+      <tr><td><strong>exFAT</strong></td><td>SD/USB</td><td>None</td><td>16 EB</td><td>FAT32 replacement, all OSes</td><td>No journaling, not POSIX</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout ci"><strong>VFS (Virtual File System):</strong> Linux's abstraction layer that makes every storage backend look identical to your app. <code>open("/proc/cpuinfo")</code> → routes to procfs. <code>open("/home/user/file")</code> → routes to ext4. <code>open("/mnt/usb/photo")</code> → routes to FAT32. Same <code>read()</code> syscall for all. "Everything is a file" is made true by VFS.</div>
+  <div class="callout ctip"><strong>Journaling prevents corruption:</strong> Before writing data, FS writes a journal entry: "I'm about to overwrite blocks [504,505]." Power dies mid-write → on next boot, FS reads journal → replays or rolls back → FS is clean. Without journaling (FAT32): half-written files = corruption. <code>fsck</code> sometimes recovers, often doesn't.</div>
+</div>
+
+<!-- ═══════════════ CH7: DRIVERS & INTERRUPTS ═══════════════ -->
+
+<div class="chapter-divider">
+  <div class="chapter-divider-line"></div>
+  <div class="chapter-divider-badge">
+    <span class="chapter-divider-num">07</span>
+    <span class="chapter-divider-dot"></span>
+    <span>Device Drivers & Interrupts</span>
+  </div>
+  <div class="chapter-divider-line"></div>
+</div>
+<div class="chapter" id="ch7">
+  <div class="chap-hd ca">
+    <div class="chap-icon">⚙️</div>
+    <div>
+      <div class="chap-ey">Chapter 07 — Drivers &amp; Interrupts</div>
+      <div class="chap-title">Device Drivers &amp; Hardware Interrupts</div>
+      <div class="chap-desc">Drivers translate generic kernel requests into hardware-specific commands. Interrupts are how hardware asynchronously notifies the CPU that something happened — without the CPU wasting cycles constantly polling.</div>
+      <div class="analogy">🔍 Drivers = language translators between kernel English and hardware assembly. Interrupts = a coworker urgently tapping your shoulder mid-work saying "something needs attention RIGHT NOW."</div>
+    </div>
+  </div>
+
+  <div class="sl">Interrupt flow simulator — fire a hardware IRQ</div>
+  <div class="sim">
+    <div class="sim-head">
+      <div class="sim-title">Watch the full Ring 3 → Ring 0 → Ring 3 interrupt cycle</div>
+      <div class="btn-group">
+        <button class="btn" onclick="fireIRQ('keyboard','⌨️ Keyboard (IRQ 1)','reads scancode from I/O port 0x60, puts in input ring buffer')">Keyboard ⌨️</button>
+        <button class="btn" onclick="fireIRQ('network','🌐 Network packet (IRQ 11)','copies sk_buff from NIC DMA ring, passes to network stack')">Network 🌐</button>
+        <button class="btn" onclick="fireIRQ('timer','⏱️ Timer tick (IRQ 0)','updates jiffies, fires scheduler tick, runs softirqs')">Timer ⏱️</button>
+        <button class="btn" onclick="fireIRQ('disk','💾 Disk I/O done (IRQ 14)','marks I/O request done, wakes blocked process, frees DMA buffer')">Disk 💾</button>
+        <button class="btn" onclick="fireIRQ('gpu','🖥️ GPU vblank (IRQ 16)','signals frame complete, wakes vsync waiter, flips display buffer')">GPU 🖥️</button>
+        <button class="btn btn-sm" onclick="document.getElementById('irqEl').innerHTML=''">clear</button>
+      </div>
+    </div>
+    <div class="irq-log" id="irqEl"></div>
+  </div>
+
+  <div class="sl">Interrupt vs Polling vs DMA — when to use what</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Method</th><th>How it works</th><th>CPU usage while waiting</th><th>Latency</th><th>Used for</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Polling</strong></td><td>CPU loops: "ready yet? ready yet?" on status register</td><td><span class="badge br">100% burned</span></td><td>Very low (&lt;1 µs)</td><td>Ultra-fast NVMe (SPDK), some GPU queues</td></tr>
+      <tr class="hl"><td><strong>Interrupts</strong></td><td>Hardware signals CPU when ready → CPU runs ISR, returns</td><td><span class="badge bt">~0% (CPU sleeps)</span></td><td>~1–10 µs</td><td>Keyboard, NIC, disk, timer — most I/O</td></tr>
+      <tr><td><strong>DMA + interrupt</strong></td><td>Hardware writes bulk data directly to RAM without CPU, then fires one interrupt</td><td><span class="badge bt">~0% during transfer</span></td><td>Low (bulk)</td><td>NIC Rx/Tx, NVMe, USB bulk, audio buffers</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="sl">Why Ring 0 drivers are dangerous — CrowdStrike 2024</div>
+  <div class="callout cd">
+    <strong>CrowdStrike Falcon (July 19, 2024):</strong> A content update to the Falcon sensor kernel driver (csagent.sys on Windows) contained a null-pointer dereference in its channel file parser. In Ring 0, there is no exception handler above you — the Windows kernel panicked → Blue Screen of Death → machine reboots → BSOD again → infinite loop. <strong>8.5 million Windows machines</strong> worldwide were bricked simultaneously. Airlines (Delta, United), hospitals, banks, broadcasters all went down. Estimated damage: <strong>$5–10 billion</strong>. Fix required physically booting each machine into Safe Mode to delete a 291-byte corrupt file. Root cause: a kernel driver in Ring 0 with no memory-safety guarantees. This is exactly why the Linux kernel is now adopting <strong>Rust</strong> — Rust's ownership model prevents null pointer dereferences at compile time.
+  </div>
+
+  <div class="sl">Driver architecture options</div>
+  <div class="card-grid">
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">🔴 Kernel drivers (.ko / .sys)</div>
+      <div class="cc-sub">Ring 0 — fastest, no safety net</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">Traditional Linux kernel modules (nvidia.ko, ath9k.ko, e1000e.ko, ext4.ko). Loaded with <code>insmod</code>/<code>modprobe</code>. Direct hardware access, zero overhead from Ring 3 crossings. One bad pointer = kernel panic. On Windows: Kernel Mode Drivers (.sys). KMDF (Kernel Mode Driver Framework) adds safety rails but can't prevent all bugs. What CrowdStrike's csagent.sys was.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">🟡 FUSE — user-space drivers</div>
+      <div class="cc-sub">Ring 3 — safe but 2–4× slower</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">FUSE (Filesystem in Userspace) lets you write filesystem drivers in Python, Go, or Rust. A kernel shim sends VFS calls to your user-space process via /dev/fuse. A crash kills only the driver process, not the kernel. sshfs (SSH filesystem), ntfs-3g, Dropbox, Google Drive desktop, rclone all use FUSE. Overhead: 2–4× slower due to context switches for every I/O call.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">⚡ eBPF — safe kernel code</div>
+      <div class="cc-sub">Sandboxed kernel programmability</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">eBPF (extended Berkeley Packet Filter) lets you run sandboxed programs inside the kernel without a full driver. The kernel verifier checks all bytecode before running: no infinite loops, no invalid memory access. Used for: networking (Cilium/Cloudflare), observability (DataDog, bpftrace), security (Falco). Attach to any kernel hook: syscall entry/exit, network Rx/Tx, function call. The future of safe kernel extension.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">🔔 Top-half / Bottom-half split</div>
+      <div class="cc-sub">Keeping ISRs short</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">A hardware interrupt disables further interrupts while it runs. Long ISRs delay all other interrupts — terrible for real-time. Linux splits work: <strong>Top half (ISR)</strong> — runs immediately with interrupts off. Does minimal work: acknowledge IRQ, read status register, enqueue data. <strong>Bottom half (softirq/tasklet/workqueue)</strong> — runs later with interrupts re-enabled. Does heavy processing: parse network packet, update filesystem buffers. Keeps IRQ latency microseconds even under load.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ CH8: PROCESSES & THREADS ═══════════════ -->
+
+<div class="chapter-divider">
+  <div class="chapter-divider-line"></div>
+  <div class="chapter-divider-badge">
+    <span class="chapter-divider-num">08</span>
+    <span class="chapter-divider-dot"></span>
+    <span>Processes & Threads</span>
+  </div>
+  <div class="chapter-divider-line"></div>
+</div>
+<div class="chapter" id="ch8">
+  <div class="chap-hd cc2">
+    <div class="chap-icon">⚗️</div>
+    <div>
+      <div class="chap-ey">Chapter 08 — Processes &amp; Threads</div>
+      <div class="chap-title">Processes, Threads &amp; PID 1</div>
+      <div class="chap-desc">A process is a running program with its own isolated address space. A thread is an execution unit that shares its process's address space. The kernel tracks every one in a Process Control Block (PCB). Everything starts from PID 1.</div>
+      <div class="analogy">🔍 Process = a company (own office building, budget, bank account). Thread = an employee inside that company (shares the office, but has their own desk, tasks, and mini-notebook).</div>
+    </div>
+  </div>
+
+  <div class="sl">Live process control block (PCB) table</div>
+  <div class="sim">
+    <div class="sim-head">
+      <div class="sim-title">Kernel process table — struct task_struct in Linux</div>
+      <div class="btn-group">
+        <button class="btn btn-p" onclick="doFork()">fork() new process</button>
+        <button class="btn" onclick="doKill()">Kill process</button>
+        <button class="btn" onclick="doZombie()">Create zombie</button>
+        <button class="btn btn-d btn-sm" onclick="resetProcs()">Reset</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="proc-tbl">
+        <thead><tr><th>PID</th><th>Name</th><th>State</th><th>PPID</th><th>Threads</th><th>vMem</th><th>Notes</th></tr></thead>
+        <tbody id="procTbodyEl"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sl">Process states — the complete state machine</div>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 820 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ar8a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#626b8a" stroke-width="1.8" stroke-linecap="round"/></marker>
+        <marker id="ar8b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#35d99a" stroke-width="1.8" stroke-linecap="round"/></marker>
+      </defs>
+      <rect x="6" y="68" width="110" height="56" rx="10" fill="#181d2e" stroke="#252b42" stroke-width="1.2"/>
+      <text x="61" y="94" text-anchor="middle" fill="#eef0f6" font-size="13" font-weight="700" font-family="Inter,system-ui">NEW</text>
+      <text x="61" y="113" text-anchor="middle" fill="#626b8a" font-size="12" font-family="Inter,system-ui">fork() called</text>
+      <line x1="116" y1="96" x2="140" y2="96" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar8a)"/>
+
+      <rect x="140" y="68" width="122" height="56" rx="10" fill="#1a1740" stroke="#8b85f0" stroke-width="1.2"/>
+      <text x="201" y="94" text-anchor="middle" fill="#cdc9fa" font-size="13" font-weight="700" font-family="Inter,system-ui">READY</text>
+      <text x="201" y="113" text-anchor="middle" fill="#8b85f0" font-size="12" font-family="Inter,system-ui">in run queue</text>
+      <line x1="262" y1="96" x2="288" y2="96" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar8a)"/>
+      <text x="275" y="88" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">schedule</text>
+
+      <rect x="288" y="58" width="138" height="76" rx="10" fill="#063825" stroke="#35d99a" stroke-width="1.4"/>
+      <text x="357" y="88" text-anchor="middle" fill="#9ef5d1" font-size="14" font-weight="700" font-family="Inter,system-ui">RUNNING</text>
+      <text x="357" y="106" text-anchor="middle" fill="#35d99a" font-size="12" font-family="Inter,system-ui">on a CPU core</text>
+      <text x="357" y="124" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">executing code</text>
+
+      <path d="M288 78 Q201 28 262 91" stroke="#626b8a" stroke-width="1.5" fill="none" marker-end="url(#ar8a)"/>
+      <text x="248" y="32" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">preempt (quantum expired)</text>
+
+      <line x1="426" y1="96" x2="454" y2="96" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar8a)"/>
+      <text x="440" y="88" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">I/O wait</text>
+
+      <rect x="454" y="68" width="130" height="56" rx="10" fill="#2e1e00" stroke="#f7c35a" stroke-width="1.2"/>
+      <text x="519" y="94" text-anchor="middle" fill="#fce4a3" font-size="13" font-weight="700" font-family="Inter,system-ui">WAITING</text>
+      <text x="519" y="113" text-anchor="middle" fill="#f7c35a" font-size="12" font-family="Inter,system-ui">blocked on I/O</text>
+
+      <path d="M519 124 Q519 168 201 168 Q201 138 201 124" stroke="#626b8a" stroke-width="1.5" fill="none" marker-end="url(#ar8b)"/>
+      <text x="358" y="183" text-anchor="middle" fill="#626b8a" font-size="11" font-family="Inter,system-ui">I/O complete / signal / wakeup → back to READY queue</text>
+
+      <line x1="357" y1="134" x2="357" y2="156" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar8a)"/>
+      <rect x="288" y="156" width="138" height="28" rx="8" fill="#2a0a0a" stroke="#f0706c" stroke-width="0.8"/>
+      <text x="357" y="175" text-anchor="middle" fill="#fbb8b6" font-size="12" font-family="Inter,system-ui">ZOMBIE (until parent wait())</text>
+
+      <rect x="604" y="66" width="208" height="118" rx="10" fill="#11141f" stroke="#252b42" stroke-width="1"/>
+      <text x="708" y="92" text-anchor="middle" fill="#eef0f6" font-size="13" font-weight="700" font-family="Inter,system-ui">Zombie Process</text>
+      <text x="612" y="114" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">Process exited but parent</text>
+      <text x="612" y="132" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">never called wait().</text>
+      <text x="612" y="150" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">PCB entry stays in table</text>
+      <text x="612" y="170" fill="#35d99a" font-size="13" font-family="Inter,system-ui">until parent reads exit code.</text>
+    </svg>
+  </div>
+
+  <div class="sl">fork() + exec() — how every process is born</div>
+  <div class="code"><span class="cc3">// How bash runs the command "ls -la"
+// This exact sequence happens for every program you launch</span>
+
+<span class="ck">pid_t</span> <span class="cv">pid</span> <span class="cop">=</span> <span class="cf">fork</span>();
+<span class="cc3">// fork() asks the kernel to:
+//   1. Allocate a new PCB (task_struct in Linux)
+//   2. Copy parent's file descriptor table
+//   3. Copy parent's signal handlers and masks
+//   4. Set up Copy-on-Write page tables (NOT a memory copy)
+//   5. Add child to the scheduler's run queue
+//
+// fork() RETURNS TWICE:
+//   In parent process → returns child PID (e.g. 1337)
+//   In child process  → returns 0</span>
+
+<span class="ck">if</span> (<span class="cv">pid</span> <span class="cop">==</span> <span class="cn">0</span>) {
+    <span class="cc3">// We ARE the child process</span>
+    <span class="cf">execve</span>(<span class="cs">"/bin/ls"</span>, [<span class="cs">"ls"</span>, <span class="cs">"-la"</span>], envp);
+    <span class="cc3">// execve() COMPLETELY REPLACES our address space:
+    //   - Loads /bin/ls ELF binary into memory (via mmap)
+    //   - Resets heap, stack, BSS, data segment
+    //   - Sets RIP (instruction pointer) to /bin/ls entry point
+    //   - Our bash clone is GONE from this process's memory
+    // execve() ONLY returns on error (ENOENT, EPERM, etc.)</span>
+} <span class="ck">else</span> {
+    <span class="cc3">// We ARE the parent (bash)</span>
+    <span class="cf">waitpid</span>(<span class="cv">pid</span>, <span class="cop">&amp;</span><span class="cv">status</span>, <span class="cn">0</span>);
+    <span class="cc3">// Blocks until child exits.
+    // Reads exit code from zombie PCB entry.
+    // PCB is then freed. Without waitpid(), child stays
+    // as a zombie forever — leaking a PCB slot.</span>
+}
+
+<span class="cc3">// PID 1 (systemd) is the ancestor of EVERYTHING.
+// If PID 1 dies → kernel panic → system down.
+// PID 1 also adopts orphaned processes (re-parents them).
+// Zombie: exited process whose parent never called wait().
+// Orphan: process whose parent exited first → re-parented to PID 1.</span></div>
+
+  <div class="sl">Process vs Thread — definitive comparison</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Aspect</th><th>Process</th><th>Thread</th></tr></thead>
+    <tbody>
+      <tr><td>Address space</td><td>Own separate virtual address space (own CR3)</td><td>Shares parent process address space (same CR3)</td></tr>
+      <tr><td>Memory</td><td>Own heap, code, data, file descriptors</td><td>Own stack only; shares heap, globals, open FDs</td></tr>
+      <tr><td>Creation cost</td><td>Expensive: fork() copies PCB, FD table, page tables</td><td>Cheap: just new stack + TCB (Thread Control Block)</td></tr>
+      <tr><td>Communication</td><td>IPC required: pipes, sockets, shared memory, mmap</td><td>Just shared variables — but needs mutexes/locks</td></tr>
+      <tr><td>Crash isolation</td><td>One process crash doesn't affect others</td><td>One thread crash (SIGSEGV) kills entire process</td></tr>
+      <tr class="hl"><td>Context switch cost</td><td>Heavy: flush TLB, swap CR3, reload CPU caches (~5–50 µs)</td><td>Light: same CR3, partial TLB reuse (~1–5 µs)</td></tr>
+      <tr><td>Linux kernel view</td><td>Both are "tasks" (struct task_struct)</td><td>clone(CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND)</td></tr>
+      <tr><td>Real example</td><td>Chrome: separate process per tab (crash isolation)</td><td>Nginx/Node: threads/event-loop for concurrent requests</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ═══════════════ CH9: SCHEDULER ═══════════════ -->
+
+<div class="chapter-divider">
+  <div class="chapter-divider-line"></div>
+  <div class="chapter-divider-badge">
+    <span class="chapter-divider-num">09</span>
+    <span class="chapter-divider-dot"></span>
+    <span>CPU Scheduling</span>
+  </div>
+  <div class="chapter-divider-line"></div>
+</div>
+<div class="chapter" id="ch9">
+  <div class="chap-hd cpk">
+    <div class="chap-icon">🎯</div>
+    <div>
+      <div class="chap-ey">Chapter 09 — CPU Scheduling</div>
+      <div class="chap-title">CPU Scheduler — The Air Traffic Controller</div>
+      <div class="chap-desc">8 CPU cores. 400+ processes. The scheduler decides who gets the CPU, for how long, and in what order. Get it wrong and your system stutters. Get it right and hundreds of programs run "simultaneously" without you noticing any switching.</div>
+      <div class="analogy">🔍 An air traffic controller: many planes (processes), few runways (CPU cores). Must be fair, prevent starvation, handle emergencies (high-priority tasks) without ignoring everyone else.</div>
+    </div>
+  </div>
+
+  <div class="sl">CPU timeline simulator — watch scheduling in real time</div>
+  <div class="sim">
+    <div class="sim-head">
+      <div class="sim-title">Round-robin scheduler — each slot = 1 ms quantum</div>
+      <div class="btn-group">
+        <button class="btn btn-p" id="schedToggleBtn" onclick="toggleSched()">▶ Start</button>
+        <button class="btn" onclick="addSchedProc()">Add process</button>
+        <button class="btn btn-sm" onclick="removeSchedProc()">Remove last</button>
+        <button class="btn btn-d btn-sm" onclick="resetSched()">Reset</button>
+      </div>
+    </div>
+    <div class="cpu-track" id="cpuTrackEl"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;" id="schedLegEl"></div>
+    <div style="margin-top:10px;font-size:14px;color:var(--text2);">
+      Ready queue: <code style="color:var(--text);font-family:var(--mono);" id="schedQueueEl"></code>
+    </div>
+    <div style="margin-top:7px;font-size:13px;color:var(--text3);" id="schedTotalEl"></div>
+  </div>
+
+  <div class="sl">Scheduling algorithms — complete comparison</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Algorithm</th><th>How it works</th><th>Pros</th><th>Cons</th><th>Real use</th></tr></thead>
+    <tbody>
+      <tr><td><strong>FCFS</strong></td><td>Run in arrival order, no preemption</td><td>Simple, predictable, no starvation</td><td>Convoy effect: one long job blocks all others</td><td>Batch systems, print queues</td></tr>
+      <tr><td><strong>SJF / SRTF</strong></td><td>Shortest job next (or shortest remaining time first)</td><td>Optimal average wait time</td><td>Requires knowing future runtime (impossible in practice), starvation of long jobs</td><td>Theory only, some batch schedulers</td></tr>
+      <tr><td><strong>Round Robin</strong></td><td>Equal quantum per process, rotate</td><td>Fair, simple, good interactive response</td><td>Context switch overhead if quantum too small; poor cache reuse</td><td>Simple desktop OSes, educational</td></tr>
+      <tr><td><strong>Priority</strong></td><td>Highest priority runs first, may preempt</td><td>Important tasks get CPU immediately</td><td>Starvation of low-priority tasks; requires priority assignment</td><td>Real-time OS: VxWorks, FreeRTOS</td></tr>
+      <tr><td><strong>MLFQ</strong></td><td>Multiple priority queues; demote if full quantum used; promote if waiting too long</td><td>Adaptive: treats interactive and batch differently without knowing workload type</td><td>Complex to tune; gameable (yield before quantum expires)</td><td>Windows NT scheduler, BSD, early macOS</td></tr>
+      <tr><td><strong>CFS</strong></td><td>Red-black tree sorted by vruntime. Always picks process with lowest vruntime.</td><td>Fair across all processes via nice values. O(log n) operations.</td><td>Cache-unfriendly tree walks at high thread counts; breaks down for bursty workloads</td><td>Linux 2.6.23 – 6.5 (2007–2023)</td></tr>
+      <tr class="hl"><td><strong>EEVDF</strong></td><td>Eligible Earliest Virtual Deadline First. Tracks "lag" (CPU debt). Picks earliest virtual deadline among eligible tasks.</td><td>Better fairness, lower tail latency, handles bursts well. Google/Meta/Valve contributed to design.</td><td>More complex math than CFS. Harder to reason about.</td><td><span class="badge bt">Linux 6.6+ (Oct 2023 → present)</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="sl">Context switch — what the CPU actually saves/restores</div>
+  <div class="code"><span class="cc3">// Linux ARM64: struct cpu_context saved per thread on every context switch</span>
+<span class="ck">struct</span> <span class="cf">cpu_context</span> {
+    <span class="cc3">// Callee-saved general-purpose registers
+    // (x86-64 equivalent: rbx, rbp, r12-r15)</span>
+    <span class="ck">u64</span> <span class="cv">x19</span>, <span class="cv">x20</span>, <span class="cv">x21</span>, <span class="cv">x22</span>, <span class="cv">x23</span>, <span class="cv">x24</span>, <span class="cv">x25</span>, <span class="cv">x26</span>, <span class="cv">x27</span>, <span class="cv">x28</span>, <span class="cv">x29</span>;
+    <span class="ck">u64</span> <span class="cv">sp</span>;     <span class="cc3">// stack pointer — where to continue the stack</span>
+    <span class="ck">u64</span> <span class="cv">pc</span>;     <span class="cc3">// program counter — instruction to resume at</span>
+};
+
+<span class="cc3">// ALSO saved in the full PCB (task_struct) on process context switch:
+//  • CR3 (x86) / TTBR0 (ARM64) — page table base → address space
+//  • FPU/SIMD state (XMM/YMM/ZMM registers — up to 2048 bytes!)
+//  • Open file descriptor table pointer
+//  • Signal mask, pending signals, signal handlers
+//  • CPU affinity mask, scheduling class (NORMAL/FIFO/RR)
+//  • nice value (-20 to +19), priority
+//  • Accounting: CPU time used, voluntary/involuntary switches
+//  • Memory descriptor (mm_struct) — pointer to page tables + VMAs
+
+// Cost breakdown:
+//   Thread context switch (same process): ~1–5 µs
+//     Same CR3, partial TLB reuse, smaller register save
+//   Process context switch (different address space): ~5–50 µs
+//     Must flush TLB (or use PCID to tag TLB entries), swap CR3
+//     CPU pipeline and caches may be "cold" for new process
+
+// At 1000 switches/second: 1–50 ms overhead per core.
+// This is why Node.js uses single-thread + epoll — avoids switch cost.
+// Go goroutines: user-space cooperative switching, ~100 ns each.</span></div>
+
+  <div class="callout ctip"><strong>Why EEVDF replaced CFS in Linux 6.6 (Oct 2023):</strong> CFS had fairness breakdowns at high thread counts and for bursty workloads (e.g., a video game that uses CPU in 16 ms bursts). EEVDF tracks a "lag" metric (how much CPU a task received vs. how much it's entitled to) and picks the task with the earliest virtual deadline among those eligible. Result: better interactive latency (your mouse stays smooth), fairer sharing, better handling of mixed workloads. Google, Meta, and Valve contributed to its development and tested it on real production workloads before it shipped.</div>
+</div>
+
+<!-- ═══════════════ CH10: I/O & NETWORKING ═══════════════ -->
+
+<div class="chapter-divider">
+  <div class="chapter-divider-line"></div>
+  <div class="chapter-divider-badge">
+    <span class="chapter-divider-num">10</span>
+    <span class="chapter-divider-dot"></span>
+    <span>I/O & Networking</span>
+  </div>
+  <div class="chapter-divider-line"></div>
+</div>
+<div class="chapter" id="ch10">
+  <div class="chap-hd cb">
+    <div class="chap-icon">🌐</div>
+    <div>
+      <div class="chap-ey">Chapter 10 — I/O &amp; Networking</div>
+      <div class="chap-title">I/O Subsystem, Networking &amp; io_uring</div>
+      <div class="chap-desc">How does your code's send() become an electrical signal on the wire? How does a file write eventually reach the physical disk? The kernel has elaborate, layered systems for both — each layer adding abstraction, buffering, and correctness guarantees.</div>
+    </div>
+  </div>
+
+  <div class="sl">Linux TCP/IP network stack — send() to wire</div>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 820 356" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ar10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#626b8a" stroke-width="1.8" stroke-linecap="round"/></marker></defs>
+
+      <text x="220" y="20" text-anchor="middle" fill="#626b8a" font-size="13" font-weight="600" font-family="Inter,system-ui">SEND path: your code → wire</text>
+
+      <rect x="60" y="28"  width="320" height="44" rx="10" fill="#063825" stroke="#35d99a" stroke-width="1.2"/>
+      <text x="220" y="50" text-anchor="middle" fill="#9ef5d1" font-size="14" font-weight="700" font-family="Inter,system-ui">Application (your code)</text>
+      <text x="220" y="66" text-anchor="middle" fill="#35d99a" font-size="12" font-family="Inter,system-ui">send(sockfd, buf, len, 0)  — Ring 3 syscall</text>
+      <line x1="220" y1="72" x2="220" y2="89" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar10)"/>
+
+      <rect x="60" y="89"  width="320" height="44" rx="10" fill="#1a1740" stroke="#8b85f0" stroke-width="1.2"/>
+      <text x="220" y="111" text-anchor="middle" fill="#cdc9fa" font-size="14" font-weight="700" font-family="Inter,system-ui">Socket layer (sys_sendmsg)</text>
+      <text x="220" y="127" text-anchor="middle" fill="#8b85f0" font-size="12" font-family="Inter,system-ui">copies user buffer to sk_buff (zero-copy where possible)</text>
+      <line x1="220" y1="133" x2="220" y2="150" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar10)"/>
+
+      <rect x="60" y="150" width="320" height="44" rx="10" fill="#1a1740" stroke="#8b85f0" stroke-width="1.2"/>
+      <text x="220" y="172" text-anchor="middle" fill="#cdc9fa" font-size="14" font-weight="700" font-family="Inter,system-ui">TCP layer</text>
+      <text x="220" y="188" text-anchor="middle" fill="#8b85f0" font-size="12" font-family="Inter,system-ui">adds TCP header, seq numbers, checksum, flow control</text>
+      <line x1="220" y1="194" x2="220" y2="211" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar10)"/>
+
+      <rect x="60" y="211" width="320" height="44" rx="10" fill="#1a1740" stroke="#8b85f0" stroke-width="1.2"/>
+      <text x="220" y="233" text-anchor="middle" fill="#cdc9fa" font-size="14" font-weight="700" font-family="Inter,system-ui">IP layer</text>
+      <text x="220" y="249" text-anchor="middle" fill="#8b85f0" font-size="12" font-family="Inter,system-ui">routing, adds IP header (src/dst addr), fragmentation if MTU exceeded</text>
+      <line x1="220" y1="255" x2="220" y2="272" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar10)"/>
+
+      <rect x="60" y="272" width="320" height="44" rx="10" fill="#1a1740" stroke="#8b85f0" stroke-width="1.2"/>
+      <text x="220" y="294" text-anchor="middle" fill="#cdc9fa" font-size="14" font-weight="700" font-family="Inter,system-ui">Ethernet / Link layer</text>
+      <text x="220" y="310" text-anchor="middle" fill="#8b85f0" font-size="12" font-family="Inter,system-ui">ARP lookup for next-hop MAC, VLAN tag, Ethernet frame header</text>
+      <line x1="220" y1="316" x2="220" y2="333" stroke="#626b8a" stroke-width="1.5" marker-end="url(#ar10)"/>
+
+      <rect x="60" y="333" width="320" height="18" rx="8" fill="#2a0a0a" stroke="#f0706c" stroke-width="1"/>
+      <text x="220" y="346" text-anchor="middle" fill="#fbb8b6" font-size="12" font-family="Inter,system-ui">NIC driver → DMA to NIC Tx ring → electrical signal on wire</text>
+
+      <!-- sk_buff panel -->
+      <rect x="408" y="28" width="404" height="200" rx="10" fill="#0b0d14" stroke="#252b42" stroke-width="1"/>
+      <text x="610" y="54" text-anchor="middle" fill="#eef0f6" font-size="14" font-weight="700" font-family="Inter,system-ui">sk_buff — Linux packet structure</text>
+      <line x1="418" y1="64" x2="802" y2="64" stroke="#252b42" stroke-width="0.8"/>
+      <text x="418" y="86"  fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">struct sk_buff (skb) is the fundamental network</text>
+      <text x="418" y="104" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">packet container. Same struct from send() to NIC —</text>
+      <text x="418" y="122" fill="#a0a8c0" font-size="13" font-family="Inter,system-ui">never copied between layers.</text>
+      <text x="418" y="148" fill="#626b8a" font-size="13" font-family="Inter,system-ui">• head/data/tail/end — buffer boundary pointers</text>
+      <text x="418" y="166" fill="#626b8a" font-size="13" font-family="Inter,system-ui">• Each layer prepends its header by moving</text>
+      <text x="418" y="184" fill="#626b8a" font-size="13" font-family="Inter,system-ui">  data pointer (no memcpy between layers!)</text>
+      <text x="418" y="210" fill="#35d99a" font-size="13" font-family="Inter,system-ui">→ Zero-copy networking: key to performance</text>
+
+      <!-- io_uring panel -->
+      <rect x="408" y="246" width="404" height="108" rx="10" fill="#2e1e00" stroke="#f7c35a" stroke-width="1"/>
+      <text x="610" y="272" text-anchor="middle" fill="#fce4a3" font-size="14" font-weight="700" font-family="Inter,system-ui">io_uring — future of I/O (Linux 5.1+)</text>
+      <line x1="418" y1="282" x2="802" y2="282" stroke="#78350f" stroke-width="0.8"/>
+      <text x="418" y="302" fill="#fce4a3" font-size="13" font-family="Inter,system-ui">Two ring buffers shared with kernel (no syscall):</text>
+      <text x="418" y="320" fill="#f7c35a" font-size="13" font-family="Inter,system-ui">SQ (Submission Queue): you write I/O requests</text>
+      <text x="418" y="338" fill="#f7c35a" font-size="13" font-family="Inter,system-ui">CQ (Completion Queue): kernel writes results</text>
+      <text x="418" y="348" fill="#626b8a" font-size="11" font-family="Inter,system-ui">Cloudflare: 30–50% throughput gain vs. epoll</text>
+    </svg>
+  </div>
+
+  <div class="sl">I/O modes — blocking, non-blocking, multiplexed, async</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Mode</th><th>Behavior</th><th>Syscall</th><th>Used by</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Blocking I/O</strong></td><td>Thread sleeps until data available. Simple, wastes CPU if other work pending.</td><td>read(), recv()</td><td>CLI tools, simple scripts</td></tr>
+      <tr><td><strong>Non-blocking</strong></td><td>Returns immediately with EAGAIN if not ready. App must retry or poll.</td><td>O_NONBLOCK + read()</td><td>Combined with select/poll/epoll</td></tr>
+      <tr class="hl"><td><strong>I/O multiplexing (epoll)</strong></td><td>Register many FDs. Block until any is ready. Single thread handles 100k+ connections.</td><td>epoll_create1() + epoll_wait()</td><td>Node.js, Nginx, Redis, HAProxy</td></tr>
+      <tr><td><strong>io_uring (async)</strong></td><td>Write requests to shared SQ ring (no syscall). Kernel processes async. Read completions from CQ ring. Near-zero overhead.</td><td>io_uring_enter() (rarely needed)</td><td>Cloudflare, liburing, modern DBs, tokio-uring</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout ctip"><strong>Why io_uring is revolutionary:</strong> Traditional I/O: each read()/write() = one syscall = one Ring 3→0→3 context switch. At 1M requests/sec = 1M context switches. With io_uring (Linux 5.1, May 2019): share two ring buffers with kernel via mmap. Enqueue requests by writing to SQ — <em>no syscall</em>. Kernel processes and writes completions to CQ. For CPU-bound servers at millions of I/O ops/sec, this eliminates essentially all syscall overhead. Cloudflare reported 30–50% throughput improvements. tokio (Rust's async runtime) has an io_uring backend.</div>
+
+  <div class="sl">Disk I/O path — write() to physical platter / NAND</div>
+  <div class="card-grid">
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">📝 Page cache (buffer cache)</div>
+      <div class="cc-sub">RAM mirror of disk blocks</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">When you write() to a file, data goes to the kernel page cache first (fast, RAM speed). The actual disk write happens asynchronously by the writeback daemon (kworker). This is why write() returns instantly even for large files — data isn't on disk yet. <code>fsync()</code> forces the cache to flush to disk synchronously. Databases call fsync() after every transaction commit.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">⚡ Block layer & I/O scheduler</div>
+      <div class="cc-sub">Reordering writes for efficiency</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">The block layer collects I/O requests and reorders them using a scheduler. For HDDs: elevator algorithm (sort by sector address, reduce seek time). For SSDs/NVMe: no seek time, so MQ-deadline or none. The block layer also merges adjacent requests (if two writes are to sectors 100–107 and 108–115, merge into one 16-sector write). Linux uses blk-mq (multi-queue) for NVMe — one queue per CPU core to avoid lock contention.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">💾 NVMe vs SATA — why NVMe is so fast</div>
+      <div class="cc-sub">Protocol and queue depth</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail">SATA uses AHCI protocol: 1 command queue, max 32 outstanding commands, designed for spinning disks. NVMe uses PCIe lanes directly: up to 65,535 queues, each with 65,536 commands. NVMe also uses the OS memory directly via DMA — no intermediate SATA controller buffer. Result: NVMe latency ~20–100 µs vs SATA ~200 µs. Sequential read: NVMe 7,000 MB/s vs SATA 600 MB/s. Fully saturates PCIe 4.0 x4 bandwidth.</div>
+    </div>
+    <div class="cc" onclick="toggleCC(this)">
+      <div class="cc-title">🔄 Writeback vs write-through</div>
+      <div class="cc-sub">When data reaches disk</div>
+      <div class="cc-hint">Click to expand ↓</div>
+      <div class="cc-detail"><strong>Writeback (default):</strong> write() → page cache (fast return) → kworker flushes to disk asynchronously. Risk: power loss between write() and flush = data lost. <strong>Write-through:</strong> write() → page cache AND disk simultaneously before returning. Slower but durable. <strong>O_DIRECT:</strong> bypasses page cache entirely — application manages its own buffering (PostgreSQL does this with its shared_buffers). <strong>O_SYNC:</strong> every write() waits for disk acknowledgement before returning.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ CH11: SHUTDOWN ═══════════════ -->
+
+<div class="chapter-divider">
+  <div class="chapter-divider-line"></div>
+  <div class="chapter-divider-badge">
+    <span class="chapter-divider-num">11</span>
+    <span class="chapter-divider-dot"></span>
+    <span>Shutdown</span>
+  </div>
+  <div class="chapter-divider-line"></div>
+</div>
+<div class="chapter" id="ch11">
+  <div class="chap-hd cr">
+    <div class="chap-icon">🔌</div>
+    <div>
+      <div class="chap-ey">Chapter 11 — Shutdown</div>
+      <div class="chap-title">Shutdown — The Reverse Journey</div>
+      <div class="chap-desc">Shutdown is not "just turn off." It is a carefully ordered, staged teardown to ensure no data is lost, all hardware is left clean, and the system can safely boot next time. Everything that happened during boot is undone — in reverse.</div>
+      <div class="analogy">🔍 Closing a restaurant: tell staff to stop seating, clear all tables, let kitchen finish open orders, clean equipment, lock walk-in, turn off gas, then lights, then lock the door. Order matters — skip a step and something breaks.</div>
+    </div>
+  </div>
+
+  <div class="sl">Complete shutdown sequence — step by step</div>
+  <div class="sh-steps">
+    <div class="sh-step">
+      <div class="sh-num">1</div>
+      <div>
+        <div class="sh-title">User triggers shutdown — SIGTERM sent to PID 1</div>
+        <div class="sh-desc">Running <code>shutdown -h now</code>, <code>systemctl poweroff</code>, or pressing power button sends SIGPWR/SIGTERM to systemd (PID 1). On Windows: <code>NtShutdownSystem()</code> called via Win32 API. The OS enters an ordered teardown phase. Force-killing power during this phase risks data corruption — the page cache may have unflushed dirty pages.</div>
+      </div>
+    </div>
+    <div class="sh-step">
+      <div class="sh-num">2</div>
+      <div>
+        <div class="sh-title">systemd stops all services — in reverse dependency order</div>
+        <div class="sh-desc">systemd knows the full dependency graph (from unit file After=/Before= declarations). If nginx depends on postgresql, nginx stops first. Each service gets SIGTERM with a timeout (default 90 seconds). During those 90 seconds: nginx flushes buffers, closes keep-alive connections, finishes in-flight requests. PostgreSQL writes a clean checkpoint to WAL and closes all sockets. After timeout, remaining processes get SIGKILL (unkillable immediate termination).</div>
+      </div>
+    </div>
+    <div class="sh-step">
+      <div class="sh-num">3</div>
+      <div>
+        <div class="sh-title">All user processes killed — process table cleared</div>
+        <div class="sh-desc">Any remaining user-space processes get SIGTERM then SIGKILL. The kernel reaps all zombies (reads exit codes, frees PCBs). All open file descriptors are closed. All sockets send TCP FIN packets (RST if SIGKILL'd). The process table is now empty except for kernel threads (kthreadd, kworker, ksoftirqd, kswapd).</div>
+      </div>
+    </div>
+    <div class="sh-step">
+      <div class="sh-num">4</div>
+      <div>
+        <div class="sh-title">sync() — flushing the page cache to disk</div>
+        <div class="sh-desc">This is the most critical step for data integrity. The kernel page cache holds dirty pages — data written by apps but not yet on disk. <code>sync()</code> forces ALL dirty pages to be written to their backing storage (disk, network storage). This can take several seconds if a database or build system was writing heavily. <strong>Yanking power during sync() = potential data loss.</strong> The filesystem journal helps recover the FS structure, but the actual data you wrote may be gone.</div>
+      </div>
+    </div>
+    <div class="sh-step">
+      <div class="sh-num">5</div>
+      <div>
+        <div class="sh-title">Filesystems unmounted — journal marked clean</div>
+        <div class="sh-desc">All mounted filesystems are unmounted in reverse order: <code>umount /mnt/data</code> → <code>umount /home</code> → <code>umount /</code>. Unmounting verifies all writes are complete and writes a "clean unmount" marker in the filesystem superblock (ext4: <code>s_state = EXT4_VALID_FS</code>). On next boot, the kernel sees the clean flag and skips fsck. If machine was force-powered, the clean flag is absent → fsck runs on next boot → may take minutes for large volumes.</div>
+      </div>
+    </div>
+    <div class="sh-step">
+      <div class="sh-num">6</div>
+      <div>
+        <div class="sh-title">Swap deactivated — kernel threads stopped</div>
+        <div class="sh-desc">Swap partitions/files deactivated (<code>swapoff</code>). Pages still in swap that belong to running processes are swapped back into RAM. Swap devices marked clean. Kernel threads (kworker, ksoftirqd, kswapd, rcu_sched) are signalled to stop. The kernel's internal workqueue is drained of pending work items.</div>
+      </div>
+    </div>
+    <div class="sh-step">
+      <div class="sh-num">7</div>
+      <div>
+        <div class="sh-title">Kernel stops hardware — driver shutdown callbacks</div>
+        <div class="sh-desc">Interrupts are disabled (<code>CLI</code> on x86 — Clear Interrupt Flag). Each device driver's <code>shutdown()</code> callback is called: NIC driver sends link-down signal, GPU driver powers off the display pipeline and scanout, NVMe driver issues an NVMe Shutdown command (the controller writes its internal write buffer to NAND — takes ~100 ms, critical to wait for!), SATA drives receive STANDBY IMMEDIATE. USB hub is powered down.</div>
+      </div>
+    </div>
+    <div class="sh-step">
+      <div class="sh-num">8</div>
+      <div>
+        <div class="sh-title">ACPI S5 invoked — power rails cut. Done.</div>
+        <div class="sh-desc">The kernel calls <code>acpi_enter_sleep_state(ACPI_STATE_S5)</code>. This invokes the firmware's _S5_ ACPI method which signals the Power Management Controller (PMC) chip. PMC tells the PSU to cut the main power rails (12V, 5V, 3.3V). The CPU executes a final <code>HLT</code> instruction. Standby power (5VSB) remains for USB charging and Wake-on-LAN. The whole sequence from "shutdown" command to powered-off: typically 5–30 seconds on a healthy system.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sl">Shutdown vs Reboot vs Sleep vs Hibernate</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Action</th><th>RAM contents</th><th>What survives</th><th>Resume time</th><th>ACPI state</th></tr></thead>
+    <tbody>
+      <tr class="hl"><td><strong>Shutdown</strong></td><td>Completely cleared</td><td>Nothing (disk only)</td><td>Full boot (~10–30 s)</td><td>S5 (mechanically off)</td></tr>
+      <tr><td><strong>Reboot</strong></td><td>Cleared, POST re-runs</td><td>Nothing</td><td>Full boot</td><td>S5 → RESET → S0</td></tr>
+      <tr><td><strong>Suspend / Sleep</strong></td><td>Preserved in RAM (low power)</td><td>All open apps + state</td><td>~1–3 seconds</td><td>S3 (suspend-to-RAM)</td></tr>
+      <tr><td><strong>Hibernate</strong></td><td>Written to disk (swap / hiberfil.sys)</td><td>All open apps + state (via disk)</td><td>~15–45 seconds</td><td>S4 (suspend-to-disk)</td></tr>
+      <tr><td><strong>Hybrid sleep</strong></td><td>Written to disk AND kept in RAM</td><td>All (disk fallback if power lost)</td><td>Fast if powered; disk if not</td><td>S3 + S4 combined</td></tr>
+      <tr><td><strong>Windows Fast Startup</strong></td><td>Kernel session written to hiberfil.sys</td><td>Kernel + drivers (not user sessions)</td><td>~3–8 seconds</td><td>S4 (partial hibernate)</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout cw"><strong>Why Windows Fast Startup breaks dual-boot:</strong> When you click "Shut Down" on Windows 10/11, it logs out users normally but hibernates the kernel session (drivers, kernel state) to hiberfil.sys. Next boot, Windows restores the kernel from disk — skips POST and hardware init. <strong>Side effect:</strong> The NTFS filesystem is still "mounted" from Windows's perspective. Linux cannot safely write to NTFS partitions from a Windows that "shut down" this way. Solution: always use <em>Restart</em> (not Shut Down) before booting Linux in a dual-boot setup.</div>
+
+  <div class="callout cd"><strong>Why force-power-off sometimes corrupts data:</strong> The page cache holds dirty pages. A power cut gives the disk no warning — those pages are gone. The filesystem journal recovers the FS <em>structure</em> (no corruption), but the actual data written in the last few seconds may be gone. This is why PostgreSQL calls <code>fdatasync()</code> after every transaction commit — forces data to disk before acknowledging the commit. Slower, but guarantees durability (the "D" in ACID). Redis by default does not fsync — it trades durability for speed.</div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<div class="footer">
+  <h3>You now understand Operating Systems — end to end.</h3>
+  <p>From the CPU waking at 0xFFFFFFF0, through every kernel subsystem, to the final ACPI shutdown. Every layer. Every "why". Every trade-off.</p>
+  <p style="margin-top:8px;">The best way to solidify this: close the doc, draw the lifecycle map from memory on paper, then explain Chapter 05 (Virtual Memory) to a friend. If you can teach it, you own it.</p>
+  <small>Built for RUET ETE · JetBrains Mono + Inter · Interactive simulations · Fully offline after first load</small>
+</div>
+
+</div><!-- end .page -->
+
+<script>
+'use strict';
+
+/* ─── LIFECYCLE ─────────────────────────────── */
+const LC=[
+  {c:'#8b85f0',t:'t = 0 ms',       n:'Power button pressed',           d:'PSU rails stabilise (12V/5V/3.3V). CPU RESET# held LOW until voltages stable (~100–300 ms).'},
+  {c:'#35d99a',t:'t ≈ 300 ms',     n:'CPU executes first instruction',  d:'Fetches from ROM address 0xFFFFFFF0. CPU in 16-bit Real Mode. First instruction is a far JMP into UEFI firmware.'},
+  {c:'#f7c35a',t:'t ≈ 300–500 ms', n:'UEFI POST',                      d:'RAM test, PCIe scan, ACPI tables built, SMBIOS populated, IRQ assignment. Beep codes if RAM fails.'},
+  {c:'#5aabf7',t:'t ≈ 500 ms',     n:'Secure Boot verification',        d:'UEFI verifies bootloader EFI binary signature against DB certificate store. Refuses if invalid or in DBX.'},
+  {c:'#f7935a',t:'t ≈ 550 ms',     n:'CPU mode switch: Real→Long Mode', d:'Real Mode (16-bit) → Protected Mode (CR0.PE=1) → Long Mode (EFER.LME=1). Paging enabled (CR0.PG=1).'},
+  {c:'#e06ef0',t:'t ≈ 600 ms',     n:'GRUB Stage 1 + Stage 2',         d:'GRUB reads grub.cfg, shows boot menu. Loads vmlinuz + initrd.img into RAM. JMPs to kernel entry point. GRUB is now gone.'},
+  {c:'#52de82',t:'t ≈ 650 ms',     n:'Kernel self-decompresses',        d:'vmlinuz is compressed (lz4/zstd). Decompresses into RAM. Calls start_kernel(). MMU now active. Ring 0.'},
+  {c:'#8b85f0',t:'t ≈ 700 ms',     n:'Kernel core init',               d:'memory_init(), trap_init() (IDT), time_init() (HPET/APIC), sched_init(), rest_init(). Console output begins.'},
+  {c:'#35d99a',t:'t ≈ 800 ms',     n:'initrd mounted',                  d:'Temporary RAM FS with minimal drivers. Mounts, loads storage drivers, then mounts real root FS.'},
+  {c:'#f7c35a',t:'t ≈ 900 ms',     n:'Root filesystem mounted',         d:'Kernel finds root device (from cmdline). Loads ext4/btrfs driver. Mounts /. Switches from initrd to real root.'},
+  {c:'#f0706c',t:'t ≈ 1.0 s',      n:'PID 1 created — systemd',        d:'First user-space process (Ring 3). Ancestor of everything. If PID 1 dies → kernel panic → system down.'},
+  {c:'#5aabf7',t:'t ≈ 1.2 s',      n:'Kernel modules loaded',           d:'GPU (nvidia.ko / amdgpu.ko), NIC (e1000e.ko), WiFi (ath9k.ko), audio (snd_hda_intel.ko). IRQ handlers registered.'},
+  {c:'#52de82',t:'t ≈ 1.5 s',      n:'Network stack initialised',       d:'IP addresses configured (DHCP/static). Routing tables loaded. iptables/nftables rules applied. Sockets ready.'},
+  {c:'#e06ef0',t:'t ≈ 2–10 s',     n:'Services start (dependency order)',d:'systemd starts sshd, nginx, postgresql, cron, dbus in dependency order. Each: fork()+exec() from PID 1.'},
+  {c:'#eef0f6',t:'t ≈ 5–20 s',     n:'🖥️ Login / Desktop shown',      d:'Display manager (GDM, SDDM) shows login. After auth, desktop environment (GNOME, KDE) starts.'},
+  {c:'#a0a8c0',t:'ongoing',         n:'System running normally',         d:'Scheduler runs 400+ processes on 8 cores. Interrupts fire ~1000/sec. Virtual memory handles page faults. All I/O flows through kernel.'},
+  {c:'#f7c35a',t:'t = shutdown',    n:'User triggers shutdown',          d:'systemctl poweroff → SIGTERM to PID 1. Ordered teardown begins. NtShutdownSystem() on Windows.'},
+  {c:'#f0706c',t:'shutdown +5 s',   n:'Services stop (reverse order)',   d:'SIGTERM → 90 s timeout → SIGKILL. nginx, postgresql, sshd flush buffers and close connections.'},
+  {c:'#f0706c',t:'shutdown +10 s',  n:'sync() — page cache flushed',    d:'All dirty pages forced to disk. Critical for data integrity. Power loss here = potential data loss.'},
+  {c:'#f0706c',t:'shutdown +12 s',  n:'Filesystems unmounted',          d:'All mounts unmounted in reverse. Journal marked clean (EXT4_VALID_FS). fsck skipped on next boot.'},
+  {c:'#c0392b',t:'shutdown +14 s',  n:'Hardware powered down',          d:'Interrupts disabled (CLI). Driver shutdown() callbacks. NVMe flushes internal buffer. ACPI _S5 method invoked.'},
+  {c:'#922b21',t:'shutdown +15 s',  n:'CPU halts — machine off',        d:'CPU executes HLT. ACPI PMC cuts main power rails. 5VSB stays for USB charging / WoL. Done.'},
+];
+
+function buildLifecycle(){
+  const el=document.getElementById('lifecycleEl');
+  if(!el)return;
+  el.innerHTML=LC.map((item,i)=>{
+    const isLast=i===LC.length-1;
+    const nextC=LC[i+1]?.c||item.c;
+    return `<div class="lc-item">
+      <div class="lc-spine">
+        <div class="lc-dot" style="background:${item.c};border-color:${item.c};"></div>
+        ${!isLast?`<div class="lc-line" style="background:linear-gradient(${item.c}55,${nextC}33);margin-top:4px;"></div>`:''}
+      </div>
+      <div class="lc-content">
+        <div class="lc-time" style="color:${item.c};">${item.t}</div>
+        <div class="lc-title">${item.n}</div>
+        <div class="lc-desc">${item.d}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ─── CONCEPT CARD ──────────────────────────── */
+function toggleCC(el){el.classList.toggle('open');}
+
+/* ─── SYSCALL LIST ──────────────────────────── */
+const SYSCALLS=[
+  {n:'0',  nm:'read()',      d:'Read bytes from file descriptor (file, socket, pipe, stdin)'},
+  {n:'1',  nm:'write()',     d:'Write bytes to fd — what printf() calls at the bottom'},
+  {n:'2',  nm:'open()',      d:'Open a file path, return integer file descriptor'},
+  {n:'3',  nm:'close()',     d:'Close FD, release kernel reference count'},
+  {n:'4',  nm:'stat()',      d:'Get file metadata: size, owner, permissions, timestamps, inode#'},
+  {n:'9',  nm:'mmap()',      d:'Map file or anonymous memory into virtual address space. malloc() uses this for large allocs.'},
+  {n:'11', nm:'munmap()',    d:'Unmap a virtual memory region. Called by free() eventually.'},
+  {n:'12', nm:'brk()',       d:'Move heap boundary. malloc() uses this for small allocations.'},
+  {n:'39', nm:'getpid()',    d:'Return current process ID'},
+  {n:'57', nm:'fork()',      d:'Create child process via CoW copy. Returns TWICE (child PID in parent; 0 in child).'},
+  {n:'59', nm:'execve()',    d:'Replace current process image with a new binary (path, args, env)'},
+  {n:'60', nm:'exit()',      d:'Terminate process with exit code. Kernel frees resources, notifies parent.'},
+  {n:'61', nm:'wait4()',     d:'Wait for child to exit. Reads exit status. Prevents zombie accumulation.'},
+  {n:'41', nm:'socket()',    d:'Create network socket (AF_INET/TCP, AF_INET/UDP, AF_UNIX)'},
+  {n:'42', nm:'connect()',   d:'Connect socket to remote (IP:port). Triggers TCP 3-way handshake.'},
+  {n:'43', nm:'accept()',    d:'Accept incoming connection on listening socket. Returns new FD.'},
+  {n:'44', nm:'sendto()',    d:'Send data on socket (with optional destination for UDP)'},
+  {n:'45', nm:'recvfrom()', d:'Receive data from socket'},
+  {n:'35', nm:'nanosleep()',d:'Sleep for precise duration. Used by sleep(3) and usleep().'},
+  {n:'232',nm:'epoll_wait()',d:'Wait for events on multiple FDs. Core of Node.js, Nginx, Redis event loops.'},
+];
+
+function buildSyscalls(){
+  const el=document.getElementById('syscallListEl');
+  if(!el)return;
+  el.innerHTML=SYSCALLS.map(s=>`<div class="syscall-row">
+    <span class="sc-num">#${s.n}</span>
+    <span class="sc-name">${s.nm}</span>
+    <span class="sc-desc">${s.d}</span>
+  </div>`).join('');
+}
+
+/* ─── STRACE SIM ────────────────────────────── */
+const STRACE={
+  ls:[
+    {s:'execve',    a:'("/bin/ls", ["ls"], envp)',                                r:'0'},
+    {s:'brk',       a:'(NULL)',                                                    r:'0x55a2b4c00000'},
+    {s:'mmap',      a:'(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON)',r:'0x7f3a8b200000'},
+    {s:'access',    a:'("/etc/ld.so.preload", R_OK)',                             r:'-1 ENOENT'},
+    {s:'openat',    a:'(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC)',      r:'3'},
+    {s:'fstat',     a:'(3, {st_mode=S_IFREG|0644, st_size=89234})',              r:'0'},
+    {s:'mmap',      a:'(NULL, 89234, PROT_READ, MAP_PRIVATE)',                   r:'0x7f3a8b1e0000'},
+    {s:'openat',    a:'(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY)',r:'3'},
+    {s:'openat',    a:'(AT_FDCWD, ".", O_RDONLY|O_DIRECTORY)',                   r:'3'},
+    {s:'getdents64',a:'(3, /* 14 entries */, 32768)',                             r:'468'},
+    {s:'write',     a:'(1, "Desktop  Downloads  file.txt\\n", 28)',               r:'28'},
+    {s:'close',     a:'(1)',                                                       r:'0'},
+    {s:'exit_group',a:'(0)',                                                       r:'<process exited>'},
+  ],
+  cat:[
+    {s:'execve',   a:'("/bin/cat", ["cat", "file.txt"], envp)',r:'0'},
+    {s:'openat',   a:'(AT_FDCWD, "file.txt", O_RDONLY)',      r:'3'},
+    {s:'fstat',    a:'(3, {st_mode=S_IFREG, st_size=1234})',  r:'0'},
+    {s:'fadvise64',a:'(3, 0, 0, POSIX_FADV_SEQUENTIAL)',      r:'0'},
+    {s:'mmap',     a:'(NULL, 139264, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON)',r:'0x7f3b00000000'},
+    {s:'read',     a:'(3, "Hello world! This is my file\\n...", 131072)',r:'1234'},
+    {s:'write',    a:'(1, "Hello world! This is my file\\n...", 1234)',  r:'1234'},
+    {s:'read',     a:'(3, "", 131072)',                        r:'0  ← EOF'},
+    {s:'close',    a:'(3)',                                    r:'0'},
+    {s:'exit_group',a:'(0)',                                   r:'<process exited>'},
+  ],
+  curl:[
+    {s:'socket',   a:'(AF_INET, SOCK_STREAM, IPPROTO_TCP)',   r:'3'},
+    {s:'connect',  a:'(3, {AF_INET, 93.184.216.34, port=443})',r:'0 ← TCP 3-way handshake done'},
+    {s:'sendto',   a:'(3, "\\x16\\x03\\x01..." /* TLS ClientHello */, 289)',r:'289'},
+    {s:'recvfrom', a:'(3, "\\x16\\x03\\x03..." /* TLS ServerHello */, 16384)',r:'1400'},
+    {s:'sendto',   a:'(3, "GET / HTTP/1.1\\r\\nHost: example.com\\r\\n\\r\\n", 40)',r:'40'},
+    {s:'poll',     a:'([{fd=3, events=POLLIN}], 1, 30000)',   r:'1 (data ready)'},
+    {s:'recvfrom', a:'(3, "HTTP/1.1 200 OK\\r\\n...", 16384)',r:'4096'},
+    {s:'write',    a:'(1, "<!DOCTYPE html>...", 4096)',        r:'4096'},
+    {s:'close',    a:'(3)',                                    r:'0'},
+    {s:'exit_group',a:'(0)',                                   r:'<process exited>'},
+  ],
+  fork:[
+    {s:'socket',   a:'(AF_INET, SOCK_STREAM|SOCK_CLOEXEC, IPPROTO_TCP)',r:'3'},
+    {s:'bind',     a:'(3, {AF_INET, 0.0.0.0, port=8080})',    r:'0'},
+    {s:'listen',   a:'(3, 128)',                               r:'0'},
+    {s:'accept',   a:'(3, {AF_INET, 192.168.1.10, port=54321})',r:'4 ← new connection FD'},
+    {s:'fork',     a:'()',                                     r:'1042 ← child PID (in parent)'},
+    {s:'fork',     a:'()',                                     r:'0   ← in child: I AM the child'},
+    {s:'read',     a:'(4, "GET / HTTP/1.1\\r\\n\\r\\n", 4096)',r:'18 (in child)'},
+    {s:'write',    a:'(4, "HTTP/1.1 200 OK\\r\\n\\r\\nHello!", 26)',r:'26'},
+    {s:'close',    a:'(4)',                                    r:'0'},
+    {s:'exit_group',a:'(0)',                                   r:'<child exits>'},
+    {s:'wait4',    a:'(1042, WIFEXITED && WEXITSTATUS==0, 0, NULL)',r:'1042 (parent reaps child)'},
+  ],
+};
+
+function runStrace(cmd){
+  const el=document.getElementById('straceEl');
+  if(!el)return;
+  el.innerHTML='';
+  const data=STRACE[cmd]||[];
+  let i=0;
+  const step=()=>{
+    if(i<data.length){
+      const d=data[i];
+      const rc=d.r.startsWith('-')?'#f0706c':(d.r==='0'||d.r.startsWith('0 ')||d.r.startsWith('0\n'))?'#52de82':'#c3e88d';
+      el.innerHTML+=`<span style="color:#82aaff">${d.s}</span><span style="color:#a0a8c0">${d.a}</span><span style="color:#626b8a"> = </span><span style="color:${rc}">${d.r}</span>\n`;
+      el.scrollTop=el.scrollHeight; i++;
+      setTimeout(step,190);
+    }
+  };
+  step();
+}
+
+/* ─── IRQ SIMULATOR ─────────────────────────── */
+function fireIRQ(type,label,action){
+  const el=document.getElementById('irqEl');
+  if(!el)return;
+  const ts=()=>`[${(performance.now()/1000).toFixed(3)}s]`;
+  const steps=[
+    `<span style="color:#626b8a">${ts()}</span> <span style="color:#a0a8c0">🔵 CPU executing user-space code (Ring 3)...</span>`,
+    `<span style="color:#626b8a">${ts()}</span> <span style="color:#f7c35a">⚡ ${label} — hardware asserts IRQ line on APIC</span>`,
+    `<span style="color:#626b8a">${ts()}</span> <span style="color:#f0706c">🔴 CPU finishes current instruction (cannot interrupt mid-instruction)</span>`,
+    `<span style="color:#626b8a">${ts()}</span> <span style="color:#f0706c">💾 CPU auto-pushes: SS · RSP · RFLAGS · CS · RIP → kernel stack</span>`,
+    `<span style="color:#626b8a">${ts()}</span> <span style="color:#8b85f0">🔑 CPU reads IDT[IRQ#] → jumps to ISR in Ring 0 (interrupts disabled)</span>`,
+    `<span style="color:#626b8a">${ts()}</span> <span style="color:#8b85f0">⚙️  ISR top-half: ${action}</span>`,
+    `<span style="color:#626b8a">${ts()}</span> <span style="color:#8b85f0">📤 EOI written to APIC (End Of Interrupt) — re-enables this IRQ level</span>`,
+    `<span style="color:#626b8a">${ts()}</span> <span style="color:#35d99a">💾 IRET: pops RIP · CS · RFLAGS · RSP · SS from kernel stack</span>`,
+    `<span style="color:#626b8a">${ts()}</span> <span style="color:#35d99a">🟢 CPU back in Ring 3 — resumes exactly where interrupted. ~5–10 µs total.</span>`,
+    `<span style="color:#252b42">${'─'.repeat(72)}</span>`,
+  ];
+  let i=0;
+  const step=()=>{
+    if(i<steps.length){
+      el.innerHTML+=steps[i]+'\n';
+      el.scrollTop=el.scrollHeight; i++;
+      setTimeout(step,170);
+    }
+  };
+  step();
+}
+
+/* ─── MEMORY SIM ────────────────────────────── */
+let MEM=Array(32).fill(null);
+const MCOL=[null,'mc-k','mc-p1','mc-p2','mc-p3','mc-p4','mc-sw'];
+const MLBL=[null,'K','P1','P2','P3','P4','SW'];
+let mNxt=2;
+
+function initMem(){
+  MEM=Array(32).fill(null);
+  [0,1,2,3].forEach(i=>MEM[i]=1);
+  [4,5,6].forEach(i=>MEM[i]=2);
+  [8,9].forEach(i=>MEM[i]=3);
+  renderMem();
+}
+
+function renderMem(){
+  const g=document.getElementById('memGridEl');
+  if(!g)return;
+  g.innerHTML=MEM.map((c,i)=>{
+    const cls=c?MCOL[c]:'mc-free';
+    return`<div class="mc ${cls}">${c?MLBL[c]:i}</div>`;
+  }).join('');
+}
+
+function doAllocMem(){
+  if(mNxt>5){setMemMsg('Max user processes reached. Free some first.');return;}
+  const size=2+Math.floor(Math.random()*3);
+  let start=-1;
+  for(let i=0;i<=32-size;i++){if(MEM.slice(i,i+size).every(x=>!x)){start=i;break;}}
+  if(start===-1){setMemMsg('❌ Out of contiguous memory! Try freeing or swapping pages.');return;}
+  for(let i=start;i<start+size;i++)MEM[i]=mNxt;
+  setMemMsg(`✅ Allocated ${MLBL[mNxt]}: ${size} × 4 KB pages at frames ${start}–${start+size-1}. Virtual addr 0x${(start*4096).toString(16).padStart(8,'0')} → physical frame ${start}.`);
+  mNxt++; renderMem();
+}
+
+function doFreeMem(){
+  const usable=MEM.map((c,i)=>c&&c>1&&c<6?i:-1).filter(i=>i>=0);
+  if(!usable.length){setMemMsg('Nothing to free.');return;}
+  const idx=usable[Math.floor(Math.random()*usable.length)];
+  const col=MEM[idx];
+  MEM.forEach((_,i)=>{if(MEM[i]===col)MEM[i]=null;});
+  setMemMsg(`✅ Freed all pages of ${MLBL[col]}. Physical frames returned to free list. Page table entries cleared.`);
+  if(mNxt>2)mNxt--;
+  renderMem();
+}
+
+function doSwapMem(){
+  const usable=MEM.map((c,i)=>c&&c>1&&c<6?i:-1).filter(i=>i>=0);
+  if(!usable.length){setMemMsg('No user pages to swap out.');return;}
+  const idx=usable[Math.floor(Math.random()*usable.length)];
+  MEM[idx]=6;
+  setMemMsg(`⚠️ Frame ${idx} evicted to swap (shown red). Page table entry marked "swapped" with disk offset. Next access → page fault → kernel reads from swap.`);
+  renderMem();
+}
+
+function doResetMem(){mNxt=2;initMem();setMemMsg('Memory reset to initial state.');}
+function setMemMsg(m){const el=document.getElementById('memMsgEl');if(el)el.textContent=m;}
+
+/* ─── PROCESS TABLE ─────────────────────────── */
+let PROCS=[
+  {pid:1,    nm:'systemd',  st:'sleeping',ppid:0,   thr:1, mem:'8 MB',   note:'PID 1 — if it dies, kernel panic'},
+  {pid:2,    nm:'kthreadd', st:'sleeping',ppid:0,   thr:1, mem:'0 MB',   note:'kernel thread daemon'},
+  {pid:412,  nm:'sshd',     st:'sleeping',ppid:1,   thr:2, mem:'12 MB',  note:'SSH daemon, listening :22'},
+  {pid:1024, nm:'bash',     st:'running', ppid:412, thr:1, mem:'4 MB',   note:'your interactive shell'},
+  {pid:1025, nm:'nginx',    st:'sleeping',ppid:1,   thr:4, mem:'32 MB',  note:'web server, 4 worker threads'},
+  {pid:1026, nm:'postgres', st:'sleeping',ppid:1,   thr:8, mem:'256 MB', note:'DB server, 8 backend threads'},
+  {pid:1027, nm:'node',     st:'waiting', ppid:1024,thr:1, mem:'48 MB',  note:'waiting for I/O (epoll_wait)'},
+];
+let nxtPID=3000;
+
+function renderProcs(){
+  const tb=document.getElementById('procTbodyEl');
+  if(!tb)return;
+  tb.innerHTML=PROCS.map(p=>{
+    const dc=p.st==='running'?'srun':p.st==='waiting'?'swat':p.st==='zombie'?'szom':'sslp';
+    return`<tr class="${p.st==='running'?'run':''}">
+      <td style="font-family:var(--mono);color:var(--purple-lt)">${p.pid}</td>
+      <td style="font-weight:500">${p.nm}</td>
+      <td><span class="sdot ${dc}"></span>${p.st}</td>
+      <td style="font-family:var(--mono)">${p.ppid}</td>
+      <td>${p.thr}</td>
+      <td>${p.mem}</td>
+      <td style="font-size:12px;color:var(--text3)">${p.note}</td>
+    </tr>`;
+  }).join('');
+}
+
+function doFork(){
+  const names=['python3','vim','curl','ffmpeg','gcc','htop','rsync','node','redis-cli','nvim'];
+  const par=PROCS[Math.floor(Math.random()*PROCS.length)];
+  const nm=names[Math.floor(Math.random()*names.length)];
+  const p={pid:nxtPID++,nm,st:'running',ppid:par.pid,thr:1,mem:Math.floor(Math.random()*40+2)+' MB',note:'just fork()ed'};
+  PROCS.push(p); renderProcs();
+  setTimeout(()=>{const pp=PROCS.find(x=>x.pid===p.pid);if(pp){pp.st='sleeping';pp.note='waiting for I/O';renderProcs();}},900);
+}
+
+function doKill(){
+  const k=PROCS.filter(p=>p.pid>100&&p.pid!==1024);
+  if(!k.length)return;
+  const v=k[Math.floor(Math.random()*k.length)];
+  PROCS=PROCS.filter(p=>p.pid!==v.pid);
+  renderProcs();
+}
+
+function doZombie(){
+  PROCS.push({pid:nxtPID++,nm:'<defunct>',st:'zombie',ppid:1,thr:0,mem:'0 MB',note:'exited but parent never called wait()'});
+  renderProcs();
+}
+
+function resetProcs(){
+  PROCS=[
+    {pid:1,nm:'systemd',st:'sleeping',ppid:0,thr:1,mem:'8 MB',note:'PID 1 — ancestor of all'},
+    {pid:2,nm:'kthreadd',st:'sleeping',ppid:0,thr:1,mem:'0 MB',note:'kernel threads parent'},
+    {pid:412,nm:'sshd',st:'sleeping',ppid:1,thr:2,mem:'12 MB',note:'SSH daemon'},
+    {pid:1024,nm:'bash',st:'running',ppid:412,thr:1,mem:'4 MB',note:'your shell'},
+    {pid:1025,nm:'nginx',st:'sleeping',ppid:1,thr:4,mem:'32 MB',note:'web server'},
+    {pid:1026,nm:'postgres',st:'sleeping',ppid:1,thr:8,mem:'256 MB',note:'database'},
+  ];
+  nxtPID=3000; renderProcs();
+}
+
+/* ─── SCHEDULER ─────────────────────────────── */
+let SPROCS=[
+  {nm:'bash', c:'#8b85f0',ms:0},
+  {nm:'node', c:'#35d99a',ms:0},
+  {nm:'vim',  c:'#f7c35a',ms:0},
+];
+let sSlots=[],sPtr=0,sRunning=false,sTimer=null;
+
+function renderSchedLeg(){
+  const el=document.getElementById('schedLegEl');
+  if(!el)return;
+  el.innerHTML=SPROCS.map(p=>`<div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2)">
+    <div style="width:12px;height:12px;border-radius:3px;background:${p.c};flex-shrink:0"></div>
+    <strong style="color:var(--text);font-family:var(--mono)">${p.nm}</strong>
+    <span style="color:var(--text3)">${p.ms} ms</span>
+  </div>`).join('');
+}
+
+function renderSchedQ(){
+  const el=document.getElementById('schedQueueEl');
+  if(el)el.textContent=SPROCS.length?SPROCS.map(p=>p.nm).join(' → '):'(empty)';
+  const tel=document.getElementById('schedTotalEl');
+  if(tel){const total=SPROCS.reduce((a,p)=>a+p.ms,0);tel.textContent=total?`Total CPU time scheduled: ${total} ms · Context switches: ${sSlots.length} · Processes: ${SPROCS.length}`:'Press ▶ Start to begin';}
+}
+
+function renderCPUTrack(){
+  const el=document.getElementById('cpuTrackEl');
+  if(!el)return;
+  const recent=sSlots.slice(-60);
+  el.innerHTML=recent.map(s=>{
+    if(!s)return`<div class="cpu-slot cpu-idle">─</div>`;
+    const p=SPROCS.find(x=>x.nm===s);
+    return`<div class="cpu-slot" style="background:${p?p.c:'#555'}">${s.slice(0,2)}</div>`;
+  }).join('');
+}
+
+function schedTick(){
+  if(!SPROCS.length){sSlots.push(null);}
+  else{
+    if(sPtr>=SPROCS.length)sPtr=0;
+    const p=SPROCS[sPtr];sSlots.push(p.nm);p.ms++;sPtr++;
+  }
+  renderCPUTrack();renderSchedLeg();renderSchedQ();
+}
+
+function toggleSched(){
+  const btn=document.getElementById('schedToggleBtn');
+  if(!btn)return;
+  if(sRunning){clearInterval(sTimer);sRunning=false;btn.textContent='▶ Start';}
+  else{sRunning=true;btn.textContent='⏸ Pause';sTimer=setInterval(schedTick,140);}
+}
+
+function addSchedProc(){
+  const names=['python','gcc','curl','top','rsync','ffmpeg','redis','pg_dump','make','htop'];
+  const colors=['#f0706c','#5aabf7','#52de82','#f27ba0','#f7935a','#e06ef0','#67e8f9','#fcd34d','#a78bfa','#34d399'];
+  const i=SPROCS.length%names.length;
+  SPROCS.push({nm:names[i],c:colors[i],ms:0});
+  renderSchedLeg();renderSchedQ();
+}
+
+function removeSchedProc(){
+  if(SPROCS.length>1){SPROCS.pop();if(sPtr>=SPROCS.length)sPtr=0;renderSchedLeg();renderSchedQ();}
+}
+
+function resetSched(){
+  clearInterval(sTimer);sRunning=false;
+  const btn=document.getElementById('schedToggleBtn');
+  if(btn)btn.textContent='▶ Start';
+  SPROCS=[{nm:'bash',c:'#8b85f0',ms:0},{nm:'node',c:'#35d99a',ms:0},{nm:'vim',c:'#f7c35a',ms:0}];
+  sSlots=[];sPtr=0;
+  renderCPUTrack();renderSchedLeg();renderSchedQ();
+}
+
+/* ─── INIT ──────────────────────────────────── */
+buildLifecycle();
+buildSyscalls();
+initMem();
+renderProcs();
+renderSchedLeg();
+renderSchedQ();
+for(let i=0;i<20;i++)sSlots.push(null);
+renderCPUTrack();
+
+
+
+/* ═══════════════════════════════════════════════════
+   SIDEBAR SCROLL SYNC + MOBILE + PROGRESS BAR
+═══════════════════════════════════════════════════ */
+(function(){
+  const SECTIONS = ['ch0','ch1','ch2','ch3','ch4','ch5','ch6','ch7','ch8','ch9','ch10','ch11'];
+  const NAV_OFFSET = 24; // scroll-margin-top
+
+  /* ── progress bar ────────────────────────── */
+  function updateProgress(){
+    const scrollTop  = window.pageYOffset;
+    const docHeight  = document.documentElement.scrollHeight - window.innerHeight;
+    const pct        = docHeight > 0 ? Math.round((scrollTop / docHeight) * 100) : 0;
+    const bar        = document.getElementById('progressBar');
+    const lbl        = document.getElementById('progressLabel');
+    if(bar) bar.style.width = pct + '%';
+    if(lbl) lbl.textContent = pct < 5 ? 'Just started' : pct >= 98 ? '🎉 Complete!' : pct + '% through';
+  }
+
+  /* ── active section detection ────────────── */
+  function getActiveSection(){
+    let active = SECTIONS[0];
+    for(const id of SECTIONS){
+      const el = document.getElementById(id);
+      if(!el) continue;
+      const top = el.getBoundingClientRect().top;
+      if(top <= NAV_OFFSET + 80) active = id;
+    }
+    return active;
+  }
+
+  /* ── sync sidebar nav ────────────────────── */
+  function syncNav(){
+    const active = getActiveSection();
+    document.querySelectorAll('.nav-link').forEach(link => {
+      const ch = link.getAttribute('data-ch');
+      if(ch === active){
+        link.classList.add('active');
+        // scroll sidebar so active link is visible
+        const sidebar = document.getElementById('sidebar');
+        if(sidebar){
+          const linkTop    = link.offsetTop;
+          const linkBottom = linkTop + link.offsetHeight;
+          const sTop       = sidebar.scrollTop;
+          const sBottom    = sTop + sidebar.clientHeight;
+          if(linkTop < sTop + 60)
+            sidebar.scrollTo({top: linkTop - 60, behavior:'smooth'});
+          else if(linkBottom > sBottom - 60)
+            sidebar.scrollTo({top: linkBottom - sidebar.clientHeight + 60, behavior:'smooth'});
+        }
+      } else {
+        link.classList.remove('active');
+      }
+    });
+    updateProgress();
+  }
+
+  /* ── smooth scroll on nav click ─────────── */
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function(e){
+      e.preventDefault();
+      const targetId = this.getAttribute('href').replace('#','');
+      const target   = document.getElementById(targetId);
+      if(target){
+        const top = target.getBoundingClientRect().top + window.pageYOffset - NAV_OFFSET - 16;
+        window.scrollTo({top, behavior:'smooth'});
+      }
+    });
+  });
+
+  /* ── throttled scroll listener ───────────── */
+  let ticking = false;
+  window.addEventListener('scroll', function(){
+    if(!ticking){
+      requestAnimationFrame(function(){ syncNav(); ticking = false; });
+      ticking = true;
+    }
+  }, {passive: true});
+
+  /* ── initial sync ─────────────────────────── */
+  window.addEventListener('load', syncNav);
+  syncNav();
+})();
+
+/* ── MOBILE SIDEBAR TOGGLE ──────────────────── */
+function toggleSidebar(){
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('sidebarOverlay');
+  const btn      = document.getElementById('hamburgerBtn');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('visible');
+  btn.classList.toggle('open');
+  document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+}
+
+function closeSidebar(){
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('sidebarOverlay');
+  const btn      = document.getElementById('hamburgerBtn');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('visible');
+  btn.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* close sidebar on Escape key */
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeSidebar(); });
+
+</script>
+</div>
+
+</div><!-- end main-content -->
+</body>
+</html>
